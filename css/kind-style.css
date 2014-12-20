@@ -1,0 +1,64 @@
+.response {
+    background-color: #D9DDDD;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding: 5px;
+    border-radius: 15px ;
+}
+
+.embeds {
+    text-align: center;
+    position: relative;
+    width: 100%;
+}
+
+span.like:before {
+         content: '\f221';
+         padding:        0 5px;
+         font-family:    'Genericons';
+         vertical-align: middle;
+         -webkit-font-smoothing: antialiased;
+        }
+
+span.favorite:before {
+         content: '\f408';
+         padding:        0 5px;
+         font-family:    'Genericons';
+         vertical-align: middle;
+         -webkit-font-smoothing: antialiased;
+        }
+
+
+span.reply:before {
+         content: '\f412';
+         padding:        0 5px;
+         font-family:    'Genericons';
+         vertical-align: middle;
+         -webkit-font-smoothing: antialiased;
+        }
+
+span.bookmark:before, a.empty:before {
+         content: '\f107';
+         padding:        0 5px;
+         font-family:    'Genericons';
+         vertical-align: middle;
+         -webkit-font-smoothing: antialiased;
+        }
+
+
+span.repost:before {
+         content: '\f420';
+         padding:        0 5px;
+         font-family:    'Genericons';
+         vertical-align: middle;
+         -webkit-font-smoothing: antialiased;
+        }
+
+span.rsvp:before {
+         content: '\f305';
+         padding:        0 5px;
+         font-family:    'Genericons';
+         vertical-align: middle;
+         -webkit-font-smoothing: antialiased;
+        }
+
