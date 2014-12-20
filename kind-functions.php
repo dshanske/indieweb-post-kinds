@@ -2,25 +2,17 @@
 
 // Functions for Kind Taxonomies
 
-function get_the_kind( $id = false ) {
-/**
-         * Filter the array of kinds to return for a post.
-         *
-         *
-         */
-
-	        $kinds = get_the_terms( $id, 'kind' );
-	        if ( ! $kinds || is_wp_error( $kinds ) )
-	                $kinds = array();
+function get_post_kind( $post = null ) {
+	if ( ! $post = get_post( $post ) )
+		return false; 
+	$_kind = get_the_terms( $post->ID, 'kind' );
+	if ( empty( $_kind ) )
+	                return false;
 	
-	        $kinds = array_values( $kinds );
+	        $kind = array_shift( $_kind );
 	
-	        foreach ( array_keys( $kinds ) as $key ) {
-	                _make_cat_compat( $kinds[$key] );
-	        }
-	
-	        return apply_filters( 'get_the_kind', $kinds[0]->name );
-	}
+	        return $kind->slug;	        
+   }
 
 
 /**
@@ -52,81 +44,148 @@ function has_post_kind( $kinds = array(), $post = null ) {
 	 * @param string $kind A kind to assign. Using an empty string or array will default to note.
 	 * @return mixed WP_Error on error. Array of affected term IDs on success.
 	 */
-	function set_post_kind( $post, $kind ) {
-	        $post = get_post( $post );
-	
-	        if ( empty( $post ) )
-	                return new WP_Error( 'invalid_post', __( 'Invalid post' ) );
-	
-	        if ( ! empty( $kind ) ) {
-	                $kind = sanitize_key( $kind );
-	        }
-		else { 
-			$kind = 'note';
-		     }
-	        return wp_set_post_terms( $post->ID, $kind, 'kind' );
+function set_post_kind( $post, $kind ) {
+        $post = get_post( $post );
+        if ( empty( $post ) )
+                return new WP_Error( 'invalid_post', __( 'Invalid post' ) );
+
+        if ( ! empty( $kind ) ) {
+                $kind = sanitize_key( $kind );
+        }
+	else { 
+		$kind = 'note';
+	     }
+        return wp_set_post_terms( $post->ID, $kind, 'kind' );
+   }
+
+/**
+  * Returns an array of post kind slugs to their translated and pretty display versions
+	 *
+
+	 *
+	 * @return array The array of translated post kind names.
+	 */
+	function get_post_kind_strings() {
+	        $strings = array(
+	                'article' => _x( 'Article', 'Post kind' ),
+	                'note'    => _x( 'Note',    'Post kind' ),
+	                'reply'     => _x( 'Reply',     'Post kind' ),
+	                'repost'  => _x( 'Repost',  'Post kind' ),
+	                'like'     => _x( 'Like',     'Post kind' ),
+	                'favorite'    => _x( 'Favorite',    'Post kind' ),
+	                'bookmark'    => _x( 'Bookmark',    'Post kind' ),
+	                'photo'   => _x( 'Photo',   'Post kind' ),
+	                'tag'    => _x( 'Tag',    'Post kind' ),
+	                'rsvp'    => _x( 'RSVP',    'Post kind' ),
+	        );
+	        return $strings;
 	}
 
-function get_the_kinds_list( $before = '', $sep = '', $after = '', $id = 0 ) {
-        /**
-         * Filter the kinds list for a given post.
+/**
+  * Returns an array of post kind slugs to their translated verbs
          *
-         * @param string $kind_list List of kinds.
-         * @param string $before   String to use before kinds.
-         * @param string $sep      String to use between the kinds.
-         * @param string $after    String to use after kinds.
-         * @param int    $id       Post ID.
+
+         *
+         * @return array The array of translated post kind verbs.
          */
-        return apply_filters( 'the_kinds', get_the_term_list( $id, 'kind', $before, $sep, $after ), $before, $sep, $after, $id );
+        function get_post_kind_verb_strings() {
+               	$strings = array(
+                        'article' => _x( ' ', 'Post kind verbs' ),
+                       	'note'    => _x( ' ',    'Post kind verbs' ),
+                        'reply'     => _x( 'In Reply To',     'Post kind verbs' ),
+                        'repost'  => _x( 'Reposted',  'Post kind verbs' ),
+                        'like'     => _x( 'Liked',     'Post kind verbs' ),
+                        'favorite'    => _x( 'Favorited',    'Post kind verbs' ),
+                        'bookmark'    => _x( 'Bookmarked',    'Post kind verbs' ),
+                        'photo'   => _x( ' ',   'Post kind verbs' ),
+                        'tag'    => _x( 'Tagged',    'Post kind verbs' ),
+                        'rsvp'    => _x( 'RSVPed',    'Post kind verbs' ),
+                );
+                return $strings;
+        }
+
+
+/**
+ * Retrieves an array of post kind slugs.
+ *
+ * @return array The array of post kind slugs.
+ */
+function get_post_kind_slugs() {
+	$slugs = array_keys( get_post_kind_strings() );
+	return array_combine( $slugs, $slugs );
 }
 
-function the_kinds( $before = null, $sep = ', ', $after = '' ) {
-        if ( null === $before )
-                $before = __('Kinds: ');
-        echo get_the_kinds_list($before, $sep, $after);
+/**
+	 * Returns a pretty, translated version of a post kind slug
+	 *
+	 *
+	 * @param string $slug A post format slug.
+	 * @return string The translated post format name.
+	 */
+function get_post_kind_string( $slug ) {
+	$strings = get_post_kind_strings();
+	     return ( isset( $strings[$slug] ) ) ? $strings[$slug] : '';
+	}
+
+/**
+ * Returns a link to a post kind index.
+ *
+ *
+ * @param string $kind The post kind slug.
+ * @return string The post kind term link.
+ */
+function get_post_kind_link( $kind ) {
+	$term = get_term_by('slug', $kind, 'kind' );
+	if ( ! $term || is_wp_error( $term ) )
+		return false;
+	return get_term_link( $term );
+}
+
+/**
+ * Returns true if kind is a response type kind .
+ *
+ *
+ * @param string $kind The post kind slug.
+ * @return true/false.
+ */
+function response_kind( $kind ) {
+        $not_responses = array( "article", "note" , "photo");
+	if (in_array($kind, $not_responses)) { return false; }
+	else { return true; }
 }
 
 
 
 function get_kind_context_class ( $class = '', $classtype='u' , $id = false  ) {
-   $kinds = get_post_kind ($id);
+   $kind = get_post_kind ($id);
    $classes = array();
-   if ( ! $kinds || is_wp_error( $kinds ) )
-            $kinds = array();
-   foreach ( $kinds as $kind ) {
-	    switch ($kind->slug) {
+   if ($kind)
+       {
+	   switch ($kind) {
 		     case "like":
                             $classes[] = $classtype.'-like-of';
-			    $classes[] = $kind->slug;
 
 	     	     break;
 		     case "favorite":
 			    $classes[] = $classtype.'-favorite-of';
-			    $classes[] = $kind->slug;
 		     break;
                      case "repost":
                             $classes[] = $classtype.'-repost-of';
-			    $classes[] = $kind->slug;
                      break;
                      case "reply":
                             $classes[] = $classtype.'-in-reply-to';
-			    $classes[] = $kind->slug;
                      break;
                      case "rsvp":
                             $classes[] = $classtype.'-in-reply-to';
-                            $classes[] = $kind->slug;
                      break; 
                      case "tag":
                             $classes[] = $classtype.'-tag-of';
-                            $classes[] = $kind->slug;
+		     break;
+		     case "bookmark":
+			    $classes[] = $classtype.'-bookmark-of';
                      break;
-
-     		     default:
-			    $classes[] = $kind->slug;
 		}
-
-
-                }
+          }         
    if ( ! empty( $class ) ) {
 	                if ( !is_array( $class ) )
 	                        $class = preg_split( '#\s+#', $class );
@@ -146,96 +205,30 @@ function get_kind_context_class ( $class = '', $classtype='u' , $id = false  ) {
         return apply_filters( 'kind_classes', $classes, $class );
 }
 
-function kind_class( $class = '' ) {
+function kind_context_class( $class = '' ) {
         // Separates classes with a single space, collates classes
-        echo 'class="' . join( ' ', get_kind_class( $class ) ) . '"';
-}
-
-function get_kind_verbs ( $id = false  ) {
-   $kinds = get_the_kinds ($id);
-   $verbs = array();
-   if ( ! $kinds || is_wp_error( $kinds ) )
-            $kinds = array();
-   foreach ( $kinds as $kind ) {
-            switch ($kind->slug) {
-                     case "like":
-                            $verbs[] = '<span class="like">Liked </span>';
-                     break;
-                     case "repost":
-                            $verbs[] = '<span class="repost">Reposted </span>';
-                     break;
-                     case "reply":
-                            $verbs[] = '<span class="reply">In Reply To </span>';
-		     break;
-		     case "favorite":
-			    $verbs[] = '<span class="favorite">Favorited </span>'; 
-		     break;
-		     case "share":
-			    $verbs[] = '<span class="share">Shared </span>';
-		     break;
-		     case "bookmark":
-                            $verbs[] = '<span class="bookmark">Bookmarked </span>';
-                     break;
-
-		     case "rsvp":
-			    $verbs[] = '<span class="rsvp">RSVPed </span>';
-		     break;
-		     case "checkin":
-			    $verbs[] = '<span class="checkin">Checked in at </span>';
-                     break;
-                     case "tag":
-                            $verbs[] = '<span class="tag">Tagged as </span>';
-                     break;
-		     case "note":
-		     break;
-		     case "article":
-		     break;
-		     case "image":
-		     break;
-                     default:
-                            $verbs[] = '<span class="mention">Mentioned </span>';
-                }
-
-
-                }
- /**
-         * Filter the list of CSS kind verbs for the current response URL.
-         *
-         *
-         * @param array  $verbs An array of kind verbs.
-         */
-        return apply_filters( 'kind_verb', $verbs);
-}
-
-function kind_verbs() {
-        // Separates verbs with an and, collates verbs
-        echo join( ' and ', get_kind_verbs() ) . '"';
+        echo 'class="' . join( ' ', get_kind_context_class( $class ) ) . '"';
 }
 
 function kinds_post_class($classes) {
 	// Adds kind classes to post
-	$kinds = get_the_kinds($post->ID);
-	foreach ( $kinds as $kind ) {		
-		switch ($kind->slug) {
+	$kind = get_post_kind();
+        switch ($kind) {
                      case "note":
                             $classes[] = 'h-as-note';
-                     break;
 		     case 'article':
 			    $classes[] = 'h-as-article';
-		     break;
 		     case 'photo':
 			    $classes[] = 'h-as-image';
-		     break;
 		     case 'bookmark':
 			    $classes[] = 'h-as-bookmark';
+		     default:
+			    $classes[] = 'kind-' . $kind;
 		     break;
 	    }
 	return $classes;
 	}
 
-add_filter( 'post_class', 'kinds_post_class' );
- 
-		
-			
-}
+add_filter( 'post_class', 'kinds_post_class' ); 
+	
 ?>

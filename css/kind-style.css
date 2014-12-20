@@ -1,5 +1,4 @@
 .response {
-    background-color: #D9DDDD;
     margin-bottom: 10px;
     margin-top: 10px;
     padding: 5px;
@@ -10,9 +9,10 @@
     text-align: center;
     position: relative;
     width: 100%;
+    margin-top: 5px;
 }
 
-span.like:before {
+.response a.u-like-of:before {
          content: '\f221';
          padding:        0 5px;
          font-family:    'Genericons';
@@ -20,7 +20,7 @@ span.like:before {
          -webkit-font-smoothing: antialiased;
         }
 
-span.favorite:before {
+.response a.u-favorite-of:before {
          content: '\f408';
          padding:        0 5px;
          font-family:    'Genericons';
@@ -29,7 +29,7 @@ span.favorite:before {
         }
 
 
-span.reply:before {
+.response a.u-in-reply-to:before {
          content: '\f412';
          padding:        0 5px;
          font-family:    'Genericons';
@@ -37,7 +37,7 @@ span.reply:before {
          -webkit-font-smoothing: antialiased;
         }
 
-span.bookmark:before, a.empty:before {
+.response .u-bookmark-of:before, a.empty:before {
          content: '\f107';
          padding:        0 5px;
          font-family:    'Genericons';

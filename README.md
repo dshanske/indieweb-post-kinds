@@ -3,7 +3,42 @@ indieweb-post-kinds
 
 Indieweb Post Kinds adds a Custom Taxonomy to the standard post type in Wordpress that allows posts to have a semantic component, based on the same concept as the built-in Post Formats. This allows archives of replies, likes, reposts, etc. as well as theme support to add the appropriate classes to links within same.
 
-Version 0.2 - Forked to Indieweb Post Kinds to reflect a change to act as an alternative to the post formats feature of WordPress. Removed multikind option.
+The original version of this remains as Indieweb Taxonomy. Some of the kinds will not be used by everyone...in future, there will be an option to hide/select the active ones.
+
+== Post Kinds ==
+
+=== The Non-Response Kinds ===
+
+Article - traditional long form content
+Note - short content
+Photo - image or photo post
+
+=== The Response Kinds === 
+
+Reply - Replying to someone else's comment
+Repost - a complete repost of someone else's content
+Like -  props/compliments to the original post/poster
+Favorite - special to the favoriter
+Bookmark - also known as a linkblog. This is basically sharing/storing a link/bookmark, without the connotations of favorite/ike
+Tag - Allows you to tag a post as being of a specific tag, or person tagging.
+RSVP - A specific type of Reply regarding an event (Not Fully Fleshed Out)
+
+=== Future Kinds (Possibly) ===
+
+Check-In - Identifying you are at a place
+
+
+== Future Plans ==
+
+* Add H-Card/Author Support using the functions in H-Card Tools Plugin
+* Custom Meta Box for Kinds to replace the generic class
+* Automatic import/parsing of information based on click of button
+* Contextual response box, hiding/changing options based on Kind selected. Example, an RSVP that shows Yes/No/Maybe.
+
+== Changelog ==
+
+Version 0.2 - Forked to Indieweb Post Kinds to reflect a change to act as an alternative to the post formats feature of WordPress. Removed multikind option. Prior to this, the plugin functions mirrored those of tags. With the removal of multikind support, each post can only have one kind, and the
+functions will more closely mirror the Post Format. Complete rewrite of the display functionality
 
 Version 0.11 - Option to Update Metadata Deliberately Commented Out. Anyone who used the old plugin should backup their database before considering migration. The data should still be in the database regardless.
 
@@ -21,25 +56,12 @@ Version 0.02 - Location meta box with HTML5 geolocation fill-in added. This allo
 
 Version 0.01 - Registers a custom taxonomy, adds in code snippets to turn the post meta box from checkboxes to radio buttons, adds code to allow a custom permalink tag if needed.
 
-Roadmap - Refine display appearance. Add additional configuration options for customization.
-
 == Functions == 
 
-get_the_kinds($id) - Return the array of kinds for a given post. If $id is not specified, use current post.
+get_post_kind($id) - Return the kind for a given post. If $id is not specified, use current post.
+has_post_kind($kind, $post) - Returns true/false if kind is in post. If post is empty, then use current post
 
-get_the_kinds_list($before, $sep, $after, $id) - Returns a list of kinds for a given post with custom separators...
-
-the_kinds($before, $sep, $after) - Echos the output of get_the_kinds_list for the current post.
-
-has_kind($kind, $post) - Returns true/false if kind is in post. If post is empty, then use current post
-
-get_kind_class( $class, $classtype ) - Returns the CSS class to be applied based on a kind. Classtype defaults to u, other option is usually p. Sets the class to the kind slug and for specially specified slugs, sets appropriate mf2 classes as well. $class specifies any additional classes to be added.
-
-kind_class ($class) - echoes the output of get_kind_class
-
-get_kind_verbs () - Returns the verbs reflected by the different kinds. Unspecified classes default to Mentioned. 
-
-kind_verbs - Echoes the output of get_kind_verbs
+get_kind_context_class( $class, $classtype ) - Returns the CSS class to be applied to the response/context if the kind is one for which there is context. Classtype defaults to u, other option is usually p. Sets the class to the kind slug and for specially specified slugs, sets appropriate mf2 classes as well. $class specifies any additional classes to be added.
 
 
 
@@ -53,4 +75,4 @@ kind_classes - Filter get_kind_class
 
 kind_verb - Filter get_kind_verbs
 
-response_display - Filters the output being added to the_content
+response_display - Filters the output being added to the_content or to custom location in theme
