@@ -2,7 +2,8 @@
     margin-bottom: 10px;
     margin-top: 10px;
     padding: 5px;
-    border-radius: 15px ;
+    border-radius: 15px;
+    font-size: 14px;
 }
 
 .embeds {
@@ -12,7 +13,7 @@
     margin-top: 5px;
 }
 
-.response a.u-like-of:before {
+.p-like-of .u-url:before {
          content: '\f221';
          padding:        0 5px;
          font-family:    'Genericons';
@@ -20,7 +21,7 @@
          -webkit-font-smoothing: antialiased;
         }
 
-.response a.u-favorite-of:before {
+.p-favorite-of .u-url:before {
          content: '\f408';
          padding:        0 5px;
          font-family:    'Genericons';
@@ -29,7 +30,7 @@
         }
 
 
-.response a.u-in-reply-to:before {
+.p-in-reply-to .u-url:before {
          content: '\f412';
          padding:        0 5px;
          font-family:    'Genericons';
@@ -37,7 +38,7 @@
          -webkit-font-smoothing: antialiased;
         }
 
-.response .u-bookmark-of:before, a.empty:before {
+.p-bookmark-of .u-url:before, a.empty:before {
          content: '\f107';
          padding:        0 5px;
          font-family:    'Genericons';
@@ -45,8 +46,7 @@
          -webkit-font-smoothing: antialiased;
         }
 
-
-span.repost:before {
+.p-repost-of .u-url:before {
          content: '\f420';
          padding:        0 5px;
          font-family:    'Genericons';
@@ -54,7 +54,7 @@ span.repost:before {
          -webkit-font-smoothing: antialiased;
         }
 
-span.rsvp:before {
+.kind-rsvp .response.u-url:before {
          content: '\f305';
          padding:        0 5px;
          font-family:    'Genericons';
@@ -62,3 +62,9 @@ span.rsvp:before {
          -webkit-font-smoothing: antialiased;
         }
 
+.response img {
+	height: 100px;	
+	width: auto;
+	vertical-align: middle;
+	text-align: right;
+	}

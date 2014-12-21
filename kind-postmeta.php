@@ -46,6 +46,15 @@ function response_metabox( $object, $box ) { ?>
     <br />
     <input type="text" name="response_title" id="response_title" value="<?php if (isset ($meta['title'])) { echo esc_attr($meta['title']); } ?>" size="70" />
 	<br />
+    <label for="response_author"><?php _e( "Author", 'kind_taxonomy' ); ?></label>
+    <br />
+    <input type="text" name="response_author" id="response_author" value="<?php if (isset ($meta['author'])) { echo esc_attr($meta['author']); } ?>" size="70" />
+        <br />
+    <label for="response_icon"><?php _e( "Author Icon", 'kind_taxonomy' ); ?></label>
+    <br />
+    <input type="text" name="response_icon" id="response_icon" value="<?php if (isset ($meta['icon'])) { echo esc_attr($meta['icon']); } ?>" size="70" />
+        <br />
+
     <label for="response_content"><?php _e( "Content/Citation", 'kind_taxonomy' ); ?></label>
     <br />
     <textarea name="response_content" id="response_content" cols="70"><?php if (isset ($meta['content'])) { echo esc_attr( $meta['content'] ); } ?></textarea>
@@ -97,6 +106,12 @@ function responsebox_save_post_meta( $post_id ) {
 	}
 	if( isset( $_POST[ 'response_title' ] ) ) {
             $meta['title'] = esc_attr( $_POST[ 'response_title' ] ) ;
+        }
+        if( isset( $_POST[ 'response_author' ] ) ) {
+            $meta['author'] = esc_attr( $_POST[ 'response_author' ] ) ;
+        }
+        if( isset( $_POST[ 'response_icon' ] ) ) {
+            $meta['icon'] = esc_url_raw( $_POST[ 'response_icon' ] ) ;
         }
 	if( isset( $_POST[ 'response_content' ] ) ) {
             $meta['content'] = wp_kses_post( (string) $_POST[ 'response_content' ] );
