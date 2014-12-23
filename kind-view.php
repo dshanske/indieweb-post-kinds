@@ -32,24 +32,28 @@ function get_response_display() {
 	if ( empty($response['url']) && empty($response['content']) && empty($response['title']) ) {
             return apply_filters( 'response-display', "");
            }	
-	 if (! empty($response['icon']) )
-		{
-		    $resp .= '<img class="u-photo" src="' . $response['icon'] . '" />';
-		}
 	 if (! empty($response['url'])  )
            {
                  $resp .= '<a class="u-url" href="' . $response['url'] . '"></a><strong>' . $verbstrings[$kind] . '</strong>';
 		 if (!empty ($response['title']) )
 			{
-		 		$resp .= ' <em>' . $response['title'] . '</em>';
-			}
+		 		$resp .= ' ' . '<a href="' . $response['url'] . '">' . $response['title'] . '</a>';
+			} 
+		 else
+			{
+		 		$resp .= ' ' . '<a href="' . $response['url'] . '">' . get_the_title() . '</a>';
+			} 
+		
 		 if (!empty ($response['author']) )
 		 	{
-				$resp .= ' - <span class="p-author h-card">';
+				$resp .= '<span class="p-author h-card"> by ';
+				if (! empty($response['icon']) )
+				   {
+	   				$resp .= '<img class="u-photo" src="' . $response['icon'] . '" title="' . $response['author'] . '" />';
+	   			   }
 				$resp .= $response['author'] . '</span>';
-			}
-		 $resp .= ' - ' . '<a href="' . $response['url'] . '">' . extract_domain_name($response['url']) . '</a>';
-
+		      }
+		$resp .= ' (<em>' . extract_domain_name($response['url']) . '</em>)';
 		// A URL means a response to an external source
 		 if (!empty($response['content']) )
                       {
@@ -76,6 +80,7 @@ function get_response_display() {
 
 			     }
 		      }
+
 	    }
 	 // If there is no URL but there is content, that means it is responding to something else
          // use the content/title to generate a response
@@ -91,6 +96,7 @@ function get_response_display() {
 	 else 
 	   {
            }
+
         // Wrap the entire display in the class response
            $c .= '<div class="' .  implode(' ',get_kind_context_class ( 'h-cite response', 'p' )) . '">' . $resp . '</div>';
 	// Return the resulting display.
