@@ -1,7 +1,11 @@
 indieweb-post-kinds
 =================
 
-Indieweb Post Kinds adds a Custom Taxonomy to the standard post type in Wordpress that allows posts to have a semantic component, based on the same concept as the built-in Post Formats. This allows archives of replies, likes, reposts, etc. as well as theme support to add the appropriate classes to links within same.
+Indieweb Post Kinds adds a Custom Taxonomy to the standard post type in Wordpress that allows 
+posts to have a semantic component, based on the same conventions as the built-in Post Formats. 
+
+This allows archives of replies, likes, reposts, etc. as well as adding the  appropriate classes 
+to links within same.
 
 The original version of this remains as Indieweb Taxonomy. Some of the kinds will not be used by everyone...in future, there will be an option to hide/select the active ones.
 
