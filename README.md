@@ -45,6 +45,9 @@ Check-In - Identifying you are at a place
 
 == Changelog ==
 
+Version 0.22 - Complete response html cached to post-meta and purged on 
+post update. 
+
 Version 0.21 - Temporary fix for slow embed code in preparation for caching
 to reduce calls. Removed defaultterms check to only run on settings page
 save or plugin activation instead of on each load.
