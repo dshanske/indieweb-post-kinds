@@ -96,6 +96,24 @@ function iwt_upgrade()
 
   }
 
+function response_purge()
+  {
+	    $args = array(
+		  'post_type' => 'post', 
+		  'posts_per_page' => '-1',
+		);
+	    $the_query = new WP_Query( $args );
+	     // The Loop
+	    if ( $the_query->have_posts() ) {
+		foreach( $the_query->posts as $post ) {
+		$the_query->the_post();
+		delete_post_meta($post->ID, '_resp_full');
+	           }
+		}
+	    wp_reset_postdata();
+
+  }
+
 
 $kind_mb = new Taxonomy_Single_Term( 'kind');
 

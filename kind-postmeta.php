@@ -128,7 +128,7 @@ add_action( 'publish_post', 'responsebox_save_post_meta', 5 );
 
 function get_kind_response($post_id)
 	{
-		return get_post_meta(get_the_ID(), 'response', true);
+		return get_post_meta($post_id, 'response', true);
 	}	
 
 ?>

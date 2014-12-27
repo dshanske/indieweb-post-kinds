@@ -4,7 +4,7 @@
 
 function get_post_kind( $post = null ) {
 	if ( ! $post = get_post( $post ) )
-		return false; 
+	                return false;
 	$_kind = get_the_terms( $post->ID, 'kind' );
 	if ( empty( $_kind ) )
 	                return false;
@@ -216,16 +216,18 @@ function kinds_post_class($classes) {
         switch ($kind) {
                      case "note":
                             $classes[] = 'h-as-note';
+		     break;
 		     case 'article':
 			    $classes[] = 'h-as-article';
+		     break;
 		     case 'photo':
 			    $classes[] = 'h-as-image';
+		     break;
 		     case 'bookmark':
 			    $classes[] = 'h-as-bookmark';
-		     default:
-			    $classes[] = 'kind-' . $kind;
 		     break;
 	    }
+	$classes[] = 'kind-' . $kind;
 	return $classes;
 	}
 
