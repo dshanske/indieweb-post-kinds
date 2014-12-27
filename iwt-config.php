@@ -32,6 +32,7 @@ function iwt_callback(array $args)
 
 function iwt_options_form() 
   {
+    kind_defaultterms ();
     ?>
      <div class="wrap">
         <h2>Indieweb Post Kinds</h2>  

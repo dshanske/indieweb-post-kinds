@@ -4,10 +4,14 @@ indieweb-post-kinds
 Indieweb Post Kinds adds a Custom Taxonomy to the standard post type in Wordpress that allows 
 posts to have a semantic component, based on the same conventions as the built-in Post Formats. 
 
+While the conventions are the same as post formats and thus can be used for theming
+, post kinds are less about formatting and more about the display and markup of context.
+
 This allows archives of replies, likes, reposts, etc. as well as adding the  appropriate classes 
 to links within same.
 
-The original version of this remains as Indieweb Taxonomy. Some of the kinds will not be used by everyone...in future, there will be an option to hide/select the active ones.
+The original version of this remains as Indieweb Taxonomy. Some of the kinds will not be used by everyone...
+in future, there will be an option to hide/select the active ones in the post editor.
 
 == Post Kinds ==
 
@@ -23,7 +27,7 @@ Reply - Replying to someone else's comment
 Repost - a complete repost of someone else's content
 Like -  props/compliments to the original post/poster
 Favorite - special to the favoriter
-Bookmark - also known as a linkblog. This is basically sharing/storing a link/bookmark, without the connotations of favorite/ike
+Bookmark - also known as a linkblog. This is basically sharing/storing a link/bookmark.
 Tag - Allows you to tag a post as being of a specific tag, or person tagging.
 RSVP - A specific type of Reply regarding an event (Not Fully Fleshed Out)
 
@@ -40,6 +44,10 @@ Check-In - Identifying you are at a place
 * Contextual response box, hiding/changing options based on Kind selected. Example, an RSVP that shows Yes/No/Maybe.
 
 == Changelog ==
+
+Version 0.21 - Temporary fix for slow embed code in preparation for caching
+to reduce calls. Removed defaultterms check to only run on settings page
+save or plugin activation instead of on each load.
 
 Version 0.2 - Forked to Indieweb Post Kinds to reflect a change to act as an alternative to the post formats feature of WordPress. Removed multikind option. Prior to this, the plugin functions mirrored those of tags. With the removal of multikind support, each post can only have one kind, and the
 functions will more closely mirror the Post Format. Complete rewrite of the display functionality
