@@ -78,7 +78,7 @@ function set_post_kind( $post, $kind ) {
 	                'tag'    => _x( 'Tag',    'Post kind' ),
 	                'rsvp'    => _x( 'RSVP',    'Post kind' ),
 	        );
-	        return $strings;
+        return apply_filters( 'kind_strings', $strings );
 	}
 
 /**
@@ -101,7 +101,8 @@ function set_post_kind( $post, $kind ) {
                         'tag'    => _x( 'Tagged',    'Post kind verbs' ),
                         'rsvp'    => _x( 'RSVPed',    'Post kind verbs' ),
                 );
-                return $strings;
+               return apply_filters( 'kind_verbs', $strings );
+
         }
 
 
