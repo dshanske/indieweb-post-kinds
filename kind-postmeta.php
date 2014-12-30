@@ -101,19 +101,19 @@ function responsebox_save_post_meta( $post_id ) {
 	}
 
 	/* OK, its safe for us to save the data now. */
-	if( isset( $_POST[ 'response_url' ] ) ) {
+	if( isset( $_POST[ 'response_url' ] ) && !empty( $_POST[ 'response_url' ] ) ) {
             $meta['url'] = esc_url_raw( $_POST[ 'response_url' ] );
 	}
-	if( isset( $_POST[ 'response_title' ] ) ) {
+	if( isset( $_POST[ 'response_title' ] ) && !empty( $_POST[ 'response_title' ] ) ) {
             $meta['title'] = esc_attr( $_POST[ 'response_title' ] ) ;
         }
-        if( isset( $_POST[ 'response_author' ] ) ) {
+        if( isset( $_POST[ 'response_author' ] ) && !empty( $_POST[ 'response_author' ] ) ) {
             $meta['author'] = esc_attr( $_POST[ 'response_author' ] ) ;
         }
-        if( isset( $_POST[ 'response_icon' ] ) ) {
+        if( isset( $_POST[ 'response_icon' ] ) && !empty( $_POST[ 'response_icon' ] ) ) {
             $meta['icon'] = esc_url_raw( $_POST[ 'response_icon' ] ) ;
         }
-	if( isset( $_POST[ 'response_content' ] ) ) {
+	if( isset( $_POST[ 'response_content' ] ) && !empty( $_POST[ 'response_content' ] ) ) {
             $meta['content'] = wp_kses_post( (string) $_POST[ 'response_content' ] );
         }
 	if(!empty($meta)) {
