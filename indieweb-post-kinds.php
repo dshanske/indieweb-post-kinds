@@ -199,6 +199,40 @@ function kind_permalink($permalink, $post_id, $leavename) {
     return str_replace('%kind%', $taxonomy_slug, $permalink);
 }   
 
+function kind_archive_title($title)
+ {
+     if ( is_tax( 'kind' ) ) {
+                if ( is_tax( 'kind', 'note' ) ) {
+                        $title = _x( 'Notes', 'kind archive title', 'mf2_s' );
+                } elseif ( is_tax( 'kind', 'article' ) ) {
+                        $title = _x( 'Articles', 'kind archive title', 'mf2_s' );
+                } elseif ( is_tax( 'kind', 'bookmark' ) ) {
+                        $title = _x( 'Bookmarks', 'kind archive title', 'mf2_s' );
+                } elseif ( is_tax( 'kind', 'favorite' ) ) {
+                        $title = _x( 'Favorites', 'kind archive title', 'mf2_s' );
+                } elseif ( is_tax( 'kind', 'like' ) ) {
+                        $title = _x( 'Likes', 'kind archive title', 'mf2_s' );
+                } elseif ( is_tax( 'kind', 'photo' ) ) {
+                        $title = _x( 'Photos', 'kind archive title', 'mf2_s' );
+                } elseif ( is_tax( 'kind', 'reply' ) ) {
+                        $title = _x( 'Replies', 'kind archive title', 'mf2_s' );
+                } elseif ( is_tax( 'kind', 'repost' ) ) {
+                        $title = _x( 'Repost', 'kind archive title', 'mf2_s' );
+                } elseif ( is_tax( 'kind', 'rsvp' ) ) {
+                        $title = _x( 'RSVP', 'kind archive title', 'mf2_s' );
+                }
+                  elseif ( is_tax( 'kind', 'tag' ) ) {
+                        $title = _x( 'Tags', 'kind archive title', 'mf2_s' );
+                }
+	 }
+	return $title;
+   }
+
+add_filter('get_the_archive_title', 'kind_archive_title', 10, 3);
+
+
+
+
 function json_rest_add_kindmeta($_post,$post,$context) {
 	$response = get_post_meta( $post["ID"], 'response');
 	if (!empty($response)) { $_post['response'] = $response; }
