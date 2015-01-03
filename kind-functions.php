@@ -3,15 +3,13 @@
 // Functions for Kind Taxonomies
 
 function get_post_kind( $post = null ) {
+	$post = get_post($post);
 	if ( ! $post = get_post( $post ) )
 	                return false;
 	$_kind = get_the_terms( $post->ID, 'kind' );
-	if ( empty( $_kind ) )
-	                return false;
-	
-	        $kind = array_shift( $_kind );
-	
-	        return $kind->slug;	        
+	$kind = array_shift($_kind);
+	$strings = get_post_kind_strings();
+        return $strings[$kind->slug];	        
    }
 
 
