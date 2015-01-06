@@ -45,13 +45,6 @@ function it_publish ( $ID, $post=null)
 
 add_filter('publish_post', 'it_publish', 10, 3);
 
-
-// Disable Post Formats in Favor of Kinds
-add_action( 'init', 'iwt_post_type_support', 10 );
-function iwt_post_type_support() {
-    remove_post_type_support( 'post', 'post-formats' );
-}
-
 add_action( 'init', 'register_taxonomy_kind' );
 
 function register_taxonomy_kind() {
