@@ -172,7 +172,13 @@ function kind_defaultterms () {
 
 }
 
-register_activation_hook( __FILE__, 'kind_defaultterms' );
+function activate_kinds()
+    {
+	register_taxonomy_kind();
+	kind_defaultterms();
+    }
+
+register_activation_hook( __FILE__, 'activate_kinds' );
 
 add_filter('post_link', 'kind_permalink', 10, 3);
 add_filter('post_type_link', 'kind_permalink', 10, 3);
