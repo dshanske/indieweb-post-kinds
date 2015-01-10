@@ -210,7 +210,7 @@ class Taxonomy_Single_Term {
 		?>
 		<ul id="<?php echo $this->slug; ?>checklist" data-wp-lists="list:<?php echo $this->slug; ?>" class="categorychecklist form-no-clear">
 			<?php if ( ! $this->force_selection ) : ?>
-				<li style="display:none;">
+				<li style="display:none;"
 					<input id="taxonomy-<?php echo $this->slug; ?>-clear" type="radio" name="<?php echo $this->namefield; ?>" value="0" />
 				</li>
 			<?php endif;
@@ -233,18 +233,6 @@ class Taxonomy_Single_Term {
 	public function radio_close() {
 		?>
 		</ul>
-		<p style="margin-bottom:0;float:left;width:50%;">
-			<a class="button" id="taxonomy-<?php echo $this->slug; ?>-trigger-clear" href="#"><?php _e( 'Clear' ); ?></a>
-		</p>
-		<script type="text/javascript">
-			jQuery(document).ready(function($){
-				$('#taxonomy-<?php echo $this->slug; ?>-trigger-clear').click(function(){
-					$('#taxonomy-<?php echo $this->slug; ?> input:checked').prop( 'checked', false );
-					$('#taxonomy-<?php echo $this->slug; ?>-clear').prop( 'checked', true );
-					return false;
-				});
-			});
-		</script>
 		<?php
 	}
 
@@ -351,6 +339,7 @@ class Taxonomy_Single_Term {
 
 		$args = array(
 			'id'            => $taxonomy . '-' . $term->term_id,
+			'class' 	=> $taxonomy . '-' . $term->slug,
 			'name'          => $field_name,
 			'value'         => $this->taxonomy()->hierarchical ? $term->term_id : $term->slug,
 			'checked'       => ' checked="checked"',

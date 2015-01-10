@@ -64,7 +64,7 @@ function response_metabox( $object, $box ) { ?>
 <?php }
 
 /* Save the meta box's post metadata. */
-function responsebox_save_post_meta( $post_id ) {
+function responsebox_save_post_meta( $post_id, $post ) {
 
 	/*
 	 * We need to verify this came from our screen and with proper authorization,
@@ -119,6 +119,11 @@ function responsebox_save_post_meta( $post_id ) {
 	if(!empty($meta)) {
 	    update_post_meta( $post_id,'response', $meta);
            }
+	$terms = wp_get_post_terms( $post_id, 'kind');
+	if ( empty( $terms ) )
+		{
+			wp_set_post_terms( $post_id, 'note', 'kind' );
+		}
 
 }
 
