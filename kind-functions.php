@@ -215,27 +215,48 @@ function kind_context_class( $class = '' ) {
         echo 'class="' . join( ' ', get_kind_context_class( $class ) ) . '"';
 }
 
-function kinds_post_class($classes) {
-	// Adds kind classes to post
-	$kind = get_post_kind_slug();
-        switch ($kind) {
+function kinds_as_type($classes)
+	{
+ 	  
+          $kind = get_post_kind_slug();
+          switch ($kind) {
                      case "note":
                             $classes[] = 'h-as-note';
-		     break;
-		     case 'article':
-			    $classes[] = 'h-as-article';
-		     break;
-		     case 'photo':
-			    $classes[] = 'h-as-image';
-		     break;
-		     case 'bookmark':
-			    $classes[] = 'h-as-bookmark';
-		     break;
+                     break;
+                     case 'article':
+                            $classes[] = 'h-as-article';
+                     break;
+                     case 'photo':
+                            $classes[] = 'h-as-image';
+                     break;
+                     case 'bookmark':
+                            $classes[] = 'h-as-bookmark';
+                     break;
+                 }
+	return $classes;
+	}
+
+
+function kinds_post_class($classes) {
+	// Adds kind classes to post
+	if (!is_singular() ) {
+		$classes = kinds_as_type($classes);
 	    }
 	$classes[] = 'kind-' . $kind;
 	return $classes;
 	}
 
 add_filter( 'post_class', 'kinds_post_class' ); 
+
+function kinds_body_class($classes) {
+        // Adds kind classes to body
+        if (is_singular() ) {
+                $classes = kinds_as_type($classes); 
+            }
+        return $classes;
+        }
+
+add_filter( 'body_class', 'kinds_body_class' );
+
 	
 ?>
