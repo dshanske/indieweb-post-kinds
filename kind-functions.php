@@ -2,14 +2,20 @@
 
 // Functions for Kind Taxonomies
 
+function get_post_kind_slug( $post = null ) {
+        $post = get_post($post);
+        if ( ! $post = get_post( $post ) )
+                        return false;
+        $_kind = get_the_terms( $post->ID, 'kind' );
+        $kind = array_shift($_kind);
+        return $kind->slug;
+   }
+
+
 function get_post_kind( $post = null ) {
-	$post = get_post($post);
-	if ( ! $post = get_post( $post ) )
-	                return false;
-	$_kind = get_the_terms( $post->ID, 'kind' );
-	$kind = array_shift($_kind);
+	$kind = get_post_kind_slug($post);
 	$strings = get_post_kind_strings();
-        return $strings[$kind->slug];	        
+        return $strings[$kind];	        
    }
 
 
@@ -156,7 +162,7 @@ function response_kind( $kind ) {
 
 
 function get_kind_context_class ( $class = '', $classtype='u' , $id = false  ) {
-   $kind = get_post_kind ($id);
+   $kind = get_post_kind_slug ($id);
    $classes = array();
    if ($kind)
        {
@@ -211,7 +217,7 @@ function kind_context_class( $class = '' ) {
 
 function kinds_post_class($classes) {
 	// Adds kind classes to post
-	$kind = get_post_kind();
+	$kind = get_post_kind_slug();
         switch ($kind) {
                      case "note":
                             $classes[] = 'h-as-note';

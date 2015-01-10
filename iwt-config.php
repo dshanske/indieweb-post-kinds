@@ -12,6 +12,8 @@ function iwt_options_init() {
     add_settings_section( 'iwt-content', 'Content Options', 'iwt_options_callback', 'iwt_options' );
     add_settings_field( 'the_content', 'Add a Context Box to the Content', 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'the_content') );
     add_settings_field( 'embeds', 'Add Rich Embed Support for Facebook, Google Plus, Instagram, etc', 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'embeds') );
+    add_settings_field( 'cacher', 'Refresh Cached Responses on Load', 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'cacher') );
+
 //     add_settings_field( 'upgrade', 'Migrate to new data structure on update', 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'upgrade') );
 
 }

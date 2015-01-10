@@ -19,16 +19,16 @@ function extract_domain_name($url) {
 
 function get_response_display() {
 	$meta = get_post_meta(get_the_ID(), '_resp_full', true);
-	if (!empty($meta))
+	$options = get_option('iwt_options');
+	if ( ($options['cacher']!=1) && (!empty($meta)) )
 	     {
         	return apply_filters( 'response-display', $meta);
 	     }
 	$resp = "";
 	$c = "";
 	$response = get_kind_response(get_the_ID()); 
-	$kind = get_post_kind();
+	$kind = get_post_kind_slug();
 	$verbstrings = get_post_kind_verb_strings();
-        $options = get_option('iwt_options');
 	// If there is no kind or it isn't a response kind, return nothing.
 	if ( (!$kind)||(!response_kind($kind)) ) {
             return apply_filters( 'response-display', ""); 
@@ -119,7 +119,7 @@ add_action( 'publish_post', 'invalidate_response', 10, 2 );
 
 
 function response_display() {
-	return get_response_display();
+	echo get_response_display();
 }
 
 function content_response_top ($content ) {

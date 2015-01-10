@@ -45,7 +45,8 @@ in future, there will be an option to hide/select the active ones in the post ed
 
 ## Functions
 
-`get_post_kind($id)` - Return the kind for a given post. If `$id` is not specified, use current post.
+`get_post_kind_slug($id)` - Return the kind slug for a given post. If `$id` is not specified, use current post.
+`get_post_kind($id)` - Return the kind string for a given post. If `$id` is not specified, use current post.
 
 `has_post_kind($kind, $post)` - Returns true/false if kind is in post. If post is empty, then use current post
 
@@ -67,6 +68,7 @@ in future, there will be an option to hide/select the active ones in the post ed
 
 
 ## Changelog
+ * *Version 0.23* - Option to refresh the cache on each load added
 
  * *Version 0.22* - Complete response html cached to post-meta and purged on post update.
 
