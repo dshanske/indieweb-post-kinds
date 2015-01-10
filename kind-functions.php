@@ -242,7 +242,7 @@ function kinds_post_class($classes) {
 	if (!is_singular() ) {
 		$classes = kinds_as_type($classes);
 	    }
-	$classes[] = 'kind-' . $kind;
+        $classes[] = 'kind-' . get_post_kind_slug();
 	return $classes;
 	}
 
