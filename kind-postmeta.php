@@ -119,15 +119,15 @@ function responsebox_save_post_meta( $post_id, $post ) {
 	if(!empty($meta)) {
 	    update_post_meta( $post_id,'response', $meta);
            }
-	$terms = wp_get_post_terms( $post_id, 'kind');
+	$terms = wp_get_post_terms( $post->id, 'kind');
 	if ( empty( $terms ) )
 		{
-			wp_set_post_terms( $post_id, 'note', 'kind' );
+			wp_set_post_terms( $post_id, 'note', 'kind', true );
 		}
 
 }
 
-add_action( 'save_post', 'responsebox_save_post_meta', 5 );
+add_action( 'save_post', 'responsebox_save_post_meta', 10, 2 );
 add_action( 'publish_post', 'responsebox_save_post_meta', 5 );
 
 
