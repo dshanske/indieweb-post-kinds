@@ -1,0 +1,110 @@
+.kind-article label:before {
+	content: "\f119";
+	display: inline-block;
+	-webkit-font-smoothing: antialiased;
+	font: normal 20px/1 'dashicons';
+	vertical-align: top;
+	padding-left: 2px;
+	padding-right: 2px;
+	color: gray;
+        }
+
+.kind-bookmark label:before {
+        content: "\f103";
+        display: inline-block;
+        -webkit-font-smoothing: antialiased;
+        font: normal 20px/1 'dashicons';
+        vertical-align: top;
+        padding-left: 2px;
+        padding-right: 2px;
+        color: gray;
+        }
+
+.kind-favorite label:before {
+        content: "\f227";
+        display: inline-block;
+        -webkit-font-smoothing: antialiased;
+        font: normal 20px/1 'dashicons';
+        vertical-align: top;
+        padding-left: 2px;
+        padding-right: 2px;
+        color: gray;
+        }
+
+.kind-like label:before {
+        content: "\f487";
+        display: inline-block;
+        -webkit-font-smoothing: antialiased;
+        font: normal 20px/1 'dashicons';
+        vertical-align: top;
+        padding-left: 2px;
+        padding-right: 2px;
+        color: gray;
+        }
+
+.kind-note label:before {
+        content: "\f123";
+        display: inline-block;
+        -webkit-font-smoothing: antialiased;
+        font: normal 20px/1 'dashicons';
+        vertical-align: top;
+        padding-left: 2px;
+        padding-right: 2px;
+        color: gray;
+        }
+
+.kind-photo label:before {
+        content: "\f128";
+        display: inline-block;
+        -webkit-font-smoothing: antialiased;
+        font: normal 20px/1 'dashicons';
+        vertical-align: top;
+        padding-left: 2px;
+        padding-right: 2px;
+        color: gray;
+        }
+
+.kind-reply label:before {
+        content: "\f101";
+        display: inline-block;
+        -webkit-font-smoothing: antialiased;
+        font: normal 20px/1 'dashicons';
+        vertical-align: top;
+        padding-left: 2px;
+        padding-right: 2px;
+        color: gray;
+        }
+
+.kind-repost label:before {
+        content: "\f240";
+        display: inline-block;
+        -webkit-font-smoothing: antialiased;
+        font: normal 20px/1 'dashicons';
+        vertical-align: top;
+        padding-left: 2px;
+        padding-right: 2px;
+        color: gray;
+        }
+
+.kind-rsvp label:before {
+        content: "\f469";
+        display: inline-block;
+        -webkit-font-smoothing: antialiased;
+        font: normal 20px/1 'dashicons';
+        vertical-align: top;
+        padding-left: 2px;
+        padding-right: 2px;
+        color: gray;
+        }
+
+.kind-tag label:before {
+        content: "\f323";
+        display: inline-block;
+        -webkit-font-smoothing: antialiased;
+        font: normal 20px/1 'dashicons';
+        vertical-align: top;
+        padding-left: 2px;
+        padding-right: 2px;
+        color: gray;
+        }
+

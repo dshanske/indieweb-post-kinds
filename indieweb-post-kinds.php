@@ -33,6 +33,11 @@ function kindstyle_load() {
         wp_enqueue_style( 'kind-style', plugin_dir_url( __FILE__ ) . 'css/kind-style.css');
   }
 
+function kind_admin_style() {
+    wp_enqueue_style('kind-admin', plugins_url('css/kind-admin.css', __FILE__));
+}
+add_action('admin_enqueue_scripts', 'kind_admin_style');
+
 function it_publish ( $ID, $post=null)
   {
      $response_url = get_post_meta($ID, 'response_url', true);
