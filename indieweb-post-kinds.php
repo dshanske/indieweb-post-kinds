@@ -245,4 +245,15 @@ function json_rest_add_kindmeta($_post,$post,$context) {
 
 add_filter("json_prepare_post",'json_rest_add_kindmeta',10,3);
 
+function postkind_plugin_notice() {
+    if (!class_exists("WebMentionPlugin"))
+        {
+            echo '<div class="error"><p>';
+           _e( 'This Plugin Requires Webmention Support', 'post_kinds' );
+            echo '</p></div>';
+        }
+}
+add_action( 'admin_notices', 'postkind_plugin_notice' );
+
+
 ?>
