@@ -20,7 +20,7 @@ function iwt_options_init() {
 
 function iwt_options_callback()
    {
-	echo 'Taxonomy Plugin Options';
+	echo '';
    }
 
 function iwt_callback(array $args)
@@ -38,7 +38,7 @@ function iwt_options_form()
     ?>
      <div class="wrap">
         <h2>Indieweb Post Kinds</h2>  
-        <p>Allows for the different Indieweb post types to be used within 
+        <p>Allows for the different Indieweb post kinds to be used within 
 	WordPress.</p>
 
         <hr />

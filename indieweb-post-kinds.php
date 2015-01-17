@@ -255,5 +255,13 @@ function postkind_plugin_notice() {
 }
 add_action( 'admin_notices', 'postkind_plugin_notice' );
 
+function iwt_settings_link($links) { 
+  $settings_link = '<a href="options-general.php?page=iwt_options">Settings</a>'; 
+  array_unshift($links, $settings_link); 
+  return $links; 
+}
+ 
+$plugin = plugin_basename(__FILE__); 
+add_filter("plugin_action_links_$plugin", 'iwt_settings_link' );
 
 ?>
