@@ -1,0 +1,291 @@
+# Copyright (C) 2015 David Shanske
+# This file is distributed under the same license as the IndieWeb Post Kinds package.
+msgid ""
+msgstr ""
+"Project-Id-Version: IndieWeb Post Kinds 0.23\n"
+"Report-Msgid-Bugs-To: "
+"http://wordpress.org/support/plugin/indieweb-post-kinds\n"
+"POT-Creation-Date: 2015-01-24 17:05:51+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2015-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"X-Generator: grunt-wp-i18n 0.4.9\n"
+
+#: class.taxonomy-single-term.php:201
+msgid "None"
+msgstr ""
+
+#: class.taxonomy-single-term.php:260
+msgid "Add New"
+msgstr ""
+
+#: class.taxonomy-single-term.php:289
+msgid "There was a problem adding a new %s"
+msgstr ""
+
+#: indieweb-post-kinds.php:252
+msgid "This Plugin Requires Webmention Support"
+msgstr ""
+
+#: kind-functions.php:54
+msgid "Invalid post"
+msgstr ""
+
+#: kind-postmeta.php:25
+msgid "Context - In Response To"
+msgstr ""
+
+#: kind-postmeta.php:41
+msgid "URL"
+msgstr ""
+
+#: kind-postmeta.php:45
+msgid "Custom Title"
+msgstr ""
+
+#: kind-postmeta.php:49
+msgid "Author"
+msgstr ""
+
+#: kind-postmeta.php:53
+msgid "Author Icon"
+msgstr ""
+
+#: kind-postmeta.php:58
+msgid "Content/Citation"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "IndieWeb Post Kinds"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://github.com/dshanske/indieweb-post-kinds"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Adds a semantic layer to Posts similar to post formats, allowing them to be "
+"classified as likes, replies, favorites, etc."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "David Shanske"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://david.shanske.com"
+msgstr ""
+
+#: indieweb-post-kinds.php:58 indieweb-post-kinds.php:72
+msgctxt "kind"
+msgid "Kinds"
+msgstr ""
+
+#: indieweb-post-kinds.php:59
+msgctxt "kind"
+msgid "Kind"
+msgstr ""
+
+#: indieweb-post-kinds.php:60
+msgctxt "kind"
+msgid "Search Kinds"
+msgstr ""
+
+#: indieweb-post-kinds.php:61
+msgctxt "kind"
+msgid "Popular Kinds"
+msgstr ""
+
+#: indieweb-post-kinds.php:62
+msgctxt "kind"
+msgid "All Kinds"
+msgstr ""
+
+#: indieweb-post-kinds.php:63
+msgctxt "kind"
+msgid "Parent Kind"
+msgstr ""
+
+#: indieweb-post-kinds.php:64
+msgctxt "kind"
+msgid "Parent Kind:"
+msgstr ""
+
+#: indieweb-post-kinds.php:65
+msgctxt "kind"
+msgid "Edit Kind"
+msgstr ""
+
+#: indieweb-post-kinds.php:66
+msgctxt "kind"
+msgid "Update Kind"
+msgstr ""
+
+#: indieweb-post-kinds.php:67
+msgctxt "kind"
+msgid "Add New Kind"
+msgstr ""
+
+#: indieweb-post-kinds.php:68
+msgctxt "kind"
+msgid "New Kind"
+msgstr ""
+
+#: indieweb-post-kinds.php:69
+msgctxt "kind"
+msgid "Separate kinds with commas"
+msgstr ""
+
+#: indieweb-post-kinds.php:70
+msgctxt "kind"
+msgid "Add or remove kinds"
+msgstr ""
+
+#: indieweb-post-kinds.php:71
+msgctxt "kind"
+msgid "Choose from the most used kinds"
+msgstr ""
+
+#: indieweb-post-kinds.php:210
+msgctxt "kind archive title"
+msgid "Notes"
+msgstr ""
+
+#: indieweb-post-kinds.php:212
+msgctxt "kind archive title"
+msgid "Articles"
+msgstr ""
+
+#: indieweb-post-kinds.php:214
+msgctxt "kind archive title"
+msgid "Bookmarks"
+msgstr ""
+
+#: indieweb-post-kinds.php:216
+msgctxt "kind archive title"
+msgid "Favorites"
+msgstr ""
+
+#: indieweb-post-kinds.php:218
+msgctxt "kind archive title"
+msgid "Likes"
+msgstr ""
+
+#: indieweb-post-kinds.php:220
+msgctxt "kind archive title"
+msgid "Photos"
+msgstr ""
+
+#: indieweb-post-kinds.php:222
+msgctxt "kind archive title"
+msgid "Replies"
+msgstr ""
+
+#: indieweb-post-kinds.php:224
+msgctxt "kind archive title"
+msgid "Repost"
+msgstr ""
+
+#: indieweb-post-kinds.php:226
+msgctxt "kind archive title"
+msgid "RSVP"
+msgstr ""
+
+#: indieweb-post-kinds.php:229
+msgctxt "kind archive title"
+msgid "Tags"
+msgstr ""
+
+#: kind-functions.php:74
+msgctxt "Post kind"
+msgid "Article"
+msgstr ""
+
+#: kind-functions.php:75
+msgctxt "Post kind"
+msgid "Note"
+msgstr ""
+
+#: kind-functions.php:76
+msgctxt "Post kind"
+msgid "Reply"
+msgstr ""
+
+#: kind-functions.php:77
+msgctxt "Post kind"
+msgid "Repost"
+msgstr ""
+
+#: kind-functions.php:78
+msgctxt "Post kind"
+msgid "Like"
+msgstr ""
+
+#: kind-functions.php:79
+msgctxt "Post kind"
+msgid "Favorite"
+msgstr ""
+
+#: kind-functions.php:80
+msgctxt "Post kind"
+msgid "Bookmark"
+msgstr ""
+
+#: kind-functions.php:81
+msgctxt "Post kind"
+msgid "Photo"
+msgstr ""
+
+#: kind-functions.php:82
+msgctxt "Post kind"
+msgid "Tag"
+msgstr ""
+
+#: kind-functions.php:83
+msgctxt "Post kind"
+msgid "RSVP"
+msgstr ""
+
+#: kind-functions.php:97 kind-functions.php:98 kind-functions.php:104
+msgctxt "Post kind verbs"
+msgid " "
+msgstr ""
+
+#: kind-functions.php:99
+msgctxt "Post kind verbs"
+msgid "In Reply To"
+msgstr ""
+
+#: kind-functions.php:100
+msgctxt "Post kind verbs"
+msgid "Reposted"
+msgstr ""
+
+#: kind-functions.php:101
+msgctxt "Post kind verbs"
+msgid "Liked"
+msgstr ""
+
+#: kind-functions.php:102
+msgctxt "Post kind verbs"
+msgid "Favorited"
+msgstr ""
+
+#: kind-functions.php:103
+msgctxt "Post kind verbs"
+msgid "Bookmarked"
+msgstr ""
+
+#: kind-functions.php:105
+msgctxt "Post kind verbs"
+msgid "Tagged"
+msgstr ""
+
+#: kind-functions.php:106
+msgctxt "Post kind verbs"
+msgid "RSVPed"
+msgstr ""
