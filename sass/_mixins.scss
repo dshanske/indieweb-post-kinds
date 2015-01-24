@@ -1,0 +1,11 @@
+@mixin icon( $icon ) {
+	content: $icon;
+}
+
+@mixin genericons() {
+          padding:        0 5px;
+         font-family:    'Genericons';
+         vertical-align: middle;
+         -webkit-font-smoothing: antialiased;   
+}
+

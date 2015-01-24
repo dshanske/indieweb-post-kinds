@@ -27,14 +27,11 @@ require_once( plugin_dir_path( __FILE__ ) . '/embeds.php');
 // Load a local stylesheet
 add_action( 'wp_enqueue_scripts', 'kindstyle_load' );
 function kindstyle_load() {
-//        wp_enqueue_style( 'dashicons' );
-        // wp_enqueue_style( 'genericons', '//cdn.jsdelivr.net/genericons/3.1/genericons.css', array(), '3.1' );
-	wp_enqueue_style( 'genericons', plugin_dir_url( __FILE__ ) . '/genericons/genericons.css', array(), null );
-        wp_enqueue_style( 'kind-style', plugin_dir_url( __FILE__ ) . 'css/kind-style.css');
+        wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'kind.min.css');
   }
 
 function kind_admin_style() {
-    wp_enqueue_style('kind-admin', plugins_url('css/kind-admin.css', __FILE__));
+    wp_enqueue_style('kind-admin', plugins_url('kind-admin.css', __FILE__));
 }
 add_action('admin_enqueue_scripts', 'kind_admin_style');
 

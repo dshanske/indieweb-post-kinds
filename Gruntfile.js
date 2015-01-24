@@ -14,7 +14,7 @@ module.exports = function(grunt) {
              style: 'expanded'
              },
           files: {                         // Dictionary of files
-        'css/kind.css': 'sass/kind.scss',       // 'destination': 'source'
+        'kind.css': 'sass/main.scss',       // 'destination': 'source'
          }
 	},
        dist: {                            // Target
@@ -22,7 +22,7 @@ module.exports = function(grunt) {
              style: 'compressed'
              },
           files: {                         // Dictionary of files
-        'css/kind.min.css': 'sass/kind.scss',       // 'destination': 'source'
+        'kind.min.css': 'sass/main.scss',       // 'destination': 'source'
          }
 	}
   },
