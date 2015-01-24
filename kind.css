@@ -3,6 +3,7 @@
 ----------------------------------------------------------------
 1.0 Genericons
 2.0 Kind Style
+3.0 Kind Icons
 --------------------------------------------------------------*/
 /*--------------------------------------------------------------
 1.0 Genericons
@@ -678,6 +679,15 @@
   -webkit-font-smoothing: antialiased;
 }
 
+.response .u-photo {
+  height: 20px;
+  padding: 0;
+  margin: 2px;
+}
+
+/*--------------------------------------------------------------
+3.0 Kind Icons
+--------------------------------------------------------------*/
 .p-like-of .u-url:before {
   content: '\f221';
 }
@@ -700,12 +710,6 @@
 
 .kind-rsvp .p-in-reply-to .u-url:before {
   content: '\f305';
-}
-
-.response .u-photo {
-  height: 20px;
-  padding: 0;
-  margin: 2px;
 }
 
 /*# sourceMappingURL=kind.css.map */

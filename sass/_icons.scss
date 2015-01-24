@@ -1,0 +1,24 @@
+.p-like-of .u-url:before {
+         content: '\f221';
+        }
+
+.p-favorite-of .u-url:before {
+         content: '\f408';
+        }
+
+
+.p-in-reply-to .u-url:before {
+         content: '\f412';
+        }
+
+.p-bookmark-of .u-url:before, a.empty:before {
+         content: '\f107';
+        }
+
+.p-repost-of .u-url:before {
+         content: '\f420';
+        }
+
+.kind-rsvp .p-in-reply-to .u-url:before {
+         content: '\f305';
+        }
