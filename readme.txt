@@ -68,6 +68,7 @@ in future, there will be an option to hide/select the active ones in the post ed
 
 
 ## Changelog
+ * *Version 0.24* - Added Grunt/SASS support to more easily control changes and support internationalization
  * *Version 0.23* - Option to refresh the cache on each load added
 
  * *Version 0.22* - Complete response html cached to post-meta and purged on post update.
