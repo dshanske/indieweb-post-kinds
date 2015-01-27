@@ -109,7 +109,7 @@ class Taxonomy_Single_Term_Walker extends Walker {
 	 */
 	public function start_el_radio( $args ) {
 		return "\n".sprintf(
-			'<li id="%s" class="%s"><label class="selectit"><input value="%s" type="radio" name="%s" id="in-%s" %s %s/>%s</label>',
+			'<li id="%s" class="%s"><input value="%s" type="radio" name="%s" id="in-%s" %s %s/><label class="selectit">%s</label>',
 			$args['id'],
 			$args['class'],
 			$args['value'],

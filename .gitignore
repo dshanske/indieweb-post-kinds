@@ -1,3 +1,5 @@
 
 node_modules/*
 sass/.sass-cache/*
+kind.css.map 
+kind.min.css.map 

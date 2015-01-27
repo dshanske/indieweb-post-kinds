@@ -51,7 +51,7 @@ function get_response_display() {
 		
 		 if (!empty ($response['author']) )
 		 	{
-				$resp .= '<span class="p-author h-card"> by ';
+				$resp .= '<span class="p-author h-card"> ' . __("by", "Post kinds") . ' ';
 				if (! empty($response['icon']) )
 				   {
 	   				$resp .= '<img class="u-photo" src="' . $response['icon'] . '" title="' . $response['author'] . '" />';
