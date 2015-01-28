@@ -7,15 +7,22 @@ function get_post_kind_slug( $post = null ) {
         if ( ! $post = get_post( $post ) )
                         return false;
         $_kind = get_the_terms( $post->ID, 'kind' );
-        $kind = array_shift($_kind);
-        return $kind->slug;
+	if (!empty($_kind))
+	    {
+        	$kind = array_shift($_kind);
+        	return $kind->slug;
+	    }
+	else { return false; }
    }
 
 
 function get_post_kind( $post = null ) {
 	$kind = get_post_kind_slug($post);
-	$strings = get_post_kind_strings();
-        return $strings[$kind];	        
+	if ($kind) 
+	   {
+		$strings = get_post_kind_strings();
+        	return $strings[$kind];
+	   }	        
    }
 
 

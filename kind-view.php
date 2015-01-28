@@ -17,12 +17,12 @@ function extract_domain_name($url) {
   }	
 
 
-function get_response_display() {
+function get_kind_response_display() {
 	$meta = get_post_meta(get_the_ID(), '_resp_full', true);
 	$options = get_option('iwt_options');
 	if ( ($options['cacher']!=1) && (!empty($meta)) )
 	     {
-        	return apply_filters( 'response-display', $meta);
+        	return apply_filters( 'kind-response-display', $meta);
 	     }
 	$resp = "";
 	$c = "";
@@ -31,11 +31,11 @@ function get_response_display() {
 	$verbstrings = get_post_kind_verb_strings();
 	// If there is no kind or it isn't a response kind, return nothing.
 	if ( (!$kind)||(!response_kind($kind)) ) {
-            return apply_filters( 'response-display', ""); 
+            return apply_filters( 'kind-response-display', ""); 
 	   }
 	// If there is nothing in the context boxes, return nothing.
 	if ( empty($response['url']) && empty($response['content']) && empty($response['title']) ) {
-            return apply_filters( 'response-display', "");
+            return apply_filters( 'kind-response-display', "");
            }	
 	 if (! empty($response['url'])  )
            {
@@ -106,7 +106,7 @@ function get_response_display() {
            $c .= '<div class="' .  implode(' ',get_kind_context_class ( 'h-cite response', 'p' )) . '">' . $resp . '</div>';
 	update_post_meta( get_the_ID(), '_resp_full', $c); 
 	// Return the resulting display.
-	return apply_filters( 'response-display', $c);
+	return apply_filters( 'kind-response-display', $c);
 
 }
 
@@ -118,13 +118,13 @@ function invalidate_response($ID, $post)
 add_action( 'publish_post', 'invalidate_response', 10, 2 );
 
 
-function response_display() {
-	echo get_response_display();
+function kind_response_display() {
+	echo get_kind_response_display();
 }
 
 function content_response_top ($content ) {
     $c = "";
-    $c .= get_response_display();
+    $c .= get_kind_response_display();
     $c .= $content;
     return $c;
 }
@@ -132,7 +132,7 @@ function content_response_top ($content ) {
 function content_response_bottom ($content ) {
     $c = "";
     $c .= $content;
-    $c .= get_response_display();
+    $c .= get_kind_response_display();
     return $c;
 }
 

@@ -64,7 +64,7 @@ in future, there will be an option to hide/select the active ones in the post ed
 
 `kind_verb` - Filter get_kind_verbs
 
-`response_display` - Filters the output being added to the_content or to custom location in theme
+`kind-response-display` - Filters the output being added to the_content or to custom location in theme
 
 
 ## Changelog
