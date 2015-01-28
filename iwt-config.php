@@ -9,12 +9,12 @@ add_action('admin_menu', 'add_iwt_options_to_menu');
 add_action( 'admin_init', 'iwt_options_init' );
 function iwt_options_init() {
     register_setting( 'iwt_options', 'iwt_options' );
-    add_settings_section( 'iwt-content', 'Content Options', 'iwt_options_callback', 'iwt_options' );
-    add_settings_field( 'the_content', 'Add a Context Box to the Content', 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'the_content') );
-    add_settings_field( 'embeds', 'Add Rich Embed Support for Facebook, Google Plus, Instagram, etc', 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'embeds') );
-    add_settings_field( 'cacher', 'Refresh Cached Responses on Load', 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'cacher') );
+    add_settings_section( 'iwt-content', __('Content Options', 'Post kind')  , 'iwt_options_callback', 'iwt_options' );
+    add_settings_field( 'the_content', __('Add a Context Box to the Content', 'Post kind'), 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'the_content') );
+    add_settings_field( 'embeds', __('Add Rich Embed Support for Facebook, Google Plus, Instagram, etc', 'Post kind'), 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'embeds') );
+    add_settings_field( 'cacher', __('Refresh Cached Responses on Load', 'Post kind'), 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'cacher') );
 
-//     add_settings_field( 'upgrade', 'Migrate to new data structure on update', 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'upgrade') );
+//     add_settings_field( 'upgrade', __('Migrate to new data structure on update', 'Post kind'), 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'upgrade') );
 
 }
 
@@ -34,15 +34,14 @@ function iwt_callback(array $args)
 
 function iwt_options_form() 
   {
-    kind_defaultterms ();
-    ?>
-     <div class="wrap">
-        <h2>Indieweb Post Kinds</h2>  
-        <p>Allows for the different Indieweb post kinds to be used within 
-	WordPress.</p>
-
-        <hr />
-	<?php // iwt_upgrade(); ?>
+	kind_defaultterms ();
+	echo '<div class="wrap">';
+	echo '<h2>' . __('Indieweb Post Kinds', 'Post kinds') . '</h2>';
+	echo '<p>'; 
+	_e( 'Allows for the different Indieweb post kinds to be used within 	WordPress.', 'Post kinds');
+	echo '</p><hr />';
+	// iwt_upgrade(); 
+?>
         <form method="post" action="options.php">
         <?php settings_fields( 'iwt_options' ); ?>
 
