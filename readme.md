@@ -1,26 +1,35 @@
-#indieweb-post-kinds
+# indieweb-post-kinds #
+**Contributors:** dshanske  
+**Tags:** indieweb  
+**Requires at least:** 4.0  
+**Tested up to:** 4.1  
+**Stable tag:** 4.1  
+**License:** GPLv2 or later  
+**License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
+Allows you to reply/like/RSVP etc to another site from your own, by adding support for kinds of posts to WordPress as a custom taxonomy.
+
+## Description ##
 
 Indieweb Post Kinds adds a Custom Taxonomy to the standard post type in Wordpress that allows posts to have a semantic component, based on the same conventions as the built-in Post Formats.
 
-While the conventions are the same as post formats and thus can be used for theming, post kinds are less about formatting and more about the display and markup of context.
+While the conventions are the same as post formats and thus can be used for theming, post kinds are less about formatting and more about responding to and interacting with other sites.
 
-This allows archives of replies, likes, reposts, etc. as well as adding the  appropriate classes to links within same.
+It also allows archives of replies, likes, reposts, etc. as well as adding the  appropriate classes to links within same.
 
-The original version of this remains as Indieweb Taxonomy. Some of the kinds will not be used by everyone...
-in future, there will be an option to hide/select the active ones in the post editor.
+Some of the kinds will not be used by everyone...the ability to hide/disable options not being used is a future feature.
 
+## Post Kinds ##
 
-## Post Kinds
+### The Non-Response Kinds ###
 
-
-### The Non-Response Kinds
+These kinds have an analog in post formats.
 
  * **Article** - traditional long form content
  * **Note** - short content
  * **Photo** - image or photo post
 
-### The Response Kinds
+### The Response Kinds ###
 
  * **Reply** - Replying to someone else's comment
  * **Repost** - a complete repost of someone else's content
@@ -31,19 +40,19 @@ in future, there will be an option to hide/select the active ones in the post ed
  * **RSVP** - A specific type of Reply regarding an event (Not Fully Fleshed Out)
 
 
-### Future Kinds (Possibly)
+### Future Kinds (Possibly) ###
 
  * **Check-In** - Identifying you are at a place
 
 
-## Future Plans
+## Future Plans ##
 
 * Add H-Card/Author Support using the functions in H-Card Tools Plugin
 * Custom Meta Box for Kinds to replace the generic class
 * Automatic import/parsing of information based on click of button
 * Contextual response box, hiding/changing options based on Kind selected. Example, an RSVP that shows Yes/No/Maybe.
 
-## Functions
+## Functions ##
 
 `get_post_kind_slug($id)` - Return the kind slug for a given post. If `$id` is not specified, use current post.
 `get_post_kind($id)` - Return the kind string for a given post. If `$id` is not specified, use current post.
@@ -54,7 +63,7 @@ in future, there will be an option to hide/select the active ones in the post ed
 
 
 
-##  Filters
+##  Filters ##
 
 `get_the_kind` - Filter get_the_kinds
 
@@ -67,7 +76,7 @@ in future, there will be an option to hide/select the active ones in the post ed
 `kind-response-display` - Filters the output being added to the_content or to custom location in theme
 
 
-## Changelog
+## Changelog ##
  * *Version 0.24* - Added Grunt/SASS support to more easily control changes and support internationalization
  * *Version 0.23* - Option to refresh the cache on each load added
 
