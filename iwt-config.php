@@ -13,8 +13,8 @@ function iwt_options_init() {
     add_settings_field( 'the_content', __('Add the Response Box (Required if No Theme Support)', 'Post kind'), 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'the_content') );
     add_settings_field( 'embeds', __('Add Rich Embed Support for Facebook, Google Plus, Instagram, etc', 'Post kind'), 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'embeds') );
     add_settings_field( 'cacher', __('Do Not Store Cached Responses', 'Post kind'), 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'cacher') );
-
-//     add_settings_field( 'upgrade', __('Migrate to new data structure on update', 'Post kind'), 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'upgrade') );
+    add_settings_field( 'disableformats', __('Disable Post Formats', 'Post kind'), 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'disableformats') );
+//   add_settings_field( 'upgrade', __('Migrate to new data structure on update', 'Post kind'), 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'upgrade') );
 
 }
 
@@ -115,8 +115,11 @@ function response_purge()
 
   }
 
+add_action( 'after_setup_theme', 'remove_post_formats', 11 ); 
 
-// $kind_mb = new Taxonomy_Single_Term( 'kind');
-
+function remove_post_formats() {
+	$options = get_option('iwt_option');
+	if($options['disableformats']==1) { remove_theme_support( 'post-formats' ); }
+  }
 
 ?>
