@@ -1,7 +1,7 @@
 <?php
 
 function add_iwt_options_to_menu(){
-	add_options_page( '', 'Post Kinds', 'manage_options', 'iwt_options', 'iwt_options_form');
+	add_options_page( '', __('Post Kinds', 'Post kind'), 'manage_options', 'iwt_options', 'iwt_options_form');
 }
 
 add_action('admin_menu', 'add_iwt_options_to_menu');
