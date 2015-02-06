@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IndieWeb Post Kinds package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IndieWeb Post Kinds 0.24\n"
+"Project-Id-Version: IndieWeb Post Kinds 0.3\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2015-02-06 04:25:36+00:00\n"
+"POT-Creation-Date: 2015-02-06 04:56:11+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -32,6 +32,10 @@ msgstr ""
 
 #: iwt-config.php:15
 msgid "Do Not Store Cached Responses"
+msgstr ""
+
+#: iwt-config.php:16
+msgid "Disable Post Formats"
 msgstr ""
 
 #: iwt-config.php:23

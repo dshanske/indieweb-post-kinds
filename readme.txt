@@ -31,9 +31,9 @@ This will exclude the note and article from showing up in the post editor. It wi
 
 These kinds have an analog in post formats.
 
- * **Article** - traditional long form content
- * **Note** - short content
- * **Photo** - image or photo post
+ * **Article** - traditional long form content - a post with an explicit post name(title)
+ * **Note** - short content - a post with just plain content
+ * **Photo** - image or photo post - a post with an embedded image as its primary focus
 
 = The Response Kinds =
 
@@ -56,6 +56,10 @@ These kinds have an analog in post formats.
 * Add H-Card/Author Support using the functions in H-Card Tools Plugin
 * Automatic import/parsing of information based on click of button
 * Contextual response box, hiding/changing options based on Kind selected. Example, an RSVP that shows Yes/No/Maybe.
+
+== SNAP ==
+
+Indieweb Post Kinds already has support for replying to Twitter posts using the Social Network Auto Poster plugin.
 
 == Functions ==
 
