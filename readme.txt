@@ -13,13 +13,19 @@ Allows you to reply/like/RSVP etc to another site from your own, by adding suppo
 
 Indieweb Post Kinds adds a Custom Taxonomy to the standard post type in Wordpress that allows posts to have a semantic component, based on the same conventions as the built-in Post Formats.
 
-While the conventions are the same as post formats and thus can be used for theming, post kinds are less about formatting and more about responding to and interacting with other sites.
+While the conventions are the same as post formats and thus can be used for theming, post kinds are less about formatting and more about responding to and interacting with other sites. It is best to disable post formats in favor of post kinds. 
 
 It also allows archives of replies, likes, reposts, etc. as well as adding the  appropriate classes to links within same.
 
 Some of the kinds will not be used by everyone...the ability to hide/disable options not being used is a future feature.
 
 == Post Kinds ==
+
+To exclude kinds from the post selector, add the following to your wp-config.php file.
+
+define('POST_KIND_EXCLUDE', 'note,article');
+
+This will exclude the note and article from showing up in the post editor. It will not disable them on existing posts.
 
 = The Non-Response Kinds =
 
@@ -48,7 +54,6 @@ These kinds have an analog in post formats.
 == Future Plans ==
 
 * Add H-Card/Author Support using the functions in H-Card Tools Plugin
-* Custom Meta Box for Kinds to replace the generic class
 * Automatic import/parsing of information based on click of button
 * Contextual response box, hiding/changing options based on Kind selected. Example, an RSVP that shows Yes/No/Maybe.
 
@@ -77,6 +82,7 @@ These kinds have an analog in post formats.
 
 
 == Changelog == 
+ * *Version 0.3*  - Custom Code for Generating the Kind Select Box to Allow for Default Kind. Defined constant POST_KIND_EXCLUDE to hide kinds from the selector 
  * *Version 0.24* - Added Grunt/SASS support to more easily control changes and support internationalization
  * *Version 0.23* - Option to refresh the cache on each load added
 

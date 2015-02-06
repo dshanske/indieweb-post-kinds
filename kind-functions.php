@@ -22,7 +22,9 @@ function get_post_kind( $post = null ) {
 	   {
 		$strings = get_post_kind_strings();
         	return $strings[$kind];
-	   }	        
+	   }	
+	else {
+		return false; }        
    }
 
 

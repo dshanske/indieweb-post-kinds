@@ -6,12 +6,20 @@
  * Version: 0.24
  * Author: David Shanske
  * Author URI: http://david.shanske.com
+ * Text Domain: Post kinds
  */
+
+if ( ! defined( 'POST_KIND_EXCLUDE' ) )
+    define('POST_KIND_EXCLUDE', ' ');
 
 // Register Kind to Distinguish the Types of Posts
 
-require_once( plugin_dir_path( __FILE__ ) . 'class.taxonomy-single-term.php');
-require_once( plugin_dir_path( __FILE__ ) . 'walker.taxonomy-single-term.php');
+// require_once( plugin_dir_path( __FILE__ ) . 'class.taxonomy-single-term.php');
+// require_once( plugin_dir_path( __FILE__ ) . 'walker.taxonomy-single-term.php');
+
+
+require_once( plugin_dir_path( __FILE__ ) . 'kind-select.php');
+
 
 require_once( plugin_dir_path( __FILE__ ) . '/iwt-config.php');
 // Add Kind Post Metadata

@@ -10,9 +10,9 @@ add_action( 'admin_init', 'iwt_options_init' );
 function iwt_options_init() {
     register_setting( 'iwt_options', 'iwt_options' );
     add_settings_section( 'iwt-content', __('Content Options', 'Post kind')  , 'iwt_options_callback', 'iwt_options' );
-    add_settings_field( 'the_content', __('Add a Context Box to the Content', 'Post kind'), 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'the_content') );
+    add_settings_field( 'the_content', __('Add the Response Box (Required if No Theme Support)', 'Post kind'), 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'the_content') );
     add_settings_field( 'embeds', __('Add Rich Embed Support for Facebook, Google Plus, Instagram, etc', 'Post kind'), 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'embeds') );
-    add_settings_field( 'cacher', __('Refresh Cached Responses on Load', 'Post kind'), 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'cacher') );
+    add_settings_field( 'cacher', __('Do Not Store Cached Responses', 'Post kind'), 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'cacher') );
 
 //     add_settings_field( 'upgrade', __('Migrate to new data structure on update', 'Post kind'), 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'upgrade') );
 
@@ -20,7 +20,7 @@ function iwt_options_init() {
 
 function iwt_options_callback()
    {
-	echo '';
+	_e ('Options for Displaying the Response', 'Post kind');
    }
 
 function iwt_callback(array $args)
@@ -38,7 +38,7 @@ function iwt_options_form()
 	echo '<div class="wrap">';
 	echo '<h2>' . __('Indieweb Post Kinds', 'Post kinds') . '</h2>';
 	echo '<p>'; 
-	_e( 'Allows for the different Indieweb post kinds to be used within 	WordPress.', 'Post kinds');
+	_e( 'Allows you to reply/like/RSVP etc to another site from your own, by adding support for kinds of posts to WordPress as a custom taxonomy.', 'Post kinds');
 	echo '</p><hr />';
 	// iwt_upgrade(); 
 ?>
@@ -116,7 +116,7 @@ function response_purge()
   }
 
 
-$kind_mb = new Taxonomy_Single_Term( 'kind');
+// $kind_mb = new Taxonomy_Single_Term( 'kind');
 
 
 ?>
