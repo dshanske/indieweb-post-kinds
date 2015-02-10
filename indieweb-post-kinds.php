@@ -3,7 +3,7 @@
  * Plugin Name: IndieWeb Post Kinds
  * Plugin URI: https://github.com/dshanske/indieweb-post-kinds
  * Description: Adds a semantic layer to Posts similar in usage to post formats, allowing them to be classified as likes, replies, favorites, etc.
- * Version: 0.3
+ * Version: 1.0.1
  * Author: David Shanske
  * Author URI: http://david.shanske.com
  * Text Domain: Post kinds

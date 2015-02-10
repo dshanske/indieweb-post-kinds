@@ -1,9 +1,9 @@
-=== indieweb-post-kinds ===
+=== Indieweb Post Kinds ===
 Contributors: dshanske
 Tags: indieweb
+Stable tag: 1.0.1
 Requires at least: 4.0
 Tested up to: 4.1
-Stable tag: 4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -11,13 +11,19 @@ Allows you to reply/like/RSVP etc to another site from your own, by adding suppo
 
 == Description == 
 
+Post Kinds adds support for responding to and interacting with other sites using the standards developed by [IndieWebCamp](http:/indiewebcamp.com). The standards work through simple microformats2 markup of the site and webmentions to allow sites to communicate with each other.
+
+The plugin requires the [webmention](https://wordpress.org/plugins/webmention/) plugin to support sending/receiving notice of a reply/like to another site which will appear as a comment. The [Semantic Linkbacks](https://wordpress.org/plugins/semantic-linkbacks/) plugin is available to more richly display the comment. 
+
 Indieweb Post Kinds adds a Custom Taxonomy to the standard post type in Wordpress that allows posts to have a semantic component, based on the same conventions as the built-in Post Formats.
 
 While the conventions are the same as post formats and thus can be used for theming, post kinds are less about formatting and more about responding to and interacting with other sites. It is best to disable post formats in favor of post kinds. 
 
-It also allows archives of replies, likes, reposts, etc. as well as adding the  appropriate classes to links within same.
+For more information on the Indieweb and tools for WordPress, visit [Getting Strted on WordPress](http://indiewebcamp.com/Getting_Started_on_WordPress).
 
-Some of the kinds will not be used by everyone...the ability to hide/disable options not being used is a future feature.
+== Installation ==
+
+Install from repository, activate, enjoy
 
 == Post Kinds ==
 
@@ -53,7 +59,6 @@ These kinds have an analog in post formats.
 
 == Future Plans ==
 
-* Add H-Card/Author Support using the functions in H-Card Tools Plugin
 * Automatic import/parsing of information based on click of button
 * Contextual response box, hiding/changing options based on Kind selected. Example, an RSVP that shows Yes/No/Maybe.
 
@@ -86,6 +91,8 @@ Indieweb Post Kinds already has support for replying to Twitter posts using the 
 
 
 == Changelog == 
+ * *Version 1.0.1* - Update Readme to better describe 
+ * *Version 1.0*  - Now in the WordPress repository
  * *Version 0.3*  - Custom Code for Generating the Kind Select Box to Allow for Default Kind. Defined constant POST_KIND_EXCLUDE to hide kinds from the selector 
  * *Version 0.24* - Added Grunt/SASS support to more easily control changes and support internationalization
  * *Version 0.23* - Option to refresh the cache on each load added
