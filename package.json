@@ -1,4 +1,14 @@
 {
+"name": "Indieweb Post Kinds",
+"version": "0.30",
+"git_tag": "0.x/0.3.0",
+"description": "Post Kinds",
+"main": "indieweb-post-kinds",
+"scripts": {
+"test": "echo \"Error: no test specified\" && exit 1"
+},
+
+{
   "engines": {
     "node": ">= 0.10.0"
   },
@@ -6,6 +16,14 @@
     "grunt": "~0.4.5",
     "grunt-contrib-sass": "~0.8.1",
     "grunt-wp-i18n": "~0.4.9",
-    "grunt-wp-readme-to-markdown": "~0.8.0"
+    "grunt-wp-readme-to-markdown": "~0.8.0",
+    "grunt-wp-deploy": "~1.0.3",
+    "grunt-git": "~0.3.3",
+    "grunt-contrib-copy": "~0.7.0",
+    "grunt-push-svn": "~0.2.1",
+    "grunt-remove": "~0.1.0",
+    "grunt-text-replace": "~0.4.0",
+    "grunt-contrib-clean": "~0.6.0",
+    "grunt-svn-checkout": "~0.1.1"
   }
 }
