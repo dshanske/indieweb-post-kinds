@@ -1,5 +1,7 @@
 <?php
 
+
+
 add_action( 'admin_menu', 'kind_remove_meta_box');
 function kind_remove_meta_box(){
   remove_meta_box('kinddiv', 'post', 'normal');

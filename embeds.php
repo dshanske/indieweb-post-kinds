@@ -29,6 +29,7 @@ function get_embed_instagram ($url)
    }
 
 function new_embed_get ($url) {
+      if (wp_is_mobile()) { return false; }
       $host = extract_domain_name($url);
       switch ($host)
 	 {
@@ -59,8 +60,7 @@ function new_embed_get ($url) {
 		default:
 		    $embed = false;
 	}
-      if (wp_is_mobile()) { $embed = false; }
-      return $embed;
+     return $embed;
    }
 
 

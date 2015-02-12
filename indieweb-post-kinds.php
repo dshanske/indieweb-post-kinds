@@ -3,7 +3,7 @@
  * Plugin Name: IndieWeb Post Kinds
  * Plugin URI: https://github.com/dshanske/indieweb-post-kinds
  * Description: Adds a semantic layer to Posts similar in usage to post formats, allowing them to be classified as likes, replies, favorites, etc.
- * Version: 1.0.1
+ * Version: 1.0.2
  * Author: David Shanske
  * Author URI: http://david.shanske.com
  * Text Domain: Post kinds
@@ -12,15 +12,18 @@
 if ( ! defined( 'POST_KIND_EXCLUDE' ) )
     define('POST_KIND_EXCLUDE', ' ');
 
-// Register Kind to Distinguish the Types of Posts
+if ( ! defined( 'MULTIKIND' ) )
+    define('MULTIKIND', '0');
 
-// require_once( plugin_dir_path( __FILE__ ) . 'class.taxonomy-single-term.php');
-// require_once( plugin_dir_path( __FILE__ ) . 'walker.taxonomy-single-term.php');
-
-
-require_once( plugin_dir_path( __FILE__ ) . 'kind-select.php');
-
-
+// If MultiKind is not enabled, load the selector
+if (MULTIKIND=='0')
+   {
+	require_once( plugin_dir_path( __FILE__ ) . 'kind-select.php');
+   }
+else {
+	require_once( plugin_dir_path( __FILE__ ) . 'multikind.php');
+     }
+ // Config Settings
 require_once( plugin_dir_path( __FILE__ ) . '/iwt-config.php');
 // Add Kind Post Metadata
 require_once( plugin_dir_path( __FILE__ ) . '/kind-postmeta.php');
