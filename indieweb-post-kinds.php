@@ -45,15 +45,19 @@ add_action('admin_enqueue_scripts', 'kind_admin_style');
 
 function it_publish ( $ID, $post=null)
   {
-     $response_url = get_post_meta($ID, 'response_url', true);
-     if (!empty($response_url))
+     $response = get_post_meta($ID, 'response', true);
+     if (!empty($response) && isset($response['url']))
 	 {
-     		send_webmention(get_permalink($ID), $response_url);
+     		send_webmention(get_permalink($ID), $response['url']);
  	 }
   }
 
 
-add_filter('publish_post', 'it_publish', 10, 3);
+//add_filter('publish_post', 'it_publish', 10, 3);
+function it_transition($old,$new,$post){
+		it_publish($post->ID,$post);
+}
+add_filter('transition_post_status', 'it_transition', 10, 3);
 
 add_action( 'init', 'register_taxonomy_kind' );
 

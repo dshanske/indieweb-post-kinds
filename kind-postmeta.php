@@ -121,7 +121,7 @@ function responsebox_save_post_meta( $post_id, $post ) {
            }
 }
 
-add_action( 'save_post', 'responsebox_save_post_meta', 10, 2 );
+add_action( 'save_post', 'responsebox_save_post_meta', 8, 2 );
 //add_action( 'publish_post', 'responsebox_save_post_meta', 5,2 );
 
 
@@ -130,8 +130,7 @@ function responsebox_transition_post_meta($new, $old, $post) {
 		responsebox_save_post_meta($post->ID,$post);
 	}
 }
-add_action('transition_post_status','responsebox_transition_post_meta',10,3);
-
+add_action('transition_post_status','responsebox_transition_post_meta',5,3);
 
 function get_kind_response($post_id)
 	{
