@@ -672,7 +672,7 @@
   text-decoration: none;
 }
 
-.u-url:before, a.empty:before {
+.u-url:before, a.empty:before, .p-in-reply-to:before {
   padding: 0 5px;
   font-family: 'Genericons';
   vertical-align: middle;
@@ -710,6 +710,14 @@
 
 .kind-rsvp .p-in-reply-to .u-url:before {
   content: '\f305';
+}
+
+.kind-audio .p-in-reply-to:before {
+  content: '\f109';
+}
+
+.kind-video .p-in-reply-to:before {
+  content: '\f517';
 }
 
 /*# sourceMappingURL=kind.css.map */

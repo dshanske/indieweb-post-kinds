@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: IndieWeb Post Kinds 1.1.0\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2015-02-14 06:54:49+00:00\n"
+"POT-Creation-Date: 2015-02-14 07:29:35+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "X-Generator: grunt-wp-i18n 0.4.9\n"
 
-#: indieweb-post-kinds.php:436
+#: indieweb-post-kinds.php:435
 msgid "This Plugin Requires Webmention Support"
 msgstr ""
 
@@ -82,7 +82,7 @@ msgstr ""
 msgid "Content/Citation"
 msgstr ""
 
-#: kind-view.php:54
+#: kind-view.php:54 kind-view.php:107
 msgid "by"
 msgstr ""
 
@@ -228,7 +228,7 @@ msgctxt "Post kind"
 msgid "RSVP"
 msgstr ""
 
-#: indieweb-post-kinds.php:139 indieweb-post-kinds.php:167
+#: indieweb-post-kinds.php:139 indieweb-post-kinds.php:166
 msgctxt "Post kind"
 msgid "Audio"
 msgstr ""
@@ -248,128 +248,128 @@ msgctxt "Post kind"
 msgid "Game"
 msgstr ""
 
-#: indieweb-post-kinds.php:157
+#: indieweb-post-kinds.php:156
 msgctxt "Post kind"
 msgid "Articles"
 msgstr ""
 
-#: indieweb-post-kinds.php:158
+#: indieweb-post-kinds.php:157
 msgctxt "Post kind"
 msgid "Notes"
 msgstr ""
 
-#: indieweb-post-kinds.php:159
+#: indieweb-post-kinds.php:158
 msgctxt "Post kind"
 msgid "Replies"
 msgstr ""
 
-#: indieweb-post-kinds.php:160
+#: indieweb-post-kinds.php:159
 msgctxt "Post kind"
 msgid "Reposts"
 msgstr ""
 
-#: indieweb-post-kinds.php:161
+#: indieweb-post-kinds.php:160
 msgctxt "Post kind"
 msgid "Likes"
 msgstr ""
 
-#: indieweb-post-kinds.php:162
+#: indieweb-post-kinds.php:161
 msgctxt "Post kind"
 msgid "Favorites"
 msgstr ""
 
-#: indieweb-post-kinds.php:163
+#: indieweb-post-kinds.php:162
 msgctxt "Post kind"
 msgid "Bookmarks"
 msgstr ""
 
-#: indieweb-post-kinds.php:164
+#: indieweb-post-kinds.php:163
 msgctxt "Post kind"
 msgid "Photos"
 msgstr ""
 
-#: indieweb-post-kinds.php:165
+#: indieweb-post-kinds.php:164
 msgctxt "Post kind"
 msgid "Tags"
 msgstr ""
 
-#: indieweb-post-kinds.php:166
+#: indieweb-post-kinds.php:165
 msgctxt "Post kind"
 msgid "RSVPs"
 msgstr ""
 
-#: indieweb-post-kinds.php:168
+#: indieweb-post-kinds.php:167
 msgctxt "Post kind"
 msgid "Videos"
 msgstr ""
 
-#: indieweb-post-kinds.php:169
+#: indieweb-post-kinds.php:168
 msgctxt "Post kind"
 msgid "Checkins"
 msgstr ""
 
-#: indieweb-post-kinds.php:170
+#: indieweb-post-kinds.php:169
 msgctxt "Post kind"
 msgid "Games"
 msgstr ""
 
-#: indieweb-post-kinds.php:196
+#: indieweb-post-kinds.php:195
 msgctxt "Post kind"
 msgid "Watched"
 msgstr ""
 
-#: indieweb-post-kinds.php:197
+#: indieweb-post-kinds.php:196
 msgctxt "Post kind"
 msgid "Checked In"
 msgstr ""
 
-#: indieweb-post-kinds.php:198
+#: indieweb-post-kinds.php:197
 msgctxt "Post kind"
 msgid "Played"
 msgstr ""
 
-#: indieweb-post-kinds.php:185 indieweb-post-kinds.php:186
-#: indieweb-post-kinds.php:192
+#: indieweb-post-kinds.php:184 indieweb-post-kinds.php:185
+#: indieweb-post-kinds.php:191
 msgctxt "Post kind verbs"
 msgid " "
 msgstr ""
 
-#: indieweb-post-kinds.php:187
+#: indieweb-post-kinds.php:186
 msgctxt "Post kind verbs"
 msgid "In Reply To"
 msgstr ""
 
-#: indieweb-post-kinds.php:188
+#: indieweb-post-kinds.php:187
 msgctxt "Post kind verbs"
 msgid "Reposted"
 msgstr ""
 
-#: indieweb-post-kinds.php:189
+#: indieweb-post-kinds.php:188
 msgctxt "Post kind verbs"
 msgid "Liked"
 msgstr ""
 
-#: indieweb-post-kinds.php:190
+#: indieweb-post-kinds.php:189
 msgctxt "Post kind verbs"
 msgid "Favorited"
 msgstr ""
 
-#: indieweb-post-kinds.php:191
+#: indieweb-post-kinds.php:190
 msgctxt "Post kind verbs"
 msgid "Bookmarked"
 msgstr ""
 
-#: indieweb-post-kinds.php:193
+#: indieweb-post-kinds.php:192
 msgctxt "Post kind verbs"
 msgid "Tagged"
 msgstr ""
 
-#: indieweb-post-kinds.php:194
+#: indieweb-post-kinds.php:193
 msgctxt "Post kind verbs"
 msgid "RSVPed"
 msgstr ""
 
-#: indieweb-post-kinds.php:195
+#: indieweb-post-kinds.php:194
 msgctxt "Post kind verbs"
 msgid "Listened"
 msgstr ""

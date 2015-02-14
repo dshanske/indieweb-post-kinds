@@ -21,7 +21,7 @@
   text-decoration: none;
 }
    
-.u-url:before, a.empty:before {
+.u-url:before, a.empty:before, .p-in-reply-to:before {
     @include genericons();
  }
 

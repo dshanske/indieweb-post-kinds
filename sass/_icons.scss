@@ -22,3 +22,12 @@
 .kind-rsvp .p-in-reply-to .u-url:before {
          content: '\f305';
         }
+
+.kind-audio .p-in-reply-to:before {
+         content: '\f109';
+        }
+
+.kind-video .p-in-reply-to:before {
+         content: '\f517';
+        }
+

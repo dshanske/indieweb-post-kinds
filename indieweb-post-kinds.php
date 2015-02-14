@@ -191,7 +191,7 @@ function register_taxonomy_kind() {
                         'photo'   => _x( ' ',   'Post kind verbs' ),
                         'tag'    => _x( 'Tagged',    'Post kind verbs' ),
                         'rsvp'    => _x( 'RSVPed',    'Post kind verbs' ),
-                        'audio'    => _x( 'Listened to',    'Post kind verbs' ),
+                        'audio'    => _x( 'Listened',    'Post kind verbs' ),
                         'video'   => _x( 'Watched', 'Post kind' ),
                         'checkin'   => _x( 'Checked In', 'Post kind' ),
                         'game'   => _x( 'Played', 'Post kind' )    
