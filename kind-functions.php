@@ -181,6 +181,4 @@ function kinds_body_class($classes) {
         }
 
 add_filter( 'body_class', 'kinds_body_class' );
-
-	
 ?>

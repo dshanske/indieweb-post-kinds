@@ -139,8 +139,7 @@ function register_taxonomy_kind() {
 			'audio'   => _x( 'Audio', 'Post kind' ),
                         'video'   => _x( 'Video', 'Post kind' ),
                         'checkin'   => _x( 'Checkin', 'Post kind' ),
-                        'game'   => _x( 'Game', 'Post kind' ),    
-
+                        'game'   => _x( 'Game', 'Post kind' )
 	        );
         return apply_filters( 'kind_strings', $strings );
 	}
@@ -192,7 +191,7 @@ function register_taxonomy_kind() {
                         'photo'   => _x( ' ',   'Post kind verbs' ),
                         'tag'    => _x( 'Tagged',    'Post kind verbs' ),
                         'rsvp'    => _x( 'RSVPed',    'Post kind verbs' ),
-                        'audio'    => _x( 'Listened',    'Post kind verbs' ),
+                        'audio'    => _x( 'Listened to',    'Post kind verbs' ),
                         'video'   => _x( 'Watched', 'Post kind' ),
                         'checkin'   => _x( 'Checked In', 'Post kind' ),
                         'game'   => _x( 'Played', 'Post kind' )    
@@ -437,7 +436,5 @@ function postkind_plugin_notice() {
             echo '</p></div>';
         }
 }
-
-
 ?>
 
