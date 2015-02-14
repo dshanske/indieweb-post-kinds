@@ -38,7 +38,7 @@ function iwt_options_form()
 	echo '<div class="wrap">';
 	echo '<h2>' . __('Indieweb Post Kinds', 'Post kinds') . '</h2>';
 	echo '<p>'; 
-	_e( 'Allows you to reply/like/RSVP etc to another site from your own, by adding support for kinds of posts to WordPress as a custom taxonomy.', 'Post kinds');
+	_e( 'Adds support for responding and interacting with other sites', 'Post kinds');
 	echo '</p><hr />';
 	// iwt_upgrade(); 
 ?>

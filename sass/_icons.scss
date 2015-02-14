@@ -1,33 +1,72 @@
-.p-like-of .u-url:before {
+.kind-like .verb:before,
+.kind-like label:before {
          content: '\f221';
         }
 
-.p-favorite-of .u-url:before {
+.kind-favorite .verb:before,
+.kind-favorite label:before {
          content: '\f408';
         }
 
 
-.p-in-reply-to .u-url:before {
+.kind-reply .verb:before,
+.kind-reply label:before {
          content: '\f412';
         }
 
-.p-bookmark-of .u-url:before, a.empty:before {
+.kind-bookmark .verb:before,
+.kind-bookmark label:before,
+ a.empty:before {
          content: '\f107';
         }
 
-.p-repost-of .u-url:before {
+.kind-repost .verb:before,
+.kind-repost label:before {
          content: '\f420';
         }
 
-.kind-rsvp .p-in-reply-to .u-url:before {
+.kind-rsvp .verb:before,
+.kind-rsvp label:before {
          content: '\f305';
         }
 
-.kind-audio .p-in-reply-to:before {
+.kind-audio .verb:before,
+.kind-audio label:before {
          content: '\f109';
         }
 
-.kind-video .p-in-reply-to:before {
+.kind-video .verb:before,
+.kind-video label:before {
          content: '\f517';
+        }
+
+.kind-article .verb:before,
+.kind-article label:before {
+         content: '\f100';
+        }
+
+.kind-checkin .verb:before,
+.kind-checkin label:before {
+         content: '\f417';
+        }
+
+.kind-photo .verb:before,
+.kind-photo label:before {
+         content: '\f102';
+        }
+
+.kind-game .verb:before,
+.kind-game label:before {
+         content: '\f461';
+        }
+
+.kind-tag .verb:before,
+.kind-tag label:before {
+         content: '\f302';
+        }
+
+.kind-note .verb:before,
+.kind-note label:before {
+         content: '\f411';
         }
 

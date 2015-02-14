@@ -9,3 +9,12 @@
          -webkit-font-smoothing: antialiased;   
 }
 
+
+@mixin adminicons() {
+        -webkit-font-smoothing: antialiased;
+        font: normal 20px/1 'Genericons';
+        vertical-align: top;
+        padding-left: 2px;
+        padding-right: 2px;
+        color: gray;
+}

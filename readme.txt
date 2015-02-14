@@ -35,6 +35,14 @@ This plugin allows posts to be classified as replies, likes, etc. and to mark th
 3. Bob creates a post and sets it as a reply to Sue's post.
 4. A webmention is sent to Sue's site, and stored as a comment on Sue's post.
 
+= Why are Audio and Video are listed as both non-response and response kinds? =
+
+If the response box is blank(no URL or title), audio and video are defined as 
+the posting of an audio or video clip. If it is not, they become passive posts.
+
+Audio with a response is Listening, so it can be used for scrobbling.
+Video with a response is Watching, for same.
+
 = How do I learn more? =
 
 For more information on the Indieweb and tools for WordPress, visit [Getting Strted on WordPress](http://indiewebcamp.com/Getting_Started_on_WordPress).
@@ -53,14 +61,16 @@ This will exclude the note and article from showing up in the post editor. It wi
 
 = The Non-Response Kinds =
 
-These kinds have an analog in post formats.
+These kinds have an analog in post formats. Adding context to one of these
+may make it a Passive Kind.
 
  * **Article** - traditional long form content - a post with an explicit post name(title)
  * **Note** - short content - a post with just plain content
  * **Photo** - image or photo post - a post with an embedded image as its primary focus
  * **Audio** - audio post - a post with an embedded piece of audio content as its primary focus
  * **Video** - video post - a post with an embedded video as its primary focus  
- * **Check-In** - Identifying you are at a place
+ * **Check-In** - Identifying you are at a place. This would use the extended
+WordPress Geodata. (Under Development)
 
 
 = The Response Kinds =
@@ -71,10 +81,37 @@ These kinds have an analog in post formats.
  * **Favorite** - special to the favoriter
  * **Bookmark** - also known as a linkblog. This is basically sharing/storing a link/bookmark.
  * **Tag** - Allows you to tag a post as being of a specific tag, or person tagging.
- * **RSVP** - A specific type of Reply regarding an event (Not Fully Fleshed Out)
- * **Audio** - audio post - listening to an audio post 
+ * **RSVP** - A specific type of Reply regarding an event (Unfinished)
+
+= The Passive Kinds =
+
+To "Scrobble" a song is when listening to it, you would make it a post on
+your website. This is the most well-known example of a passive kind of post.
+
+They are formed by having content in the context box on one of these types of
+posts.
+
+ * **Audio** - audio post(scrobble) - listening to an audio post 
  * **Video** - video post - watching a video
  * **Game** - playing a game
+
+= Future Kinds =
+
+With the recent expansion of kinds into passive types of posts, there may be
+additional ones added. Feedback appreciated
+* **Weather** - A weather post would be current weather conditions
+* **Exercise** - Representing some form of physical activity
+
+== WordPress GeoData ==
+
+[WordPress Geodata](http://codex.wordpress.org/Geodata) is an existing standard
+used to store geodata about a post.
+
+It consists of four fields: latitude, longitude, public, and address. For 
+Indieweb Compatibility, intention is to support a 5th parameter, venue.
+
+Address would be a physical address. Venue would identify the location's
+name. This is necessary to improve check-in display.
 
 == Future Plans ==
 
@@ -110,7 +147,9 @@ Indieweb Post Kinds already has support for replying to Twitter posts using the 
 
 
 == Changelog == 
- * *Version 1.1.0* - Added new kinds - audio, video, check-in, game. Adds support for scrobbling-type activities. Some code cleanup
+ * *Version 1.1.0* - Added new kinds - audio, video, check-in, game at the 
+suggestion of acegiak. Adds support for passive kinds. Some code cleanup and 
+commenting.
  * *Version 1.0.2* - Bug fixes
  * *Version 1.0.1* - Update Readme to better describe 
  * *Version 1.0*  - Now in the WordPress repository

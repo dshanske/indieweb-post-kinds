@@ -61,13 +61,16 @@ add_filter('get_the_archive_title', 'kind_archive_title', 10, 3);
 // Add a notice to the Admin Pages if the WordPress Webmentions Plugin isn't Activated
 add_action( 'admin_notices', 'postkind_plugin_notice' );
 
+// Trigger Webmention on Change in Post Status
+add_filter('transition_post_status', 'it_transition', 10, 3);
+
 
 function kindstyle_load() {
         wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'kind.min.css');
   }
 
 function kind_admin_style() {
-    wp_enqueue_style('kind-admin', plugins_url('kind-admin.css', __FILE__));
+    wp_enqueue_style('kind-admin', plugins_url('kind-admin.min.css', __FILE__));
 }
 
 function iwt_settings_link($links) { 
@@ -254,9 +257,6 @@ function response_kind( $kind ) {
 // Sets up some starter terms...unless terms already exist 
 // or any of the existing terms are defined
 function kind_defaultterms () {
-
-    // see if we already have populated any terms
-    $kinds = get_terms( 'kind', array( 'hide_empty' => false ) );
 	if (!term_exists('like', 'kind')) {
 	      wp_insert_term('like', 'kind', 
 		array(
@@ -420,7 +420,6 @@ function it_publish ( $ID, $post=null)
 function it_transition($old,$new,$post){
                 it_publish($post->ID,$post);
 }
-add_filter('transition_post_status', 'it_transition', 10, 3);
 
 function json_rest_add_kindmeta($_post,$post,$context) {
 	$response = get_post_meta( $post["ID"], 'response');
@@ -437,4 +436,3 @@ function postkind_plugin_notice() {
         }
 }
 ?>
-

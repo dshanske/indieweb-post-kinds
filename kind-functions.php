@@ -99,12 +99,15 @@ function get_kind_context_class ( $class = '', $classtype='u' , $id = false  ) {
                             $classes[] = $classtype.'-tag-of';
 		     break;
 		     case "bookmark":
-			    $classes[] = $classtype.'-bookmark-of';
 		     break;
 		     case "audio":
 			    $classes[] = $classtype.'-in-reply-to';
+                            
                      break;
                      case "video":
+                            $classes[] = $classtype.'-in-reply-to';
+                     break;
+                     case "game":
                             $classes[] = $classtype.'-in-reply-to';
                      break;
 		}

@@ -1,14 +1,4 @@
 {
-"name": "Indieweb Post Kinds",
-"version": "0.30",
-"git_tag": "0.x/0.3.0",
-"description": "Post Kinds",
-"main": "indieweb-post-kinds",
-"scripts": {
-"test": "echo \"Error: no test specified\" && exit 1"
-},
-
-{
   "engines": {
     "node": ">= 0.10.0"
   },

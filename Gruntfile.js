@@ -6,7 +6,7 @@ module.exports = function(grunt) {
             options: {
                 plugin_slug: 'indieweb-post-kinds',
                 svn_user: 'dshanske',  
-                build_dir: 'build' //relative path to your build directory
+                build_dir: 'build/trunk' //relative path to your build directory
                 
             },
         }
@@ -27,7 +27,7 @@ module.exports = function(grunt) {
 		   '!kind.css.map',
 		   '!kind.min.css.map'
                ],
-               dest: 'build/'
+               dest: 'build/trunk/'
            }
        },
 
@@ -45,6 +45,7 @@ module.exports = function(grunt) {
              },
           files: {                         // Dictionary of files
         'kind.css': 'sass/main.scss',       // 'destination': 'source'
+	'kind-admin.css': 'sass/admin.scss',
          }
 	},
        dist: {                            // Target
@@ -53,6 +54,7 @@ module.exports = function(grunt) {
              },
           files: {                         // Dictionary of files
         'kind.min.css': 'sass/main.scss',       // 'destination': 'source'
+        'kind-admin.min.css': 'sass/admin.scss',
          }
 	}
   },
@@ -63,7 +65,10 @@ module.exports = function(grunt) {
                 domainPath: '/languages',                   // Where to save the POT file.
                 potFilename: 'post_kinds.pot',
                 type: 'wp-plugin',                // Type of project (wp-plugin or wp-theme).
-                updateTimestamp: true             // Whether the POT-Creation-Date should be updated without other changes.
+            exclude: [
+                'build/.*'
+            ], 
+               updateTimestamp: true             // Whether the POT-Creation-Date should be updated without other changes.
             	}
             }
       },
@@ -77,6 +82,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks( 'grunt-contrib-clean' );
   grunt.loadNpmTasks( 'grunt-git' );
   // Default task(s).
-  grunt.registerTask('default', ['wp_readme_to_markdown', 'makepot']);
+  grunt.registerTask('default', ['wp_readme_to_markdown', 'makepot', 'sass', 'copy']);
 
 };
