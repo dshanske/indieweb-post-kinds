@@ -109,6 +109,10 @@ function get_kind_context_class ( $class = '', $classtype='u' , $id = false  ) {
                      case "game":
                             $classes[] = $classtype.'-play';
                      break;
+                     case "wish":
+                            $classes[] = $classtype.'-wish';
+                     break;
+
 		}
           }         
    if ( ! empty( $class ) ) {

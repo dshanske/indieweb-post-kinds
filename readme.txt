@@ -94,6 +94,8 @@ posts.
  * **Audio** - audio post(scrobble) - listening to an audio post 
  * **Video** - video post - watching a video
  * **Game** - playing a game
+ * **Wish** - a post indicating a desire/wish. The archive of which would be
+	a wishlist, such as a gift registry or similar.
 
 = Future Kinds =
 
@@ -117,6 +119,15 @@ name. This is necessary to improve check-in display.
 
 * Automatic import/parsing of information based on click of button
 * Contextual response box, hiding/changing options based on Kind selected. Example, an RSVP that shows Yes/No/Maybe.
+
+== MultiKind Support (Experimental) ==
+
+By request, multikind support has returned as a hidden mode that is not complete.
+
+By design, the plugin only allows one kind to be selected per post. Setting 
+this flag in your wp-config would change that.
+
+define('MULTIKIND', '1');
 
 == SNAP ==
 

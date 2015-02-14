@@ -20,6 +20,7 @@ if (MULTIKIND=='0')
    {
 	require_once( plugin_dir_path( __FILE__ ) . 'kind-select.php');
    }
+// Else Load Checkboxes
 else {
 	require_once( plugin_dir_path( __FILE__ ) . 'multikind.php');
      }
@@ -142,6 +143,7 @@ function register_taxonomy_kind() {
 			'audio'   => _x( 'Audio', 'Post kind' ),
                         'video'   => _x( 'Video', 'Post kind' ),
                         'checkin'   => _x( 'Checkin', 'Post kind' ),
+                        'wish'   => _x( 'Wish', 'Post kind' ),
                         'game'   => _x( 'Game', 'Post kind' )
 	        );
         return apply_filters( 'kind_strings', $strings );
@@ -169,6 +171,7 @@ function register_taxonomy_kind() {
 			'audio'   => _x( 'Audio', 'Post kind' ),
                         'video'   => _x( 'Videos', 'Post kind' ),
                         'checkin'   => _x( 'Checkins', 'Post kind' ),
+                        'wish'   => _x( 'Wishlist', 'Post kind' ),
                         'game'   => _x( 'Games', 'Post kind' )    
                 );
         return apply_filters( 'kind_strings_plural', $strings );
@@ -197,6 +200,7 @@ function register_taxonomy_kind() {
                         'audio'    => _x( 'Listened',    'Post kind verbs' ),
                         'video'   => _x( 'Watched', 'Post kind' ),
                         'checkin'   => _x( 'Checked In', 'Post kind' ),
+                        'wish'   => _x( 'Desires', 'Post kind' ),
                         'game'   => _x( 'Played', 'Post kind' )    
                 );
                return apply_filters( 'kind_verbs', $strings );
@@ -366,6 +370,14 @@ function kind_defaultterms () {
                 array(
                           'description'=> 'Game Post',
                           'slug' => 'game',
+                     ) );
+
+            }
+        if (!term_exists('wish', 'kind')) {
+              wp_insert_term('wish', 'kind',
+                array(
+                          'description'=> 'Wish or Desire',
+                          'slug' => 'wish',
                      ) );
 
             }

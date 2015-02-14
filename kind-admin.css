@@ -732,4 +732,9 @@ a.empty:before {
   content: '\f411';
 }
 
+.kind-wish .verb:before,
+.kind-wish label:before {
+  content: '\f447';
+}
+
 /*# sourceMappingURL=kind-admin.css.map */
