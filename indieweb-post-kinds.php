@@ -10,7 +10,7 @@
  */
 
 if ( ! defined( 'POST_KIND_EXCLUDE' ) )
-    define('POST_KIND_EXCLUDE', ' ');
+    define('POST_KIND_EXCLUDE', 'game,wish,rsvp,checkin');
 
 if ( ! defined( 'MULTIKIND' ) )
     define('MULTIKIND', '0');

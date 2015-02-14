@@ -53,11 +53,16 @@ The plugin requires the [webmention](https://wordpress.org/plugins/webmention/) 
 
 == Post Kinds ==
 
+Many sites will not need all of the kinds set up. What kinds of posts you wish
+to publish are specific to your needs.
+
+Kinds under development may be hidden by default, but can be exposed if needed. 
+
 To exclude kinds from the post selector, add the following to your wp-config.php file.
 
-define('POST_KIND_EXCLUDE', 'note,article');
+define('POST_KIND_EXCLUDE', 'game,wish,rsvp,checkin');
 
-This will exclude the note and article from showing up in the post editor. It will not disable them on existing posts.
+This will exclude game and wish from showing up in the post editor. It will not disable them on existing posts. 
 
 = The Non-Response Kinds =
 
@@ -81,7 +86,7 @@ WordPress Geodata. (Under Development)
  * **Favorite** - special to the favoriter
  * **Bookmark** - also known as a linkblog. This is basically sharing/storing a link/bookmark.
  * **Tag** - Allows you to tag a post as being of a specific tag, or person tagging.
- * **RSVP** - A specific type of Reply regarding an event (Unfinished)
+ * **RSVP** - A specific type of Reply regarding an event (Under Development)
 
 = The Passive Kinds =
 
@@ -93,9 +98,9 @@ posts.
 
  * **Audio** - audio post(scrobble) - listening to an audio post 
  * **Video** - video post - watching a video
- * **Game** - playing a game
+ * **Game** - playing a game (Under Development)
  * **Wish** - a post indicating a desire/wish. The archive of which would be
-	a wishlist, such as a gift registry or similar.
+	a wishlist, such as a gift registry or similar. (Under Development)
 
 = Future Kinds =
 
