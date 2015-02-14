@@ -101,14 +101,13 @@ function get_kind_context_class ( $class = '', $classtype='u' , $id = false  ) {
 		     case "bookmark":
 		     break;
 		     case "audio":
-			    $classes[] = $classtype.'-in-reply-to';
-                            
+                            $classes[] = $classtype.'-listen';
                      break;
                      case "video":
-                            $classes[] = $classtype.'-in-reply-to';
+                            $classes[] = $classtype.'-watch';
                      break;
                      case "game":
-                            $classes[] = $classtype.'-in-reply-to';
+                            $classes[] = $classtype.'-play';
                      break;
 		}
           }         
