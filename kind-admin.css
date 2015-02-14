@@ -108,3 +108,47 @@
         color: gray;
         }
 
+.kind-audio label:before {
+        content: "\f127";
+        display: inline-block;
+        -webkit-font-smoothing: antialiased;
+        font: normal 20px/1 'dashicons';
+        vertical-align: top;
+        padding-left: 2px;
+        padding-right: 2px;
+        color: gray;
+        }
+
+.kind-video label:before {
+        content: "\f234";
+        display: inline-block;
+        -webkit-font-smoothing: antialiased;
+        font: normal 20px/1 'dashicons';
+        vertical-align: top;
+        padding-left: 2px;
+        padding-right: 2px;
+        color: gray;
+        }
+
+.kind-game label:before {
+        content: "\f524";
+        display: inline-block;
+        -webkit-font-smoothing: antialiased;
+        font: normal 20px/1 'dashicons';
+        vertical-align: top;
+        padding-left: 2px;
+        padding-right: 2px;
+        color: gray;
+        }
+
+.kind-checkin label:before {
+        content: "\f231";
+        display: inline-block;
+        -webkit-font-smoothing: antialiased;
+        font: normal 20px/1 'dashicons';
+        vertical-align: top;
+        padding-left: 2px;
+        padding-right: 2px;
+        color: gray;
+        }
+

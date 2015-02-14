@@ -71,103 +71,6 @@ function set_post_kind( $post, $kind ) {
         return wp_set_post_terms( $post->ID, $kind, 'kind' );
    }
 
-/**
-  * Returns an array of post kind slugs to their translated and pretty display versions
-	 *
-
-	 *
-	 * @return array The array of translated post kind names.
-	 */
-	function get_post_kind_strings() {
-	        $strings = array(
-	                'article' => _x( 'Article', 'Post kind' ),
-	                'note'    => _x( 'Note',    'Post kind' ),
-	                'reply'     => _x( 'Reply',     'Post kind' ),
-	                'repost'  => _x( 'Repost',  'Post kind' ),
-	                'like'     => _x( 'Like',     'Post kind' ),
-	                'favorite'    => _x( 'Favorite',    'Post kind' ),
-	                'bookmark'    => _x( 'Bookmark',    'Post kind' ),
-	                'photo'   => _x( 'Photo',   'Post kind' ),
-	                'tag'    => _x( 'Tag',    'Post kind' ),
-	                'rsvp'    => _x( 'RSVP',    'Post kind' ),
-	        );
-        return apply_filters( 'kind_strings', $strings );
-	}
-
-/**
-  * Returns an array of post kind slugs to their translated verbs
-         *
-
-         *
-         * @return array The array of translated post kind verbs.
-         */
-        function get_post_kind_verb_strings() {
-               	$strings = array(
-                        'article' => _x( ' ', 'Post kind verbs' ),
-                       	'note'    => _x( ' ',    'Post kind verbs' ),
-                        'reply'     => _x( 'In Reply To',     'Post kind verbs' ),
-                        'repost'  => _x( 'Reposted',  'Post kind verbs' ),
-                        'like'     => _x( 'Liked',     'Post kind verbs' ),
-                        'favorite'    => _x( 'Favorited',    'Post kind verbs' ),
-                        'bookmark'    => _x( 'Bookmarked',    'Post kind verbs' ),
-                        'photo'   => _x( ' ',   'Post kind verbs' ),
-                        'tag'    => _x( 'Tagged',    'Post kind verbs' ),
-                        'rsvp'    => _x( 'RSVPed',    'Post kind verbs' ),
-                );
-               return apply_filters( 'kind_verbs', $strings );
-
-        }
-
-
-/**
- * Retrieves an array of post kind slugs.
- *
- * @return array The array of post kind slugs.
- */
-function get_post_kind_slugs() {
-	$slugs = array_keys( get_post_kind_strings() );
-	return array_combine( $slugs, $slugs );
-}
-
-/**
-	 * Returns a pretty, translated version of a post kind slug
-	 *
-	 *
-	 * @param string $slug A post format slug.
-	 * @return string The translated post format name.
-	 */
-function get_post_kind_string( $slug ) {
-	$strings = get_post_kind_strings();
-	     return ( isset( $strings[$slug] ) ) ? $strings[$slug] : '';
-	}
-
-/**
- * Returns a link to a post kind index.
- *
- *
- * @param string $kind The post kind slug.
- * @return string The post kind term link.
- */
-function get_post_kind_link( $kind ) {
-	$term = get_term_by('slug', $kind, 'kind' );
-	if ( ! $term || is_wp_error( $term ) )
-		return false;
-	return get_term_link( $term );
-}
-
-/**
- * Returns true if kind is a response type kind .
- *
- *
- * @param string $kind The post kind slug.
- * @return true/false.
- */
-function response_kind( $kind ) {
-        $not_responses = array( "article", "note" , "photo");
-	if (in_array($kind, $not_responses)) { return false; }
-	else { return true; }
-}
-
 
 
 function get_kind_context_class ( $class = '', $classtype='u' , $id = false  ) {
@@ -197,6 +100,12 @@ function get_kind_context_class ( $class = '', $classtype='u' , $id = false  ) {
 		     break;
 		     case "bookmark":
 			    $classes[] = $classtype.'-bookmark-of';
+		     break;
+		     case "audio":
+			    $classes[] = $classtype.'-in-reply-to';
+                     break;
+                     case "video":
+                            $classes[] = $classtype.'-in-reply-to';
                      break;
 		}
           }         
@@ -240,6 +149,12 @@ function kinds_as_type($classes)
                      break;
                      case 'bookmark':
                             $classes[] = 'h-as-bookmark';
+                     break;
+                     case 'audio':
+                            $classes[] = 'h-as-audio';
+                     break;
+                     case 'video':
+                            $classes[] = 'h-as-video';
                      break;
                  }
 	return $classes;
