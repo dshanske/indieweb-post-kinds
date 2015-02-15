@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: IndieWeb Post Kinds 1.1.0\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2015-02-14 21:52:52+00:00\n"
+"POT-Creation-Date: 2015-02-15 16:15:33+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -228,14 +228,14 @@ msgctxt "Post kind"
 msgid "RSVP"
 msgstr ""
 
-#: indieweb-post-kinds.php:143 indieweb-post-kinds.php:171
+#: indieweb-post-kinds.php:143
 msgctxt "Post kind"
-msgid "Audio"
+msgid "Listen"
 msgstr ""
 
 #: indieweb-post-kinds.php:144
 msgctxt "Post kind"
-msgid "Video"
+msgid "Watch"
 msgstr ""
 
 #: indieweb-post-kinds.php:145
@@ -250,7 +250,7 @@ msgstr ""
 
 #: indieweb-post-kinds.php:147
 msgctxt "Post kind"
-msgid "Game"
+msgid "Play"
 msgstr ""
 
 #: indieweb-post-kinds.php:161
@@ -303,9 +303,14 @@ msgctxt "Post kind"
 msgid "RSVPs"
 msgstr ""
 
+#: indieweb-post-kinds.php:171
+msgctxt "Post kind"
+msgid "Listens"
+msgstr ""
+
 #: indieweb-post-kinds.php:172
 msgctxt "Post kind"
-msgid "Videos"
+msgid "Watches"
 msgstr ""
 
 #: indieweb-post-kinds.php:173
@@ -320,7 +325,7 @@ msgstr ""
 
 #: indieweb-post-kinds.php:175
 msgctxt "Post kind"
-msgid "Games"
+msgid "Plays"
 msgstr ""
 
 #: indieweb-post-kinds.php:201

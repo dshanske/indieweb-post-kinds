@@ -35,14 +35,6 @@ This plugin allows posts to be classified as replies, likes, etc. and to mark th
 3. Bob creates a post and sets it as a reply to Sue's post.
 4. A webmention is sent to Sue's site, and stored as a comment on Sue's post.
 
-= Why are Audio and Video are listed as both non-response and response kinds? =
-
-If the response box is blank(no URL or title), audio and video are defined as 
-the posting of an audio or video clip. If it is not, they become passive posts.
-
-Audio with a response is Listening, so it can be used for scrobbling.
-Video with a response is Watching, for same.
-
 = How do I learn more? =
 
 For more information on the Indieweb and tools for WordPress, visit [Getting Strted on WordPress](http://indiewebcamp.com/Getting_Started_on_WordPress).
@@ -94,9 +86,9 @@ your website. This is the most well-known example of a passive kind of post.
 They are formed by having content in the context box on one of these types of
 posts.
 
- * **Audio** - audio post(scrobble) - listening to an audio post 
- * **Video** - video post - watching a video
- * **Game** - playing a game (Under Development)
+ * **Listen** - scrobble - listening to an audio post 
+ * **Watch** - video - watching a video
+ * **Play** - playing a game (Under Development)
  * **Wish** - a post indicating a desire/wish. The archive of which would be
 	a wishlist, such as a gift registry or similar. (Under Development)
 
@@ -161,7 +153,7 @@ Indieweb Post Kinds already has support for replying to Twitter posts using the 
 
 
 == Changelog == 
- * *Version 1.1.0* - Added new kinds - audio, video, check-in, game at the 
+ * *Version 1.1.0* - Added new kinds - listen, watch, check-in, play at the 
 suggestion of acegiak. Adds support for passive kinds. Some code cleanup and 
 commenting.
  * *Version 1.0.2* - Bug fixes

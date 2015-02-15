@@ -10,7 +10,7 @@
  */
 
 if ( ! defined( 'POST_KIND_EXCLUDE' ) )
-    define('POST_KIND_EXCLUDE', 'game,wish,rsvp,checkin');
+    define('POST_KIND_EXCLUDE', 'play,wish,rsvp,checkin');
 
 if ( ! defined( 'MULTIKIND' ) )
     define('MULTIKIND', '0');
@@ -140,7 +140,7 @@ function register_taxonomy_kind() {
 	                'photo'   => _x( 'Photo',   'Post kind' ),
 	                'tag'    => _x( 'Tag',    'Post kind' ),
 	                'rsvp'    => _x( 'RSVP',    'Post kind' ),
-					'listen'   => _x( 'Listen', 'Post kind' ),
+			'listen'   => _x( 'Listen', 'Post kind' ),
                         'watch'   => _x( 'Watch', 'Post kind' ),
                         'checkin'   => _x( 'Checkin', 'Post kind' ),
                         'wish'   => _x( 'Wish', 'Post kind' ),
@@ -168,7 +168,7 @@ function register_taxonomy_kind() {
                         'photo'   => _x( 'Photos',   'Post kind' ),
                         'tag'    => _x( 'Tags',    'Post kind' ),
                         'rsvp'    => _x( 'RSVPs',    'Post kind' ),
-						'listen'   => _x( 'Listens', 'Post kind' ),
+			'listen'   => _x( 'Listens', 'Post kind' ),
                         'watch'   => _x( 'Watches', 'Post kind' ),
                         'checkin'   => _x( 'Checkins', 'Post kind' ),
                         'wish'   => _x( 'Wishlist', 'Post kind' ),
