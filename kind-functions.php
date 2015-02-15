@@ -100,10 +100,10 @@ function get_kind_context_class ( $class = '', $classtype='u' , $id = false  ) {
 		     break;
 		     case "bookmark":
 		     break;
-		     case "audio":
+		     case "listen":
                             $classes[] = $classtype.'-listen';
                      break;
-                     case "video":
+                     case "watch":
                             $classes[] = $classtype.'-watch';
                      break;
                      case "game":
@@ -155,12 +155,6 @@ function kinds_as_type($classes)
                      break;
                      case 'bookmark':
                             $classes[] = 'h-as-bookmark';
-                     break;
-                     case 'audio':
-                            $classes[] = 'h-as-audio';
-                     break;
-                     case 'video':
-                            $classes[] = 'h-as-video';
                      break;
                  }
 	return $classes;
