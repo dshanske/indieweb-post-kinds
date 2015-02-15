@@ -10,12 +10,14 @@ $options = get_option('iwt_options');
 
 
 // Extracts the Domain Name for a URL for presentation purposes
-function extract_domain_name($url) {
-   $host = parse_url($url, PHP_URL_HOST);
-   $host = preg_replace("/^www\./", "", $host);
-   return $host;
-  }	
-
+if (!function_exists(extract_domain_name($url))
+  {
+    function extract_domain_name($url) {
+      $host = parse_url($url, PHP_URL_HOST);
+      $host = preg_replace("/^www\./", "", $host);
+      return $host;
+    }	
+  }
 
 function get_kind_response_display() {
 	$meta = get_post_meta(get_the_ID(), '_resp_full', true);
