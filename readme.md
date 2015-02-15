@@ -60,7 +60,7 @@ The plugin requires the [webmention](https://wordpress.org/plugins/webmention/) 
 Many sites will not need all of the kinds set up. What kinds of posts you wish
 to publish are specific to your needs.
 
-Kinds under development may be hidden by default, but can be exposed if needed. 
+Kinds under development are hidden by default, but can be exposed if needed. 
 
 To exclude kinds from the post selector, add the following to your wp-config.php file.
 

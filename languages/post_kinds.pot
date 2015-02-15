@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: IndieWeb Post Kinds 1.1.0\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2015-02-14 17:42:52+00:00\n"
+"POT-Creation-Date: 2015-02-14 21:52:52+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -109,72 +109,72 @@ msgid "http://david.shanske.com"
 msgstr ""
 
 #: indieweb-post-kinds.php:92 indieweb-post-kinds.php:106
-msgctxt "kind"
+msgctxt "Post kind"
 msgid "Kinds"
 msgstr ""
 
 #: indieweb-post-kinds.php:93
-msgctxt "kind"
+msgctxt "Post kind"
 msgid "Kind"
 msgstr ""
 
 #: indieweb-post-kinds.php:94
-msgctxt "kind"
+msgctxt "Post kind"
 msgid "Search Kinds"
 msgstr ""
 
 #: indieweb-post-kinds.php:95
-msgctxt "kind"
+msgctxt "Post kind"
 msgid "Popular Kinds"
 msgstr ""
 
 #: indieweb-post-kinds.php:96
-msgctxt "kind"
+msgctxt "Post kind"
 msgid "All Kinds"
 msgstr ""
 
 #: indieweb-post-kinds.php:97
-msgctxt "kind"
+msgctxt "Post kind"
 msgid "Parent Kind"
 msgstr ""
 
 #: indieweb-post-kinds.php:98
-msgctxt "kind"
+msgctxt "Post kind"
 msgid "Parent Kind:"
 msgstr ""
 
 #: indieweb-post-kinds.php:99
-msgctxt "kind"
+msgctxt "Post kind"
 msgid "Edit Kind"
 msgstr ""
 
 #: indieweb-post-kinds.php:100
-msgctxt "kind"
+msgctxt "Post kind"
 msgid "Update Kind"
 msgstr ""
 
 #: indieweb-post-kinds.php:101
-msgctxt "kind"
+msgctxt "Post kind"
 msgid "Add New Kind"
 msgstr ""
 
 #: indieweb-post-kinds.php:102
-msgctxt "kind"
+msgctxt "Post kind"
 msgid "New Kind"
 msgstr ""
 
 #: indieweb-post-kinds.php:103
-msgctxt "kind"
+msgctxt "Post kind"
 msgid "Separate kinds with commas"
 msgstr ""
 
 #: indieweb-post-kinds.php:104
-msgctxt "kind"
+msgctxt "Post kind"
 msgid "Add or remove kinds"
 msgstr ""
 
 #: indieweb-post-kinds.php:105
-msgctxt "kind"
+msgctxt "Post kind"
 msgid "Choose from the most used kinds"
 msgstr ""
 

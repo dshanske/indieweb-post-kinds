@@ -87,23 +87,23 @@ function activate_kinds()
     }
 
 function register_taxonomy_kind() {
-
+	load_plugin_textdomain( 'Post Kind', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
         $labels = array( 
-        'name' => _x( 'Kinds', 'kind' ),
-        'singular_name' => _x( 'Kind', 'kind' ),
-        'search_items' => _x( 'Search Kinds', 'kind' ),
-        'popular_items' => _x( 'Popular Kinds', 'kind' ),
-        'all_items' => _x( 'All Kinds', 'kind' ),
-        'parent_item' => _x( 'Parent Kind', 'kind' ),
-        'parent_item_colon' => _x( 'Parent Kind:', 'kind' ),
-        'edit_item' => _x( 'Edit Kind', 'kind' ),
-        'update_item' => _x( 'Update Kind', 'kind' ),
-        'add_new_item' => _x( 'Add New Kind', 'kind' ),
-        'new_item_name' => _x( 'New Kind', 'kind' ),
-        'separate_items_with_commas' => _x( 'Separate kinds with commas', 'kind' ),
-        'add_or_remove_items' => _x( 'Add or remove kinds', 'kind' ),
-        'choose_from_most_used' => _x( 'Choose from the most used kinds', 'kind' ),
-        'menu_name' => _x( 'Kinds', 'kind' ),
+        'name' => _x( 'Kinds', 'Post kind' ),
+        'singular_name' => _x( 'Kind', 'Post kind' ),
+        'search_items' => _x( 'Search Kinds', 'Post kind' ),
+        'popular_items' => _x( 'Popular Kinds', 'Post kind' ),
+        'all_items' => _x( 'All Kinds', 'Post kind' ),
+        'parent_item' => _x( 'Parent Kind', 'Post kind' ),
+        'parent_item_colon' => _x( 'Parent Kind:', 'Post kind' ),
+        'edit_item' => _x( 'Edit Kind', 'Post kind' ),
+        'update_item' => _x( 'Update Kind', 'Post kind' ),
+        'add_new_item' => _x( 'Add New Kind', 'Post kind' ),
+        'new_item_name' => _x( 'New Kind', 'Post kind' ),
+        'separate_items_with_commas' => _x( 'Separate kinds with commas', 'Post kind' ),
+        'add_or_remove_items' => _x( 'Add or remove kinds', 'Post kind' ),
+        'choose_from_most_used' => _x( 'Choose from the most used kinds', 'Post kind' ),
+        'menu_name' => _x( 'Kinds', 'Post kind' ),
     );
 
     $args = array( 
