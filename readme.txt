@@ -71,9 +71,7 @@ may make it a Passive Kind.
 
  * **Article** - traditional long form content - a post with an explicit post name(title)
  * **Note** - short content - a post with just plain content
- * **Photo** - image or photo post - a post with an embedded image as its primary focus
- * **Audio** - audio post - a post with an embedded piece of audio content as its primary focus
- * **Video** - video post - a post with an embedded video as its primary focus  
+ * **Photo** - image or photo post - a post with an embedded image as its primary focus\
  * **Check-In** - Identifying you are at a place. This would use the extended
 WordPress Geodata. (Under Development)
 
