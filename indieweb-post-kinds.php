@@ -140,11 +140,11 @@ function register_taxonomy_kind() {
 	                'photo'   => _x( 'Photo',   'Post kind' ),
 	                'tag'    => _x( 'Tag',    'Post kind' ),
 	                'rsvp'    => _x( 'RSVP',    'Post kind' ),
-			'audio'   => _x( 'Audio', 'Post kind' ),
-                        'video'   => _x( 'Video', 'Post kind' ),
+					'listen'   => _x( 'Listen', 'Post kind' ),
+                        'watch'   => _x( 'Watch', 'Post kind' ),
                         'checkin'   => _x( 'Checkin', 'Post kind' ),
                         'wish'   => _x( 'Wish', 'Post kind' ),
-                        'game'   => _x( 'Game', 'Post kind' )
+                        'play'   => _x( 'Play', 'Post kind' )
 	        );
         return apply_filters( 'kind_strings', $strings );
 	}
@@ -168,11 +168,11 @@ function register_taxonomy_kind() {
                         'photo'   => _x( 'Photos',   'Post kind' ),
                         'tag'    => _x( 'Tags',    'Post kind' ),
                         'rsvp'    => _x( 'RSVPs',    'Post kind' ),
-			'audio'   => _x( 'Audio', 'Post kind' ),
-                        'video'   => _x( 'Videos', 'Post kind' ),
+						'listen'   => _x( 'Listens', 'Post kind' ),
+                        'watch'   => _x( 'Watches', 'Post kind' ),
                         'checkin'   => _x( 'Checkins', 'Post kind' ),
                         'wish'   => _x( 'Wishlist', 'Post kind' ),
-                        'game'   => _x( 'Games', 'Post kind' )    
+                        'play'   => _x( 'Plays', 'Post kind' )    
                 );
         return apply_filters( 'kind_strings_plural', $strings );
         }
@@ -197,11 +197,11 @@ function register_taxonomy_kind() {
                         'photo'   => _x( ' ',   'Post kind verbs' ),
                         'tag'    => _x( 'Tagged',    'Post kind verbs' ),
                         'rsvp'    => _x( 'RSVPed',    'Post kind verbs' ),
-                        'audio'    => _x( 'Listened',    'Post kind verbs' ),
-                        'video'   => _x( 'Watched', 'Post kind' ),
+                        'listen'    => _x( 'Listened',    'Post kind verbs' ),
+                        'watch'   => _x( 'Watched', 'Post kind' ),
                         'checkin'   => _x( 'Checked In', 'Post kind' ),
                         'wish'   => _x( 'Desires', 'Post kind' ),
-                        'game'   => _x( 'Played', 'Post kind' )    
+                        'play'   => _x( 'Played', 'Post kind' )    
                 );
                return apply_filters( 'kind_verbs', $strings );
 
@@ -341,19 +341,19 @@ function kind_defaultterms () {
                      ) );
 
             }
-        if (!term_exists('audio', 'kind')) {
-              wp_insert_term('audio', 'kind',
+        if (!term_exists('listen', 'kind')) {
+              wp_insert_term('listen', 'kind',
                 array(
-                          'description'=> 'Audio Post',
-                          'slug' => 'audio',
+                          'description'=> 'Listen',
+                          'slug' => 'listen',
                      ) );
 
             }
-        if (!term_exists('video', 'kind')) {
-              wp_insert_term('video', 'kind',
+        if (!term_exists('watch', 'kind')) {
+              wp_insert_term('watch', 'kind',
                 array(
-                          'description'=> 'Video Post',
-                          'slug' => 'video',
+                          'description'=> 'Watch',
+                          'slug' => 'watch',
                      ) );
 
             }
@@ -365,11 +365,11 @@ function kind_defaultterms () {
                      ) );
 
             }
-        if (!term_exists('game', 'kind')) {
-              wp_insert_term('game', 'kind',
+        if (!term_exists('play', 'kind')) {
+              wp_insert_term('play', 'kind',
                 array(
-                          'description'=> 'Game Post',
-                          'slug' => 'game',
+                          'description'=> 'Game Play',
+                          'slug' => 'play',
                      ) );
 
             }

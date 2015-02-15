@@ -719,13 +719,13 @@ a.empty:before {
   content: '\f305';
 }
 
-.kind-audio .verb:before,
-.kind-audio label:before {
+.kind-listen .verb:before,
+.kind-listen label:before {
   content: '\f109';
 }
 
-.kind-video .verb:before,
-.kind-video label:before {
+.kind-watch .verb:before,
+.kind-watch label:before {
   content: '\f517';
 }
 
@@ -744,8 +744,8 @@ a.empty:before {
   content: '\f102';
 }
 
-.kind-game .verb:before,
-.kind-game label:before {
+.kind-play .verb:before,
+.kind-play label:before {
   content: '\f461';
 }
 
