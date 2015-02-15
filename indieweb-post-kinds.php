@@ -65,6 +65,29 @@ add_action( 'admin_notices', 'postkind_plugin_notice' );
 // Trigger Webmention on Change in Post Status
 add_filter('transition_post_status', 'it_transition', 10, 3);
 
+// Extend Theme Support for Post Kinds with arguments. 
+add_filter( 'current_theme_supports-post-kinds', 'post_kinds_current_theme_supports', 10, 3 ); 
+
+
+if( ! function_exists( 'post_kinds_current_theme_supports' ) ) {
+function post_kinds_current_theme_supports( $bool, $args, $registered ) {
+	if( isset( $args[0] ) && isset( $registered[0] ) ) {
+		return in_array( $args[0], $registered[0] );
+		} else {
+	return false;
+	}
+ }
+}
+// Add Function to Require a file if Theme Supports Post Kinds
+if( !function_exists( 'require_if_post_kinds_supports' ) ) {
+	function require_if_post_kinds_supports( $feature, $include ) {
+		if( current_theme_supports( 'post-kinds', $feature ) ) {
+			require ( $include );
+			return true;
+		}
+		return false;
+	}
+}
 
 function kindstyle_load() {
         wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'kind.min.css');

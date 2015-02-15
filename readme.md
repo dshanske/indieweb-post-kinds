@@ -47,6 +47,10 @@ For more information on the Indieweb and tools for WordPress, visit [Getting Str
 
 The plugin requires the [webmention](https://wordpress.org/plugins/webmention/) plugin to support sending/receiving notice of a reply/like to another site which will appear as a comment. The [Semantic Linkbacks](https://wordpress.org/plugins/semantic-linkbacks/) plugin is available to more richly display the comment.
 
+To declare your theme supports post kinds(if it does):
+
+add_theme_support('post-kinds');
+
 ## Post Kinds ##
 
 Many sites will not need all of the kinds set up. What kinds of posts you wish
