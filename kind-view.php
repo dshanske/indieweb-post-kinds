@@ -10,7 +10,7 @@ $options = get_option('iwt_options');
 
 
 // Extracts the Domain Name for a URL for presentation purposes
-if (!function_exists(extract_domain_name($url))
+if (!function_exists('extract_domain_name'))
   {
     function extract_domain_name($url) {
       $host = parse_url($url, PHP_URL_HOST);
