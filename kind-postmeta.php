@@ -22,7 +22,7 @@ function kindbox_add_postmeta_boxes() {
 
   add_meta_box(
     'responsebox-meta',      // Unique ID
-    esc_html__( 'Context - In Response To', 'kind_taxonomy' ),    // Title
+    esc_html__( 'Citation/In Response To', 'kind_taxonomy' ),    // Title
     'response_metabox',   // Callback function
     'post',         // Admin page (or post type)
     'normal',         // Context
@@ -31,33 +31,31 @@ function kindbox_add_postmeta_boxes() {
 
 }
 
-function response_metabox( $object, $box ) { ?>
-
-  <?php 
+function response_metabox( $object, $box ) {
 	wp_nonce_field( 'response_metabox', 'response_metabox_nonce' ); 
-	$meta = get_post_meta ($object->ID, 'response', true);
+	$kindmeta = get_kind_meta ($object->ID);
   ?>  
   <p>
     <label for="response_url"><?php _e( "URL", 'kind_taxonomy' ); ?></label>
     <br />
-    <input type="text" name="response_url" id="response_url" value="<?php if (isset ($meta['url'])) {echo esc_attr( $meta['url'] ); } ?>" size="70" />
+    <input type="text" name="response_url" id="response_url" value="<?php if (isset ($kindmeta['cite']['url'])) {echo esc_attr( $kindmeta['cite']['url'] ); } ?>" size="70" />
     <br />
-    <label for="response_title"><?php _e( "Custom Title", 'kind_taxonomy' ); ?></label>
+    <label for="response_name"><?php _e( "Name", 'kind_taxonomy' ); ?></label>
     <br />
-    <input type="text" name="response_title" id="response_title" value="<?php if (isset ($meta['title'])) { echo esc_attr($meta['title']); } ?>" size="70" />
+    <input type="text" name="response_name" id="response_name" value="<?php if (isset ($kindmeta['cite']['name'])) { echo esc_attr($kindmeta['cite']['name']); } ?>" size="70" />
 	<br />
-    <label for="response_author"><?php _e( "Author", 'kind_taxonomy' ); ?></label>
+    <label for="response_author"><?php _e( "Author Name", 'kind_taxonomy' ); ?></label>
     <br />
-    <input type="text" name="response_author" id="response_author" value="<?php if (isset ($meta['author'])) { echo esc_attr($meta['author']); } ?>" size="70" />
+    <input type="text" name="response_author" id="response_author" value="<?php if (isset ($kindmeta['card']['name'])) { echo esc_attr($kindmeta['card']['name']); } ?>" size="70" />
         <br />
-    <label for="response_icon"><?php _e( "Author Icon", 'kind_taxonomy' ); ?></label>
+    <label for="response_photo"><?php _e( "Author Photo", 'kind_taxonomy' ); ?></label>
     <br />
-    <input type="text" name="response_icon" id="response_icon" value="<?php if (isset ($meta['icon'])) { echo esc_attr($meta['icon']); } ?>" size="70" />
+    <input type="text" name="response_photo" id="response_photo" value="<?php if (isset ($kindmeta['card']['photo'])) { echo esc_attr($kindmeta['card']['photo']); } ?>" size="70" />
         <br />
 
-    <label for="response_content"><?php _e( "Content/Citation", 'kind_taxonomy' ); ?></label>
+    <label for="response_content"><?php _e( "Content or Excerpt", 'kind_taxonomy' ); ?></label>
     <br />
-    <textarea name="response_content" id="response_content" cols="70"><?php if (isset ($meta['content'])) { echo esc_attr( $meta['content'] ); } ?></textarea>
+    <textarea name="response_content" id="response_content" cols="70"><?php if (isset ($kindmeta['cite']['content'])) { echo esc_attr( $kindmeta['cite']['content'] ); } ?></textarea>
   
   </p>
 
@@ -102,23 +100,26 @@ function responsebox_save_post_meta( $post_id, $post ) {
 
 	/* OK, its safe for us to save the data now. */
 	if( isset( $_POST[ 'response_url' ] ) && !empty( $_POST[ 'response_url' ] ) ) {
-            $meta['url'] = esc_url_raw( $_POST[ 'response_url' ] );
+            $cite['url'] = esc_url_raw( $_POST[ 'response_url' ] );
 	}
-	if( isset( $_POST[ 'response_title' ] ) && !empty( $_POST[ 'response_title' ] ) ) {
-            $meta['title'] = esc_attr( $_POST[ 'response_title' ] ) ;
+	if( isset( $_POST[ 'response_name' ] ) && !empty( $_POST[ 'response_name' ] ) ) {
+            $cite['name'] = esc_attr( $_POST[ 'response_name' ] ) ;
         }
         if( isset( $_POST[ 'response_author' ] ) && !empty( $_POST[ 'response_author' ] ) ) {
-            $meta['author'] = esc_attr( $_POST[ 'response_author' ] ) ;
+            $card['name'] = esc_attr( $_POST[ 'response_author' ] ) ;
         }
-        if( isset( $_POST[ 'response_icon' ] ) && !empty( $_POST[ 'response_icon' ] ) ) {
-            $meta['icon'] = esc_url_raw( $_POST[ 'response_icon' ] ) ;
+        if( isset( $_POST[ 'response_photo' ] ) && !empty( $_POST[ 'response_photo' ] ) ) {
+            $card['photo'] = esc_url_raw( $_POST[ 'response_photo' ] ) ;
         }
 	if( isset( $_POST[ 'response_content' ] ) && !empty( $_POST[ 'response_content' ] ) ) {
-            $meta['content'] = wp_kses_post( (string) $_POST[ 'response_content' ] );
+            $cite['content'] = wp_kses_post( (string) $_POST[ 'response_content' ] );
         }
-	if(!empty($meta)) {
-	    update_post_meta( $post_id,'response', $meta);
-           }
+	if(!empty($card)) {
+	  update_post_meta( $post_id,'mf2_card', $card);
+  }
+  if(!empty($cite)) {
+    update_post_meta( $post_id,'mf2_cite', $cite);
+  }  
 }
 
 add_action( 'save_post', 'responsebox_save_post_meta', 8, 2 );

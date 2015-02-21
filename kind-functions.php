@@ -2,6 +2,50 @@
 
 // Functions for Kind Taxonomies
 
+// retrieve metadata from postmeta and return
+// abstract retrieval from display
+function get_kind_meta($post_id) {
+  $response = get_post_meta($post_id, 'response', true);
+  $kindmeta = array();
+  // Retrieve either from response or from mf2_
+  if ( !empty($response) ) {
+     $kindmeta['cite'] = array();
+     // Convert to new format and update
+     if ( !empty($response['title']) ) {
+      $kindmeta['cite']['name'] = $response['title'];
+      }
+     if ( !empty($response['url']) ) {
+      $kindmeta['cite']['url'] = $response['url'];
+      }
+     if ( !empty($response['content']) ) {
+      $kindmeta['cite']['content'] = $response['content'];
+      }
+     if ( !empty($response['published']) ) {
+      $kindmeta['cite']['published'] = $response['published'];
+      }
+     if ( !empty($response['author']) ) {
+      $kindmeta['card'] = array();
+      $kindmeta['card']['name'] = $response['author'];
+      if ( !empty($response['icon']) ) {
+        $kindmeta['card']['photo'] = $response['icon'];
+        }
+      }
+  if( isset($kindmeta['cite']) ) {
+    update_post_meta($post_id, 'mf2_cite', $kindmeta['cite']);
+    if( isset($kindmeta['card']) ) {
+      update_post_meta($post_id, 'mf2_card', $kindmeta['card']);
+      }
+    delete_post_meta($post_id, 'response');
+    return $kindmeta;
+    }
+  }
+  $kindmeta['cite'] = get_post_meta($post_id, 'mf2_cite', true);
+  $kindmeta['card'] = get_post_meta($post_id, 'mf2_card', true);
+  $kindmeta['rsvp'] = get_post_meta($post_id, 'mf2_rsvp', true);
+  $kindmeta['event'] = get_post_meta($post_id, 'mf2_event', true);
+  return array_filter($kindmeta);
+}
+
 function get_post_kind_slug( $post = null ) {
         $post = get_post($post);
         if ( ! $post = get_post( $post ) )

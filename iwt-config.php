@@ -10,7 +10,6 @@ add_action( 'admin_init', 'iwt_options_init' );
 function iwt_options_init() {
     register_setting( 'iwt_options', 'iwt_options' );
     add_settings_section( 'iwt-content', __('Content Options', 'Post kind')  , 'iwt_options_callback', 'iwt_options' );
-    add_settings_field( 'the_content', __('Add the Response Box (Required if No Theme Support)', 'Post kind'), 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'the_content') );
     add_settings_field( 'embeds', __('Add Rich Embed Support for Facebook, Google Plus, Instagram, etc', 'Post kind'), 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'embeds') );
     add_settings_field( 'cacher', __('Do Not Store Cached Responses', 'Post kind'), 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'cacher') );
     add_settings_field( 'disableformats', __('Disable Post Formats', 'Post kind'), 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'disableformats') );

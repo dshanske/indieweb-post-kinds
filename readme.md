@@ -1,19 +1,20 @@
 # Indieweb Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb  
-**Stable tag:** 1.1.0  
+**Stable tag:** 1.1.1  
 **Requires at least:** 4.0  
 **Tested up to:** 4.1  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
-Post Kinds adds support for responding to and interacting with other sites using the standards developed by IndieWebCamp
+Ever want to reply to someone else's post with a post on your own site? Or to "like" someone else's post, but with your own site?
 
 ## Description ##
 
-Post Kinds implements [kinds of posts](http://indiewebcamp.com/post_kinds).
+Post Kinds adds support for responding to and interacting with other sites using the standards developed by IndieWebCamp by implementing
+[kinds of posts](http://indiewebcamp.com/post_kinds).
 
-Post Kinds makes it clear when your post is a reply or a like of someone else's post. It can also distinguish notes, articles and photos in a manner similar to [post formats](http://codex.wordpress.org/Post_Formats).
+It can also distinguish certain types of passive posts in a manner similar to [post formats](http://codex.wordpress.org/Post_Formats).
 
 ## Screenshots ##
 
@@ -26,22 +27,16 @@ Post Kinds makes it clear when your post is a reply or a like of someone else's 
 
 ## Frequently Asked Questions ##
 
-### What is a Post Kind? ###
-
-There are many different kinds of posts. 
-
-This plugin allows posts to be classified as replies, likes, etc. and to mark them up appropriately with microformats.
-
 ### How does it work? ###
 
 1. Bob wants to reply to Sue on his own website.
-2. Sue enables webmentions on her site.
-3. Bob creates a post and sets it as a reply to Sue's post.
+2. Sue enables webmentions(separate plugin) on her site.
+3. Bob creates a post and sets it as a reply to or a like of Sue's post.
 4. A webmention is sent to Sue's site, and stored as a comment on Sue's post.
 
 ### How do I learn more? ###
 
-For more information on the Indieweb and tools for WordPress, visit [Getting Strted on WordPress](http://indiewebcamp.com/Getting_Started_on_WordPress).
+For more information on the Indieweb and tools for WordPress, visit [Getting Started on WordPress](http://indiewebcamp.com/Getting_Started_on_WordPress).
 
 ## Installation ##
 
@@ -50,6 +45,8 @@ The plugin requires the [webmention](https://wordpress.org/plugins/webmention/) 
 To declare your theme supports post kinds(if it does):
 
 add_theme_support('post-kinds');
+
+If your theme does not declare support, then the context information will be added to the content.
 
 ## Post Kinds ##
 
@@ -62,7 +59,7 @@ To exclude kinds from the post selector, add the following to your wp-config.php
 
 define('POST_KIND_EXCLUDE', 'game,wish,rsvp,checkin');
 
-This will exclude game and wish from showing up in the post editor. It will not disable them on existing posts. 
+This will exclude rsvp, checkin, game and wish from showing up in the post editor. It will not disable them on existing posts. 
 
 ### The Non-Response Kinds ###
 
@@ -136,34 +133,11 @@ define('MULTIKIND', '1');
 
 Indieweb Post Kinds already has support for replying to Twitter posts using the Social Network Auto Poster plugin.
 
-## Functions ##
-
-`get_post_kind_slug($id)` - Return the kind slug for a given post. If `$id` is not specified, use current post.
-`get_post_kind($id)` - Return the kind string for a given post. If `$id` is not specified, use current post.
-
-`has_post_kind($kind, $post)` - Returns true/false if kind is in post. If post is empty, then use current post
-
-`get_kind_context_class( $class, $classtype )` - Returns the CSS class to be applied to the response/context if the kind is one for which there is context. Classtype defaults to u, other option is usually p. Sets the class to the kind slug and for specially specified slugs, sets appropriate mf2 classes as well. $class specifies any additional classes to be added.
-
-
-
-##  Filters ##
-
-`get_the_kind` - Filter get_the_kinds
-
-`the_kinds` - Filter get_the_kinds_list
-
-`kind_classes` - Filter get_kind_class
-
-`kind_verb` - Filter get_kind_verbs
-
-`kind-response-display` - Filters the output being added to the_content or to custom location in theme
-
-
 ## Changelog ##
- * *Version 1.1.0* - Added new kinds - listen, watch, check-in, play at the 
-suggestion of acegiak. Adds support for passive kinds. Some code cleanup and 
-commenting.
+ * *Version 1.1.1* - Adds theme support.
+ * *Version 1.1.0* - Added new kinds - listen, watch, check-in, play at the suggestion of acegiak. 
+Adds support for passive kinds. Some code cleanup and commenting. Start of add_theme_support function. This will
+replace the setting to embed in content in a future version.
  * *Version 1.0.2* - Bug fixes
  * *Version 1.0.1* - Update Readme to better describe 
  * *Version 1.0*  - Now in the WordPress repository
