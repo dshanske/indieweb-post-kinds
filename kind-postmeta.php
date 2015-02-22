@@ -38,24 +38,24 @@ function response_metabox( $object, $box ) {
   <p>
     <label for="response_url"><?php _e( "URL", 'kind_taxonomy' ); ?></label>
     <br />
-    <input type="text" name="response_url" id="response_url" value="<?php if (isset ($kindmeta['cite']['url'])) {echo esc_attr( $kindmeta['cite']['url'] ); } ?>" size="70" />
+    <input type="text" name="response_url" id="response_url" value="<?php if (isset ($kindmeta['cite'][0]['url'])) {echo esc_attr( $kindmeta['cite']['url'] ); } ?>" size="70" />
     <br />
     <label for="response_name"><?php _e( "Name", 'kind_taxonomy' ); ?></label>
     <br />
-    <input type="text" name="response_name" id="response_name" value="<?php if (isset ($kindmeta['cite']['name'])) { echo esc_attr($kindmeta['cite']['name']); } ?>" size="70" />
+    <input type="text" name="response_name" id="response_name" value="<?php if (isset ($kindmeta['cite'][0]['name'])) { echo esc_attr($kindmeta['cite'][0]['name']); } ?>" size="70" />
 	<br />
     <label for="response_author"><?php _e( "Author Name", 'kind_taxonomy' ); ?></label>
     <br />
-    <input type="text" name="response_author" id="response_author" value="<?php if (isset ($kindmeta['card']['name'])) { echo esc_attr($kindmeta['card']['name']); } ?>" size="70" />
+    <input type="text" name="response_author" id="response_author" value="<?php if (isset ($kindmeta['cite'][0]['card'][0]['name'])) { echo esc_attr($kindmeta['cite'][0]['card'][0]['name']); } ?>" size="70" />
         <br />
     <label for="response_photo"><?php _e( "Author Photo", 'kind_taxonomy' ); ?></label>
     <br />
-    <input type="text" name="response_photo" id="response_photo" value="<?php if (isset ($kindmeta['card']['photo'])) { echo esc_attr($kindmeta['card']['photo']); } ?>" size="70" />
+    <input type="text" name="response_photo" id="response_photo" value="<?php if (isset ($kindmeta['cite'][0]['card'][0]['photo'])) { echo esc_attr($kindmeta['cite'][0]['card'][0]['photo']); } ?>" size="70" />
         <br />
 
     <label for="response_content"><?php _e( "Content or Excerpt", 'kind_taxonomy' ); ?></label>
     <br />
-    <textarea name="response_content" id="response_content" cols="70"><?php if (isset ($kindmeta['cite']['content'])) { echo esc_attr( $kindmeta['cite']['content'] ); } ?></textarea>
+    <textarea name="response_content" id="response_content" cols="70"><?php if (isset ($kindmeta['cite'][0]['content'])) { echo esc_attr( $kindmeta['cite'][0]['content'] ); } ?></textarea>
   
   </p>
 
@@ -100,23 +100,20 @@ function responsebox_save_post_meta( $post_id, $post ) {
 
 	/* OK, its safe for us to save the data now. */
 	if( isset( $_POST[ 'response_url' ] ) && !empty( $_POST[ 'response_url' ] ) ) {
-            $cite['url'] = esc_url_raw( $_POST[ 'response_url' ] );
+            $cite[0]['url'] = esc_url_raw( $_POST[ 'response_url' ] );
 	}
 	if( isset( $_POST[ 'response_name' ] ) && !empty( $_POST[ 'response_name' ] ) ) {
-            $cite['name'] = esc_attr( $_POST[ 'response_name' ] ) ;
+            $cite[0]['name'] = esc_attr( $_POST[ 'response_name' ] ) ;
         }
         if( isset( $_POST[ 'response_author' ] ) && !empty( $_POST[ 'response_author' ] ) ) {
-            $card['name'] = esc_attr( $_POST[ 'response_author' ] ) ;
+            $cite[0]['card'][0]['name'] = esc_attr( $_POST[ 'response_author' ] ) ;
         }
         if( isset( $_POST[ 'response_photo' ] ) && !empty( $_POST[ 'response_photo' ] ) ) {
-            $card['photo'] = esc_url_raw( $_POST[ 'response_photo' ] ) ;
+            $cite[0]['card'][0]['photo'] = esc_url_raw( $_POST[ 'response_photo' ] ) ;
         }
 	if( isset( $_POST[ 'response_content' ] ) && !empty( $_POST[ 'response_content' ] ) ) {
-            $cite['content'] = wp_kses_post( (string) $_POST[ 'response_content' ] );
+            $cite[0]['content'] = wp_kses_post( (string) $_POST[ 'response_content' ] );
         }
-	if(!empty($card)) {
-	  update_post_meta( $post_id,'mf2_card', $card);
-  }
   if(!empty($cite)) {
     update_post_meta( $post_id,'mf2_cite', $cite);
   }  
