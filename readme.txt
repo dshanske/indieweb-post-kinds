@@ -1,6 +1,6 @@
 === Indieweb Post Kinds ===
 Contributors: dshanske
-Tags: indieweb
+Tags: indieweb, interaction, posts, webmention
 Stable tag: 1.2
 Requires at least: 4.0
 Tested up to: 4.1
@@ -42,7 +42,14 @@ To declare your theme supports post kinds(if it does):
 
 add_theme_support('post-kinds');
 
-If your theme does not declare support, then the context information will be added to the content.
+If your theme does not declare support, then the context information will be added to the content. It is assumed if your theme declares support, it is
+responsible for display.
+
+== Upgrade Notice ==
+
+= 1.2.0 =
+This version migrates data to a new storage formats. Backup your installation
+first as a precaution.
 
 == Post Kinds ==
 

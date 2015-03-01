@@ -1,7 +1,7 @@
 # Indieweb Post Kinds #
 **Contributors:** dshanske  
-**Tags:** indieweb  
-**Stable tag:** 1.1.1  
+**Tags:** indieweb, interaction, posts, webmention  
+**Stable tag:** 1.2  
 **Requires at least:** 4.0  
 **Tested up to:** 4.1  
 **License:** GPLv2 or later  
@@ -46,7 +46,14 @@ To declare your theme supports post kinds(if it does):
 
 add_theme_support('post-kinds');
 
-If your theme does not declare support, then the context information will be added to the content.
+If your theme does not declare support, then the context information will be added to the content. It is assumed if your theme declares support, it is
+responsible for display.
+
+## Upgrade Notice ##
+
+### 1.2.0 ###
+This version migrates data to a new storage formats. Backup your installation
+first as a precaution.
 
 ## Post Kinds ##
 
@@ -134,6 +141,8 @@ define('MULTIKIND', '1');
 Indieweb Post Kinds already has support for replying to Twitter posts using the Social Network Auto Poster plugin.
 
 ## Changelog ##
+ * *Version 1.2* - Change to store meta using [WordPress Data](https://indiewebcamp.com/WordPress_Data) proposal. Display functionality broken into individual
+pieces to make it easier to customize and edit.
  * *Version 1.1.1* - Adds theme support.
  * *Version 1.1.0* - Added new kinds - listen, watch, check-in, play at the suggestion of acegiak. 
 Adds support for passive kinds. Some code cleanup and commenting. Start of add_theme_support function. This will

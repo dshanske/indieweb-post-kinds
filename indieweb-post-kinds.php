@@ -32,6 +32,9 @@ require_once( plugin_dir_path( __FILE__ ) . '/kind-postmeta.php');
 require_once( plugin_dir_path( __FILE__ ) . '/kind-functions.php');
 // Add Kind Display Functions
 require_once( plugin_dir_path( __FILE__ ) . '/kind-view.php');
+// Add Kind Meta Display Functions
+require_once( plugin_dir_path( __FILE__ ) . '/kind-meta.php');
+
 // Add Embed Functions for Commonly Embedded Websites not Supported by Wordpress
 require_once( plugin_dir_path( __FILE__ ) . '/embeds.php');
 
