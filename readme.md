@@ -142,7 +142,7 @@ Indieweb Post Kinds already has support for replying to Twitter posts using the 
 
 ## Changelog ##
  * *Version 1.2* - Change to store meta using [WordPress Data](https://indiewebcamp.com/WordPress_Data) proposal. Display functionality broken into individual
-pieces to make it easier to customize and edit.
+pieces to make it easier to customize and edit. Multi-reply support.
  * *Version 1.1.1* - Adds theme support.
  * *Version 1.1.0* - Added new kinds - listen, watch, check-in, play at the suggestion of acegiak. 
 Adds support for passive kinds. Some code cleanup and commenting. Start of add_theme_support function. This will

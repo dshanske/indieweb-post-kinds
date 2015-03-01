@@ -3,7 +3,7 @@
  * Plugin Name: IndieWeb Post Kinds
  * Plugin URI: https://github.com/dshanske/indieweb-post-kinds
  * Description: Ever want to reply to someone else's post with a post on your own site? Or to "like" someone else's post, but with your own site?
- * Version: 1.2
+ * Version: 1.2.0
  * Author: David Shanske
  * Author URI: http://david.shanske.com
  * Text Domain: Post kinds

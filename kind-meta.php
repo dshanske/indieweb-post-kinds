@@ -35,10 +35,10 @@ function kind_display_url($cite) {
   if (empty($cite) ) { return ""; }
   if (! empty($cite['url'])  ) {
     if (!empty ($cite['name']) ) {
-          $url = ' ' . '<a href="' . $cite['url'] . '">' . $cite['name'] . '</a>';
+          $url = ' ' . '<a class="u-url" href="' . $cite['url'] . '">' . '<span class="p-name">' . $cite['name'] . '</span>' . '</a>';
     }
     else {
-      $url = ' ' . '<a href="' . $cite['url'] . '">' . get_the_title() . '</a>';
+      $url = ' ' . '<a class="u-url" href="' . $cite['url'] . '">' . '<span class="p-name">' . get_the_title() . '</span>' . '</a>';
     }
   }
   return $url;
