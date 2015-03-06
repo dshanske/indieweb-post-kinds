@@ -68,6 +68,9 @@ add_action( 'admin_notices', 'postkind_plugin_notice' );
 // Trigger Webmention on Change in Post Status
 add_filter('transition_post_status', 'it_transition', 10, 3);
 
+// Add Response to Feed
+add_filter('the_content_feed', 'kind_content_feed');
+
 function kindstyle_load() {
         wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'kind.min.css');
   }
@@ -82,11 +85,14 @@ function iwt_settings_link($links) {
   return $links; 
 }
 
-function activate_kinds()
-    {
-	register_taxonomy_kind();
-	kind_defaultterms();
-    }
+function activate_kinds() {
+  if ( function_exists('iwt_plugin_notice') ) {
+    deactivate_plugins( plugin_basename( __FILE__ ) );
+    wp_die( 'You have Indieweb Taxonomy activated. Post Kinds replaces this plugin. Please disable Taxonomy before activating' );
+  }
+  register_taxonomy_kind();
+  kind_defaultterms();
+}
 
 function register_taxonomy_kind() {
 	load_plugin_textdomain( 'Post Kind', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
@@ -439,6 +445,12 @@ function json_rest_add_kindmeta($_post,$post,$context) {
 	$response = get_post_meta( $post["ID"], 'response');
 	if (!empty($response)) { $_post['response'] = $response; }
 	return $_post;
+}
+
+function kind_content_feed($content, $feed_type) {
+  $response = get_kind_response_display();
+  $response = str_replace(']]>', ']]&gt;', $response);
+  return $response . $content; 
 }
 
 function postkind_plugin_notice() {
