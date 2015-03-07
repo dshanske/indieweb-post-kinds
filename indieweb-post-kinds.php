@@ -34,12 +34,19 @@ require_once( plugin_dir_path( __FILE__ ) . '/kind-functions.php');
 require_once( plugin_dir_path( __FILE__ ) . '/kind-view.php');
 // Add Kind Meta Display Functions
 require_once( plugin_dir_path( __FILE__ ) . '/kind-meta.php');
+// Add Kind Version of Semantic Linkbacks Comment Function
+require_once( plugin_dir_path( __FILE__ ) . '/kind-semantics.php');
+
+
 
 // Add Embed Functions for Commonly Embedded Websites not Supported by Wordpress
 require_once( plugin_dir_path( __FILE__ ) . '/embeds.php');
 
 // Register Kind Taxonomy
 add_action( 'init', 'register_taxonomy_kind' );
+
+// Semantic Linkbacks Override for Comments
+add_action( 'init', 'kind_remove_semantics', 11);
 
 // Load stylesheets
 add_action( 'wp_enqueue_scripts', 'kindstyle_load' );
@@ -461,5 +468,12 @@ function postkind_plugin_notice() {
            _e( 'This Plugin Requires Webmention Support', 'post_kinds' );
             echo '</a></p></div>';
         }
+}
+
+function kind_remove_semantics() {
+  if (class_exists('SemanticLinkbacksPlugin') ) {
+    remove_filter('comment_text', array('SemanticLinkbacksPlugin', 'comment_text_excerpt'),12);
+    add_filter('comment_text', 'kind_comment_text_excerpt', 12, 3);
+  }
 }
 ?>
