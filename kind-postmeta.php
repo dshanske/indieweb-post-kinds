@@ -112,7 +112,12 @@ function responsebox_save_post_meta( $post_id, $post ) {
             $cite[0]['card'][0]['photo'] = esc_url_raw( $_POST[ 'response_photo' ] ) ;
         }
 	if( isset( $_POST[ 'response_content' ] ) && !empty( $_POST[ 'response_content' ] ) ) {
-            $cite[0]['content'] = wp_kses_post( (string) $_POST[ 'response_content' ] );
+            $allowed = wp_kses_allowed_html( 'post' );
+	    $options = get_option( 'iwt_options' );
+	    if(array_key_exists('contentelements',$options) && json_decode($options['contentelements']) != NULL){
+		$allowed = json_decode($options['contentelements'],true);
+	    }
+            $cite[0]['content'] =  wp_kses((string) $_POST[ 'response_content' ] ,$allowed);
         }
   if(!empty($cite)) {
     update_post_meta( $post_id,'mf2_cite', $cite);

@@ -13,6 +13,7 @@ function iwt_options_init() {
     add_settings_field( 'embeds', __('Add Rich Embed Support for Facebook, Google Plus, Instagram, etc', 'Post kind'), 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'embeds') );
     add_settings_field( 'cacher', __('Do Not Store Cached Responses', 'Post kind'), 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'cacher') );
     add_settings_field( 'disableformats', __('Disable Post Formats', 'Post kind'), 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'disableformats') );
+    add_settings_field( 'contentelements', __('Response Content Allowed Html Elements', 'Post kind'), 'iwt_textblock_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'contentelements') );
 //   add_settings_field( 'upgrade', __('Migrate to new data structure on update', 'Post kind'), 'iwt_callback', 'iwt_options', 'iwt-content' ,  array( 'name' => 'upgrade') );
 
 }
@@ -30,6 +31,23 @@ function iwt_callback(array $args)
         echo "<input name='iwt_options[$name]' type='hidden' value='0' />";
         echo "<input name='iwt_options[$name]' type='checkbox' value='1' " . checked( 1, $checked, false ) . " /> ";
    }
+
+function iwt_textblock_callback(array $args)
+   {
+        $options = get_option('iwt_options');
+        $name = $args['name'];
+
+        $val = '';
+	if($name=="contentelements" && !array_key_exists('contentelements',$options)){
+		$val = str_replace("},\"","},\r\n\"",json_encode(wp_kses_allowed_html( 'post' ), JSON_PRETTY_PRINT));
+	}else{
+        	$val = $options[$name];
+	}
+
+        //echo "<input name='iwt_options[$name]' type='hidden' value='0' />";
+        echo "<textarea name='iwt_options[$name]'>".print_r($val,true)."</textarea> ";
+   }
+
 
 function iwt_options_form() 
   {
