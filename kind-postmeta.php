@@ -63,7 +63,6 @@ function response_metabox( $object, $box ) {
 
 /* Save the meta box's post metadata. */
 function responsebox_save_post_meta( $post_id, $post ) {
-
 	/*
 	 * We need to verify this came from our screen and with proper authorization,
 	 * because the save_post action can be triggered at other times.
@@ -86,13 +85,11 @@ function responsebox_save_post_meta( $post_id, $post ) {
 
 	// Check the user's permissions.
 	if ( isset( $_POST['post_type'] ) && 'page' == $_POST['post_type'] ) {
-
 		if ( ! current_user_can( 'edit_page', $post_id ) ) {
 			return;
 		}
-
-	} else {
-
+	} 
+  else {
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
 			return;
 		}
@@ -100,39 +97,42 @@ function responsebox_save_post_meta( $post_id, $post ) {
 
 	/* OK, its safe for us to save the data now. */
 	if( isset( $_POST[ 'response_url' ] ) && !empty( $_POST[ 'response_url' ] ) ) {
-            $cite[0]['url'] = esc_url_raw( $_POST[ 'response_url' ] );
+    $cite[0]['url'] = esc_url_raw( $_POST[ 'response_url' ] );
 	}
 	if( isset( $_POST[ 'response_name' ] ) && !empty( $_POST[ 'response_name' ] ) ) {
-            $cite[0]['name'] = esc_attr( $_POST[ 'response_name' ] ) ;
-        }
-        if( isset( $_POST[ 'response_author' ] ) && !empty( $_POST[ 'response_author' ] ) ) {
-            $cite[0]['card'][0]['name'] = esc_attr( $_POST[ 'response_author' ] ) ;
-        }
-        if( isset( $_POST[ 'response_photo' ] ) && !empty( $_POST[ 'response_photo' ] ) ) {
-            $cite[0]['card'][0]['photo'] = esc_url_raw( $_POST[ 'response_photo' ] ) ;
-        }
+    $cite[0]['name'] = esc_attr( $_POST[ 'response_name' ] ) ;
+  }
+  if( isset( $_POST[ 'response_author' ] ) && !empty( $_POST[ 'response_author' ] ) ) {
+    $cite[0]['card'][0]['name'] = esc_attr( $_POST[ 'response_author' ] ) ;
+  }
+  if( isset( $_POST[ 'response_photo' ] ) && !empty( $_POST[ 'response_photo' ] ) ) {
+    $cite[0]['card'][0]['photo'] = esc_url_raw( $_POST[ 'response_photo' ] ) ;
+  }
 	if( isset( $_POST[ 'response_content' ] ) && !empty( $_POST[ 'response_content' ] ) ) {
-            $cite[0]['content'] = wp_kses_post( (string) $_POST[ 'response_content' ] );
-        }
+    $allowed = wp_kses_allowed_html( 'post' );
+    $options = get_option( 'iwt_options' );
+    if(array_key_exists('contentelements',$options) && json_decode($options['contentelements']) != NULL){
+      $allowed = json_decode($options['contentelements'],true);
+    }
+    $cite[0]['content'] =  wp_kses((string) $_POST[ 'response_content' ] ,$allowed); 
+  }
   if(!empty($cite)) {
     update_post_meta( $post_id,'mf2_cite', $cite);
   }  
 }
 
 add_action( 'save_post', 'responsebox_save_post_meta', 8, 2 );
-//add_action( 'publish_post', 'responsebox_save_post_meta', 5,2 );
-
 
 function responsebox_transition_post_meta($new, $old, $post) {
 	if ($new == 'publish' && $old != 'publish') {
 		responsebox_save_post_meta($post->ID,$post);
 	}
 }
+
 add_action('transition_post_status','responsebox_transition_post_meta',5,3);
 
-function get_kind_response($post_id)
-	{
-		return get_post_meta($post_id, 'response', true);
-	}	
+function get_kind_response($post_id) {
+  return get_post_meta($post_id, 'response', true);
+}	
 
 ?>
