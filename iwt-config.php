@@ -8,6 +8,7 @@ add_action('admin_menu', 'add_iwt_options_to_menu');
 
 add_action( 'admin_init', 'iwt_options_init' );
 function iwt_options_init() {
+
   $options = get_option('iwt_options');
   register_setting( 'iwt_options', 'iwt_options' );
   add_settings_section( 'iwt-content', __('Content Options', 'Post kind')  , 'iwt_options_callback', 'iwt_options' );
@@ -44,6 +45,7 @@ function iwt_textbox_callback(array $args) {
   }
   echo "<textarea rows='10' cols='50' class='large-text code' name='iwt_options[$name]'>".print_r($val,true)."</textarea> ";
 }
+
 
 function iwt_options_form() {
 	kind_defaultterms ();
