@@ -436,10 +436,10 @@ function kind_archive_title($title)
 
 function it_publish ( $ID, $post=null)
   {
-     $response = get_post_meta($ID, 'response', true);
-     if (!empty($response) && isset($response['url']))
+     $cite = get_post_meta($ID, 'mf2_cite', true);
+     if (!empty($cite) && isset($cite['url']))
 	 {
-     		send_webmention(get_permalink($ID), $response['url']);
+     		send_webmention(get_permalink($ID), $cite['url']);
  	 }
   }
 
