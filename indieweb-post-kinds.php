@@ -437,9 +437,9 @@ function kind_archive_title($title)
 function it_publish ( $ID, $post=null)
   {
      $cite = get_post_meta($ID, 'mf2_cite', true);
-     if (!empty($cite) && isset($cite['url']))
+     if (!empty($cite[0]) && isset($cite[0]['url']))
 	 {
-     		send_webmention(get_permalink($ID), $cite['url']);
+     		send_webmention(get_permalink($ID), $cite[0]['url']);
  	 }
   }
 
