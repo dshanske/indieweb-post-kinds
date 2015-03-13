@@ -1,7 +1,7 @@
 === Indieweb Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention
-Stable tag: 1.2
+Stable tag: 1.2.2
 Requires at least: 4.0
 Tested up to: 4.1
 License: GPLv2 or later
@@ -33,6 +33,10 @@ It can also distinguish certain types of passive posts in a manner similar to [p
 = How do I learn more? =
 
 For more information on the Indieweb and tools for WordPress, visit [Getting Started on WordPress](http://indiewebcamp.com/Getting_Started_on_WordPress).
+
+= How do I get support? = 
+
+The Development version of the plugin is hosted at [Github](https://github.com/dshanske/indieweb-post-kinds).
 
 == Installation ==
 
@@ -137,7 +141,9 @@ define('MULTIKIND', '1');
 Indieweb Post Kinds already has support for replying to Twitter posts using the Social Network Auto Poster plugin.
 
 == Changelog == 
- * *Version 1.2* - Change to store meta using [WordPress Data](https://indiewebcamp.com/WordPress_Data) proposal. Display functionality broken into individual
+ * *Version 1.2.2* - Add option to disable KSES protection on the content box. Minor cleanup
+ * *Version 1.2.1* - Add filter to support post kinds for Semantic Linkbacks plugin. Add responses to feed content. 
+ * *Version 1.2.0* - Change to store meta using [WordPress Data](https://indiewebcamp.com/WordPress_Data) proposal. Display functionality broken into individual
 pieces to make it easier to customize and edit. Multi-reply support.
  * *Version 1.1.1* - Adds theme support.
  * *Version 1.1.0* - Added new kinds - listen, watch, check-in, play at the suggestion of acegiak. 
