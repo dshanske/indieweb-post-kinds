@@ -8,7 +8,7 @@ $options = get_option('iwt_options');
 function get_kind_response_display() {
 	$meta = get_post_meta(get_the_ID(), '_resp_full', true);
 	$options = get_option('iwt_options');
-	if ( ($options['cacher']!=1) && (!empty($meta)) )
+	if ( ($options['cacher']==1) && (!empty($meta)) )
 	     {
         	return apply_filters( 'kind-response-display', $meta);
 	     }

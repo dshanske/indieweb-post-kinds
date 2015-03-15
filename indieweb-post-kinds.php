@@ -436,21 +436,22 @@ function kind_archive_title($title)
 
 function it_publish ( $ID, $post=null)
   {
-     $cite = get_post_meta($ID, 'mf2_cite', true);
-     if (!empty($cite[0]) && isset($cite[0]['url']))
-	 {
-     		send_webmention(get_permalink($ID), $cite[0]['url']);
- 	 }
+     $cites = get_post_meta($ID, 'mf2_cite', true);
+     foreach ($cites as $cite) {
+        if (!empty($cite) && isset($cite['url'])) {
+     		  send_webmention(get_permalink($ID), $cite['url']);
+        }
+ 	  }
   }
 
 
 function it_transition($old,$new,$post){
-                it_publish($post->ID,$post);
+  it_publish($post->ID,$post);
 }
 
 function json_rest_add_kindmeta($_post,$post,$context) {
-	$response = get_post_meta( $post["ID"], 'response');
-	if (!empty($response)) { $_post['response'] = $response; }
+	$response = get_post_meta( $post["ID"], 'mf2_cite');
+	if (!empty($response)) { $_post['mf2_cite'] = $response; }
 	return $_post;
 }
 
