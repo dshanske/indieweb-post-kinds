@@ -10,7 +10,7 @@
  */
 
 if ( ! defined( 'POST_KIND_EXCLUDE' ) )
-    define('POST_KIND_EXCLUDE', 'play,wish,rsvp,checkin');
+    define('POST_KIND_EXCLUDE', 'play,wish,checkin');
 
 if ( ! defined( 'MULTIKIND' ) )
     define('MULTIKIND', '0');
@@ -437,6 +437,7 @@ function kind_archive_title($title)
 function it_publish ( $ID, $post=null)
   {
      $cites = get_post_meta($ID, 'mf2_cite', true);
+     if (empty($cites)) { return; }
      foreach ($cites as $cite) {
         if (!empty($cite) && isset($cite['url'])) {
      		  send_webmention(get_permalink($ID), $cite['url']);
