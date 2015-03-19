@@ -22,7 +22,7 @@ function kindbox_add_postmeta_boxes() {
 
   add_meta_box(
     'responsebox-meta',      // Unique ID
-    esc_html__( 'Citation/In Response To', 'kind_taxonomy' ),    // Title
+    esc_html__( 'Citation/In Response To', 'Post kind' ),    // Title
     'response_metabox',   // Callback function
     'post',         // Admin page (or post type)
     'normal',         // Context
@@ -36,24 +36,28 @@ function response_metabox( $object, $box ) {
 	$kindmeta = get_kind_meta ($object->ID);
   ?>  
   <p>
-    <label for="response_url"><?php _e( "URL", 'kind_taxonomy' ); ?></label>
+    <label for="response_url"><?php _e( "URL", 'Post kind' ); ?></label>
     <br />
-    <input type="text" name="response_url" id="response_url" value="<?php if (isset ($kindmeta['cite'][0]['url'])) {echo esc_attr( $kindmeta['cite']['url'] ); } ?>" size="70" />
+    <input type="text" name="response_url" id="response_url" value="<?php if (isset ($kindmeta['cite'][0]['url'])) {echo esc_attr( $kindmeta['cite'][0]['url'] ); } ?>" size="70" />
     <br />
-    <label for="response_name"><?php _e( "Name", 'kind_taxonomy' ); ?></label>
+    <label for="response_name"><?php _e( "Name", 'Post kind' ); ?></label>
     <br />
     <input type="text" name="response_name" id="response_name" value="<?php if (isset ($kindmeta['cite'][0]['name'])) { echo esc_attr($kindmeta['cite'][0]['name']); } ?>" size="70" />
 	<br />
-    <label for="response_author"><?php _e( "Author Name", 'kind_taxonomy' ); ?></label>
+    <label for="response_author"><?php _e( "Author/Artist Name", 'Post kind' ); ?></label>
     <br />
     <input type="text" name="response_author" id="response_author" value="<?php if (isset ($kindmeta['cite'][0]['card'][0]['name'])) { echo esc_attr($kindmeta['cite'][0]['card'][0]['name']); } ?>" size="70" />
         <br />
-    <label for="response_photo"><?php _e( "Author Photo", 'kind_taxonomy' ); ?></label>
+    <label for="response_photo"><?php _e( "Author Photo", 'Post kind' ); ?></label>
     <br />
     <input type="text" name="response_photo" id="response_photo" value="<?php if (isset ($kindmeta['cite'][0]['card'][0]['photo'])) { echo esc_attr($kindmeta['cite'][0]['card'][0]['photo']); } ?>" size="70" />
         <br />
+    <label for="response_publication"><?php _e( "Publication/Album", 'Post kind' ); ?></label>
+    <br />
+    <input type="text" name="response_publication" id="response_publication" value="<?php if (isset ($kindmeta['cite'][0]['publication'])) { echo esc_attr($kindmeta['cite'][0]['publication']); } ?>" size="70" />
+        <br />
 
-    <label for="response_content"><?php _e( "Content or Excerpt", 'kind_taxonomy' ); ?></label>
+    <label for="response_content"><?php _e( "Content or Excerpt", 'Post kind' ); ?></label>
     <br />
     <textarea name="response_content" id="response_content" cols="70"><?php if (isset ($kindmeta['cite'][0]['content'])) { echo esc_attr( $kindmeta['cite'][0]['content'] ); } ?></textarea>
   
@@ -107,6 +111,9 @@ function responsebox_save_post_meta( $post_id, $post ) {
   }
   if( isset( $_POST[ 'response_photo' ] ) && !empty( $_POST[ 'response_photo' ] ) ) {
     $cite[0]['card'][0]['photo'] = esc_url_raw( $_POST[ 'response_photo' ] ) ;
+  }
+  if( isset( $_POST[ 'response_publication' ] ) && !empty( $_POST[ 'response_publication' ] ) ) {
+    $cite[0]['publication'] = esc_attr( $_POST[ 'response_publication' ] ) ;
   }
 	if( isset( $_POST[ 'response_content' ] ) && !empty( $_POST[ 'response_content' ] ) ) {
     $allowed = wp_kses_allowed_html( 'post' );

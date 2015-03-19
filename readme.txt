@@ -1,7 +1,7 @@
 === Indieweb Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention
-Stable tag: 1.2.2
+Stable tag: 1.2.3
 Requires at least: 4.0
 Tested up to: 4.1
 License: GPLv2 or later
@@ -141,6 +141,7 @@ define('MULTIKIND', '1');
 Indieweb Post Kinds already has support for replying to Twitter posts using the Social Network Auto Poster plugin.
 
 == Changelog == 
+ * *Version 1.2.3* - Fix bug introduced in 1.2.2 with URL storage. Add publication as a field option
  * *Version 1.2.2* - Add option to disable KSES protection on the content box. Minor cleanup
  * *Version 1.2.1* - Add filter to support post kinds for Semantic Linkbacks plugin. Add responses to feed content. 
  * *Version 1.2.0* - Change to store meta using [WordPress Data](https://indiewebcamp.com/WordPress_Data) proposal. Display functionality broken into individual

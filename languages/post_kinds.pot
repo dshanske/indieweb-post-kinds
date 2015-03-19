@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IndieWeb Post Kinds package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IndieWeb Post Kinds 1.2.2\n"
+"Project-Id-Version: IndieWeb Post Kinds 1.2.3\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2015-03-15 14:54:02+00:00\n"
+"POT-Creation-Date: 2015-03-19 19:32:17+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "X-Generator: grunt-wp-i18n 0.4.9\n"
 
-#: indieweb-post-kinds.php:469
+#: indieweb-post-kinds.php:470
 msgid "This Plugin Requires Webmention Support"
 msgstr ""
 
@@ -42,19 +42,19 @@ msgstr ""
 msgid "Disable Content Protection on Responses"
 msgstr ""
 
-#: iwt-config.php:19
+#: iwt-config.php:20
 msgid "Response Content Allowed Html Elements"
 msgstr ""
 
-#: iwt-config.php:24
+#: iwt-config.php:26
 msgid "Options for Displaying the Response"
 msgstr ""
 
-#: iwt-config.php:51
+#: iwt-config.php:53
 msgid "Indieweb Post Kinds"
 msgstr ""
 
-#: iwt-config.php:53
+#: iwt-config.php:55
 msgid "Adds support for responding and interacting with other sites"
 msgstr ""
 
@@ -62,7 +62,7 @@ msgstr ""
 msgid "Invalid post"
 msgstr ""
 
-#: kind-meta.php:100
+#: kind-meta.php:137
 msgid "by"
 msgstr ""
 
@@ -79,14 +79,18 @@ msgid "Name"
 msgstr ""
 
 #: kind-postmeta.php:47
-msgid "Author Name"
+msgid "Author/Artist Name"
 msgstr ""
 
 #: kind-postmeta.php:51
 msgid "Author Photo"
 msgstr ""
 
-#: kind-postmeta.php:56
+#: kind-postmeta.php:55
+msgid "Publication/Album"
+msgstr ""
+
+#: kind-postmeta.php:60
 msgid "Content or Excerpt"
 msgstr ""
 
@@ -332,24 +336,69 @@ msgctxt "Post kind"
 msgid "Plays"
 msgstr ""
 
-#: indieweb-post-kinds.php:216
+#: indieweb-post-kinds.php:216 kind-meta.php:24
 msgctxt "Post kind"
 msgid "Watched"
 msgstr ""
 
-#: indieweb-post-kinds.php:217
+#: indieweb-post-kinds.php:217 kind-meta.php:25
 msgctxt "Post kind"
 msgid "Checked In"
 msgstr ""
 
-#: indieweb-post-kinds.php:218
+#: indieweb-post-kinds.php:218 kind-meta.php:26
 msgctxt "Post kind"
 msgid "Desires"
 msgstr ""
 
-#: indieweb-post-kinds.php:219
+#: indieweb-post-kinds.php:219 kind-meta.php:27
 msgctxt "Post kind"
 msgid "Played"
+msgstr ""
+
+#: kind-meta.php:13 kind-meta.php:14 kind-meta.php:20
+msgctxt "Post kind"
+msgid " "
+msgstr ""
+
+#: kind-meta.php:15
+msgctxt "Post kind"
+msgid "<span class=\"verb\">In Reply To</span> %1s"
+msgstr ""
+
+#: kind-meta.php:16
+msgctxt "Post kind"
+msgid "Reposted %1s"
+msgstr ""
+
+#: kind-meta.php:17
+msgctxt "Post kind"
+msgid "Liked %1s"
+msgstr ""
+
+#: kind-meta.php:18
+msgctxt "Post kind"
+msgid "Favorited %1s"
+msgstr ""
+
+#: kind-meta.php:19
+msgctxt "Post kind"
+msgid "Bookmarked %1s"
+msgstr ""
+
+#: kind-meta.php:21
+msgctxt "Post kind"
+msgid "Tagged %1s"
+msgstr ""
+
+#: kind-meta.php:22
+msgctxt "Post kind"
+msgid "RSVPed %1s"
+msgstr ""
+
+#: kind-meta.php:23
+msgctxt "Post kind"
+msgid "Listened to %1s"
 msgstr ""
 
 #: indieweb-post-kinds.php:205 indieweb-post-kinds.php:206
@@ -396,4 +445,9 @@ msgstr ""
 #: indieweb-post-kinds.php:215
 msgctxt "Post kind verbs"
 msgid "Listened to "
+msgstr ""
+
+#: kind-meta.php:70
+msgctxt "Post kinds"
+msgid "a post"
 msgstr ""
