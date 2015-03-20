@@ -737,4 +737,19 @@ a.empty:before {
   content: '\f447';
 }
 
+.kind-weather .verb:before,
+.kind-weather label:before {
+  content: '\f440';
+}
+
+.kind-exercise .verb:before,
+.kind-exercise label:before {
+  content: '\f304';
+}
+
+.kind-travel .verb:before,
+.kind-travel label:before {
+  content: '\f427';
+}
+
 /*# sourceMappingURL=kind-admin.css.map */

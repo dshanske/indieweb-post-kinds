@@ -1,7 +1,7 @@
 === Indieweb Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention
-Stable tag: 1.2.3
+Stable tag: 1.3.0
 Requires at least: 4.0
 Tested up to: 4.1
 License: GPLv2 or later
@@ -60,13 +60,17 @@ first as a precaution.
 Many sites will not need all of the kinds set up. What kinds of posts you wish
 to publish are specific to your needs.
 
-Kinds under development are hidden by default, but can be exposed if needed. 
+By default, only note, article, photo, like, and reply are enabled so you can get used to them.
 
-To exclude kinds from the post selector, add the following to your wp-config.php file.
+You can enable/disable more based on preference. Some may be enabled by plugins. To include kinds in the post selector, 
+add the following to your wp-config.php file.
 
-define('POST_KIND_EXCLUDE', 'game,wish,rsvp,checkin');
+define('POST_KIND_INCLUDE', 'wish,rsvp,checkin');
 
-This will exclude rsvp, checkin, game and wish from showing up in the post editor. It will not disable them on existing posts. 
+This will allow rsvp, checkin, and wish to show up in the post editor. Not having a post kind enabled will not disable
+the functionality on existing posts.
+
+There is also a filter to do this on the fly.
 
 = The Non-Response Kinds =
 
@@ -75,10 +79,7 @@ may make it a Passive Kind.
 
  * **Article** - traditional long form content - a post with an explicit post name(title)
  * **Note** - short content - a post with just plain content
- * **Photo** - image or photo post - a post with an embedded image as its primary focus\
- * **Check-In** - Identifying you are at a place. This would use the extended
-WordPress Geodata. (Under Development)
-
+ * **Photo** - image or photo post - a post with an embedded image as its primary focus
 
 = The Response Kinds =
 
@@ -103,13 +104,17 @@ posts.
  * **Play** - playing a game (Under Development)
  * **Wish** - a post indicating a desire/wish. The archive of which would be
 	a wishlist, such as a gift registry or similar. (Under Development)
+ * **Weather** - A weather post would be current weather conditions
+ * **Exercise** - Representing some form of physical activity
+ * **Travel** - Representing a trip
+ * **Check-In** - Identifying you are at a place. This would use the extended WordPress Geodata.
+   It will require the Simple Location plugin to add location awareness to posts.(Under Development)
+
 
 = Future Kinds =
 
 With the recent expansion of kinds into passive types of posts, there may be
 additional ones added. Feedback appreciated
-* **Weather** - A weather post would be current weather conditions
-* **Exercise** - Representing some form of physical activity
 
 == WordPress GeoData ==
 
@@ -141,6 +146,9 @@ define('MULTIKIND', '1');
 Indieweb Post Kinds already has support for replying to Twitter posts using the Social Network Auto Poster plugin.
 
 == Changelog == 
+ * *Version 1.3.0* - Add functionality to better customize displays for different types. Add default options on activation. Show/hide check-in if
+  Simple Location plugin is enabled. Change exclude types to include types. Add filter for plugins to show/hide kinds in the selector.
+  Reduce default to a handful of kinds for new users. The plan going forward is to have some functionality enabled by secondary plugins
  * *Version 1.2.3* - Fix bug introduced in 1.2.2 with URL storage. Add publication as a field option
  * *Version 1.2.2* - Add option to disable KSES protection on the content box. Minor cleanup
  * *Version 1.2.1* - Add filter to support post kinds for Semantic Linkbacks plugin. Add responses to feed content. 

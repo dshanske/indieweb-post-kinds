@@ -3,14 +3,14 @@
  * Plugin Name: IndieWeb Post Kinds
  * Plugin URI: https://wordpress.org/plugins/indieweb-post-kinds/
  * Description: Ever want to reply to someone else's post with a post on your own site? Or to "like" someone else's post, but with your own site?
- * Version: 1.2.3
+ * Version: 1.3.0
  * Author: David Shanske
  * Author URI: http://david.shanske.com
  * Text Domain: Post kinds
  */
 
-if ( ! defined( 'POST_KIND_EXCLUDE' ) )
-    define('POST_KIND_EXCLUDE', 'play,wish,checkin');
+if ( ! defined( 'POST_KIND_INCLUDE' ) )
+    define('POST_KIND_INCLUDE', '');
 
 if ( ! defined( 'MULTIKIND' ) )
     define('MULTIKIND', '0');
@@ -97,6 +97,15 @@ function activate_kinds() {
     deactivate_plugins( plugin_basename( __FILE__ ) );
     wp_die( 'You have Indieweb Taxonomy activated. Post Kinds replaces this plugin. Please disable Taxonomy before activating' );
   }
+  if (!get_option('iwt_options') ) {
+    $option = array (
+        'embeds' => '1',
+        'cacher' => '0',
+        'disableformats' => '0',
+        'protection' => '0'
+    );
+    update_option('iwt_options', $option);
+  }
   register_taxonomy_kind();
   kind_defaultterms();
 }
@@ -135,93 +144,6 @@ function register_taxonomy_kind() {
 
     register_taxonomy( 'kind', array('post'), $args );
 }
-
-/**
-  * Returns an array of post kind slugs to their translated and pretty display versions
-	 *
-
-	 *
-	 * @return array The array of translated post kind names.
-	 */
-	function get_post_kind_strings() {
-	        $strings = array(
-	                'article' => _x( 'Article', 'Post kind' ),
-	                'note'    => _x( 'Note',    'Post kind' ),
-	                'reply'     => _x( 'Reply',     'Post kind' ),
-	                'repost'  => _x( 'Repost',  'Post kind' ),
-	                'like'     => _x( 'Like',     'Post kind' ),
-	                'favorite'    => _x( 'Favorite',    'Post kind' ),
-	                'bookmark'    => _x( 'Bookmark',    'Post kind' ),
-	                'photo'   => _x( 'Photo',   'Post kind' ),
-	                'tag'    => _x( 'Tag',    'Post kind' ),
-	                'rsvp'    => _x( 'RSVP',    'Post kind' ),
-			'listen'   => _x( 'Listen', 'Post kind' ),
-                        'watch'   => _x( 'Watch', 'Post kind' ),
-                        'checkin'   => _x( 'Checkin', 'Post kind' ),
-                        'wish'   => _x( 'Wish', 'Post kind' ),
-                        'play'   => _x( 'Play', 'Post kind' )
-	        );
-        return apply_filters( 'kind_strings', $strings );
-	}
-
-/**
-  * Returns an array of post kind slugs to their pluralized translated and pretty display versions
-         *
-
-         *
-         * @return array The array of translated post kind names.
-         */
-        function get_post_kind_strings_plural() {
-                $strings = array(
-                        'article' => _x( 'Articles', 'Post kind' ),
-                        'note'    => _x( 'Notes',    'Post kind' ),
-                        'reply'     => _x( 'Replies',     'Post kind' ),
-                        'repost'  => _x( 'Reposts',  'Post kind' ),
-                        'like'     => _x( 'Likes',     'Post kind' ),
-                        'favorite'    => _x( 'Favorites',    'Post kind' ),
-                        'bookmark'    => _x( 'Bookmarks',    'Post kind' ),
-                        'photo'   => _x( 'Photos',   'Post kind' ),
-                        'tag'    => _x( 'Tags',    'Post kind' ),
-                        'rsvp'    => _x( 'RSVPs',    'Post kind' ),
-			'listen'   => _x( 'Listens', 'Post kind' ),
-                        'watch'   => _x( 'Watches', 'Post kind' ),
-                        'checkin'   => _x( 'Checkins', 'Post kind' ),
-                        'wish'   => _x( 'Wishlist', 'Post kind' ),
-                        'play'   => _x( 'Plays', 'Post kind' )    
-                );
-        return apply_filters( 'kind_strings_plural', $strings );
-        }
-
-
-/**
-  * Returns an array of post kind slugs to their translated verbs
-         *
-
-         *
-         * @return array The array of translated post kind verbs.
-         */
-        function get_post_kind_verb_strings() {
-               	$strings = array(
-                        'article' => _x( ' ', 'Post kind verbs' ),
-                       	'note'    => _x( ' ',    'Post kind verbs' ),
-                        'reply'     => _x( 'In Reply To',     'Post kind verbs' ),
-                        'repost'  => _x( 'Reposted',  'Post kind verbs' ),
-                        'like'     => _x( 'Liked',     'Post kind verbs' ),
-                        'favorite'    => _x( 'Favorited',    'Post kind verbs' ),
-                        'bookmark'    => _x( 'Bookmarked',    'Post kind verbs' ),
-                        'photo'   => _x( ' ',   'Post kind verbs' ),
-                        'tag'    => _x( 'Tagged',    'Post kind verbs' ),
-                        'rsvp'    => _x( 'RSVPed',    'Post kind verbs' ),
-                        'listen'    => _x( 'Listened to ',    'Post kind verbs' ),
-                        'watch'   => _x( 'Watched', 'Post kind' ),
-                        'checkin'   => _x( 'Checked In', 'Post kind' ),
-                        'wish'   => _x( 'Desires', 'Post kind' ),
-                        'play'   => _x( 'Played', 'Post kind' )    
-                );
-               return apply_filters( 'kind_verbs', $strings );
-
-        }
-
 
 /**
  * Retrieves an array of post kind slugs.
@@ -396,7 +318,30 @@ function kind_defaultterms () {
                      ) );
 
             }
+        if (!term_exists('weather', 'kind')) {
+              wp_insert_term('weather', 'kind',
+                array(
+                          'description'=> 'Weather',
+                          'slug' => 'weather',
+                     ) );
 
+            }
+        if (!term_exists('exercise', 'kind')) {
+              wp_insert_term('exercise', 'kind',
+                array(
+                          'description'=> 'Exercise',
+                          'slug' => 'exercise',
+                     ) );
+
+            }
+        if (!term_exists('travel', 'kind')) {
+              wp_insert_term('travel', 'kind',
+                array(
+                          'description'=> 'Trip or Travel',
+                          'slug' => 'travel',
+                     ) );
+
+            }
        // Allows for extensions to add terms to the plugin
        do_action('kind_add_term');
 

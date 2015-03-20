@@ -15,7 +15,18 @@ function kind_remove_meta_box(){
  
   function kind_select_metabox( $post ) {
      $strings=get_post_kind_strings();
-     $exclude = explode(",", POST_KIND_EXCLUDE);
+     $include = explode(",", POST_KIND_INCLUDE);
+     $include = array_merge($include, array ( 'note', 'reply', 'article', 'like', 'photo') );
+     // If Simple Location is Enabled, include the check-in type
+     if (function_exists('simloc_init') ) {
+        $include[] = 'checkin';
+     }
+     // Filter Kinds
+     $include = array_unique(apply_filters('kind_include', $include));
+     // Note cannot be removed or disabled without hacking the code
+     if (!in_array('note', $include) ) {
+      $include[]='note';
+     }
      $default = get_term_by('slug', 'note', 'kind');
      $terms = get_terms('kind', array('hide_empty' => 0) );
      $postterms = get_the_terms( $post->ID, 'kind' );
@@ -26,7 +37,7 @@ function kind_remove_meta_box(){
      foreach($terms as $term){
                     $id = 'kind-' . $term->term_id;
 		    $slug = $term->slug;
-		    if (!in_array($slug, $exclude) )
+		    if (in_array($slug, $include) )
 			{
                    		 echo "<li id='$id' class='kind-$slug'><label class='selectit'>";
                     		echo "<input type='radio' id='in-$id' name='tax_input[kind]'".checked($current,$term->term_id,false)."value='$term->term_id' />$strings[$slug]<br />";
