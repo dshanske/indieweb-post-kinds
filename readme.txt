@@ -60,7 +60,9 @@ first as a precaution.
 Many sites will not need all of the kinds set up. What kinds of posts you wish
 to publish are specific to your needs.
 
-By default, only note, article, photo, like, and reply are enabled so you can get used to them.
+By default, only note, article, photo and reply are enabled so you can get used to them.
+
+You can add Media Check-Ins(watching or listening), or Link Sharing(likes or bookmark) directly from the settings page.
 
 You can enable/disable more based on preference. Some may be enabled by plugins. To include kinds in the post selector, 
 add the following to your wp-config.php file.

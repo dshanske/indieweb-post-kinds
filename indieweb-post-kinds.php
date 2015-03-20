@@ -102,7 +102,9 @@ function activate_kinds() {
         'embeds' => '1',
         'cacher' => '0',
         'disableformats' => '0',
-        'protection' => '0'
+        'protection' => '0',
+        'intermediate' => '0',
+        'watchlisten' => '0'
     );
     update_option('iwt_options', $option);
   }

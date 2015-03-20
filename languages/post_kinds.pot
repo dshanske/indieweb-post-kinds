@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: IndieWeb Post Kinds 1.3.0\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2015-03-20 16:47:49+00:00\n"
+"POT-Creation-Date: 2015-03-20 17:20:58+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "X-Generator: grunt-wp-i18n 0.4.9\n"
 
-#: indieweb-post-kinds.php:415
+#: indieweb-post-kinds.php:417
 msgid "This Plugin Requires Webmention Support"
 msgstr ""
 
@@ -46,15 +46,23 @@ msgstr ""
 msgid "Response Content Allowed Html Elements"
 msgstr ""
 
-#: iwt-config.php:26
+#: iwt-config.php:23
+msgid "Link Sharing"
+msgstr ""
+
+#: iwt-config.php:24
+msgid "Media Check-Ins"
+msgstr ""
+
+#: iwt-config.php:30
 msgid "Options for Displaying the Response"
 msgstr ""
 
-#: iwt-config.php:53
+#: iwt-config.php:57
 msgid "Indieweb Post Kinds"
 msgstr ""
 
-#: iwt-config.php:55
+#: iwt-config.php:59
 msgid "Adds support for responding and interacting with other sites"
 msgstr ""
 
@@ -112,72 +120,72 @@ msgstr ""
 msgid "http://david.shanske.com"
 msgstr ""
 
-#: indieweb-post-kinds.php:116 indieweb-post-kinds.php:130
+#: indieweb-post-kinds.php:118 indieweb-post-kinds.php:132
 msgctxt "Post kind"
 msgid "Kinds"
 msgstr ""
 
-#: indieweb-post-kinds.php:117
+#: indieweb-post-kinds.php:119
 msgctxt "Post kind"
 msgid "Kind"
 msgstr ""
 
-#: indieweb-post-kinds.php:118
+#: indieweb-post-kinds.php:120
 msgctxt "Post kind"
 msgid "Search Kinds"
 msgstr ""
 
-#: indieweb-post-kinds.php:119
+#: indieweb-post-kinds.php:121
 msgctxt "Post kind"
 msgid "Popular Kinds"
 msgstr ""
 
-#: indieweb-post-kinds.php:120
+#: indieweb-post-kinds.php:122
 msgctxt "Post kind"
 msgid "All Kinds"
 msgstr ""
 
-#: indieweb-post-kinds.php:121
+#: indieweb-post-kinds.php:123
 msgctxt "Post kind"
 msgid "Parent Kind"
 msgstr ""
 
-#: indieweb-post-kinds.php:122
+#: indieweb-post-kinds.php:124
 msgctxt "Post kind"
 msgid "Parent Kind:"
 msgstr ""
 
-#: indieweb-post-kinds.php:123
+#: indieweb-post-kinds.php:125
 msgctxt "Post kind"
 msgid "Edit Kind"
 msgstr ""
 
-#: indieweb-post-kinds.php:124
+#: indieweb-post-kinds.php:126
 msgctxt "Post kind"
 msgid "Update Kind"
 msgstr ""
 
-#: indieweb-post-kinds.php:125
+#: indieweb-post-kinds.php:127
 msgctxt "Post kind"
 msgid "Add New Kind"
 msgstr ""
 
-#: indieweb-post-kinds.php:126
+#: indieweb-post-kinds.php:128
 msgctxt "Post kind"
 msgid "New Kind"
 msgstr ""
 
-#: indieweb-post-kinds.php:127
+#: indieweb-post-kinds.php:129
 msgctxt "Post kind"
 msgid "Separate kinds with commas"
 msgstr ""
 
-#: indieweb-post-kinds.php:128
+#: indieweb-post-kinds.php:130
 msgctxt "Post kind"
 msgid "Add or remove kinds"
 msgstr ""
 
-#: indieweb-post-kinds.php:129
+#: indieweb-post-kinds.php:131
 msgctxt "Post kind"
 msgid "Choose from the most used kinds"
 msgstr ""

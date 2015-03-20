@@ -1,34 +1,150 @@
 <?php 
-// Kind Meta Display Function
+// Kind Meta Formatting Functions
+
+/**
+  * Returns an array of post kind slugs to their translated and pretty display versions
+  *
+  * @return array The array of translated post kind names.
+  */
+function get_post_kind_strings() {
+  $strings = array(
+    'article' => _x( 'Article', 'Post kind' ),
+    'note'    => _x( 'Note',    'Post kind' ),
+    'reply'     => _x( 'Reply',     'Post kind' ),
+    'repost'  => _x( 'Repost',  'Post kind' ),
+    'like'     => _x( 'Like',     'Post kind' ),
+    'favorite'    => _x( 'Favorite',    'Post kind' ),
+    'bookmark'    => _x( 'Bookmark',    'Post kind' ),
+    'photo'   => _x( 'Photo',   'Post kind' ),
+    'tag'    => _x( 'Tag',    'Post kind' ),
+    'rsvp'    => _x( 'RSVP',    'Post kind' ),
+    'listen'   => _x( 'Listen', 'Post kind' ),
+    'watch'   => _x( 'Watch', 'Post kind' ),
+    'checkin'   => _x( 'Checkin', 'Post kind' ),
+    'wish'   => _x( 'Wish', 'Post kind' ),
+    'play'   => _x( 'Play', 'Post kind' ),
+    'weather'   => _x( 'Weather', 'Post kind' ),
+    'exercise'   => _x( 'Exercise', 'Post kind' ),
+    'travel'   => _x( 'Travel', 'Post kind' )
+  );
+  return apply_filters( 'kind_strings', $strings );
+ }
+
+/**
+  * Returns an array of post kind slugs to their pluralized translated and pretty display versions
+  *
+  * @return array The array of translated post kind names.
+  */
+function get_post_kind_strings_plural() {
+  $strings = array(
+    'article' => _x( 'Articles', 'Post kind' ),
+    'note'    => _x( 'Notes',    'Post kind' ),
+    'reply'     => _x( 'Replies',     'Post kind' ),
+    'repost'  => _x( 'Reposts',  'Post kind' ),
+    'like'     => _x( 'Likes',     'Post kind' ),
+    'favorite'    => _x( 'Favorites',    'Post kind' ),
+    'bookmark'    => _x( 'Bookmarks',    'Post kind' ),
+    'photo'   => _x( 'Photos',   'Post kind' ),
+    'tag'    => _x( 'Tags',    'Post kind' ),
+    'rsvp'    => _x( 'RSVPs',    'Post kind' ),
+    'listen'   => _x( 'Listens', 'Post kind' ),
+    'watch'   => _x( 'Watches', 'Post kind' ),
+    'checkin'   => _x( 'Checkins', 'Post kind' ),
+    'wish'   => _x( 'Wishlist', 'Post kind' ),
+    'play'   => _x( 'Plays', 'Post kind' ),
+    'weather'   => _x( 'Weather', 'Post kind' ),
+    'exercise'   => _x( 'Exercises', 'Post kind' ),
+    'travel'   => _x( 'Travels', 'Post kind' )
+  );
+  return apply_filters( 'kind_strings_plural', $strings );
+}
 
 /**
   * Returns an array of post kind slugs to their translated verbs
-         *
+  *
+  * @return array The array of translated post kind verbs.
+  */
+function get_post_kind_verb_strings() {
+  $strings = array(
+    'article' => _x( ' ', 'Post kind' ),
+    'note'    => _x( ' ',    'Post kind' ),
+    'reply'     => _x( 'In Reply To',     'Post kind' ),
+    'repost'  => _x( 'Reposted',  'Post kind' ),
+    'like'     => _x( 'Liked',     'Post kind' ),
+    'favorite'    => _x( 'Favorited',    'Post kind' ),
+    'bookmark'    => _x( 'Bookmarked',    'Post kind' ),
+    'photo'   => _x( ' ',   'Post kind' ),
+    'tag'    => _x( 'Tagged',    'Post kind' ),
+    'rsvp'    => _x( 'RSVPed',    'Post kind' ),
+    'listen'    => _x( 'Listened to ',    'Post kind' ),
+    'watch'   => _x( 'Watched', 'Post kind' ),
+    'checkin'   => _x( 'Checked In', 'Post kind' ),
+    'wish'   => _x( 'Desires', 'Post kind' ),
+    'play'   => _x( 'Played', 'Post kind' ),
+    'weather'   => _x( 'Weathered', 'Post kind' ),
+    'exercise'   => _x( 'Exercised', 'Post kind' ),
+    'travel'   => _x( 'Traveled', 'Post kind' )
+  );
+  return apply_filters( 'kind_verbs', $strings );
+}
 
-         *
-         * @return array The array of translated post kind verbs.
-         */
-        function get_post_kind_phrases() {
-                $strings = array(
-                        'article' => _x( ' ', 'Post kind' ),
-                        'note'    => _x( ' ',    'Post kind' ),
-                        'reply'     => _x( '<span class="verb">In Reply To</span> %1s',     'Post kind' ),
-                        'repost'  => _x( 'Reposted %1s',  'Post kind' ),
-                        'like'     => _x( 'Liked %1s',     'Post kind' ),
-                        'favorite'    => _x( 'Favorited %1s',    'Post kind' ),
-                        'bookmark'    => _x( 'Bookmarked %1s',    'Post kind' ),
-                        'photo'   => _x( ' ',   'Post kind' ),
-                        'tag'    => _x( 'Tagged %1s',    'Post kind' ),
-                        'rsvp'    => _x( 'RSVPed %1s',    'Post kind' ),
-                        'listen'    => _x( 'Listened to %1s',    'Post kind' ),
-                        'watch'   => _x( 'Watched', 'Post kind' ),
-                        'checkin'   => _x( 'Checked In', 'Post kind' ),
-                        'wish'   => _x( 'Desires', 'Post kind' ),
-                        'play'   => _x( 'Played', 'Post kind' )
-                );
-               return apply_filters( 'kind_phrases', $strings );
+/**
+  * Uses an array of post kind slugs with the author terminologies
+  *
+  * @return array The appropriate post kind author string.
+  */
+function get_post_kind_author_string($verb) {
+  $strings = array(
+    'article' => _x( 'by', 'Post kind' ),
+  );
+  $strings = apply_filters( 'kind_author_string', $strings );
+  if (array_key_exists($verb, $strings) ) {
+    return $strings[$verb];
+  }
+  else {
+    return _x('by', 'Post kind');
+  }
+}
 
-        }
+/**
+  * Returns the publication terminology for the publication
+  *
+  * @return array The post kind publication string.
+  */
+function get_post_kind_publication_string($verb) {
+  $strings = array(
+    'article' => _x( 'on', 'Post kind' ),
+    'listen' => _x( '-', 'Post kind' ),
+    'watch' => _x( '-', 'Post kind' )
+  );
+  $strings = apply_filters( 'kind_publication_string', $strings );
+  if (array_key_exists($verb, $strings) ) {
+    return $strings[$verb];
+  }
+  else {
+    return _x('on', 'Post kind');
+  }
+}
+
+/**
+  * Returns an array of domains with the post type terminologies
+  *
+  * @return array A translated post type string for specific domain or 'a post'
+  */
+function get_post_kind_post_type_string($url) {
+  $strings = array(
+    'twitter.com' => _x( 'a tweet', 'Post kind' ),
+    'vimeo.com' => _x( 'a video', 'Post kind' ),
+    'youtube.com'   => _x( 'a video', 'Post kind' )
+  );
+  $domain = extract_domain_name($url);
+  if (array_key_exists($domain, $strings) ) {
+    return apply_filters( 'kind_post_type_string', $strings[$domain] );
+  }
+  else {
+    return _x('a post', 'Post kind'); 
+  }
+}
 
 
 // Extracts the Domain Name for a URL for presentation purposes
@@ -56,7 +172,7 @@ function kind_display_hcards($cards) {
   foreach ($cards as $key => $value) {
     $authors[] = kind_display_card($value);
   }
-  return implode(" and ", $authors);
+  return implode(_x(' and ', 'Post kind') , $authors);
 }
 
 // Mark up a url appropriately
@@ -67,7 +183,7 @@ function kind_display_url($cite) {
           $url = ' ' . '<a class="u-url" href="' . $cite['url'] . '">' . '<span class="p-name">' . $cite['name'] . '</span>' . '</a>';
     }
     else {
-      $url = ' ' . '<a class="u-url" href="' . $cite['url'] . '">' . '<span class="p-name">' . _x ('a post', 'Post kinds') . '</span>' . '</a>';
+      $url = ' ' . '<a class="u-url" href="' . $cite['url'] . '">' . '<span class="p-name">' . get_post_kind_post_type_string($cite['url']) . '</span>' . '</a>';
     }
   }
   return $url;
@@ -81,16 +197,16 @@ function kind_display_verb($v) {
 }
 
 // Take the url and return the domain name marked up
-function kind_display_domain($url) {
+function kind_display_domain($url, $verb) {
   if (empty($url) ) { return ""; }
-  $domain = ' (<em>' . extract_domain_name($url) . '</em>)';
+  $domain = '<em>' . get_post_kind_publication_string($verb) . ' ' . extract_domain_name($url) . '</em>';
   return $domain;
 }
 
 // Take the url and return the domain name marked up
-function kind_display_publication($publish) {
+function kind_display_publication($publish, $verb) {
   if (empty($publish) ) { return ""; }
-  $pub = ' (<em><span class="p-publication">' . $publish . '</span></em>)';
+  $pub = '<em>' . get_post_kind_publication_string($verb) . ' ' . '<span class="p-publication">' . $publish . '</span></em>';
   return $pub;
 }
 
@@ -131,32 +247,32 @@ function kind_display_cite($cite, $verb) {
   $embed = "";
   $cards = "";
   $content = "";
-  $v = kind_display_verb($verb);
+  $v = kind_display_verb($verb) . ' ';
   if ( isset($cite['card']) ) {
     $cards = kind_display_hcards($cite['card']);
-    $cards = __('by', "Post kinds") . ' ' . $cards;
+    $cards = ' ' . get_post_kind_author_string($verb) . ' ' . $cards;
   }
   if ( isset($cite['url']) ) {
     $name = kind_display_url($cite);
     $embed = kind_display_embeds($cite['url']);
     if ( isset($cite['publication']) ) {
-      $domain = kind_display_publication($cite['publication']);
+      $domain = ' ' . kind_display_publication($cite['publication'], $verb);
     }
     else {
-      $domain = kind_display_domain($cite['url']);
+      $domain = ' ' . kind_display_domain($cite['url'], $verb);
     }
   }
   else {
     $name = kind_display_name($cite['name']);
     if ( isset($cite['publication']) ) {
-      $domain = kind_display_publication($cite['publication']);
+      $domain = ' ' . kind_display_publication($cite['publication'], $verb);
     }
   }
   if ( isset($cite['content']) ) {
     $content = kind_display_content($cite['content']);
   }
-  $c = $v . ' ' . $name . ' ' . $cards . $domain . $embed . $content;
-  return $c;
+  $c = $v . $name . $domain . $cards . $embed . $content;
+  return apply_filters('kind_display_cite', $c, $cite, $verb);
 }
 
 // Takes an array of cites and returns it displayed properly
