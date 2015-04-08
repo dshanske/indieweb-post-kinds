@@ -1,9 +1,5 @@
 <?php
 
-//if (class_exists('SemanticLinkbacksPlugin') ) {
-//  add_filter('comment_text', 'kind_comment_text_excerpt', 12, 3);
-//}
-
 // Replacement for the Semantic Linkbacks Comment Excerpt
 function kind_comment_text_excerpt($text, $comment = null, $args = array()) {
   // only change text for pingbacks/trackbacks/webmentions

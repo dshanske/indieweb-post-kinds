@@ -78,7 +78,7 @@ function get_post_kind_verb_strings() {
     'rsvp'    => _x( 'RSVPed',    'Post kind' ),
     'listen'    => _x( 'Listened to ',    'Post kind' ),
     'watch'   => _x( 'Watched', 'Post kind' ),
-    'checkin'   => _x( 'Checked In', 'Post kind' ),
+    'checkin'   => _x( 'Checked In At', 'Post kind' ),
     'wish'   => _x( 'Desires', 'Post kind' ),
     'play'   => _x( 'Played', 'Post kind' ),
     'weather'   => _x( 'Weathered', 'Post kind' ),
@@ -284,5 +284,3 @@ function kind_display_hcites($cites, $verb) {
   $response .= '</ul>';
   return $response;
 }
-
-

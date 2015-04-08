@@ -52,7 +52,7 @@ function response_metabox( $object, $box ) {
     <br />
     <input type="text" name="response_photo" id="response_photo" value="<?php if (isset ($kindmeta['cite'][0]['card'][0]['photo'])) { echo esc_attr($kindmeta['cite'][0]['card'][0]['photo']); } ?>" size="70" />
         <br />
-    <label for="response_publication"><?php _e( "Publication/Album", 'Post kind' ); ?></label>
+    <label for="response_publication"><?php _e( "Site Name/Publication/Album", 'Post kind' ); ?></label>
     <br />
     <input type="text" name="response_publication" id="response_publication" value="<?php if (isset ($kindmeta['cite'][0]['publication'])) { echo esc_attr($kindmeta['cite'][0]['publication']); } ?>" size="70" />
         <br />

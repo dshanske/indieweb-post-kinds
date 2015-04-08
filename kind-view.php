@@ -19,11 +19,18 @@ function get_kind_response_display() {
   if ( (!$kind)||(!response_kind($kind)) ) {
             return apply_filters( 'kind-response-display', "");
   }
-  if ( !isset($kindmeta['cite']) ) {
-         return apply_filters( 'kind-response-display', "");
+  $verb = kind_display_verb($kind);
+  switch ($kind) {
+    // Case for a Different Display for Check_In
+//    case "checkin":
+//      $resp .= kind_display_checkin($kindmeta);
+//      break;
+    default:
+      if ( !isset($kindmeta['cite']) ) {
+        return apply_filters( 'kind-response-display', "");
+      }
+      $resp .= kind_display_hcites($kindmeta['cite'], $kind);
   }
-	$verb = kind_display_verb($kind);
-  $resp .= kind_display_hcites($kindmeta['cite'], $kind);
   // Wrap the entire display in the class response
   $c .= '<div class="response">' .  $resp . '</div>';
 	update_post_meta( get_the_ID(), '_resp_full', $c); 

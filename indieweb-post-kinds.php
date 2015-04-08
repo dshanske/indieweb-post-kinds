@@ -3,7 +3,7 @@
  * Plugin Name: IndieWeb Post Kinds
  * Plugin URI: https://wordpress.org/plugins/indieweb-post-kinds/
  * Description: Ever want to reply to someone else's post with a post on your own site? Or to "like" someone else's post, but with your own site?
- * Version: 1.3.0
+ * Version: 1.3.1
  * Author: David Shanske
  * Author URI: http://david.shanske.com
  * Text Domain: Post kinds
@@ -414,7 +414,7 @@ function postkind_plugin_notice() {
         {
            echo '<div class="error"><p>';
            echo '<a href="https://wordpress.org/plugins/webmention/">';
-           _e( 'This Plugin Requires Webmention Support', 'post_kinds' );
+           _e( 'This Plugin Requires the WordPress Webmention Plugin', 'post_kinds' );
             echo '</a></p></div>';
         }
 }
