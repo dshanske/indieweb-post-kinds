@@ -34,7 +34,7 @@ class Kind_Intents {
       exit;
     }
     if (!current_user_can('publish_posts') ) {
-      status_header(400);  
+      status_header(403);  
       _e ('User Does Not Have Permission to Publish', 'Post kinds');
       exit;
     }
@@ -77,6 +77,7 @@ class Kind_Intents {
     }
     update_post_meta($post_id, 'mf2_cite', $cite); 
     // be sure to add an "exit;" to the end of your request handler
+    status_header(200);
     echo get_permalink($post_id);
     exit;
   }
