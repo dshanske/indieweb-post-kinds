@@ -90,7 +90,7 @@ class Kind_Intents {
     $cite = array();
     $cite[0] = array();
     $cite[0]['url'] = esc_url($data['url']);
-    $cite[0]['name'] = sanitize_title( trim($data['name']) );
+    $cite[0]['name'] = sanitize_title( trim($data['title']) );
     if (isset($data['text']) ) {
       $cite[0]['content'] = wp_kses_post( trim($data['text']) );
     }
