@@ -2,26 +2,26 @@
 /**
 Endpoint to Quickly Add a Reply/Like/Etc.
 */
-add_action('init', array('Kind_Intents', 'init'));
+add_action('init', array('Kind_Actions', 'init'));
 
 
-class Kind_Intents {
+class Kind_Actions {
   /**
    * Initialize the plugin.
    */
   public static function init() {
-    add_filter('query_vars', array('Kind_Intents', 'query_var'));
-    add_action('parse_query', array('Kind_Intents', 'parse_query'));
+    add_filter('query_vars', array('Kind_Actions', 'query_var'));
+    add_action('parse_query', array('Kind_Actions', 'parse_query'));
   }
   public static function query_var($vars) {
-    $vars[] = 'intent';
+    $vars[] = 'indie-action';
     return $vars;
   }
 
   public static function parse_query($wp) {
     $data = array_merge_recursive( $_POST, $_GET );
-    // check if it is a intent request or not
-    if (!array_key_exists('intent', $wp->query_vars)) {
+    // check if it is an action request or not
+    if (!array_key_exists('indie-action', $wp->query_vars)) {
       return;
     }
     if (!is_user_logged_in() ) {
@@ -30,14 +30,14 @@ class Kind_Intents {
 //     exit;
       auth_redirect();
     }
-    $kind = $wp->query_vars['intent'];
+    $kind = $wp->query_vars['indie-action'];
     $kinds = array('reply', 'like', 'favorite', 'bookmark', 'repost');
     // plain text header
     header('Content-Type: text/plain; charset=' . get_option('blog_charset'));
     // check if source url is transmitted
     if (!in_array($kind, $kinds)) {
       status_header(400);
-      _e ('Invalid Intent', 'Post kinds');
+      _e ('Invalid Action', 'Post kinds');
       exit;
     }
     if (!current_user_can('publish_posts') ) {
@@ -80,7 +80,7 @@ class Kind_Intents {
         }
       }
     }
-    $args = apply_filters('pre_kind_intent', $args);
+    $args = apply_filters('pre_kind_action', $args);
     $post_id = wp_insert_post($args, true);  
     if (is_wp_error($post_id) ) {
         status_header(400);
@@ -102,7 +102,7 @@ class Kind_Intents {
     
     update_post_meta($post_id, 'mf2_cite', $cite); 
     // be sure to add an "exit;" to the end of your request handler
-    do_action('after_kind_intent', $post_id);
+    do_action('after_kind_action', $post_id);
     // Return just the link to the new post
     status_header (200);
     echo get_permalink($post_id);

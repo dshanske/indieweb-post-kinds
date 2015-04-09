@@ -405,7 +405,7 @@ function json_rest_add_kindmeta($_post,$post,$context) {
 	return $_post;
 }
 
-function kind_content_feed($content, $feed_type) {
+function kind_content_feed($content) {
   $response = get_kind_response_display();
   $response = str_replace(']]>', ']]&gt;', $response);
   return $response . $content; 

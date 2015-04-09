@@ -124,18 +124,19 @@ additional ones added. Feedback appreciated.
 * Automatic import/parsing of information based on click of button
 * Contextual response box, hiding/changing options based on Kind selected. Example, an RSVP that shows Yes/No/Maybe.
 
-## Intents ##
+## Web Actions ##
 
 Post Kinds supports the ability to create a kind directly from the URL bar. 
+r through a post form
 This requires you are logged into WordPress as a user who has permission to
 create posts. The posts are private by default
 
-**Example:** http://example.com?intent=like&url=http%3A%2F%2Fexample2.com%2Ftest%2F&title=Example  
+**Example:** http://example.com?indie-action=like&url=http%3A%2F%2Fexample2.com%2Ftest%2F&title=Example  
 
-* intent - reply, bookmark, like, favorite
+* indie-action - reply, bookmark, like, favorite
 * url - the URL of what you are responding to
 * title - the post title
-* quote - An excerpt of the content (optional)
+* text - An excerpt of the content (optional)
 * public - if you want the post public (optional)
 
 ## MultiKind Support (Experimental) ##
