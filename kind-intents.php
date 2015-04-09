@@ -57,19 +57,18 @@ class Kind_Intents {
     }
     $args = array (
       'post_content' => ' ',
-      'post_status'    => 'private',
+      'post_status'    => 'private', // Defaults to private
       'post_type' => 'post',
-      
+      'post_title' => current_time('Gis') // Post Title is the time
     );
-    if (isset($data['title']) ) {
-      $args['post_title']=sanitize_title( trim($data['title']) );
-    }
-    else {
-      $args['post_title']=current_time('Gis');
-    }
+    // If public is past, the post status is publish
     if (isset($data['public']) ) {
       $args['post_status'] = 'publish';
     }
+    if (isset($data['content']) ) {
+      $args['post_content'] = wp_kses_post( trim($data['content']) );
+    }
+    // tags will map to a category if exists, otherwise a tag
     if (isset($data['tags'])) {
       foreach ($data['tags'] as $mp_cat) {
         $wp_cat = get_category_by_slug($mp_cat);
@@ -91,9 +90,15 @@ class Kind_Intents {
     $cite = array();
     $cite[0] = array();
     $cite[0]['url'] = esc_url($data['url']);
-    if (isset($data['quote']) ) {
-      $cite[0]['content'] = wp_kses_post( trim($data['quote']) );
+    $cite[0]['name'] = sanitize_title( trim($data['name']) );
+    if (isset($data['text']) ) {
+      $cite[0]['content'] = wp_kses_post( trim($data['text']) );
     }
+    if (isset($data['lat'])||isset($data['lon']) ) {
+      update_post_meta($post_id, 'geo_latitude', sanitize_text_field(trim($data['lat'])) );
+      update_post_meta($post_id, 'geo_longitude', sanitize_text_field(trim($data['lon'])) );
+    }
+    
     update_post_meta($post_id, 'mf2_cite', $cite); 
     // be sure to add an "exit;" to the end of your request handler
     do_action('after_kind_intent', $post_id);
