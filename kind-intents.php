@@ -19,12 +19,18 @@ class Kind_Intents {
   }
 
   public static function parse_query($wp) {
+    $data = array_merge_recursive( $_POST, $_GET );
     // check if it is a intent request or not
     if (!array_key_exists('intent', $wp->query_vars)) {
       return;
     }
+    if (!is_user_logged_in() ) {
+      status_header(400);
+      _e ('You must be logged in to post', 'Post kinds');
+      exit;
+    }
     $kind = $wp->query_vars['intent'];
-    $kinds = array('reply', 'like', 'favorite', 'bookmark');
+    $kinds = array('reply', 'like', 'favorite', 'bookmark', 'repost');
     // plain text header
     header('Content-Type: text/plain; charset=' . get_option('blog_charset'));
     // check if source url is transmitted
@@ -39,29 +45,42 @@ class Kind_Intents {
       exit;
     }
 
-    if (!isset($_GET['url']) ) {
+    if (!isset($data['url']) ) {
       status_header(400);
       _e ('A URL must be provided', 'Post kinds');
       exit;
     }
-    if (filter_var($_GET['url'], FILTER_VALIDATE_URL) === false) {
+    if (filter_var($data['url'], FILTER_VALIDATE_URL) === false) {
       status_header(400);
       _e ('The URL is Invalid', 'Post kinds');
       exit;
     }
     $args = array (
       'post_content' => ' ',
-      'post_status'    => 'private'
+      'post_status'    => 'private',
+      'post_type' => 'post',
+      
     );
-    if (isset($_GET['title']) ) {
-      $args['post_title']=sanitize_title($_GET['title']);
+    if (isset($data['title']) ) {
+      $args['post_title']=sanitize_title( trim($data['title']) );
     }
     else {
       $args['post_title']=current_time('Gis');
     }
-    if (isset($_GET['public']) ) {
+    if (isset($data['public']) ) {
       $args['post_status'] = 'publish';
     }
+    if (isset($data['tags'])) {
+      foreach ($data['tags'] as $mp_cat) {
+        $wp_cat = get_category_by_slug($mp_cat);
+        if ($wp_cat) {
+          $args['post_category'][] = $wp_cat->term_id;
+        } else {
+          $args['tags_input'][] = $mp_cat;
+        }
+      }
+    }
+    $args = apply_filters('pre_kind_intent', $args);
     $post_id = wp_insert_post($args, true);  
     if (is_wp_error($post_id) ) {
         status_header(400);
@@ -71,14 +90,18 @@ class Kind_Intents {
     wp_set_object_terms($post_id, $kind, 'kind');
     $cite = array();
     $cite[0] = array();
-    $cite[0]['url'] = esc_url($_GET['url']);
-    if (isset($_GET['quote']) ) {
-      $cite[0]['content'] = wp_kses_post($_GET['quote']);
+    $cite[0]['url'] = esc_url($data['url']);
+    if (isset($data['quote']) ) {
+      $cite[0]['content'] = wp_kses_post( trim($data['quote']) );
     }
     update_post_meta($post_id, 'mf2_cite', $cite); 
     // be sure to add an "exit;" to the end of your request handler
-    status_header(200);
+    do_action('after_kind_intent', $post_id);
+    // Return just the link to the new post
+    status (200);
     echo get_permalink($post_id);
+    // Optionally instead redirect to the new post
+    // wp_redirect(get_permalink($post_id));
     exit;
   }
 
