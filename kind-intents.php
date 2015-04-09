@@ -25,9 +25,10 @@ class Kind_Intents {
       return;
     }
     if (!is_user_logged_in() ) {
-      status_header(400);
-      _e ('You must be logged in to post', 'Post kinds');
-      exit;
+//      status_header(400);
+//      _e ('You must be logged in to post', 'Post kinds');
+//     exit;
+      auth_redirect();
     }
     $kind = $wp->query_vars['intent'];
     $kinds = array('reply', 'like', 'favorite', 'bookmark', 'repost');
@@ -103,7 +104,7 @@ class Kind_Intents {
     // be sure to add an "exit;" to the end of your request handler
     do_action('after_kind_intent', $post_id);
     // Return just the link to the new post
-    status (200);
+    status_header (200);
     echo get_permalink($post_id);
     // Optionally instead redirect to the new post
     // wp_redirect(get_permalink($post_id));
