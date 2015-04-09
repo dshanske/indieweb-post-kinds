@@ -3,7 +3,7 @@
  * Plugin Name: IndieWeb Post Kinds
  * Plugin URI: https://wordpress.org/plugins/indieweb-post-kinds/
  * Description: Ever want to reply to someone else's post with a post on your own site? Or to "like" someone else's post, but with your own site?
- * Version: 1.3.1
+ * Version: 1.4.0
  * Author: David Shanske
  * Author URI: http://david.shanske.com
  * Text Domain: Post kinds
@@ -38,6 +38,8 @@ require_once( plugin_dir_path( __FILE__ ) . '/kind-meta.php');
 require_once( plugin_dir_path( __FILE__ ) . '/kind-semantics.php');
 
 
+// Add Kind Intents
+require_once( plugin_dir_path( __FILE__ ) . '/kind-intents.php');
 
 // Add Embed Functions for Commonly Embedded Websites not Supported by Wordpress
 require_once( plugin_dir_path( __FILE__ ) . '/embeds.php');

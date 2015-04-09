@@ -1,7 +1,7 @@
 # Indieweb Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention  
-**Stable tag:** 1.3.0  
+**Stable tag:** 1.4.0  
 **Requires at least:** 4.0  
 **Tested up to:** 4.1  
 **License:** GPLv2 or later  
@@ -66,15 +66,12 @@ to publish are specific to your needs.
 
 By default, only note, article, photo and reply are enabled so you can get used to them.
 
-You can add Media Check-Ins(watching or listening), or Link Sharing(likes or bookmark) directly from the settings page.
+You can add Media Check-Ins(watching or listening), or Link Sharing(likes, favorites, or bookmark) directly from the settings page.
 
-You can enable/disable more based on preference. Some may be enabled by plugins. To include kinds in the post selector, 
-add the following to your wp-config.php file.
+You can enable/disable more based on preference. Some may be enabled by plugins.
 
-define('POST_KIND_INCLUDE', 'wish,rsvp,checkin');
-
-This will allow rsvp, checkin, and wish to show up in the post editor. Not having a post kind enabled will not disable
-the functionality on existing posts.
+Not having a post kind enabled will not disable the functionality on existing 
+posts.
 
 There is also a filter to do this on the fly.
 
@@ -120,23 +117,26 @@ posts.
 ### Future Kinds ###
 
 With the recent expansion of kinds into passive types of posts, there may be
-additional ones added. Feedback appreciated
-
-## WordPress GeoData ##
-
-[WordPress Geodata](http://codex.wordpress.org/Geodata) is an existing standard
-used to store geodata about a post.
-
-**It consists of four fields:** latitude, longitude, public, and address. For   
-Indieweb Compatibility, intention is to support a 5th parameter, venue.
-
-Address would be a physical address. Venue would identify the location's
-name. This is necessary to improve check-in display.
+additional ones added. Feedback appreciated.
 
 ## Future Plans ##
 
 * Automatic import/parsing of information based on click of button
 * Contextual response box, hiding/changing options based on Kind selected. Example, an RSVP that shows Yes/No/Maybe.
+
+## Intents ##
+
+Post Kinds supports the ability to create a kind directly from the URL bar. 
+This requires you are logged into WordPress as a user who has permission to
+create posts. The posts are private by default
+
+**Example:** http://example.com?intent=like&url=http%3A%2F%2Fexample2.com%2Ftest%2F&title=Example  
+
+* intent - reply, bookmark, like, favorite
+* url - the URL of what you are responding to
+* title - the post title
+* quote - An excerpt of the content (optional)
+* public - if you want the post public (optional)
 
 ## MultiKind Support (Experimental) ##
 
@@ -152,7 +152,8 @@ define('MULTIKIND', '1');
 Indieweb Post Kinds already has support for replying to Twitter posts using the Social Network Auto Poster plugin.
 
 ## Changelog ##
- * *Version 1.3.1* - Additional refinements to kind defaults.
+ * *Version 1.4.0* - Add intents - the ability to create a quick kind directly from a URL, inspired by the Twitter web intents
+ * *Version 1.3.1* - Additional refinements to kind defaults and minor bugfixes
  * *Version 1.3.0* - Add functionality to better customize displays for different types. Add default options on activation. Show/hide check-in if
   Simple Location plugin is enabled. Change exclude types to include types. Add filter for plugins to show/hide kinds in the selector.
   Reduce default to a handful of kinds for new users. The plan going forward is to have some functionality enabled by secondary plugins
