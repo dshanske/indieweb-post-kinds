@@ -124,21 +124,6 @@ additional ones added. Feedback appreciated.
 * Automatic import/parsing of information based on click of button
 * Contextual response box, hiding/changing options based on Kind selected. Example, an RSVP that shows Yes/No/Maybe.
 
-## Web Actions ##
-
-Post Kinds supports the ability to create a kind directly from the URL bar. 
-r through a post form
-This requires you are logged into WordPress as a user who has permission to
-create posts. The posts are private by default
-
-**Example:** http://example.com?indie-action=like&url=http%3A%2F%2Fexample2.com%2Ftest%2F&title=Example  
-
-* indie-action - reply, bookmark, like, favorite
-* url - the URL of what you are responding to
-* title - the post title
-* text - An excerpt of the content (optional)
-* public - if you want the post public (optional)
-
 ## MultiKind Support (Experimental) ##
 
 By request, multikind support has returned as a hidden mode that is not complete.
@@ -153,7 +138,7 @@ define('MULTIKIND', '1');
 Indieweb Post Kinds already has support for replying to Twitter posts using the Social Network Auto Poster plugin.
 
 ## Changelog ##
- * *Version 1.4.0* - Add intents - the ability to create a quick kind directly from a URL, inspired by the Twitter web intents
+ * *Version 1.4.0* - 
  * *Version 1.3.1* - Additional refinements to kind defaults and minor bugfixes
  * *Version 1.3.0* - Add functionality to better customize displays for different types. Add default options on activation. Show/hide check-in if
   Simple Location plugin is enabled. Change exclude types to include types. Add filter for plugins to show/hide kinds in the selector.

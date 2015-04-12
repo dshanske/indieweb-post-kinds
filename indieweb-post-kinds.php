@@ -37,10 +37,6 @@ require_once( plugin_dir_path( __FILE__ ) . '/kind-meta.php');
 // Add Kind Version of Semantic Linkbacks Comment Function
 require_once( plugin_dir_path( __FILE__ ) . '/kind-semantics.php');
 
-
-// Add Kind Intents
-require_once( plugin_dir_path( __FILE__ ) . '/kind-intents.php');
-
 // Add Embed Functions for Commonly Embedded Websites not Supported by Wordpress
 require_once( plugin_dir_path( __FILE__ ) . '/embeds.php');
 
