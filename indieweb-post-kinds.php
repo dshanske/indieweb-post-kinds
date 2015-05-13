@@ -25,9 +25,9 @@ else {
 	require_once( plugin_dir_path( __FILE__ ) . 'multikind.php');
      }
  // Config Settings
-require_once( plugin_dir_path( __FILE__ ) . '/iwt-config.php');
+require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind_config.php');
 // Add Kind Post Metadata
-require_once( plugin_dir_path( __FILE__ ) . '/kind-postmeta.php');
+require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind_postmeta.php');
 // Add Kind Functions
 require_once( plugin_dir_path( __FILE__ ) . '/kind-functions.php');
 // Add Kind Display Functions
@@ -49,10 +49,6 @@ add_action( 'init', 'kind_remove_semantics', 11);
 // Load stylesheets
 add_action( 'wp_enqueue_scripts', 'kindstyle_load' );
 add_action('admin_enqueue_scripts', 'kind_admin_style');
-
-// Add a Settings Link to the Plugins Page
-$plugin = plugin_basename(__FILE__); 
-add_filter("plugin_action_links_$plugin", 'iwt_settings_link' );
 
 // On Activation, add terms
 register_activation_hook( __FILE__, 'activate_kinds' );
@@ -84,11 +80,6 @@ function kind_admin_style() {
     wp_enqueue_style('kind-admin', plugins_url('kind-admin.min.css', __FILE__));
 }
 
-function iwt_settings_link($links) { 
-  $settings_link = '<a href="options-general.php?page=iwt_options">Settings</a>'; 
-  array_unshift($links, $settings_link); 
-  return $links; 
-}
 
 function activate_kinds() {
   if ( function_exists('iwt_plugin_notice') ) {
@@ -358,7 +349,7 @@ function kind_permalink($permalink, $post_id, $leavename) {
         // Get taxonomy terms
         $terms = wp_get_object_terms($post->ID, 'kind');   
         if (!is_wp_error($terms) && !empty($terms) && is_object($terms[0])) $taxonomy_slug = $terms[0]->slug;
-        else $taxonomy_slug = 'standard';
+        else $taxonomy_slug = 'note';
  
     return str_replace('%kind%', $taxonomy_slug, $permalink);
 }   
