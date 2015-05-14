@@ -1,9 +1,9 @@
 # Indieweb Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention  
-**Stable tag:** 1.4.0  
-**Requires at least:** 4.0  
-**Tested up to:** 4.1  
+**Stable tag:** 1.4  
+**Requires at least:** 4.1  
+**Tested up to:** 4.2  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -138,7 +138,8 @@ define('MULTIKIND', '1');
 Indieweb Post Kinds already has support for replying to Twitter posts using the Social Network Auto Poster plugin.
 
 ## Changelog ##
- * *Version 1.4.0* - 
+ * *Version 1.4.0* - Rewrite to class-scoped functions in line with WordPress
+Guidelines
  * *Version 1.3.1* - Additional refinements to kind defaults and minor bugfixes
  * *Version 1.3.0* - Add functionality to better customize displays for different types. Add default options on activation. Show/hide check-in if
   Simple Location plugin is enabled. Change exclude types to include types. Add filter for plugins to show/hide kinds in the selector.

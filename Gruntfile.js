@@ -44,8 +44,8 @@ module.exports = function(grunt) {
              style: 'expanded'
              },
           files: {                         // Dictionary of files
-        'kind.css': 'sass/main.scss',       // 'destination': 'source'
-	'kind-admin.css': 'sass/admin.scss',
+        'css/kind.css': 'sass/main.scss',       // 'destination': 'source'
+	'css/kind-admin.css': 'sass/admin.scss',
          }
 	},
        dist: {                            // Target
@@ -53,8 +53,8 @@ module.exports = function(grunt) {
              style: 'compressed'
              },
           files: {                         // Dictionary of files
-        'kind.min.css': 'sass/main.scss',       // 'destination': 'source'
-        'kind-admin.min.css': 'sass/admin.scss',
+        'css/kind.min.css': 'sass/main.scss',       // 'destination': 'source'
+        'css/kind-admin.min.css': 'sass/admin.scss',
          }
 	}
   },

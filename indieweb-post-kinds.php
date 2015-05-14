@@ -9,409 +9,79 @@
  * Text Domain: Post kinds
  */
 
+load_plugin_textdomain( 'Post kind', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' ); 
+
 if ( ! defined( 'POST_KIND_INCLUDE' ) )
     define('POST_KIND_INCLUDE', '');
 
 if ( ! defined( 'MULTIKIND' ) )
     define('MULTIKIND', '0');
 
-// If MultiKind is not enabled, load the selector
-if (MULTIKIND=='0')
-   {
-	require_once( plugin_dir_path( __FILE__ ) . 'kind-select.php');
-   }
-// Else Load Checkboxes
-else {
-	require_once( plugin_dir_path( __FILE__ ) . 'multikind.php');
-     }
+// Add Kind Taxonomy
+require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind_taxonomy.php');
+
  // Config Settings
 require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind_config.php');
+
+// Add a Settings Link to the Plugins Page
+$plugin = plugin_basename(__FILE__);
+add_filter("plugin_action_links_$plugin", array('kind_config', 'settings_link') );
+
+
 // Add Kind Post Metadata
 require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind_postmeta.php');
-// Add Kind Functions
-require_once( plugin_dir_path( __FILE__ ) . '/kind-functions.php');
+
+// Add Kind Core Functions
+require_once( plugin_dir_path( __FILE__ ) . '/includes/kind-functions.php');
 // Add Kind Display Functions
-require_once( plugin_dir_path( __FILE__ ) . '/kind-view.php');
+require_once( plugin_dir_path( __FILE__ ) . '/includes/kind-view.php');
 // Add Kind Meta Display Functions
-require_once( plugin_dir_path( __FILE__ ) . '/kind-meta.php');
-// Add Kind Version of Semantic Linkbacks Comment Function
-require_once( plugin_dir_path( __FILE__ ) . '/kind-semantics.php');
+require_once( plugin_dir_path( __FILE__ ) . '/includes/kind-meta.php');
 
 // Add Embed Functions for Commonly Embedded Websites not Supported by Wordpress
-require_once( plugin_dir_path( __FILE__ ) . '/embeds.php');
-
-// Register Kind Taxonomy
-add_action( 'init', 'register_taxonomy_kind' );
-
-// Semantic Linkbacks Override for Comments
-add_action( 'init', 'kind_remove_semantics', 11);
+require_once( plugin_dir_path( __FILE__ ) . '/includes/embeds.php');
 
 // Load stylesheets
 add_action( 'wp_enqueue_scripts', 'kindstyle_load' );
 add_action('admin_enqueue_scripts', 'kind_admin_style');
 
-// On Activation, add terms
-register_activation_hook( __FILE__, 'activate_kinds' );
+function kindstyle_load() {
+        wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'css/kind.min.css');
+  }
 
-// Add Kind Permalinks
-add_filter('post_link', 'kind_permalink', 10, 3);
-add_filter('post_type_link', 'kind_permalink', 10, 3);
-
-// Return Kind Meta as part of the JSON Rest API
-add_filter("json_prepare_post",'json_rest_add_kindmeta',10,3);
-
-// Add the Correct Archive Title to Kind Archives
-add_filter('get_the_archive_title', 'kind_archive_title', 10, 3);
+function kind_admin_style() {
+    wp_enqueue_style('kind-admin', plugins_url('css/kind-admin.min.css', __FILE__));
+}
 
 // Add a notice to the Admin Pages if the WordPress Webmentions Plugin isn't Activated
 add_action( 'admin_notices', 'postkind_plugin_notice' );
 
-// Trigger Webmention on Change in Post Status
-add_filter('transition_post_status', 'it_transition', 10, 3);
-
-// Add Response to Feed
-add_filter('the_content_feed', 'kind_content_feed');
-
-function kindstyle_load() {
-        wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'kind.min.css');
-  }
-
-function kind_admin_style() {
-    wp_enqueue_style('kind-admin', plugins_url('kind-admin.min.css', __FILE__));
-}
-
-
-function activate_kinds() {
-  if ( function_exists('iwt_plugin_notice') ) {
-    deactivate_plugins( plugin_basename( __FILE__ ) );
-    wp_die( 'You have Indieweb Taxonomy activated. Post Kinds replaces this plugin. Please disable Taxonomy before activating' );
-  }
-  if (!get_option('iwt_options') ) {
-    $option = array (
-        'embeds' => '1',
-        'cacher' => '0',
-        'disableformats' => '0',
-        'protection' => '0',
-        'intermediate' => '0',
-        'watchlisten' => '0'
-    );
-    update_option('iwt_options', $option);
-  }
-  register_taxonomy_kind();
-  kind_defaultterms();
-}
-
-function register_taxonomy_kind() {
-	load_plugin_textdomain( 'Post Kind', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-        $labels = array( 
-        'name' => _x( 'Kinds', 'Post kind' ),
-        'singular_name' => _x( 'Kind', 'Post kind' ),
-        'search_items' => _x( 'Search Kinds', 'Post kind' ),
-        'popular_items' => _x( 'Popular Kinds', 'Post kind' ),
-        'all_items' => _x( 'All Kinds', 'Post kind' ),
-        'parent_item' => _x( 'Parent Kind', 'Post kind' ),
-        'parent_item_colon' => _x( 'Parent Kind:', 'Post kind' ),
-        'edit_item' => _x( 'Edit Kind', 'Post kind' ),
-        'update_item' => _x( 'Update Kind', 'Post kind' ),
-        'add_new_item' => _x( 'Add New Kind', 'Post kind' ),
-        'new_item_name' => _x( 'New Kind', 'Post kind' ),
-        'separate_items_with_commas' => _x( 'Separate kinds with commas', 'Post kind' ),
-        'add_or_remove_items' => _x( 'Add or remove kinds', 'Post kind' ),
-        'choose_from_most_used' => _x( 'Choose from the most used kinds', 'Post kind' ),
-        'menu_name' => _x( 'Kinds', 'Post kind' ),
-    );
-
-    $args = array( 
-        'labels' => $labels,
-        'public' => true,
-        'show_in_nav_menus' => true,
-        'show_ui' => false,
-        'show_tagcloud' => true,
-        'show_admin_column' => true,
-        'hierarchical' => true,
-        'rewrite' => true,
-        'query_var' => true
-    );
-
-    register_taxonomy( 'kind', array('post'), $args );
-}
-
-/**
- * Retrieves an array of post kind slugs.
- *
- * @return array The array of post kind slugs.
- */
-function get_post_kind_slugs() {
-	$slugs = array_keys( get_post_kind_strings() );
-	return array_combine( $slugs, $slugs );
-}
-
-/**
-	 * Returns a pretty, translated version of a post kind slug
-	 *
-	 *
-	 * @param string $slug A post format slug.
-	 * @return string The translated post format name.
-	 */
-function get_post_kind_string( $slug ) {
-	$strings = get_post_kind_strings();
-	     return ( isset( $strings[$slug] ) ) ? $strings[$slug] : '';
-	}
-
-/**
- * Returns a link to a post kind index.
- *
- *
- * @param string $kind The post kind slug.
- * @return string The post kind term link.
- */
-function get_post_kind_link( $kind ) {
-	$term = get_term_by('slug', $kind, 'kind' );
-	if ( ! $term || is_wp_error( $term ) )
-		return false;
-	return get_term_link( $term );
-}
-
-/**
- * Returns true if kind is a response type kind .
- *
- *
- * @param string $kind The post kind slug.
- * @return true/false.
- */
-function response_kind( $kind ) {
-        $not_responses = array( "article", "note" , "photo");
-        if (in_array($kind, $not_responses)) { return false; }
-        else { return true; }
-}
-
-
-// Sets up some starter terms...unless terms already exist 
-// or any of the existing terms are defined
-function kind_defaultterms () {
-	if (!term_exists('like', 'kind')) {
-	      wp_insert_term('like', 'kind', 
-		array(
-   		 	  'description'=> 'Like',
-    			  'slug' => 'like',
-		     ) );
-
-            }  
-        if (!term_exists('favorite', 'kind')) {
-              wp_insert_term('favorite', 'kind',
-                array(
-                          'description'=> 'Favorite',
-                          'slug' => 'favorite',
-                     ) );
-
-            } 
-        if (!term_exists('reply', 'kind')) {
-              wp_insert_term('reply', 'kind',
-                array(
-                          'description'=> 'Reply',
-                          'slug' => 'reply',
-                     ) );
-
-            }
-        if (!term_exists('rsvp', 'kind')) {
-              wp_insert_term('rsvp', 'kind',
-                array(
-                          'description'=> 'RSVP for Event',
-                          'slug' => 'rsvp',
-                     ) );
-
-            }
-        if (!term_exists('repost', 'kind')) {
-              wp_insert_term('repost', 'kind',
-                array(
-                          'description'=> 'Repost',
-                          'slug' => 'repost',
-                     ) );
-
-            }
-        if (!term_exists('bookmark', 'kind')) {
-              wp_insert_term('bookmark', 'kind',
-                array(
-                          'description'=> 'Sharing a Link',
-                          'slug' => 'bookmark',
-                     ) );
-
-            }
-        if (!term_exists('tag', 'kind')) {
-              wp_insert_term('Tag', 'kind',
-                array(
-                          'description'=> 'Tagging a Post',
-                          'slug' => 'tag',
-                     ) );
-
-            }
-        if (!term_exists('article', 'kind')) {
-              wp_insert_term('article', 'kind',
-                array(
-                          'description'=> 'Longer Content',
-                          'slug' => 'article',
-                     ) );
-
-            }
-        if (!term_exists('note', 'kind')) {
-              wp_insert_term('note', 'kind',
-                array(
-                          'description'=> 'Short Content',
-                          'slug' => 'note',
-                     ) );
-
-            }
-        if (!term_exists('photo', 'kind')) {
-              wp_insert_term('photo', 'kind',
-                array(
-                          'description'=> 'Image Post',
-                          'slug' => 'photo',
-                     ) );
-
-            }
-        if (!term_exists('listen', 'kind')) {
-              wp_insert_term('listen', 'kind',
-                array(
-                          'description'=> 'Listen',
-                          'slug' => 'listen',
-                     ) );
-
-            }
-        if (!term_exists('watch', 'kind')) {
-              wp_insert_term('watch', 'kind',
-                array(
-                          'description'=> 'Watch',
-                          'slug' => 'watch',
-                     ) );
-
-            }
-        if (!term_exists('checkin', 'kind')) {
-              wp_insert_term('checkin', 'kind',
-                array(
-                          'description'=> 'Checkin',
-                          'slug' => 'checkin',
-                     ) );
-
-            }
-        if (!term_exists('play', 'kind')) {
-              wp_insert_term('play', 'kind',
-                array(
-                          'description'=> 'Game Play',
-                          'slug' => 'play',
-                     ) );
-
-            }
-        if (!term_exists('wish', 'kind')) {
-              wp_insert_term('wish', 'kind',
-                array(
-                          'description'=> 'Wish or Desire',
-                          'slug' => 'wish',
-                     ) );
-
-            }
-        if (!term_exists('weather', 'kind')) {
-              wp_insert_term('weather', 'kind',
-                array(
-                          'description'=> 'Weather',
-                          'slug' => 'weather',
-                     ) );
-
-            }
-        if (!term_exists('exercise', 'kind')) {
-              wp_insert_term('exercise', 'kind',
-                array(
-                          'description'=> 'Exercise',
-                          'slug' => 'exercise',
-                     ) );
-
-            }
-        if (!term_exists('travel', 'kind')) {
-              wp_insert_term('travel', 'kind',
-                array(
-                          'description'=> 'Trip or Travel',
-                          'slug' => 'travel',
-                     ) );
-
-            }
-       // Allows for extensions to add terms to the plugin
-       do_action('kind_add_term');
-
-}
-
- 
-function kind_permalink($permalink, $post_id, $leavename) {
-    if (strpos($permalink, '%kind%') === FALSE) return $permalink;
-     
-        // Get post
-        $post = get_post($post_id);
-        if (!$post) return $permalink;
- 
-        // Get taxonomy terms
-        $terms = wp_get_object_terms($post->ID, 'kind');   
-        if (!is_wp_error($terms) && !empty($terms) && is_object($terms[0])) $taxonomy_slug = $terms[0]->slug;
-        else $taxonomy_slug = 'note';
- 
-    return str_replace('%kind%', $taxonomy_slug, $permalink);
-}   
-
-function kind_archive_title($title)
- {
-     $strings = get_post_kind_strings_plural();
-     if ( is_tax( 'kind' ) ) {
-		foreach ($strings as $key => $string)
-		     { 
-			if ( is_tax( 'kind', $key) )
-			   { 
-				$title = $string;
-				return $title;
-			   }
-                     }
-	 }
-    return $title;
-   }
-
-function it_publish ( $ID, $post=null)
-  {
-     $cites = get_post_meta($ID, 'mf2_cite', true);
-     if (empty($cites)) { return; }
-     foreach ($cites as $cite) {
-        if (!empty($cite) && isset($cite['url'])) {
-     		  send_webmention(get_permalink($ID), $cite['url']);
-        }
- 	  }
-  }
-
-
-function it_transition($old,$new,$post){
-  it_publish($post->ID,$post);
-}
-
-function json_rest_add_kindmeta($_post,$post,$context) {
-	$response = get_post_meta( $post["ID"], 'mf2_cite');
-	if (!empty($response)) { $_post['mf2_cite'] = $response; }
-	return $_post;
-}
-
-function kind_content_feed($content) {
-  $response = get_kind_response_display();
-  $response = str_replace(']]>', ']]&gt;', $response);
-  return $response . $content; 
-}
-
 function postkind_plugin_notice() {
-    if (!class_exists("WebMentionPlugin"))
-        {
-           echo '<div class="error"><p>';
-           echo '<a href="https://wordpress.org/plugins/webmention/">';
-           _e( 'This Plugin Requires the WordPress Webmention Plugin', 'post_kinds' );
-            echo '</a></p></div>';
-        }
+	if (!class_exists("WebMentionPlugin"))
+		{
+			echo '<div class="error"><p>';
+			echo '<a href="https://wordpress.org/plugins/webmention/">';
+			esc_html_e( 'This Plugin Requires the WordPress Webmention Plugin', 'post_kinds' );
+			echo '</a></p></div>';
+		}
 }
 
-function kind_remove_semantics() {
-  if (class_exists('SemanticLinkbacksPlugin') ) {
-    remove_filter('comment_text', array('SemanticLinkbacksPlugin', 'comment_text_excerpt'),12);
-    add_filter('comment_text', 'kind_comment_text_excerpt', 12, 3);
+
+// Extracts the Domain Name for a URL for presentation purposes
+if (!function_exists('extract_domain_name')) {
+    function extract_domain_name($url) {
+      $host = parse_url($url, PHP_URL_HOST);
+      $host = preg_replace("/^www\./", "", $host);
+      return $host;
+    }
   }
+
+if (!function_exists('is_multi_array') ) {
+	function is_multi_array( $arr ) {
+  	rsort( $arr );
+  	return isset( $arr[0] ) && is_array( $arr[0] );
+	}
 }
+
+
 ?>

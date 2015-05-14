@@ -9,10 +9,8 @@ class kind_config {
 		add_action('admin_menu', array('kind_config', 'admin_menu') );
 		add_action( 'admin_init', array('kind_config', 'admin_init') );
 		add_action( 'after_setup_theme', array('kind_config', 'remove_post_formats'), 11 );
-		// Add a Settings Link to the Plugins Page
-		$plugin = plugin_basename(__FILE__);
-		add_filter("plugin_action_links_$plugin", array('kind_config', 'settings_link') );
 	}
+
 	public static function admin_menu() {
 		add_options_page( '', __('Post Kinds', 'Post kind'), 'manage_options', 'kind_options', array('kind_config', 'options_form') );
 	}
