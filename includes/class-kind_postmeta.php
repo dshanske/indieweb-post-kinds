@@ -128,7 +128,7 @@ class kind_postmeta {
 
 	public static function transition_post_status($new, $old, $post) {
 		if ($new == 'publish' && $old != 'publish') {
-			responsebox_save_post_meta($post->ID,$post);
+			self::save_post($post->ID,$post);
 		}
 	}
 }

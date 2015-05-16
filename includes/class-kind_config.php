@@ -1,25 +1,12 @@
 <?php
 
-add_action( 'init' , array('kind_config', 'init') );
+add_action( 'admin_init' , array('kind_config', 'admin_init') );
+add_action( 'after_setup_theme', array('kind_config', 'remove_post_formats'), 11 );
+add_action('admin_menu', array('kind_config', 'admin_menu') );
+
 
 // The kind_config class sets up the Settings Page for the plugin
 class kind_config {
-
-	public static function init() {
-		add_action('admin_menu', array('kind_config', 'admin_menu') );
-		add_action( 'admin_init', array('kind_config', 'admin_init') );
-		add_action( 'after_setup_theme', array('kind_config', 'remove_post_formats'), 11 );
-	}
-
-	public static function admin_menu() {
-		add_options_page( '', __('Post Kinds', 'Post kind'), 'manage_options', 'kind_options', array('kind_config', 'options_form') );
-	}
-
-	public static function settings_link($links) {
-  	$settings_link = '<a href="options-general.php?page=kind_options">Settings</a>';
-  	array_unshift($links, $settings_link);
-  	return $links;
-	}
 
 	public static function admin_init() {
 		$options = get_option('iwt_options');
@@ -36,6 +23,16 @@ class kind_config {
   	}
 		add_settings_field( 'linksharing', __('Enable Link Sharing Kinds', 'Post kind'), array('kind_config', 'checkbox_callback'), 'iwt_options', 'iwt-content' ,  array( 'name' => 'linksharing') );
 		add_settings_field( 'mediacheckin', __('Enable Media Check-Ins', 'Post kind'), array('kind_config', 'checkbox_callback'), 'iwt_options', 'iwt-content' ,  array( 'name' => 'mediacheckin') );
+	}
+
+	public static function admin_menu() {
+		add_options_page( '', __('Post Kinds', 'Post kind'), 'manage_options', 'kind_options', array('kind_config', 'options_form') );
+	}
+
+	public static function settings_link($links) {
+		$settings_link = '<a href="options-general.php?page=kind_options">Settings</a>';
+		array_unshift($links, $settings_link);
+ 		return $links;
 	}
 
 	public static function options_callback() {
