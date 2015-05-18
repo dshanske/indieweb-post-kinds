@@ -24,7 +24,7 @@ class kind_taxonomy {
 
 
 		// Trigger Webmention on Change in Post Status
-		add_filter('transition_post_status', 'transition', 10, 3);
+		add_filter('transition_post_status', array( 'kind_taxonomy', 'transition'), 10, 3);
 
 
 		// Return Kind Meta as part of the JSON Rest API
@@ -556,7 +556,6 @@ class kind_taxonomy {
 		}
 		return $classes;
 	}
-
 
 } // End Class kind_taxonomy
 

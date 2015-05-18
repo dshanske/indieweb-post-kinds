@@ -96,7 +96,7 @@ class kind_postmeta {
 				return;
 			}
 		}
-
+		$kind = get_post_kind_slug($post);
 		/* OK, its safe for us to save the data now. */
 		if( isset( $_POST[ 'response_url' ] ) && !empty( $_POST[ 'response_url' ] ) ) {
 			$cite[0]['url'] = esc_url_raw( $_POST[ 'response_url' ] );

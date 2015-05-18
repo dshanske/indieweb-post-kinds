@@ -3,7 +3,7 @@
  * Plugin Name: IndieWeb Post Kinds
  * Plugin URI: https://wordpress.org/plugins/indieweb-post-kinds/
  * Description: Ever want to reply to someone else's post with a post on your own site? Or to "like" someone else's post, but with your own site?
- * Version: 1.4.0
+ * Version: 1.4.1
  * Author: David Shanske
  * Author URI: http://david.shanske.com
  * Text Domain: Post kinds
@@ -18,10 +18,10 @@ if ( ! defined( 'MULTIKIND' ) )
     define('MULTIKIND', '0');
 
 // Add Kind Taxonomy
-require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind_taxonomy.php');
+require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind-taxonomy.php');
 
  // Config Settings
-require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind_config.php');
+require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind-config.php');
 
 // Add a Settings Link to the Plugins Page
 $plugin = plugin_basename(__FILE__);
@@ -29,14 +29,16 @@ add_filter("plugin_action_links_$plugin", array('kind_config', 'settings_link') 
 
 
 // Add Kind Post Metadata
-require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind_postmeta.php');
+require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind-postmeta.php');
 
 // Add Kind Core Functions
 require_once( plugin_dir_path( __FILE__ ) . '/includes/kind-functions.php');
 // Add Kind Display Functions
 require_once( plugin_dir_path( __FILE__ ) . '/includes/kind-view.php');
+
 // Add Kind Meta Display Functions
 require_once( plugin_dir_path( __FILE__ ) . '/includes/kind-meta.php');
+require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind-meta.php');
 
 // Add Embed Functions for Commonly Embedded Websites not Supported by Wordpress
 require_once( plugin_dir_path( __FILE__ ) . '/includes/embeds.php');
