@@ -69,6 +69,7 @@ function postkind_plugin_notice() {
 }
 
 
+
 // Extracts the Domain Name for a URL for presentation purposes
 if (!function_exists('extract_domain_name')) {
     function extract_domain_name($url) {
