@@ -647,19 +647,52 @@
 }
 
 /*--------------------------------------------------------------
-2.0 Selector Style
+2.0 Kind Style
 --------------------------------------------------------------*/
-label.selectit:before {
+.response {
+  margin-bottom: 10px;
+  margin-top: 10px;
+  margin-left: 10px;
+  padding: 5px;
+  font-size: 16px;
+  border-bottom: inset #D6D6D6;
+}
+
+ul.cites {
+  list-style: none;
+  display: inline;
+}
+
+.embeds {
+  text-align: center;
+  position: relative;
+  width: 100%;
+  margin-top: 5px;
+}
+
+.response .u-url:link {
+  text-decoration: none;
+}
+
+.response .u-url:hover {
+  text-decoration: none;
+}
+
+.verb:before, a.empty:before {
+  padding: 0 5px;
+  font-family: 'Genericons';
+  vertical-align: middle;
   -webkit-font-smoothing: antialiased;
-  font: normal 20px/1 'Genericons';
-  vertical-align: top;
-  padding-left: 2px;
-  padding-right: 2px;
-  color: gray;
+}
+
+.response .u-photo {
+  height: 20px;
+  padding: 0;
+  margin: 2px;
 }
 
 /*--------------------------------------------------------------
-3.0 Admin Icons
+3.0 Kind Icons
 --------------------------------------------------------------*/
 .kind-like .verb:before,
 .kind-like label:before {
@@ -737,4 +770,19 @@ a.empty:before {
   content: '\f447';
 }
 
-/*# sourceMappingURL=kind-admin.css.map */
+.kind-weather .verb:before,
+.kind-weather label:before {
+  content: '\f440';
+}
+
+.kind-exercise .verb:before,
+.kind-exercise label:before {
+  content: '\f304';
+}
+
+.kind-travel .verb:before,
+.kind-travel label:before {
+  content: '\f427';
+}
+
+/*# sourceMappingURL=kind.css.map */

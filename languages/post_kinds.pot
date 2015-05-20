@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IndieWeb Post Kinds package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IndieWeb Post Kinds 1.1.0\n"
+"Project-Id-Version: IndieWeb Post Kinds 1.4.0\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2015-02-21 14:49:38+00:00\n"
+"POT-Creation-Date: 2015-05-14 02:41:54+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,72 +14,84 @@ msgstr ""
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "X-Generator: grunt-wp-i18n 0.4.9\n"
 
-#: indieweb-post-kinds.php:446
-msgid "This Plugin Requires Webmention Support"
-msgstr ""
-
-#: iwt-config.php:4
+#: includes/class-kind_config.php:15
 msgid "Post Kinds"
 msgstr ""
 
-#: iwt-config.php:12
+#: includes/class-kind_config.php:27
 msgid "Content Options"
 msgstr ""
 
-#: iwt-config.php:13
+#: includes/class-kind_config.php:28
 msgid "Add Rich Embed Support for Facebook, Google Plus, Instagram, etc"
 msgstr ""
 
-#: iwt-config.php:14
-msgid "Do Not Store Cached Responses"
+#: includes/class-kind_config.php:29
+msgid "Store Cached Responses"
 msgstr ""
 
-#: iwt-config.php:15
+#: includes/class-kind_config.php:30
 msgid "Disable Post Formats"
 msgstr ""
 
-#: iwt-config.php:22
-msgid "Options for Displaying the Response"
+#: includes/class-kind_config.php:31
+msgid "Disable Content Protection on Responses"
 msgstr ""
 
-#: iwt-config.php:38
+#: includes/class-kind_config.php:34
+msgid "Response Content Allowed Html Elements"
+msgstr ""
+
+#: includes/class-kind_config.php:37
+msgid "Enable Link Sharing Kinds"
+msgstr ""
+
+#: includes/class-kind_config.php:38
+msgid "Enable Media Check-Ins"
+msgstr ""
+
+#: includes/class-kind_config.php:69
 msgid "Indieweb Post Kinds"
 msgstr ""
 
-#: iwt-config.php:40
+#: includes/class-kind_config.php:71
 msgid "Adds support for responding and interacting with other sites"
 msgstr ""
 
-#: kind-functions.php:107
-msgid "Invalid post"
-msgstr ""
-
-#: kind-postmeta.php:25
+#: includes/class-kind_postmeta.php:26
 msgid "Citation/In Response To"
 msgstr ""
 
-#: kind-postmeta.php:39
+#: includes/class-kind_postmeta.php:39
 msgid "URL"
 msgstr ""
 
-#: kind-postmeta.php:43
+#: includes/class-kind_postmeta.php:43
 msgid "Name"
 msgstr ""
 
-#: kind-postmeta.php:47
-msgid "Author Name"
+#: includes/class-kind_postmeta.php:47
+msgid "Author/Artist Name"
 msgstr ""
 
-#: kind-postmeta.php:51
+#: includes/class-kind_postmeta.php:51
 msgid "Author Photo"
 msgstr ""
 
-#: kind-postmeta.php:56
+#: includes/class-kind_postmeta.php:55
+msgid "Site Name/Publication/Album"
+msgstr ""
+
+#: includes/class-kind_postmeta.php:59
 msgid "Content or Excerpt"
 msgstr ""
 
-#: kind-view.php:150
-msgid " by "
+#: includes/kind-functions.php:107
+msgid "Invalid post"
+msgstr ""
+
+#: indieweb-post-kinds.php:64
+msgid "This Plugin Requires the WordPress Webmention Plugin"
 msgstr ""
 
 #. Plugin Name of the plugin/theme
@@ -87,7 +99,7 @@ msgid "IndieWeb Post Kinds"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
-msgid "https://github.com/dshanske/indieweb-post-kinds"
+msgid "https://wordpress.org/plugins/indieweb-post-kinds/"
 msgstr ""
 
 #. Description of the plugin/theme
@@ -104,288 +116,363 @@ msgstr ""
 msgid "http://david.shanske.com"
 msgstr ""
 
-#: indieweb-post-kinds.php:91 indieweb-post-kinds.php:105
+#: includes/class-kind_taxonomy.php:64 includes/class-kind_taxonomy.php:78
 msgctxt "Post kind"
 msgid "Kinds"
 msgstr ""
 
-#: indieweb-post-kinds.php:92
+#: includes/class-kind_taxonomy.php:65
 msgctxt "Post kind"
 msgid "Kind"
 msgstr ""
 
-#: indieweb-post-kinds.php:93
+#: includes/class-kind_taxonomy.php:66
 msgctxt "Post kind"
 msgid "Search Kinds"
 msgstr ""
 
-#: indieweb-post-kinds.php:94
+#: includes/class-kind_taxonomy.php:67
 msgctxt "Post kind"
 msgid "Popular Kinds"
 msgstr ""
 
-#: indieweb-post-kinds.php:95
+#: includes/class-kind_taxonomy.php:68
 msgctxt "Post kind"
 msgid "All Kinds"
 msgstr ""
 
-#: indieweb-post-kinds.php:96
+#: includes/class-kind_taxonomy.php:69
 msgctxt "Post kind"
 msgid "Parent Kind"
 msgstr ""
 
-#: indieweb-post-kinds.php:97
+#: includes/class-kind_taxonomy.php:70
 msgctxt "Post kind"
 msgid "Parent Kind:"
 msgstr ""
 
-#: indieweb-post-kinds.php:98
+#: includes/class-kind_taxonomy.php:71
 msgctxt "Post kind"
 msgid "Edit Kind"
 msgstr ""
 
-#: indieweb-post-kinds.php:99
+#: includes/class-kind_taxonomy.php:72
 msgctxt "Post kind"
 msgid "Update Kind"
 msgstr ""
 
-#: indieweb-post-kinds.php:100
+#: includes/class-kind_taxonomy.php:73
 msgctxt "Post kind"
 msgid "Add New Kind"
 msgstr ""
 
-#: indieweb-post-kinds.php:101
+#: includes/class-kind_taxonomy.php:74
 msgctxt "Post kind"
 msgid "New Kind"
 msgstr ""
 
-#: indieweb-post-kinds.php:102
+#: includes/class-kind_taxonomy.php:75
 msgctxt "Post kind"
 msgid "Separate kinds with commas"
 msgstr ""
 
-#: indieweb-post-kinds.php:103
+#: includes/class-kind_taxonomy.php:76
 msgctxt "Post kind"
 msgid "Add or remove kinds"
 msgstr ""
 
-#: indieweb-post-kinds.php:104
+#: includes/class-kind_taxonomy.php:77
 msgctxt "Post kind"
 msgid "Choose from the most used kinds"
 msgstr ""
 
-#: indieweb-post-kinds.php:132
+#: includes/class-kind_taxonomy.php:314
 msgctxt "Post kind"
 msgid "Article"
 msgstr ""
 
-#: indieweb-post-kinds.php:133
+#: includes/class-kind_taxonomy.php:315
 msgctxt "Post kind"
 msgid "Note"
 msgstr ""
 
-#: indieweb-post-kinds.php:134
+#: includes/class-kind_taxonomy.php:316
 msgctxt "Post kind"
 msgid "Reply"
 msgstr ""
 
-#: indieweb-post-kinds.php:135
+#: includes/class-kind_taxonomy.php:317
 msgctxt "Post kind"
 msgid "Repost"
 msgstr ""
 
-#: indieweb-post-kinds.php:136
+#: includes/class-kind_taxonomy.php:318
 msgctxt "Post kind"
 msgid "Like"
 msgstr ""
 
-#: indieweb-post-kinds.php:137
+#: includes/class-kind_taxonomy.php:319
 msgctxt "Post kind"
 msgid "Favorite"
 msgstr ""
 
-#: indieweb-post-kinds.php:138
+#: includes/class-kind_taxonomy.php:320
 msgctxt "Post kind"
 msgid "Bookmark"
 msgstr ""
 
-#: indieweb-post-kinds.php:139
+#: includes/class-kind_taxonomy.php:321
 msgctxt "Post kind"
 msgid "Photo"
 msgstr ""
 
-#: indieweb-post-kinds.php:140
+#: includes/class-kind_taxonomy.php:322
 msgctxt "Post kind"
 msgid "Tag"
 msgstr ""
 
-#: indieweb-post-kinds.php:141
+#: includes/class-kind_taxonomy.php:323
 msgctxt "Post kind"
 msgid "RSVP"
 msgstr ""
 
-#: indieweb-post-kinds.php:142
+#: includes/class-kind_taxonomy.php:324
 msgctxt "Post kind"
 msgid "Listen"
 msgstr ""
 
-#: indieweb-post-kinds.php:143
+#: includes/class-kind_taxonomy.php:325
 msgctxt "Post kind"
 msgid "Watch"
 msgstr ""
 
-#: indieweb-post-kinds.php:144
+#: includes/class-kind_taxonomy.php:326
 msgctxt "Post kind"
 msgid "Checkin"
 msgstr ""
 
-#: indieweb-post-kinds.php:145
+#: includes/class-kind_taxonomy.php:327
 msgctxt "Post kind"
 msgid "Wish"
 msgstr ""
 
-#: indieweb-post-kinds.php:146
+#: includes/class-kind_taxonomy.php:328
 msgctxt "Post kind"
 msgid "Play"
 msgstr ""
 
-#: indieweb-post-kinds.php:160
+#: includes/class-kind_taxonomy.php:329 includes/class-kind_taxonomy.php:358
+msgctxt "Post kind"
+msgid "Weather"
+msgstr ""
+
+#: includes/class-kind_taxonomy.php:330
+msgctxt "Post kind"
+msgid "Exercise"
+msgstr ""
+
+#: includes/class-kind_taxonomy.php:331
+msgctxt "Post kind"
+msgid "Travel"
+msgstr ""
+
+#: includes/class-kind_taxonomy.php:343
 msgctxt "Post kind"
 msgid "Articles"
 msgstr ""
 
-#: indieweb-post-kinds.php:161
+#: includes/class-kind_taxonomy.php:344
 msgctxt "Post kind"
 msgid "Notes"
 msgstr ""
 
-#: indieweb-post-kinds.php:162
+#: includes/class-kind_taxonomy.php:345
 msgctxt "Post kind"
 msgid "Replies"
 msgstr ""
 
-#: indieweb-post-kinds.php:163
+#: includes/class-kind_taxonomy.php:346
 msgctxt "Post kind"
 msgid "Reposts"
 msgstr ""
 
-#: indieweb-post-kinds.php:164
+#: includes/class-kind_taxonomy.php:347
 msgctxt "Post kind"
 msgid "Likes"
 msgstr ""
 
-#: indieweb-post-kinds.php:165
+#: includes/class-kind_taxonomy.php:348
 msgctxt "Post kind"
 msgid "Favorites"
 msgstr ""
 
-#: indieweb-post-kinds.php:166
+#: includes/class-kind_taxonomy.php:349
 msgctxt "Post kind"
 msgid "Bookmarks"
 msgstr ""
 
-#: indieweb-post-kinds.php:167
+#: includes/class-kind_taxonomy.php:350
 msgctxt "Post kind"
 msgid "Photos"
 msgstr ""
 
-#: indieweb-post-kinds.php:168
+#: includes/class-kind_taxonomy.php:351
 msgctxt "Post kind"
 msgid "Tags"
 msgstr ""
 
-#: indieweb-post-kinds.php:169
+#: includes/class-kind_taxonomy.php:352
 msgctxt "Post kind"
 msgid "RSVPs"
 msgstr ""
 
-#: indieweb-post-kinds.php:170
+#: includes/class-kind_taxonomy.php:353
 msgctxt "Post kind"
 msgid "Listens"
 msgstr ""
 
-#: indieweb-post-kinds.php:171
+#: includes/class-kind_taxonomy.php:354
 msgctxt "Post kind"
 msgid "Watches"
 msgstr ""
 
-#: indieweb-post-kinds.php:172
+#: includes/class-kind_taxonomy.php:355
 msgctxt "Post kind"
 msgid "Checkins"
 msgstr ""
 
-#: indieweb-post-kinds.php:173
+#: includes/class-kind_taxonomy.php:356
 msgctxt "Post kind"
 msgid "Wishlist"
 msgstr ""
 
-#: indieweb-post-kinds.php:174
+#: includes/class-kind_taxonomy.php:357
 msgctxt "Post kind"
 msgid "Plays"
 msgstr ""
 
-#: indieweb-post-kinds.php:200
+#: includes/class-kind_taxonomy.php:359
+msgctxt "Post kind"
+msgid "Exercises"
+msgstr ""
+
+#: includes/class-kind_taxonomy.php:360
+msgctxt "Post kind"
+msgid "Travels"
+msgstr ""
+
+#: includes/class-kind_taxonomy.php:372 includes/class-kind_taxonomy.php:373
+#: includes/class-kind_taxonomy.php:379
+msgctxt "Post kind"
+msgid " "
+msgstr ""
+
+#: includes/class-kind_taxonomy.php:374
+msgctxt "Post kind"
+msgid "In Reply To"
+msgstr ""
+
+#: includes/class-kind_taxonomy.php:375
+msgctxt "Post kind"
+msgid "Reposted"
+msgstr ""
+
+#: includes/class-kind_taxonomy.php:376
+msgctxt "Post kind"
+msgid "Liked"
+msgstr ""
+
+#: includes/class-kind_taxonomy.php:377
+msgctxt "Post kind"
+msgid "Favorited"
+msgstr ""
+
+#: includes/class-kind_taxonomy.php:378
+msgctxt "Post kind"
+msgid "Bookmarked"
+msgstr ""
+
+#: includes/class-kind_taxonomy.php:380
+msgctxt "Post kind"
+msgid "Tagged"
+msgstr ""
+
+#: includes/class-kind_taxonomy.php:381
+msgctxt "Post kind"
+msgid "RSVPed"
+msgstr ""
+
+#: includes/class-kind_taxonomy.php:382
+msgctxt "Post kind"
+msgid "Listened to "
+msgstr ""
+
+#: includes/class-kind_taxonomy.php:383
 msgctxt "Post kind"
 msgid "Watched"
 msgstr ""
 
-#: indieweb-post-kinds.php:201
+#: includes/class-kind_taxonomy.php:384
 msgctxt "Post kind"
-msgid "Checked In"
+msgid "Checked In At"
 msgstr ""
 
-#: indieweb-post-kinds.php:202
+#: includes/class-kind_taxonomy.php:385
 msgctxt "Post kind"
 msgid "Desires"
 msgstr ""
 
-#: indieweb-post-kinds.php:203
+#: includes/class-kind_taxonomy.php:386
 msgctxt "Post kind"
 msgid "Played"
 msgstr ""
 
-#: indieweb-post-kinds.php:189 indieweb-post-kinds.php:190
-#: indieweb-post-kinds.php:196
-msgctxt "Post kind verbs"
-msgid " "
+#: includes/class-kind_taxonomy.php:387
+msgctxt "Post kind"
+msgid "Weathered"
 msgstr ""
 
-#: indieweb-post-kinds.php:191
-msgctxt "Post kind verbs"
-msgid "In Reply To"
+#: includes/class-kind_taxonomy.php:388
+msgctxt "Post kind"
+msgid "Exercised"
 msgstr ""
 
-#: indieweb-post-kinds.php:192
-msgctxt "Post kind verbs"
-msgid "Reposted"
+#: includes/class-kind_taxonomy.php:389
+msgctxt "Post kind"
+msgid "Traveled"
 msgstr ""
 
-#: indieweb-post-kinds.php:193
-msgctxt "Post kind verbs"
-msgid "Liked"
+#: includes/class-kind_taxonomy.php:401 includes/class-kind_taxonomy.php:408
+msgctxt "Post kind"
+msgid "by"
 msgstr ""
 
-#: indieweb-post-kinds.php:194
-msgctxt "Post kind verbs"
-msgid "Favorited"
+#: includes/class-kind_taxonomy.php:419 includes/class-kind_taxonomy.php:428
+msgctxt "Post kind"
+msgid "on"
 msgstr ""
 
-#: indieweb-post-kinds.php:195
-msgctxt "Post kind verbs"
-msgid "Bookmarked"
+#: includes/class-kind_taxonomy.php:420 includes/class-kind_taxonomy.php:421
+msgctxt "Post kind"
+msgid "-"
 msgstr ""
 
-#: indieweb-post-kinds.php:197
-msgctxt "Post kind verbs"
-msgid "Tagged"
+#: includes/class-kind_taxonomy.php:439
+msgctxt "Post kind"
+msgid "a tweet"
 msgstr ""
 
-#: indieweb-post-kinds.php:198
-msgctxt "Post kind verbs"
-msgid "RSVPed"
+#: includes/class-kind_taxonomy.php:440 includes/class-kind_taxonomy.php:441
+msgctxt "Post kind"
+msgid "a video"
 msgstr ""
 
-#: indieweb-post-kinds.php:199
-msgctxt "Post kind verbs"
-msgid "Listened to "
+#: includes/class-kind_taxonomy.php:448
+msgctxt "Post kind"
+msgid "a post"
+msgstr ""
+
+#: includes/kind-meta.php:69
+msgctxt "Post kind"
+msgid " and "
 msgstr ""
