@@ -277,7 +277,7 @@ class kind_taxonomy {
 			$include = array_merge($include, array ( 'like', 'bookmark', 'favorite', 'repost') );
 		}
 		if ($option['mediacheckin']==1) {
-			$include = array_merge($include, array ( 'watch', 'listen') );
+			$include = array_merge($include, array ( 'watch', 'listen','play') );
 		}
 		// Filter Kinds
 		$include = array_unique(apply_filters('kind_include', $include));
@@ -429,17 +429,7 @@ class kind_taxonomy {
 		}
 	} 
 
-	public static function get_duration_string($verb) {
-		$strings = array();
-		);
-		$strings = apply_filters( 'kind_publication_string', $strings );
-		if (array_key_exists($verb, $strings) ) {
-			return $strings[$verb];
-		}
-		else {
-			return _x('for', 'Post kind');
-		}
-	} 
+
 	/**
 	 * Returns an array of domains with the post type terminologies
 	 *
