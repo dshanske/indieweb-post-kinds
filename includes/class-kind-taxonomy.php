@@ -429,6 +429,17 @@ class kind_taxonomy {
 		}
 	} 
 
+	public static function get_duration_string($verb) {
+		$strings = array();
+		);
+		$strings = apply_filters( 'kind_publication_string', $strings );
+		if (array_key_exists($verb, $strings) ) {
+			return $strings[$verb];
+		}
+		else {
+			return _x('for', 'Post kind');
+		}
+	} 
 	/**
 	 * Returns an array of domains with the post type terminologies
 	 *

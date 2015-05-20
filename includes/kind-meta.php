@@ -104,6 +104,13 @@ function kind_display_publication($publish, $verb) {
   return $pub;
 }
 
+// Take the url and return the domain name marked up
+function kind_display_duration($duration, $verb) {
+  if (empty($publish) ) { return ""; }
+  $pub = '<em>' . kind_taxonomy::get_duration_string($verb) . ' ' . '<span class="p-duration">' . $duration . '</span></em>';
+  return $pub;
+}
+
 
 // Take the content and return the content marked up
 function kind_display_content($c) {
@@ -151,6 +158,9 @@ function kind_display_cite($cite, $verb) {
     $embed = kind_display_embeds($cite['url']);
     if ( isset($cite['publication']) ) {
       $domain = ' ' . kind_display_publication($cite['publication'], $verb);
+    }
+    elseif ( isset($cite['publication']) ) {
+      $domain = ' ' . kind_display_duration($cite['duration'], $verb);
     }
     else {
       $domain = ' ' . kind_display_domain($cite['url'], $verb);

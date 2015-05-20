@@ -56,6 +56,10 @@ class kind_postmeta {
 		<br />
 			<input type="text" name="response_publication" id="response_publication" value="<?php if (isset ($kindmeta['cite'][0]['publication'])) { echo esc_attr($kindmeta['cite'][0]['publication']); } ?>" size="70" />
 		<br />
+			<label for="response_duration"><?php _e( "Duration", 'Post kind' ); ?></label>
+		<br />
+			<input type="text" name="response_duration" id="response_duration" value="<?php if (isset ($kindmeta['cite'][0]['duration'])) { echo esc_attr($kindmeta['cite'][0]['duration']); } ?>" size="70" />
+		<br />
 			<label for="response_content"><?php _e( "Content or Excerpt", 'Post kind' ); ?></label>
 		<br />
 			<textarea name="response_content" id="response_content" cols="70"><?php if (isset ($kindmeta['cite'][0]['content'])) { echo esc_attr( $kindmeta['cite'][0]['content'] ); } ?></textarea>
@@ -112,7 +116,10 @@ class kind_postmeta {
 		}
 		if( isset( $_POST[ 'response_publication' ] ) && !empty( $_POST[ 'response_publication' ] ) ) {
 			$cite[0]['publication'] = esc_attr( $_POST[ 'response_publication' ] ) ;
-  	}
+		}
+		if( isset( $_POST[ 'response_duration' ] ) && !empty( $_POST[ 'response_duration' ] ) ) {
+			$cite[0]['duration'] = esc_attr( $_POST[ 'response_duration' ] ) ;
+		}
 		if( isset( $_POST[ 'response_content' ] ) && !empty( $_POST[ 'response_content' ] ) ) {
 			$allowed = wp_kses_allowed_html( 'post' );
 			$options = get_option( 'iwt_options' );
