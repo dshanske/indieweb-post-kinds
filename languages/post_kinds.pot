@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: IndieWeb Post Kinds 1.4.1\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2015-05-18 13:36:53+00:00\n"
+"POT-Creation-Date: 2015-05-24 21:58:54+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -62,35 +62,15 @@ msgstr ""
 msgid "Citation/In Response To"
 msgstr ""
 
-#: includes/class-kind-postmeta.php:39
-msgid "URL"
-msgstr ""
-
-#: includes/class-kind-postmeta.php:43
-msgid "Name"
-msgstr ""
-
-#: includes/class-kind-postmeta.php:47
-msgid "Author/Artist Name"
-msgstr ""
-
-#: includes/class-kind-postmeta.php:51
-msgid "Author Photo"
-msgstr ""
-
-#: includes/class-kind-postmeta.php:55
-msgid "Site Name/Publication/Album"
-msgstr ""
-
-#: includes/class-kind-postmeta.php:59
+#: includes/class-kind-postmeta.php:81
 msgid "Content or Excerpt"
 msgstr ""
 
-#: includes/kind-functions.php:107
+#: includes/kind-functions.php:94
 msgid "Invalid post"
 msgstr ""
 
-#: indieweb-post-kinds.php:66
+#: indieweb-post-kinds.php:67
 msgid "This Plugin Requires the WordPress Webmention Plugin"
 msgstr ""
 
@@ -116,363 +96,393 @@ msgstr ""
 msgid "http://david.shanske.com"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:64 includes/class-kind-taxonomy.php:78
-msgctxt "Post kind"
-msgid "Kinds"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:65
-msgctxt "Post kind"
-msgid "Kind"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:66
-msgctxt "Post kind"
-msgid "Search Kinds"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:67
-msgctxt "Post kind"
-msgid "Popular Kinds"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:68
-msgctxt "Post kind"
-msgid "All Kinds"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:69
-msgctxt "Post kind"
-msgid "Parent Kind"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:70
-msgctxt "Post kind"
-msgid "Parent Kind:"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:71
-msgctxt "Post kind"
-msgid "Edit Kind"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:72
-msgctxt "Post kind"
-msgid "Update Kind"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:73
-msgctxt "Post kind"
-msgid "Add New Kind"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:74
-msgctxt "Post kind"
-msgid "New Kind"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:75
-msgctxt "Post kind"
-msgid "Separate kinds with commas"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:76
-msgctxt "Post kind"
-msgid "Add or remove kinds"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:77
-msgctxt "Post kind"
-msgid "Choose from the most used kinds"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:314
-msgctxt "Post kind"
-msgid "Article"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:315
-msgctxt "Post kind"
-msgid "Note"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:316
-msgctxt "Post kind"
-msgid "Reply"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:317
-msgctxt "Post kind"
-msgid "Repost"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:318
-msgctxt "Post kind"
-msgid "Like"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:319
-msgctxt "Post kind"
-msgid "Favorite"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:320
-msgctxt "Post kind"
-msgid "Bookmark"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:321
-msgctxt "Post kind"
-msgid "Photo"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:322
-msgctxt "Post kind"
-msgid "Tag"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:323
-msgctxt "Post kind"
-msgid "RSVP"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:324
-msgctxt "Post kind"
-msgid "Listen"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:325
-msgctxt "Post kind"
-msgid "Watch"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:326
-msgctxt "Post kind"
-msgid "Checkin"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:327
-msgctxt "Post kind"
-msgid "Wish"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:328
-msgctxt "Post kind"
-msgid "Play"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:329 includes/class-kind-taxonomy.php:358
-msgctxt "Post kind"
-msgid "Weather"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:330
-msgctxt "Post kind"
-msgid "Exercise"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:331
-msgctxt "Post kind"
-msgid "Travel"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:343
-msgctxt "Post kind"
-msgid "Articles"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:344
-msgctxt "Post kind"
-msgid "Notes"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:345
-msgctxt "Post kind"
-msgid "Replies"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:346
-msgctxt "Post kind"
-msgid "Reposts"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:347
-msgctxt "Post kind"
-msgid "Likes"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:348
-msgctxt "Post kind"
-msgid "Favorites"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:349
-msgctxt "Post kind"
-msgid "Bookmarks"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:350
-msgctxt "Post kind"
-msgid "Photos"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:351
-msgctxt "Post kind"
-msgid "Tags"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:352
-msgctxt "Post kind"
-msgid "RSVPs"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:353
-msgctxt "Post kind"
-msgid "Listens"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:354
-msgctxt "Post kind"
-msgid "Watches"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:355
-msgctxt "Post kind"
-msgid "Checkins"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:356
-msgctxt "Post kind"
-msgid "Wishlist"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:357
-msgctxt "Post kind"
-msgid "Plays"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:359
-msgctxt "Post kind"
-msgid "Exercises"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:360
-msgctxt "Post kind"
-msgid "Travels"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:372 includes/class-kind-taxonomy.php:373
-#: includes/class-kind-taxonomy.php:379
-msgctxt "Post kind"
-msgid " "
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:374
-msgctxt "Post kind"
-msgid "In Reply To"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:375
-msgctxt "Post kind"
-msgid "Reposted"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:376
-msgctxt "Post kind"
-msgid "Liked"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:377
-msgctxt "Post kind"
-msgid "Favorited"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:378
-msgctxt "Post kind"
-msgid "Bookmarked"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:380
-msgctxt "Post kind"
-msgid "Tagged"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:381
-msgctxt "Post kind"
-msgid "RSVPed"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:382
-msgctxt "Post kind"
-msgid "Listened to "
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:383
-msgctxt "Post kind"
-msgid "Watched"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:384
-msgctxt "Post kind"
-msgid "Checked In At"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:385
-msgctxt "Post kind"
-msgid "Desires"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:386
-msgctxt "Post kind"
-msgid "Played"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:387
-msgctxt "Post kind"
-msgid "Weathered"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:388
-msgctxt "Post kind"
-msgid "Exercised"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:389
-msgctxt "Post kind"
-msgid "Traveled"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:401 includes/class-kind-taxonomy.php:408
-msgctxt "Post kind"
-msgid "by"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:419 includes/class-kind-taxonomy.php:428
-msgctxt "Post kind"
-msgid "on"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:420 includes/class-kind-taxonomy.php:421
-msgctxt "Post kind"
-msgid "-"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:439
+#: includes/class-kind-display.php:149
 msgctxt "Post kind"
 msgid "a tweet"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:440 includes/class-kind-taxonomy.php:441
+#: includes/class-kind-display.php:150 includes/class-kind-display.php:151
 msgctxt "Post kind"
 msgid "a video"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:448
+#: includes/class-kind-display.php:152
+msgctxt "Post kind"
+msgid "an image"
+msgstr ""
+
+#: includes/class-kind-display.php:159
 msgctxt "Post kind"
 msgid "a post"
 msgstr ""
 
-#: includes/kind-meta.php:69
+#: includes/class-kind-postmeta.php:36
 msgctxt "Post kind"
-msgid " and "
+msgid "URL"
+msgstr ""
+
+#: includes/class-kind-postmeta.php:37
+msgctxt "Post kind"
+msgid "Name"
+msgstr ""
+
+#: includes/class-kind-postmeta.php:38
+msgctxt "Post kind"
+msgid "Site Name/Publication/Album"
+msgstr ""
+
+#: includes/class-kind-postmeta.php:39
+msgctxt "Post kind"
+msgid "Duration"
+msgstr ""
+
+#: includes/class-kind-postmeta.php:46
+msgctxt "Post kind"
+msgid "Author/Artist Name"
+msgstr ""
+
+#: includes/class-kind-postmeta.php:47
+msgctxt "Post kind"
+msgid "Author Photo"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:70 includes/class-kind-taxonomy.php:84
+msgctxt "Post kind"
+msgid "Kinds"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:71
+msgctxt "Post kind"
+msgid "Kind"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:72
+msgctxt "Post kind"
+msgid "Search Kinds"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:73
+msgctxt "Post kind"
+msgid "Popular Kinds"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:74
+msgctxt "Post kind"
+msgid "All Kinds"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:75
+msgctxt "Post kind"
+msgid "Parent Kind"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:76
+msgctxt "Post kind"
+msgid "Parent Kind:"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:77
+msgctxt "Post kind"
+msgid "Edit Kind"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:78
+msgctxt "Post kind"
+msgid "Update Kind"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:79
+msgctxt "Post kind"
+msgid "Add New Kind"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:80
+msgctxt "Post kind"
+msgid "New Kind"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:81
+msgctxt "Post kind"
+msgid "Separate kinds with commas"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:82
+msgctxt "Post kind"
+msgid "Add or remove kinds"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:83
+msgctxt "Post kind"
+msgid "Choose from the most used kinds"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:320
+msgctxt "Post kind"
+msgid "Article"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:321
+msgctxt "Post kind"
+msgid "Note"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:322
+msgctxt "Post kind"
+msgid "Reply"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:323
+msgctxt "Post kind"
+msgid "Repost"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:324
+msgctxt "Post kind"
+msgid "Like"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:325
+msgctxt "Post kind"
+msgid "Favorite"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:326
+msgctxt "Post kind"
+msgid "Bookmark"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:327
+msgctxt "Post kind"
+msgid "Photo"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:328
+msgctxt "Post kind"
+msgid "Tag"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:329
+msgctxt "Post kind"
+msgid "RSVP"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:330
+msgctxt "Post kind"
+msgid "Listen"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:331
+msgctxt "Post kind"
+msgid "Watch"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:332
+msgctxt "Post kind"
+msgid "Checkin"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:333
+msgctxt "Post kind"
+msgid "Wish"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:334
+msgctxt "Post kind"
+msgid "Play"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:335 includes/class-kind-taxonomy.php:364
+msgctxt "Post kind"
+msgid "Weather"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:336
+msgctxt "Post kind"
+msgid "Exercise"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:337
+msgctxt "Post kind"
+msgid "Travel"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:349
+msgctxt "Post kind"
+msgid "Articles"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:350
+msgctxt "Post kind"
+msgid "Notes"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:351
+msgctxt "Post kind"
+msgid "Replies"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:352
+msgctxt "Post kind"
+msgid "Reposts"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:353
+msgctxt "Post kind"
+msgid "Likes"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:354
+msgctxt "Post kind"
+msgid "Favorites"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:355
+msgctxt "Post kind"
+msgid "Bookmarks"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:356
+msgctxt "Post kind"
+msgid "Photos"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:357
+msgctxt "Post kind"
+msgid "Tags"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:358
+msgctxt "Post kind"
+msgid "RSVPs"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:359
+msgctxt "Post kind"
+msgid "Listens"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:360
+msgctxt "Post kind"
+msgid "Watches"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:361
+msgctxt "Post kind"
+msgid "Checkins"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:362
+msgctxt "Post kind"
+msgid "Wishlist"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:363
+msgctxt "Post kind"
+msgid "Plays"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:365
+msgctxt "Post kind"
+msgid "Exercises"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:366
+msgctxt "Post kind"
+msgid "Travels"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:378 includes/class-kind-taxonomy.php:379
+#: includes/class-kind-taxonomy.php:385
+msgctxt "Post kind"
+msgid " "
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:380
+msgctxt "Post kind"
+msgid "In Reply To"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:381
+msgctxt "Post kind"
+msgid "Reposted"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:382
+msgctxt "Post kind"
+msgid "Liked"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:383
+msgctxt "Post kind"
+msgid "Favorited"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:384
+msgctxt "Post kind"
+msgid "Bookmarked"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:386
+msgctxt "Post kind"
+msgid "Tagged"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:387
+msgctxt "Post kind"
+msgid "RSVPed"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:388
+msgctxt "Post kind"
+msgid "Listened to "
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:389
+msgctxt "Post kind"
+msgid "Watched"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:390
+msgctxt "Post kind"
+msgid "Checked In At"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:391
+msgctxt "Post kind"
+msgid "Desires"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:392
+msgctxt "Post kind"
+msgid "Played"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:393
+msgctxt "Post kind"
+msgid "Weathered"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:394
+msgctxt "Post kind"
+msgid "Exercised"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:395
+msgctxt "Post kind"
+msgid "Traveled"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:407 includes/class-kind-taxonomy.php:414
+msgctxt "Post kind"
+msgid "by"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:425 includes/class-kind-taxonomy.php:434
+msgctxt "Post kind"
+msgid "on"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:426 includes/class-kind-taxonomy.php:427
+msgctxt "Post kind"
+msgid "-"
 msgstr ""

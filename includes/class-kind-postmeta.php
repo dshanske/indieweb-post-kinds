@@ -163,25 +163,30 @@ class kind_postmeta {
 		$cite['card'] = $card;
 		$cite = array_filter($cite);
 		if (isset($cite['url']) ) {
-			$data = self::parse($cite['url']);
-			if (!isset($cite['name']) ) {
-					$cite['name'] = $data['name'];
-			}
-      if (!isset($cite['publication']) ) {
-          $cite['publication'] = $data['publication'];
-      }
-      if (!isset($cite['content']) ) {
-          $cite['content'] = $data['content'];
-      }
-			if (isset($data['image']) ) {
-					$images = get_children( array(
+			$data = get_post_meta($post_id, '_parse', true);
+			// Prevent Lookup More than Once
+			if ($data!='true') {
+				$data = self::parse($cite['url']);
+      	update_post_meta( $post_id,'_parse', 'true');
+				if (!isset($cite['name']) ) {
+						$cite['name'] = $data['name'];
+				}
+      	if (!isset($cite['publication']) ) {
+        	  $cite['publication'] = $data['publication'];
+      	}
+      	if (!isset($cite['content']) ) {
+      	    $cite['content'] = $data['content'];
+      	}
+				if (isset($data['image']) ) {
+						$images = get_children( array(
 																			'post_type' => 'attachment',
 																			'post_mime_type' => 'image',
 																			'post_parent' => 'post_id'
 																	) );
-					if (empty($images)) {
-						$media = media_sideload_image($data['image'], $post_id);
-					}
+						if (empty($images)) {
+							$media = media_sideload_image($data['image'], $post_id);
+						}
+				}
 			}
 		}
 		$cite = array_filter($cite);

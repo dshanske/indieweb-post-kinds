@@ -1,7 +1,7 @@
 === Indieweb Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention
-Stable tag: 1.4.1
+Stable tag: 2.0.0
 Requires at least: 4.1
 Tested up to: 4.2
 License: GPLv2 or later
@@ -46,10 +46,16 @@ To declare your theme supports post kinds(if it does):
 
 add_theme_support('post-kinds');
 
-If your theme does not declare support, then the context information will be added to the content. It is assumed if your theme declares support, it is
-responsible for display.
+If your theme does not declare support, then the context information will be added to the content 100% 
+of the time. It is assumed if your theme declares support, then it declares the alternate location for 
+presentation.
 
 == Upgrade Notice ==
+
+= 2.0.0 = 
+
+This version makes some changes to the presentation. Backup your installation
+first as a precaution.
 
 = 1.2.0 =
 This version migrates data to a new storage formats. Backup your installation
@@ -118,12 +124,7 @@ additional ones added. Feedback appreciated.
 == Future Plans ==
 
 	* Contextual response box, hiding/changing options based on Kind selected. Example, an RSVP that shows Yes/No/Maybe.
-	* Finish rewrite object oriented rewrite
 	* Support Micropub plugin
-	* Turn Kind Meta functions into class that also uses post meta as an alternative to
-		the Kind taxonomy to derive types by checking for post meta types other than mf2_cite.
-	* Add parsing capability from Indie-Webactions plugin into Post Kinds in a way to avoid
-		duplication.
 	* Validate inputs based on type
 
 
@@ -141,6 +142,12 @@ define('MULTIKIND', '1');
 Indieweb Post Kinds already has support for replying to Twitter posts using the Social Network Auto Poster plugin.
 
 == Changelog == 
+	= Version 2.0.0 =
+		* Rewrite completed
+		* Multi-author/multi-reply temporarily removed in storage, but it wasn't being used yet anyway
+		* Customizable display objects now supported
+		* Open Graph Protocol Parsing Added to Extract Title/Description/Image from URLs
+		* Sideloads Author Picture
 	= Version 1.4.1 =
 		* Bug fixes for changes made in 1.4.0. 
 	= Version 1.4.0 = 
