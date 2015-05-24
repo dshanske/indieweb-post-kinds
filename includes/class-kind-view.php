@@ -10,11 +10,13 @@ class kind_view {
 		// If the Theme Has Not Declared Support for Post Kinds
 		// Add the Response Display to the Content Filter
 		if (!current_theme_supports('post-kinds')) {
-    	add_filter( 'the_content', array('kind_view', 'content_response_top'), 20 );
+    	add_filter( 'the_content', array('kind_view', 'content_response'), 20 );
 		}
 		else {
-			add_filter( 'kind_response_display', array('kind_view', 'content_response_top') );
+			add_filter( 'kind_response_display', array('kind_view', 'content_response') );
 		}
+      add_filter( 'the_content_feed', array('kind_view', 'kind_content_feed'), 20 );
+
 	}
 
 	public static function kind_content_feed($content) {
@@ -23,11 +25,16 @@ class kind_view {
 		return $response . $content;
 	}
 	public static function get_kind_response_display() {
-		$object = new kind_display( get_the_ID() );
-		$c = '<div ' . $object->context_class('response h-cite', 'p') . '>' . $object->get_display() . '</div>';
-		return $c;
+		global $post;
+		$kind = get_post_kind_slug($post);
+		// Allow for customized kind_display objects
+		switch ($kind) {
+			default:
+				$object = new kind_display( get_the_ID() );
+		}
+		return $object->get_display();
 	}
-	public function content_response_top ($content ) {
+	public function content_response ($content ) {
     $c = "";
     $c .= self::get_kind_response_display();
     $c .= $content;

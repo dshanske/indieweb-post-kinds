@@ -47,7 +47,7 @@ class kind_display {
 						$url = $this->get_url_link($m['url'], $m['name'], $urlatr);
 			}
 			else {
-				$url = $this->get_url_link($m['url'], kind_taxonomy::get_post_type_string($m['url']), $urlatr);
+				$url = $this->get_url_link($m['url'], self::get_post_type_string($m['url']), $urlatr);
 			}
 			$pub = ' ' . kind_taxonomy::get_publication_string( $this->meta->get_kind() ). ' ';
 			if ( isset($m['publication'] ) ) { 
@@ -65,7 +65,8 @@ class kind_display {
 		if ( isset($m['content'] ) ) {
 			$content .= '<blockquote class="p-content">' . $m['content'] . '</blockquote>';
 		}
-		return $verb . ' ' . $url . $pub . $cards . $content;				
+		$c = $verb . ' ' . $url . $pub . $cards . $content;				
+	  return '<div ' . $this->context_class('response h-cite', 'p') . '>' . $c . '</div>';
 	}
 
 	// Echo the output of get_display 
@@ -137,6 +138,28 @@ class kind_display {
 		// Separates classes with a single space, collates classes
 		return 'class="' . join( ' ', $this->get_context_class( $class, $classtype ) ) . '"';
 	}
+
+  /**
+   * Returns an array of domains with the post type terminologies
+   *
+   * @return array A translated post type string for specific domain or 'a post'
+   */
+  public static function get_post_type_string($url) {
+    $strings = array(
+      'twitter.com' => _x( 'a tweet', 'Post kind' ),
+      'vimeo.com' => _x( 'a video', 'Post kind' ),
+      'youtube.com'   => _x( 'a video', 'Post kind' ),
+			'instagram.com' => _x( 'an image', 'Post kind' )
+    );
+    $domain = extract_domain_name($url);
+    if (array_key_exists($domain, $strings) ) {
+      return apply_filters( 'kind_post_type_string', $strings[$domain] );
+    }
+    else {
+      return _x('a post', 'Post kind');
+    }
+  }
+
 
 	public function get_hcards() {
 		$cards = $this->meta->get_hcard();

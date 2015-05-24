@@ -435,26 +435,6 @@ class kind_taxonomy {
 		}
 	} 
 
-	/**
-	 * Returns an array of domains with the post type terminologies
-	 *
-	 * @return array A translated post type string for specific domain or 'a post'
-	 */
-	public static function get_post_type_string($url) {
-		$strings = array(
-			'twitter.com' => _x( 'a tweet', 'Post kind' ),
-			'vimeo.com' => _x( 'a video', 'Post kind' ),
-			'youtube.com'   => _x( 'a video', 'Post kind' )
-		);
-		$domain = extract_domain_name($url);
-		if (array_key_exists($domain, $strings) ) {
-			return apply_filters( 'kind_post_type_string', $strings[$domain] );
-		}
-		else {
-			return _x('a post', 'Post kind');
-		}
-	}
-
 	public static function remove_semantics() {
 		if (class_exists('SemanticLinkbacksPlugin') ) {
 			remove_filter('comment_text', array('SemanticLinkbacksPlugin', 'comment_text_excerpt'),12);
@@ -522,8 +502,8 @@ class kind_taxonomy {
 	} 
 
 	public static function json_rest_add_kindmeta($_post,$post,$context) {
-		$response = get_post_meta( $post["ID"], 'mf2_cite');
-		if (!empty($response)) { $_post['mf2_cite'] = $response; }
+		$response = new kind_meta( $post["ID"]);
+		if (!empty($response)) { $_post['mf2'] = $response->get_all_meta(); }
 		return $_post;
 	}
 

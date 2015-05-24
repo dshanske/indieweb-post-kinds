@@ -118,6 +118,7 @@ class kind_meta {
 		$response = array_filter_recursive($response);
 		return array_filter($response);
 	}
+
 	public function get_hcard() {
 		$m = $this->get_meta();
 		if (isset($m['card'] ) ) {
@@ -167,6 +168,14 @@ class kind_meta {
 		 */
 		$class_mapper["favorite"]    = "favorite";
 		$class_mapper["favorite-of"] = "favorite";
+    /*
+     * bookmark
+     * @link http://indiewebcamp.com/bookmark
+     */
+    $class_mapper["bookmark"]    = "bookmark";
+    $class_mapper["bookmark-of"] = "bookmark";
+
+
 		/*
 		 * rsvp
 		 * @link http://indiewebcamp.com/rsvp

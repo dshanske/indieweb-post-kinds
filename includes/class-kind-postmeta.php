@@ -157,6 +157,29 @@ class kind_postmeta {
 		$card = array_filter($card);
 		$cite['card'] = $card;
 		$cite = array_filter($cite);
+		if (isset($cite['url']) ) {
+			$data = self::parse($cite['url']);
+			if (!isset($cite['name']) ) {
+					$cite['name'] = $data['name'];
+			}
+      if (!isset($cite['publication']) ) {
+          $cite['publication'] = $data['publication'];
+      }
+      if (!isset($cite['content']) ) {
+          $cite['content'] = $data['content'];
+      }
+			if (isset($data['image']) ) {
+					$images = get_children( array(
+																			'post_type' => 'attachment',
+																			'post_mime_type' => 'image',
+																			'post_parent' => 'post_id'
+																	) );
+					if (empty($images)) {
+						$media = media_sideload_image($data['image'], $post_id);
+					}
+			}
+		}
+		$cite = array_filter($cite);
 		if(!empty($cite)) {
 			update_post_meta( $post_id,'mf2_cite', $cite);
 		}  
@@ -167,6 +190,38 @@ class kind_postmeta {
 			self::save_post($post->ID,$post);
 		}
 	}
+
+// Extract Relevant Data from a Web Page
+  public static function parse($url) {
+    if (!isset($url)) {
+      return false;
+    }
+    elseif (filter_var($url, FILTER_VALIDATE_URL) === false)  { 
+      return false; 
+    }
+    $response = wp_remote_get($url);
+    if (is_wp_error($response) ) {
+			return false;
+    }
+    $body = wp_remote_retrieve_body($response);
+    $meta = \ogp\Parser::parse($body);
+    $domain = parse_url($url, PHP_URL_HOST);
+		$data=array();
+    $data['name'] = $meta['og:title'] ?: $meta['twitter:title'];
+    $data['content'] = $meta['og:description'] ?: $meta['twitter:description'];
+    $data['site'] = $meta['og:site'] ?: $meta['twitter:site'];
+    $data['image'] = $meta['og:image'] ?: $meta['twitter:image'];
+    $data['publication'] = $meta['og:site_name'];
+    $metatags = $meta['article:tag'] ?: $meta['og:video:tag'];
+    if(is_array($metatags)) {
+      foreach ($metatags as $tag) {
+        $tags[] = str_replace(',', ' -', $tag);
+      }
+      $tags = array_filter($tags);
+    }
+    $data['tags'] = $data['tags'] ?: implode("," ,$tags);
+    return array_filter($data);
+  }
 }
 
 ?>
