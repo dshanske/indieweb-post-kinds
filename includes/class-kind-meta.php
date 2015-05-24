@@ -5,7 +5,9 @@ class kind_meta {
 	protected $meta=array(); // Raw Meta Data
 	protected $kind=""; // Actual or Implied Kind
 	protected $meta_key=""; // The primary meta key
+	protected $post_id;
 	public function __construct( $post_id ) {
+		$this->$post_id = $post_id;
 		if( class_exists( 'kind_taxonomy' ) ) {
 			$this->kind = get_post_kind_slug( get_post( $post_id ) );
 		}
@@ -113,8 +115,24 @@ class kind_meta {
 					}
 				}
 		}
-		return $response;
+		$response = array_filter_recursive($response);
+		return array_filter($response);
 	}
+	public function get_hcard() {
+		$m = $this->get_meta();
+		if (isset($m['card'] ) ) {
+			return $m['card'];
+		}
+		return false;
+	}
+
+	public function get($key) {
+		if (isset($this->meta[$key]) ) {
+			return $this->meta[$key];
+    }
+		return false;
+	}
+
 
 	/**
 	 * maps classes to kinds
@@ -167,65 +185,6 @@ class kind_meta {
 		$class_mapper["wish"]        = "wish";
 
 		return apply_filters("kind_class_mapper", $class_mapper);
-	}
-
-	public static function get_context_class ( $class = '', $classtype='u') {
-		$classes = array();
-		if ( $this->kind ) {
-			switch ( $this->kind ) {
-				case "like":
-					$classes[] = $classtype.'-like-of';
-					break;
-				case "favorite":
-					$classes[] = $classtype.'-favorite-of';
-					break;
-				case "repost":
-					$classes[] = $classtype.'-repost-of';
-					break;
-				case "reply":
-					$classes[] = $classtype.'-in-reply-to';
-					break;
-				case "rsvp":
-					$classes[] = $classtype.'-in-reply-to';
-					break; 
-				case "tag":
-					$classes[] = $classtype.'-tag-of';
-					break;
-				case "bookmark":
-					break;
-				case "listen":
-					$classes[] = $classtype.'-listen';
-					break;
-				case "watch":
-					$classes[] = $classtype.'-watch';
-					break;
-				case "game":
-					$classes[] = $classtype.'-play';
-					break;
-				case "wish":
-					$classes[] = $classtype.'-wish';
-					break;
-			}
-		}         
-		if ( ! empty( $class ) ) {
-			if ( !is_array( $class ) )
-				$class = preg_split( '#\s+#', $class );
-				$classes = array_merge( $classes, $class );
-			} 
-			else {
-				// Ensure that we always coerce class to being an array.
-				$class = array();
-			}
-			$classes = array_map( 'esc_attr', $classes );
- 		/**
-		 * Filter the list of CSS kind classes for the current response URL.
-		 *
-		 *
-		 * @param array  $classes An array of kind classes.
-		 * @param string $class   A comma-separated list of additional classes added to the link.
-		 * @param string $kind 		The slug of the kind the post is set to
-		 */
-		return apply_filters( 'kind_classes', $classes, $class, $this->kind );
 	}
 
 } // End Class

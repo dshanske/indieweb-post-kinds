@@ -34,14 +34,11 @@ require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind-postmeta.php');
 // Add Kind Core Functions
 require_once( plugin_dir_path( __FILE__ ) . '/includes/kind-functions.php');
 // Add Kind Display Functions
-require_once( plugin_dir_path( __FILE__ ) . '/includes/kind-view.php');
+require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind-view.php');
+require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind-display.php');
 
 // Add Kind Meta Display Functions
-require_once( plugin_dir_path( __FILE__ ) . '/includes/kind-meta.php');
 require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind-meta.php');
-
-// Add Embed Functions for Commonly Embedded Websites not Supported by Wordpress
-require_once( plugin_dir_path( __FILE__ ) . '/includes/embeds.php');
 
 // Load stylesheets
 add_action( 'wp_enqueue_scripts', 'kindstyle_load' );
@@ -85,5 +82,28 @@ if (!function_exists('is_multi_array') ) {
 	}
 }
 
+if (!function_exists('array_filter_recursive') ) {
+	function array_filter_recursive($array, $callback = null) {
+		foreach ($array as $key => & $value) {
+			if (is_array($value)) {
+				$value = array_filter_recursive($value, $callback);
+			}
+			else {
+				if ( ! is_null($callback)) {
+					if ( ! $callback($value)) {
+						unset($array[$key]);
+					}
+				}
+				else {
+					if ( ! (bool) $value) {
+						unset($array[$key]);
+					}
+				}
+			}
+		}
+		unset($value);
+		return $array;
+	}
+}
 
 ?>

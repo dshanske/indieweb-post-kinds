@@ -61,7 +61,7 @@ class kind_config {
 	}
 
 	public static function options_form() {
-		kind_defaultterms ();
+		kind_taxonomy::kind_defaultterms ();
 		echo '<div class="wrap">';
 		echo '<h2>' . __('Indieweb Post Kinds', 'Post kinds') . '</h2>';
 		echo '<p>'; 

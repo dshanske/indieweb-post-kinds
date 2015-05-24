@@ -25,6 +25,8 @@ class kind_taxonomy {
 
 		// Trigger Webmention on Change in Post Status
 		add_filter('transition_post_status', array( 'kind_taxonomy', 'transition'), 10, 3);
+		// On Post Publush Invalidate any Stored Response
+    add_action( 'publish_post', array('kind_taxonomy', 'invalidate_response'), 10, 2 );
 
 
 		// Return Kind Meta as part of the JSON Rest API
@@ -38,6 +40,10 @@ class kind_taxonomy {
 
 
 	}
+
+  public static function invalidate_response($ID, $post) {
+    delete_post_meta( get_the_ID(), '_resp_full' );
+  }
 
 	public static function activate_kinds() {
 		if ( function_exists('iwt_plugin_notice') ) {
@@ -556,6 +562,20 @@ class kind_taxonomy {
 		}
 		return $classes;
 	}
+
+	/**
+ 	 * Returns true if kind is a response type kind.
+ 	 * This means dynamically generated content is added
+ 	 *
+ 	 * @param string $kind The post kind slug.
+ 	 * @return true/false.
+ 	 */
+	public static function response_kind( $kind ) {
+		$not_responses = array( "article", "note" , "photo");
+		if (in_array($kind, $not_responses)) { return false; }
+  	else { return true; }
+}
+
 
 } // End Class kind_taxonomy
 

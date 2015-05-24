@@ -127,7 +127,8 @@ additional ones added. Feedback appreciated.
 	* Turn Kind Meta functions into class that also uses post meta as an alternative to
 		the Kind taxonomy to derive types by checking for post meta types other than mf2_cite.
 	* Add parsing capability from Indie-Webactions plugin into Post Kinds in a way to avoid
-		duplication
+		duplication.
+	* Validate inputs based on type
 
 
 ## MultiKind Support (Experimental) ##

@@ -55,6 +55,10 @@ class kind_postmeta {
 			<label for="response_publication"><?php _e( "Site Name/Publication/Album", 'Post kind' ); ?></label>
 		<br />
 			<input type="text" name="response_publication" id="response_publication" value="<?php if (isset ($kindmeta['cite'][0]['publication'])) { echo esc_attr($kindmeta['cite'][0]['publication']); } ?>" size="70" />
+	<br />
+	<label for="response_duration"><?php _e( "Duration", 'Post kind' ); ?></label>
+		<br />
+			<input type="text" name="response_duration" id="response_duration" value="<?php if (isset ($kindmeta['cite'][0]['duration'])) { echo esc_attr($kindmeta['cite'][0]['duration']); } ?>" size="70" />
 		<br />
 			<label for="response_content"><?php _e( "Content or Excerpt", 'Post kind' ); ?></label>
 		<br />

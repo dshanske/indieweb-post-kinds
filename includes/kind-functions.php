@@ -38,19 +38,6 @@ function get_post_kind_link( $kind ) {
 	return get_term_link( $term );
 }
 
-/**
- * Returns true if kind is a response type kind .
- *
- *
- * @param string $kind The post kind slug.
- * @return true/false.
- */
-function response_kind( $kind ) {
-	$not_responses = array( "article", "note" , "photo");
-	if (in_array($kind, $not_responses)) { return false; }
-	else { return true; }
-}
- 
 function get_post_kind_slug( $post = null ) {
 	$post = get_post($post);
 	if ( ! $post = get_post( $post ) )
