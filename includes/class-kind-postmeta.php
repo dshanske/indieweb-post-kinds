@@ -31,40 +31,58 @@ class kind_postmeta {
 		);
 	}
 
+	public static function cite_elements() {
+		$cite_elements = array(
+                        'url' => _x( "URL", 'Post kind' ),
+                        'name' => _x( "Name", 'Post kind' ),
+                        'publication' => _x( "Site Name/Publication/Album", 'Post kind' ),
+                        'duration' => _x( "Duration", 'Post kind' )
+                        );
+		return $cite_elements;
+	}	
+
+	public static function hcard_elements() {
+		$hcard_elements = array(
+                        'name' => _x( "Author/Artist Name", 'Post kind' ),
+                        'photo' => _x( "Author Photo", 'Post kind' ),
+                      );
+		return $hcard_elements;
+	}
+
 	public static function metabox( $object, $box ) {
 		wp_nonce_field( 'response_metabox', 'response_metabox_nonce' ); 
-		$kindmeta = get_kind_meta ($object->ID);
-		?>  
-		<p>
-			<label for="response_url"><?php _e( "URL", 'Post kind' ); ?></label>
+		$meta = new kind_meta ($object->ID);
+		$kindmeta = $meta->get_meta();
+		$cite_elements = self::cite_elements();
+		echo '<p>';
+		foreach ($cite_elements as $key => $value) {
+			echo '<label for="cite_' . $key . '">' . $value . '</label>';
+			echo '<br />';
+			echo '<input type="text" name="cite_' . $key . '"';
+			if (isset($kindmeta[$key]) ) {
+				echo ' value="'. esc_attr($kindmeta[$key]) . '"';
+			}
+			echo ' size="70" />';
+			echo '<br />';
+		}
+    $hcard_elements = self::hcard_elements();
+    foreach ($hcard_elements as $key => $value) {
+      echo '<label for="hcard_' . $key . '">' . $value . '</label>';
+      echo '<br />';
+      echo '<input type="text" name="hcard_' . $key . '"';
+      if (isset($kindmeta['card'][$key]) ) {
+        echo ' value="'. esc_attr($kindmeta['card'][$key]) . '"';
+      }
+      echo ' size="70" />';
+      echo '<br />';
+    } 
+		?> 
 		<br />
-			<input type="text" name="response_url" id="response_url" value="<?php if (isset ($kindmeta['cite'][0]['url'])) {echo esc_attr( $kindmeta['cite'][0]['url'] ); } ?>" size="70" />
+			<label for="cite_content"><?php _e( "Content or Excerpt", 'Post kind' ); ?></label>
 		<br />
-			<label for="response_name"><?php _e( "Name", 'Post kind' ); ?></label>
-		<br />
-			<input type="text" name="response_name" id="response_name" value="<?php if (isset ($kindmeta['cite'][0]['name'])) { echo esc_attr($kindmeta['cite'][0]['name']); } ?>" size="70" />
-		<br />
-			<label for="response_author"><?php _e( "Author/Artist Name", 'Post kind' ); ?></label>
-    <br />
-			<input type="text" name="response_author" id="response_author" value="<?php if (isset ($kindmeta['cite'][0]['card'][0]['name'])) { echo esc_attr($kindmeta['cite'][0]['card'][0]['name']); } ?>" size="70" />
-		<br />
-			<label for="response_photo"><?php _e( "Author Photo", 'Post kind' ); ?></label>
-		<br />
-			<input type="text" name="response_photo" id="response_photo" value="<?php if (isset ($kindmeta['cite'][0]['card'][0]['photo'])) { echo esc_attr($kindmeta['cite'][0]['card'][0]['photo']); } ?>" size="70" />
-		<br />
-			<label for="response_publication"><?php _e( "Site Name/Publication/Album", 'Post kind' ); ?></label>
-		<br />
-			<input type="text" name="response_publication" id="response_publication" value="<?php if (isset ($kindmeta['cite'][0]['publication'])) { echo esc_attr($kindmeta['cite'][0]['publication']); } ?>" size="70" />
-	<br />
-	<label for="response_duration"><?php _e( "Duration", 'Post kind' ); ?></label>
-		<br />
-			<input type="text" name="response_duration" id="response_duration" value="<?php if (isset ($kindmeta['cite'][0]['duration'])) { echo esc_attr($kindmeta['cite'][0]['duration']); } ?>" size="70" />
-		<br />
-			<label for="response_content"><?php _e( "Content or Excerpt", 'Post kind' ); ?></label>
-		<br />
-			<textarea name="response_content" id="response_content" cols="70"><?php if (isset ($kindmeta['cite'][0]['content'])) { echo esc_attr( $kindmeta['cite'][0]['content'] ); } ?></textarea>
+			<textarea name="cite_content" id="cite_content" cols="70"><?php if (!empty($kindmeta['content'])) { echo $kindmeta['content'];} ?></textarea>
 		</p>
-		<?php 
+		<?php
 	}
 
 	/* Save the meta box's post metadata. */
@@ -101,30 +119,44 @@ class kind_postmeta {
 			}
 		}
 		$kind = get_post_kind_slug($post);
+		$hcard_elements = self::hcard_elements();
+		$cite_elements = self::cite_elements();
 		/* OK, its safe for us to save the data now. */
-		if( isset( $_POST[ 'response_url' ] ) && !empty( $_POST[ 'response_url' ] ) ) {
-			$cite[0]['url'] = esc_url_raw( $_POST[ 'response_url' ] );
+		$card = array();
+    foreach ($hcard_elements as $key => $value) {
+			if (!empty( $_POST['hcard_'.$key]) ) {
+				$card[$key]= $_POST['hcard_'.$key];
+				if (!filter_var($card[$key], FILTER_VALIDATE_URL) === false) {
+						$card[$key] = esc_url_raw($card[$key]);
+				}
+				else {
+						$card[$key] = esc_attr($card[$key]);
+				}
+			}
 		}
-		if( isset( $_POST[ 'response_name' ] ) && !empty( $_POST[ 'response_name' ] ) ) {
-			$cite[0]['name'] = esc_attr( $_POST[ 'response_name' ] ) ;
-		}
-		if( isset( $_POST[ 'response_author' ] ) && !empty( $_POST[ 'response_author' ] ) ) {
-			$cite[0]['card'][0]['name'] = esc_attr( $_POST[ 'response_author' ] ) ;
-		}
-		if( isset( $_POST[ 'response_photo' ] ) && !empty( $_POST[ 'response_photo' ] ) ) {
-			$cite[0]['card'][0]['photo'] = esc_url_raw( $_POST[ 'response_photo' ] ) ;
-		}
-		if( isset( $_POST[ 'response_publication' ] ) && !empty( $_POST[ 'response_publication' ] ) ) {
-			$cite[0]['publication'] = esc_attr( $_POST[ 'response_publication' ] ) ;
-  	}
-		if( isset( $_POST[ 'response_content' ] ) && !empty( $_POST[ 'response_content' ] ) ) {
+		$cite = array();
+		foreach ($cite_elements as $key => $value) {
+			if (!empty( $_POST['cite_'.$key]) ) {
+      		$cite[$key]= $_POST['cite_'.$key];
+	        if (!filter_var($cite[$key], FILTER_VALIDATE_URL) === false) {  
+						$cite[$key] = esc_url_raw($cite[$key]);
+					}
+					else {
+						$cite[$key] = esc_attr($cite[$key]);
+					}
+			}
+    } 
+		if ( ! empty( $_POST['cite_content']) ) {
 			$allowed = wp_kses_allowed_html( 'post' );
-			$options = get_option( 'iwt_options' );
-    	if(array_key_exists('contentelements',$options) && json_decode($options['contentelements']) != NULL){
-			$allowed = json_decode($options['contentelements'],true);
-    	}
-			$cite[0]['content'] =  wp_kses((string) $_POST[ 'response_content' ] ,$allowed); 
-  	}
+      $options = get_option( 'iwt_options' );
+			if(array_key_exists('contentelements',$options) && json_decode($options['contentelements']) != NULL){
+				$allowed = json_decode($options['contentelements'],true);
+			}
+      $cite['content'] =  wp_kses((string) $_POST[ 'cite_content' ] ,$allowed);
+		}
+		$card = array_filter($card);
+		$cite['card'] = $card;
+		$cite = array_filter($cite);
 		if(!empty($cite)) {
 			update_post_meta( $post_id,'mf2_cite', $cite);
 		}  
