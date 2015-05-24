@@ -155,6 +155,11 @@ class kind_postmeta {
       $cite['content'] =  wp_kses((string) $_POST[ 'cite_content' ] ,$allowed);
 		}
 		$card = array_filter($card);
+		if ( isset($card['photo']) ) {
+			 if( extract_domain_name($card['photo'])!=extract_domain_name(get_site_url()) ) {
+			 		$card['photo'] = media_sideload_image($card['photo'], $post_id, $card['name'], 'src');
+			 }
+		}
 		$cite['card'] = $card;
 		$cite = array_filter($cite);
 		if (isset($cite['url']) ) {
