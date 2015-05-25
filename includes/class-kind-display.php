@@ -62,10 +62,17 @@ class kind_display {
 			$url = "";
 			$pub = "";
 		}
+    if ( isset($m['duration']) ) {
+        $time = ' <em>' . kind_taxonomy::get_duration_string($kind) . ' ' . '<span class="p-duration">' . $m['duration'] . '</span></em>';
+      }
+		else {
+				$time = "";
+		}
+
 		if ( isset($m['content'] ) ) {
 			$content .= '<blockquote class="p-content">' . $m['content'] . '</blockquote>';
 		}
-		$c = $verb . ' ' . $url . $pub . $cards . $content;				
+		$c = $verb . ' ' . $url . $pub . $cards . $time . $content;				
 	  return '<div ' . $this->context_class('response h-cite', 'p') . '>' . $c . '</div>';
 	}
 
@@ -279,10 +286,10 @@ class kind_display {
 			$host = extract_domain_name($url);
 			switch ($host) {
 				case 'facebook.com':
-      		$embed = get_embed_facebook ($url);
+      		$embed = $this->get_embed_facebook ($url);
 					break;
 				case 'plus.google.com':
-					$embed = get_embed_gplus ($url);
+					$embed = $this->get_embed_gplus ($url);
 					break;
 			}
       if ( strcmp($embed, $url) == 0 ) {
