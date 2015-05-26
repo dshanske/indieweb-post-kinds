@@ -283,6 +283,10 @@ class kind_display {
 	}
 
 	public function get_embed($url) {
+			$options = get_option('iwt_options');
+			if($options['embeds'] == 0) {
+					return "";
+			}
     	if( isset($GLOBALS['wp_embed']) ) {
       	$embed = $GLOBALS['wp_embed']->autoembed($url);
     	}
