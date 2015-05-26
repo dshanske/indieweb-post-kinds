@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the IndieWeb Post Kinds package.
 msgid ""
 msgstr ""
-"Project-Id-Version: IndieWeb Post Kinds 1.4.1\n"
+"Project-Id-Version: IndieWeb Post Kinds 2.0.0\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2015-05-24 21:58:54+00:00\n"
+"POT-Creation-Date: 2015-05-26 01:33:28+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -96,22 +96,22 @@ msgstr ""
 msgid "http://david.shanske.com"
 msgstr ""
 
-#: includes/class-kind-display.php:149
+#: includes/class-kind-display.php:160
 msgctxt "Post kind"
 msgid "a tweet"
 msgstr ""
 
-#: includes/class-kind-display.php:150 includes/class-kind-display.php:151
+#: includes/class-kind-display.php:161 includes/class-kind-display.php:162
 msgctxt "Post kind"
 msgid "a video"
 msgstr ""
 
-#: includes/class-kind-display.php:152
+#: includes/class-kind-display.php:163
 msgctxt "Post kind"
 msgid "an image"
 msgstr ""
 
-#: includes/class-kind-display.php:159
+#: includes/class-kind-display.php:170
 msgctxt "Post kind"
 msgid "a post"
 msgstr ""
@@ -485,4 +485,9 @@ msgstr ""
 #: includes/class-kind-taxonomy.php:426 includes/class-kind-taxonomy.php:427
 msgctxt "Post kind"
 msgid "-"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:445
+msgctxt "Post kind"
+msgid "for"
 msgstr ""

@@ -59,7 +59,7 @@ presentation.
 ### 2.0.0 ###
 
 This version makes some changes to the presentation. Backup your installation
-first as a precaution.
+first as a precaution. Lots of changes under the hood which will bear fruit in future.
 
 ### 1.2.0 ###
 This version migrates data to a new storage formats. Backup your installation
@@ -130,6 +130,7 @@ additional ones added. Feedback appreciated.
 	* Contextual response box, hiding/changing options based on Kind selected. Example, an RSVP that shows Yes/No/Maybe.
 	* Support Micropub plugin
 	* Validate inputs based on type
+	* As of 2.0, customizable displays by type are set to be supported in the code. Will be writing some
 
 
 ## MultiKind Support (Experimental) ##
@@ -152,6 +153,8 @@ Indieweb Post Kinds already has support for replying to Twitter posts using the 
 		* Customizable display objects now supported
 		* Open Graph Protocol Parsing Added to Extract Title/Description/Image from URLs
 		* Sideloads Author Picture
+		* Add Duration Meta Field by request of Acegiak. This can be used for duration of activity...
+			for example, watching/playing/listening/exercising/etc.
 	= Version 1.4.1 =
 		* Bug fixes for changes made in 1.4.0. 
 	= Version 1.4.0 = 

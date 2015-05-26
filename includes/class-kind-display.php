@@ -26,7 +26,7 @@ class kind_display {
 		$verbstrings = kind_taxonomy::get_verb_strings();
  		$kind = $this->get_kind();
 		if($kind) {
-	 		$verb = '<span class="verb"><strong>' . $verbstrings[$kind] . '</strong>';
+	 		$verb = '<span class="verb"><strong>' . $verbstrings[$kind] . '</strong></span>';
 		}
 		else {
 			$verb = "";
