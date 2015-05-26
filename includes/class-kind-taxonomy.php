@@ -283,7 +283,7 @@ class kind_taxonomy {
 			$include = array_merge($include, array ( 'like', 'bookmark', 'favorite', 'repost') );
 		}
 		if ($option['mediacheckin']==1) {
-			$include = array_merge($include, array ( 'watch', 'listen') );
+			$include = array_merge($include, array ( 'watch', 'listen', 'play') );
 		}
 		// Filter Kinds
 		$include = array_unique(apply_filters('kind_include', $include));
@@ -433,6 +433,17 @@ class kind_taxonomy {
 		else {
 			return _x('on', 'Post kind');
 		}
+	}
+
+	public static function get_duration_string($verb) {
+		$strings = array();
+		$strings = apply_filters( 'kind_duration_string', $strings );
+		if (array_key_exists($verb, $strings) ) {
+			return $strings[$verb];
+		}
+		else {
+			return _x('for', 'Post kind');
+		}
 	} 
 
 	public static function remove_semantics() {
@@ -483,17 +494,24 @@ class kind_taxonomy {
 		// strip leading www, if any
 		$host = preg_replace("/^www\./", "", $host);
 		// generate output
-		$text = sprintf($comment_type_excerpts[$comment_type], get_comment_author_link($comment->comment_ID), $post_format, $url, $host);
+		$text = sprintf($comment_type_excerpts[$comment_type], get_comment_author_link($comment->comment_ID), 'this ' . $post_format, $url, $host);
 		return apply_filters("semantic_linkbacks_excerpt", $text);
 	}
 
 	public static function publish ( $ID, $post=null) {
 		$cites = get_post_meta($ID, 'mf2_cite', true);
 		if (empty($cites)) { return; }   
-		foreach ($cites as $cite) {
-			if (!empty($cite) && isset($cite['url'])) {
-				send_webmention(get_permalink($ID), $cite['url']);
-      }
+		if (is_multi_array($cites)) {
+			foreach ($cites as $cite) {
+				if (!empty($cite) && isset($cite['url'])) {
+					send_webmention(get_permalink($ID), $cite['url']);
+      	}
+			}
+		}
+		else {
+			if (isset($cites['url'])) {
+				send_webmention(get_permalink($ID), $cites['url']);
+			}
 		}
 	}
 
