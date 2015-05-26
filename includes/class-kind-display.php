@@ -72,8 +72,12 @@ class kind_display {
 		if ( isset($m['content'] ) ) {
 			$content .= '<blockquote class="p-content">' . $m['content'] . '</blockquote>';
 		}
-		$c = $verb . ' ' . $url . $pub . $cards . $time . $content;				
-	  return '<div ' . $this->context_class('response h-cite', 'p') . '>' . $c . '</div>';
+		$c = $verb . ' ' . $url . $pub . $cards . $time . $content;		
+		$c = trim($c);
+		if (!empty($c)) {		
+	  	return '<div ' . $this->context_class('response h-cite', 'p') . '>' . $c . '</div>';
+		}
+		else { return ""; }
 	}
 
 	// Echo the output of get_display 
