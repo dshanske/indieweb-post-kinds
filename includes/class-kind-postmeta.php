@@ -156,8 +156,10 @@ class kind_postmeta {
 		}
 		$card = array_filter($card);
 		if ( isset($card['photo']) ) {
-			 if( extract_domain_name($card['photo'])!=extract_domain_name(get_site_url()) ) {
-			 		$card['photo'] = media_sideload_image($card['photo'], $post_id, $card['name'], 'src');
+				if($options['authorimage']==1) {
+			 		if( extract_domain_name($card['photo'])!=extract_domain_name(get_site_url()) ) {
+			 			$card['photo'] = media_sideload_image($card['photo'], $post_id, $card['name'], 'src');
+					}
 			 }
 		}
 		$cite['card'] = $card;
