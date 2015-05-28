@@ -501,17 +501,15 @@ class kind_taxonomy {
 	public static function publish ( $ID, $post=null) {
 		$cites = get_post_meta($ID, 'mf2_cite', true);
 		if (empty($cites)) { return; }   
-		if (is_multi_array($cites)) {
+		if (isset($cites['url'])) {
+			 send_webmention(get_permalink($ID), $cites['url']);
+			 // error_log("WEBMENTION CALLED".get_permalink($ID)." : ".$cites['url']);
+		} else {
 			foreach ($cites as $cite) {
-				if (!empty($cite) && isset($cite['url'])) {
-					send_webmention(get_permalink($ID), $cite['url']);
-      	}
-			}
-		}
-		else {
-			if (isset($cites['url'])) {
-				send_webmention(get_permalink($ID), $cites['url']);
-			}
+			if (!empty($cite) && isset($cite['url'])) {
+				send_webmention(get_permalink($ID), $cite['url']);
+			 	// error_log("WEBMENTIONS CALLED".get_permalink($ID)." : ".$cite['url']);
+      }
 		}
 	}
 

@@ -1,7 +1,7 @@
 === Indieweb Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 Requires at least: 4.1
 Tested up to: 4.2
 License: GPLv2 or later
@@ -143,6 +143,10 @@ define('MULTIKIND', '1');
 Indieweb Post Kinds already has support for replying to Twitter posts using the Social Network Auto Poster plugin.
 
 == Changelog == 
+	= Version 2.0.1 =
+		* Bugfixes
+		* Accepted fix for webmention sending from acegiak
+		* Add option to disable sideloading of author images
 	= Version 2.0.0 =
 		* Rewrite completed
 		* Multi-author/multi-reply temporarily removed in storage, but it wasn't being used yet anyway
