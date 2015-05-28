@@ -506,10 +506,11 @@ class kind_taxonomy {
 			 // error_log("WEBMENTION CALLED".get_permalink($ID)." : ".$cites['url']);
 		} else {
 			foreach ($cites as $cite) {
-			if (!empty($cite) && isset($cite['url'])) {
-				send_webmention(get_permalink($ID), $cite['url']);
-			 	// error_log("WEBMENTIONS CALLED".get_permalink($ID)." : ".$cite['url']);
-      }
+				if (!empty($cite) && isset($cite['url'])) {
+					send_webmention(get_permalink($ID), $cite['url']);
+			 		// error_log("WEBMENTIONS CALLED".get_permalink($ID)." : ".$cite['url']);
+      	}
+			}
 		}
 	}
 
