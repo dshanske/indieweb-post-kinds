@@ -3,11 +3,13 @@
  * Plugin Name: IndieWeb Post Kinds
  * Plugin URI: https://wordpress.org/plugins/indieweb-post-kinds/
  * Description: Ever want to reply to someone else's post with a post on your own site? Or to "like" someone else's post, but with your own site?
- * Version: 2.0.1
+ * Version: 2.0.2
  * Author: David Shanske
- * Author URI: http://david.shanske.com
+ * Author URI: https://david.shanske.com
  * Text Domain: Post kinds
  */
+
+define ("POST_KINDS_VERSION", "2.0.2");
 
 load_plugin_textdomain( 'Post kind', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' ); 
 
@@ -49,11 +51,11 @@ add_action( 'wp_enqueue_scripts', 'kindstyle_load' );
 add_action('admin_enqueue_scripts', 'kind_admin_style');
 
 function kindstyle_load() {
-        wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'css/kind.min.css');
+        wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'css/kind.min.css', array(), POST_KINDS_VERSION);
   }
 
 function kind_admin_style() {
-    wp_enqueue_style('kind-admin', plugins_url('css/kind-admin.min.css', __FILE__));
+    wp_enqueue_style('kind-admin', plugins_url('css/kind-admin.min.css', __FILE__), array(), POST_KINDS_VERSION);
 }
 
 // Add a notice to the Admin Pages if the WordPress Webmentions Plugin isn't Activated

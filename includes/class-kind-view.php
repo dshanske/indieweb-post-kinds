@@ -34,7 +34,7 @@ class kind_view {
 		}
 		return $object->get_display();
 	}
-	public function content_response ($content ) {
+	public static function content_response ($content ) {
     $c = "";
     $c .= self::get_kind_response_display();
     $c .= $content;

@@ -534,7 +534,7 @@ class kind_taxonomy {
 				$classes[] = 'h-as-article';
 				break;
 			case 'photo':
-				$classes[] = 'h-as-image';
+				$classes[] = 'u-photo';
 				break;
 			case 'bookmark':
 				$classes[] = 'h-as-bookmark';

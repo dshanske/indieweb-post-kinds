@@ -70,7 +70,7 @@ class kind_display {
 		}
 
 		if ( isset($m['content'] ) ) {
-			$content .= '<blockquote class="p-content">' . $m['content'] . '</blockquote>';
+			$content .= '<blockquote class="e-content">' . $m['content'] . '</blockquote>';
 		}
 		$c = $verb . ' ' . $url . $pub . $cards . $time . $content;		
 		$c = trim($c);
