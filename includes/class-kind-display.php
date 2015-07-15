@@ -11,6 +11,15 @@ class kind_display {
 	public function get_kind() {
 			return $this->meta->get_kind();
 	}
+  public function sanitize_output($content) {
+		$allowed = wp_kses_allowed_html( 'post' );
+		$options = get_option( 'iwt_options' );
+		if(array_key_exists('contentelements',$options) && json_decode($options['contentelements']) != NULL){
+        $allowed = json_decode($options['contentelements'],true);
+		}
+    return wp_kses((string) $content ,$allowed);
+	}
+
 
 	// Return the Display
 	public function get_display() {
@@ -75,7 +84,7 @@ class kind_display {
 		$c = $verb . ' ' . $url . $pub . $cards . $time . $content;		
 		$c = trim($c);
 		if (!empty($c)) {		
-	  	return '<div ' . $this->context_class('response h-cite', 'p') . '>' . $c . '</div>';
+	  	return $this->sanitize_output('<div ' . $this->context_class('response h-cite', 'p') . '>' . $c . '</div>');
 		}
 		else { return ""; }
 	}
