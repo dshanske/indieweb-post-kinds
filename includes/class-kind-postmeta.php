@@ -11,6 +11,7 @@ class kind_postmeta {
 		add_action('load-post-new.php', array('kind_postmeta', 'kindbox_setup') );
 		add_action( 'save_post', array('kind_postmeta', 'save_post'), 8, 2 );
 		add_action('transition_post_status', array('kind_postmeta', 'transition_post_status') ,5,3);
+//	  add_filter('wp_insert_post_data', array('kind_postmeta', 'change_title'), 12, 2);
 	}
 
 	/* Meta box setup function. */
@@ -83,6 +84,24 @@ class kind_postmeta {
 			<textarea name="cite_content" id="cite_content" cols="70"><?php if (!empty($kindmeta['content'])) { echo $kindmeta['content'];} ?></textarea>
 		</p>
 		<?php
+	}
+
+	public static function change_title($data, $postarr)
+	{    
+    // If it is our form has not been submitted, so we dont want to do anything
+    if(defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+		if ( !empty($data[ 'post_title' ]) ) {
+			return $data;
+		}
+		$kind_strings = kind_taxonomy::get_strings();
+    $kind = get_term_by(taxonomy_id, $_POST['tax_input']['kind'], 'kind');	
+		$title = $kind_strings[$kind->slug];
+		if (!empty($_POST['cite_name']) ) {
+				$title .= ' - ' . $_POST['cite_name'];
+		}
+		$data['post_title'] = $title;
+		$data['post_name'] = sanitize_title( $data['post_title'] );
+    return $data;
 	}
 
 	/* Save the meta box's post metadata. */

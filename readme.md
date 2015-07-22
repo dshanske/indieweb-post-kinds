@@ -56,10 +56,6 @@ presentation.
 
 ## Upgrade Notice ##
 
-### 2.0.1 ###
-
-
-
 ### 2.0.0 ###
 
 This version makes some changes to the presentation. Backup your installation

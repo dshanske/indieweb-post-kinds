@@ -46,7 +46,7 @@ class kind_meta {
   	$props = array('cite', 'card', 'category', 'content', 'description', 'duration', 
 		'end', 'h', 'in-reply-to','like', 'like-of', 'location', 'name', 'photo', 
 		'published', 'repost', 'repost-of', 'rsvp', 'slug', 'start', 'summary',
-		'syndication', 'syndicate-to');
+		'syndication', 'syndicate-to', 'p3k-food', 'p3k-type', 'p3k-drink');
 		foreach ($props as $prop) {
 			$key = 'mf2_' . $prop;
 			$this->meta[$prop] = get_post_meta($post_id, $key, true);
