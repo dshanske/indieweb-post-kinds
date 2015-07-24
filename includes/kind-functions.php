@@ -8,7 +8,7 @@
  * @return array The array of post kind slugs.
  */
 function get_post_kind_slugs() {
-	$slugs = array_keys( kind_taxonomy::get_strings() );
+	$slugs = array_keys( Kind_Taxonomy::get_strings() );
 	return array_combine( $slugs, $slugs );
 }
 
@@ -20,7 +20,7 @@ function get_post_kind_slugs() {
  * @return string The translated post format name.
  */
 function get_post_kind_string( $slug ) {
-	$strings = kind_taxonomy::get_strings();
+	$strings = Kind_Taxonomy::get_strings();
 	return ( isset( $strings[$slug] ) ) ? $strings[$slug] : '';
 }
 
@@ -53,7 +53,7 @@ function get_post_kind_slug( $post = null ) {
 function get_post_kind( $post = null ) {
 	$kind = get_post_kind_slug($post);
 	if ($kind) {
-		$strings = kind_taxonomy::get_strings();
+		$strings = Kind_Taxonomy::get_strings();
 		return $strings[$kind];
 	}	
 	else {

@@ -1,42 +1,42 @@
 <?php
 
-add_action( 'init' , array('kind_taxonomy', 'init' ) );
+add_action( 'init' , array('Kind_Taxonomy', 'init' ) );
 // Register Kind Taxonomy
-add_action( 'init', array( 'kind_taxonomy' , 'register' ), 1 );
+add_action( 'init', array( 'Kind_Taxonomy' , 'register' ), 1 );
 
 
 // On Activation, add terms
-register_activation_hook( __FILE__, array( 'kind_taxonomy' , 'activate_kinds' ) );
+register_activation_hook( __FILE__, array( 'Kind_Taxonomy' , 'activate_kinds' ) );
 
-// The kind_taxonomy class sets up the kind taxonomy and its behavior
-class kind_taxonomy {
+// The Kind_Taxonomy class sets up the kind taxonomy and its behavior
+class Kind_Taxonomy {
 	public static function init() {
 		// Semantic Linkbacks Override for Comments
-		add_action( 'init', array( 'kind_taxonomy' , 'remove_semantics' ), 11 );
+		add_action( 'init', array( 'Kind_Taxonomy' , 'remove_semantics' ), 11 );
 
 		// Add Kind Permalinks
-		add_filter('post_link', array( 'kind_taxonomy' , 'kind_permalink' ) , 10, 3 );
-		add_filter('post_type_link', array( 'kind_taxonomy' , 'kind_permalink') , 10 , 3);
+		add_filter('post_link', array( 'Kind_Taxonomy' , 'kind_permalink' ) , 10, 3 );
+		add_filter('post_type_link', array( 'Kind_Taxonomy' , 'kind_permalink') , 10 , 3);
 
 		// Add Classes to Post and Body
-		add_filter( 'post_class', array( 'kind_taxonomy', 'post_class') );
-		add_filter( 'body_class', array( 'kind_taxonomy', 'body_class') );
+		add_filter( 'post_class', array( 'Kind_Taxonomy', 'post_class') );
+		add_filter( 'body_class', array( 'Kind_Taxonomy', 'body_class') );
 
 
 		// Trigger Webmention on Change in Post Status
-		add_filter('transition_post_status', array( 'kind_taxonomy', 'transition'), 10, 3);
+		add_filter('transition_post_status', array( 'Kind_Taxonomy', 'transition'), 10, 3);
 		// On Post Publush Invalidate any Stored Response
-    add_action( 'publish_post', array('kind_taxonomy', 'invalidate_response'), 10, 2 );
+    add_action( 'publish_post', array('Kind_Taxonomy', 'invalidate_response'), 10, 2 );
 
 
 		// Return Kind Meta as part of the JSON Rest API
-		add_filter( 'json_prepare_post' , array( 'kind_taxonomy' , 'json_rest_add_kindmeta' ) , 10 , 3);
+		add_filter( 'json_prepare_post' , array( 'Kind_Taxonomy' , 'json_rest_add_kindmeta' ) , 10 , 3);
 
 		// Add the Correct Archive Title to Kind Archives
-		add_filter('get_the_archive_title', array( 'kind_taxonomy' , 'kind_archive_title' ) , 10 , 3);
+		add_filter('get_the_archive_title', array( 'Kind_Taxonomy' , 'kind_archive_title' ) , 10 , 3);
 		// Remove the built-in meta box selector in place of a custom one
-		add_action( 'admin_menu', array( 'kind_taxonomy', 'remove_meta_box') );
-		add_action( 'add_meta_boxes', array( 'kind_taxonomy', 'add_meta_box') );
+		add_action( 'admin_menu', array( 'Kind_Taxonomy', 'remove_meta_box') );
+		add_action( 'add_meta_boxes', array( 'Kind_Taxonomy', 'add_meta_box') );
 
 
 	}
@@ -262,11 +262,11 @@ class kind_taxonomy {
 
 	public static function add_meta_box() {
 		if (MULTIKIND=='0') {
-			add_meta_box( 'kind_select', 'Post Kinds', array('kind_taxonomy', 'select_metabox'),'post' ,'side','core');
+			add_meta_box( 'kind_select', 'Post Kinds', array('Kind_Taxonomy', 'select_metabox'),'post' ,'side','core');
 		}
 		else {
 			// Add Multi-Select Box for MultiKind support
-			add_meta_box( 'kind_select', 'Post Kinds', array('kind_taxonomy', 'multiselect_metabox'),'post' ,'side','core');
+			add_meta_box( 'kind_select', 'Post Kinds', array('Kind_Taxonomy', 'multiselect_metabox'),'post' ,'side','core');
 		}
 	}
 
@@ -449,7 +449,7 @@ class kind_taxonomy {
 	public static function remove_semantics() {
 		if (class_exists('SemanticLinkbacksPlugin') ) {
 			remove_filter('comment_text', array('SemanticLinkbacksPlugin', 'comment_text_excerpt'),12);
-			add_filter('comment_text', array('kind_taxonomy' , 'comment_text_excerpt') , 12 , 3 );
+			add_filter('comment_text', array('Kind_Taxonomy' , 'comment_text_excerpt') , 12 , 3 );
   	}
 	}
 
@@ -574,6 +574,6 @@ class kind_taxonomy {
 }
 
 
-} // End Class kind_taxonomy
+} // End Class Kind_Taxonomy
 
 ?>

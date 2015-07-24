@@ -2,20 +2,20 @@
 
 // Functions Related to Display
 
-add_action( 'init' , array('kind_view', 'init' ) );
+add_action( 'init' , array('Kind_View', 'init' ) );
 
-// The kind_view class sets up the kind display behavior for kinds
-class kind_view {
+// The Kind_View class sets up the kind display behavior for kinds
+class Kind_View {
   public static function init() {
 		// If the Theme Has Not Declared Support for Post Kinds
 		// Add the Response Display to the Content Filter
 		if (!current_theme_supports('post-kinds')) {
-    	add_filter( 'the_content', array('kind_view', 'content_response'), 20 );
+    	add_filter( 'the_content', array('Kind_View', 'content_response'), 20 );
 		}
 		else {
-			add_filter( 'kind_response_display', array('kind_view', 'content_response') );
+			add_filter( 'kind_response_display', array('Kind_View', 'content_response') );
 		}
-      add_filter( 'the_content_feed', array('kind_view', 'kind_content_feed'), 20 );
+      add_filter( 'the_content_feed', array('Kind_View', 'kind_content_feed'), 20 );
 
 	}
 
