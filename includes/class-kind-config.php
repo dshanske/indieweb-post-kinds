@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * Post Kind Configuration Class
+ *
+ * Sets Up Configuration Options for the Plugin.
+ *
+ */
 add_action( 'admin_init' , array( 'Kind_Config', 'admin_init' ) );
 add_action( 'after_setup_theme', array( 'Kind_Config', 'remove_post_formats' ), 11 );
 add_action( 'admin_menu', array( 'Kind_Config', 'admin_menu' ) );

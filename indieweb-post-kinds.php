@@ -1,6 +1,11 @@
 <?php
 /**
- * Plugin Name: IndieWeb Post Kinds
+ * Post Kinds
+ *
+ * @link http://indiewebcamp.com/Post_Kinds_Plugin
+ */
+/**
+ * Plugin Name: Post Kinds
  * Plugin URI: https://wordpress.org/plugins/indieweb-post-kinds/
  * Description: Ever want to reply to someone else's post with a post on your own site? Or to "like" someone else's post, but with your own site?
  * Version: 2.0.2
@@ -9,7 +14,7 @@
  * Text Domain: Post kinds
  */
 
-define ( "POST_KINDS_VERSION", "2.0.2" );
+define ( 'POST_KINDS_VERSION', '2.0.2' );
 
 load_plugin_textdomain( 'Post kind', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' ); 
 

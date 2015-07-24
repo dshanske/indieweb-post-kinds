@@ -1,6 +1,10 @@
 <?php 
-
-// Functions for Kind Taxonomies
+/**
+ * Kind Functions
+ *
+ * Global Scoped Functions for Handling Kinds.
+ *
+ */
 
 /**
  * Retrieves an array of post kind slugs.

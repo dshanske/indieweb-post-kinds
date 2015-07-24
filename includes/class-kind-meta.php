@@ -1,5 +1,10 @@
 <?php 
-// Takes Kind Meta from Various Meta Fields and Narrows it Down to One Array
+/**
+ * Post Kind Metadata Class
+ *
+ * Returns the Metadata which can be stored in various fields
+ *
+ */
 
 class Kind_Meta {
 	protected $meta = array(); // Raw Meta Data

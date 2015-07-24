@@ -1,5 +1,10 @@
 <?php 
-// Class Displaying Kinds But Can Be Extended for Different Types
+/**
+ * Post Kind Display Class
+ *
+ * Displays the Kind Data in the Post Content.
+ *
+ */
 
 class Kind_Display {
 	protected $meta;

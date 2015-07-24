@@ -29,32 +29,32 @@
 			  * @param $content html The HTML
 			  * @return array
 			  */
-			 public static function parse($content) {
+			 public static function parse( $content ) {
 				 
 				 $doc = new DOMDocument();
-				 @$doc->loadHTML($content);
+				 @$doc->loadHTML( $content );
 				 
-				 $interested_in = array('og', 'fb', 'twitter', 'article', 'music', 'video', 'book', 'profile'); // Open graph namespaces we're interested in (open graph + extensions)
+				 $interested_in = array( 'og', 'fb', 'twitter', 'article', 'music', 'video', 'book', 'profile' ); // Open graph namespaces we're interested in (open graph + extensions)
 				 
 				 $ogp = array();
 				 
-				 $metas = $doc->getElementsByTagName('meta'); 
-				 if (!empty($metas)) {
-					 for ($n = 0; $n < $metas->length; $n++) {
+				 $metas = $doc->getElementsByTagName( 'meta' ); 
+				 if ( ! empty( $metas ) ) {
+					 for ( $n = 0; $n < $metas->length; $n++ ) {
 						 
-						 $meta = $metas->item($n);
+						 $meta = $metas->item( $n );
 						 
-						 foreach (array('name','property') as $name) {
-							 $meta_bits = explode(':', $meta->getAttribute($name)); 
-							 if (in_array($meta_bits[0], $interested_in)) {
+						 foreach ( array( 'name','property' ) as $name ) {
+							 $meta_bits = explode( ':', $meta->getAttribute( $name ) ); 
+							 if ( in_array( $meta_bits[0], $interested_in ) ) {
 								 
 								 // If we're adding to an existing element, convert it to an array
-								 if (isset($ogp[$meta->getAttribute($name)]) && (!is_array($ogp[$meta->getAttribute($name)])))
-									$ogp[$meta->getAttribute($name)] = array($ogp[$meta->getAttribute($name)], $meta->getAttribute('content'));
-								 else if (isset($ogp[$meta->getAttribute($name)]) && (is_array($ogp[$meta->getAttribute($name)])))
-									$ogp[$meta->getAttribute($name)][] = $meta->getAttribute('content');
+								 if ( isset( $ogp[ $meta->getAttribute($name) ] ) && ( ! is_array( $ogp[ $meta->getAttribute( $name ) ] ) ) )
+									$ogp[ $meta->getAttribute( $name ) ] = array( $ogp[ $meta->getAttribute( $name ) ], $meta->getAttribute( 'content' ) );
+								 else if ( isset( $ogp[ $meta->getAttribute( $name ) ] ) && ( is_array( $ogp[ $meta->getAttribute( $name ) ] ) ) )
+									$ogp[ $meta->getAttribute( $name ) ][] = $meta->getAttribute( 'content' );
 								 else
-									$ogp[$meta->getAttribute($name)] = $meta->getAttribute('content');
+									$ogp[ $meta->getAttribute( $name ) ] = $meta->getAttribute( 'content' );
 									
 							 }
 						 }

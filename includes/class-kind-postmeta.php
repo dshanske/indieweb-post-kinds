@@ -1,9 +1,12 @@
 <?php
-// Adds Post Meta Box for Kind Taxonomy
-
+/**
+ * Post Kind Post MetaBox Class
+ *
+ * Sets Up Metaboxes in the Posting UI for Kind data.
+ *
+ */
 add_action( 'init' , array( 'Kind_Postmeta', 'init' ) );
 
-// The Kind_Postmeta class sets up post meta boxes for data associated with kinds
 class Kind_Postmeta {
 	public static function init() {
 		// Add meta box to new post/post pages only 

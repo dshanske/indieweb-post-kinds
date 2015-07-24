@@ -1,4 +1,10 @@
 <?php
+/**
+ * Post Kind Taxonomy Class
+ *
+ * Registers the taxonomy and sets its behavior.
+ *
+ */
 
 add_action( 'init' , array('Kind_Taxonomy', 'init' ) );
 // Register Kind Taxonomy
@@ -8,7 +14,6 @@ add_action( 'init', array( 'Kind_Taxonomy' , 'register' ), 1 );
 // On Activation, add terms
 register_activation_hook( __FILE__, array( 'Kind_Taxonomy' , 'activate_kinds' ) );
 
-// The Kind_Taxonomy class sets up the kind taxonomy and its behavior
 class Kind_Taxonomy {
 	public static function init() {
 		// Semantic Linkbacks Override for Comments
@@ -16,7 +21,7 @@ class Kind_Taxonomy {
 
 		// Add Kind Permalinks
 		add_filter('post_link', array( 'Kind_Taxonomy' , 'kind_permalink' ) , 10, 3 );
-		add_filter('post_type_link', array( 'Kind_Taxonomy' , 'kind_permalink') , 10 , 3);
+		add_filter('post_type_link', array( 'Kind_Taxonomy' , 'kind_permalink') , 10 , 3 );
 
 		// Add Classes to Post and Body
 		add_filter( 'post_class', array( 'Kind_Taxonomy', 'post_class') );
@@ -24,33 +29,31 @@ class Kind_Taxonomy {
 
 
 		// Trigger Webmention on Change in Post Status
-		add_filter('transition_post_status', array( 'Kind_Taxonomy', 'transition'), 10, 3);
+		add_filter('transition_post_status', array( 'Kind_Taxonomy', 'transition' ), 10, 3 );
 		// On Post Publush Invalidate any Stored Response
-    add_action( 'publish_post', array('Kind_Taxonomy', 'invalidate_response'), 10, 2 );
+    add_action( 'publish_post', array( 'Kind_Taxonomy', 'invalidate_response' ), 10, 2 );
 
 
 		// Return Kind Meta as part of the JSON Rest API
-		add_filter( 'json_prepare_post' , array( 'Kind_Taxonomy' , 'json_rest_add_kindmeta' ) , 10 , 3);
+		add_filter( 'json_prepare_post' , array( 'Kind_Taxonomy' , 'json_rest_add_kindmeta' ) , 10 , 3 );
 
 		// Add the Correct Archive Title to Kind Archives
-		add_filter('get_the_archive_title', array( 'Kind_Taxonomy' , 'kind_archive_title' ) , 10 , 3);
+		add_filter('get_the_archive_title', array( 'Kind_Taxonomy' , 'kind_archive_title' ) , 10 , 3 );
 		// Remove the built-in meta box selector in place of a custom one
-		add_action( 'admin_menu', array( 'Kind_Taxonomy', 'remove_meta_box') );
-		add_action( 'add_meta_boxes', array( 'Kind_Taxonomy', 'add_meta_box') );
-
-
+		add_action( 'admin_menu', array( 'Kind_Taxonomy', 'remove_meta_box' ) );
+		add_action( 'add_meta_boxes', array( 'Kind_Taxonomy', 'add_meta_box' ) );
 	}
 
-  public static function invalidate_response($ID, $post) {
+  public static function invalidate_response( $ID, $post ) {
     delete_post_meta( get_the_ID(), '_resp_full' );
   }
 
 	public static function activate_kinds() {
-		if ( function_exists('iwt_plugin_notice') ) {
+		if ( function_exists( 'iwt_plugin_notice' ) ) {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
     	wp_die( 'You have Indieweb Taxonomy activated. Post Kinds replaces this plugin. Please disable Taxonomy before activating' );
   	}
-		if (!get_option('iwt_options') ) {
+		if (!get_option( 'iwt_options' ) ) {
 			$option = array (
 				'embeds' => '1',
 				'cacher' => '0',
@@ -59,7 +62,7 @@ class Kind_Taxonomy {
 				'intermediate' => '0',
         'watchlisten' => '0'
 			);
-			update_option('iwt_options', $option);
+			update_option( 'iwt_options', $option );
   	}
   	self::register();
   	self::kind_defaultterms();
@@ -101,14 +104,14 @@ class Kind_Taxonomy {
 	// Sets up some starter terms...unless terms already exist 
 	// or any of the existing terms are defined
 	public static function kind_defaultterms () {
-		if (!term_exists('like', 'kind')) {
-			wp_insert_term('like', 'kind', 
+		if ( ! term_exists( 'like', 'kind' ) ) {
+			wp_insert_term( 'like', 'kind', 
 				array(
 					'description'=> 'Like',
 					'slug' => 'like',
 			) );
 		}  
-		if (!term_exists('favorite', 'kind')) {
+		if ( ! term_exists( 'favorite', 'kind') ) {
 			wp_insert_term('favorite', 'kind',
 				array(
 					'description'=> 'Favorite',
