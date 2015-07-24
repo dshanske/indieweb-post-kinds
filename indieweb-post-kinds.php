@@ -26,7 +26,7 @@ if ( ! defined( 'MULTIKIND' ) )
 // Add Kind Taxonomy.
 require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind-taxonomy.php' );
 
- // Config Settings.
+// Config Settings.
 require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind-config.php' );
 
 // Add a Settings Link to the Plugins Page.
@@ -39,25 +39,32 @@ require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind-postmeta.php' )
 
 // Add Kind Core Functions.
 require_once( plugin_dir_path( __FILE__ ) . '/includes/kind-functions.php' );
-// Add Kind Display Functions
+// Add Kind Display Functions.
 require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind-view.php' );
 require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind-display.php' );
 
 // Add Kind Meta Display Functions.
 require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind-meta.php' );
 
-if( ! class_exists ( 'ogp\Parser' ) ) {
-	require_once( plugin_dir_path( __FILE__ ) . 'includes/class-ogp-parser.php' );
-	}
+if ( ! class_exists( 'ogp\Parser' ) ) {
+	require_once( plugin_dir_path( __FILE__ ) . 'includes/class-ogp-parser.php' );}
 
 // Load stylesheets.
 add_action( 'wp_enqueue_scripts', 'kindstyle_load' );
 add_action( 'admin_enqueue_scripts', 'kind_admin_style' );
 
+/**
+ * Loads the Stylesheet for the Plugin.
+ *
+ */
 function kindstyle_load() {
         wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'css/kind.min.css', array(), POST_KINDS_VERSION );
   }
 
+/**
+ * Loads the Admin Only Stylesheet for the Plugin.
+ *
+ */
 function kind_admin_style() {
     wp_enqueue_style( 'kind-admin', plugins_url( 'css/kind-admin.min.css', __FILE__), array(), POST_KINDS_VERSION );
 }
@@ -65,6 +72,11 @@ function kind_admin_style() {
 // Add a notice to the Admin if the Webmentions Plugin isn't Activated.
 add_action( 'admin_notices', 'postkind_plugin_notice' );
 
+
+/**
+ * Adds a notice if the Webmentions Plugin is Not Installed.
+ *
+ */
 function postkind_plugin_notice() {
 	if ( ! class_exists( 'WebMentionPlugin' ) ) {
 			echo '<div class="error"><p>';
@@ -75,7 +87,13 @@ function postkind_plugin_notice() {
 }
 
 
-// Extracts the Domain Name for a URL for presentation purposes.
+/**
+ * Returns the Domain Name out of a URL.
+ *
+ * @param string $url URL
+ *
+ * @return string domain name
+ */
 if ( ! function_exists( 'extract_domain_name' ) ) {
     function extract_domain_name( $url ) {
       $host = parse_url( $url, PHP_URL_HOST );
@@ -84,6 +102,13 @@ if ( ! function_exists( 'extract_domain_name' ) ) {
     }
   }
 
+/**
+ * Returns True if Array is Multidimensional.
+ *
+ * @param array $arr array
+ *
+ * @return boolean result
+ */
 if ( ! function_exists( 'is_multi_array') ) {
 	function is_multi_array( $arr ) {
 		if ( count( $arr ) == count( $arr, COUNT_RECURSIVE ) ) return false;
@@ -91,6 +116,13 @@ if ( ! function_exists( 'is_multi_array') ) {
 	}
 }
 
+/**
+ * Array_Filter for multi-dimensional arrays.
+ *
+ * @param array $array 
+ * @param function $callback
+ * @return array
+ */
 if (!  function_exists( 'array_filter_recursive' ) ) {
 	function array_filter_recursive( $array, $callback = null ) {
 		foreach ( $array as $key => & $value ) {

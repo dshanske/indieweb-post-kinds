@@ -12,8 +12,7 @@
  * @return array The array of post kind slugs.
  */
 function get_post_kind_slugs() {
-	$slugs = array_keys( Kind_Taxonomy::get_strings() );
-	return array_combine( $slugs, $slugs );
+	return Kind_Taxonomy::get_post_king_slugs();
 }
 
 /**
@@ -24,8 +23,7 @@ function get_post_kind_slugs() {
  * @return string The translated post format name.
  */
 function get_post_kind_string( $slug ) {
-	$strings = Kind_Taxonomy::get_strings();
-	return ( isset( $strings[$slug] ) ) ? $strings[$slug] : '';
+	return Kind_Taxonomy::get_post_kind_string( $slug );
 }
 
 /**
@@ -36,33 +34,15 @@ function get_post_kind_string( $slug ) {
  * @return string The post kind term link.
  */
 function get_post_kind_link( $kind ) {
-	$term = get_term_by('slug', $kind, 'kind' );
-	if ( ! $term || is_wp_error( $term ) )
-		return false;
-	return get_term_link( $term );
+	return Kind_Taxonomy::get_post_kind_link( $kind );
 }
 
 function get_post_kind_slug( $post = null ) {
-	$post = get_post($post);
-	if ( ! $post = get_post( $post ) )
-		return false;
-	$_kind = get_the_terms( $post->ID, 'kind' );
-	if (!empty($_kind)) {
-		$kind = array_shift($_kind);
-    return $kind->slug;
-	}
-	else { return false; }
+	return Kind_Taxonomy::get_post_kind_slug( $post );
 }
 
 function get_post_kind( $post = null ) {
-	$kind = get_post_kind_slug($post);
-	if ($kind) {
-		$strings = Kind_Taxonomy::get_strings();
-		return $strings[$kind];
-	}	
-	else {
-		return false; 
-	}        
+	return Kind_Taxonomy::get_post_kind( $post );
 }
 
 /**
@@ -75,13 +55,7 @@ function get_post_kind( $post = null ) {
  * @return bool True if the post has any of the given kinds (or any kind, if no kind specified), false otherwise.
  */
 function has_post_kind( $kinds = array(), $post = null ) {
-	$prefixed = array();
-	if ( $kinds ) {
-		foreach ( (array) $kind as $single ) {
-			$kind[] = sanitize_key( $single );
-		}
-	}
-	return has_term( $kind, 'kind', $post );
+	return Kind_Taxonomy::has_post_kind( $kinds, $post );
 }
 
 /**
@@ -93,16 +67,7 @@ function has_post_kind( $kinds = array(), $post = null ) {
  * @return mixed WP_Error on error. Array of affected term IDs on success.
  */
 function set_post_kind( $post, $kind ) {
-	$post = get_post( $post );
-	if ( empty( $post ) )
-		return new WP_Error( 'invalid_post', __( 'Invalid post' ) );
-	if ( ! empty( $kind ) ) {
-		$kind = sanitize_key( $kind );
-	}
-	else { 
-		$kind = 'note';
-	}
-	return wp_set_post_terms( $post->ID, $kind, 'kind' );
+	return Kind_Taxonomy::set_post_kind( $post, $kind );
 }
 
 ?>
