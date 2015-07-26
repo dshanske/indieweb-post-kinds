@@ -98,6 +98,7 @@ script:
   # -s flag: Show sniff codes in all reports.
   # -v flag: Print verbose output.
   # -n flag: Do not print warnings. (shortcut for --warning-severity=0)
+  # -l flag: Run locally
   # --standard: Use WordPress as the standard.
   # --extensions: Only sniff PHP files.
   - $WP_DEVELOP_DIR/php-codesniffer/scripts/phpcs -l -p -s -v -n . --standard=WordPress --extensions=php

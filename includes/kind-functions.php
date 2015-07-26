@@ -7,6 +7,51 @@
  */
 
 /**
+ * Return an array with only the mf2 prefixed meta.
+ *
+ * @param int|WP_Post $post Optional. Post ID or post object. Defaults to global $post.
+ * @return array False on failure.
+*/
+function get_mf2_meta( $post ) {
+	$post = get_post( $post );
+	$meta = get_post_meta( $post->ID );
+	if ( ! $meta ) {
+		return false;
+	}
+	foreach ( $meta as $key => $value ) {
+		if ( ! str_prefix( $key, 'mf2_' ) ) {
+			unset ( $meta[$key] );
+		}
+	  else {
+			unset ( $meta[$key] );
+			$key = trim($key, 'mf2_');
+			$value = array_map('maybe_unserialize', $value);
+			$value = array_shift($value);
+			// If value is a multi-array with only one element
+			if ( is_multi_array( $value ) ) {
+				if ( count( $value ) == 1 ) {
+					$value = array_shift( $value );
+				}
+			if( isset( $value[ 'card' ] ) ) {
+					if ( is_multi_array( $value[ 'card' ] ) ) {
+						if ( count( $value[ 'card' ] ) == 1 ) {
+							$value[ 'card' ] = array_shift( $value[ 'card' ] );
+						}
+					}
+					$value[ 'card' ] = array_filter( $value[ 'card' ] ) ;
+				}
+			}
+			if ( is_array($value) ) {
+				$value = array_filter($value);
+			}
+			$meta[$key] = $value;
+		}
+	}
+	return array_filter($meta);
+}
+
+
+/**
  * Retrieves an array of post kind slugs.
  *
  * @return array The array of post kind slugs.
@@ -37,10 +82,24 @@ function get_post_kind_link( $kind ) {
 	return Kind_Taxonomy::get_post_kind_link( $kind );
 }
 
+/**
+ * Returns the post kind slug for the current post.
+ *
+ *
+ * @@param int|WP_Post $post Optional. Post ID or post object. Defaults to global $post.
+ * @return string The post kind slug.
+ */
 function get_post_kind_slug( $post = null ) {
 	return Kind_Taxonomy::get_post_kind_slug( $post );
 }
 
+/**
+ * Returns the post kind name for the current post.
+ *
+ *
+ * @@param int|WP_Post $post Optional. Post ID or post object. Defaults to global $post.
+ * @return string The post kind name.
+ */
 function get_post_kind( $post = null ) {
 	return Kind_Taxonomy::get_post_kind( $post );
 }

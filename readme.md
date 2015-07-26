@@ -1,9 +1,9 @@
 # Indieweb Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention  
-**Stable tag:** 2.0.2  
+**Stable tag:** 2.0.3  
 **Requires at least:** 4.1  
-**Tested up to:** 4.2  
+**Tested up to:** 4.2.3  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -144,9 +144,15 @@ define('MULTIKIND', '1');
 
 ## SNAP ##
 
-Indieweb Post Kinds already has support for replying to Twitter posts using the Social Network Auto Poster plugin.
+Indieweb Post Kinds had support for replying to Twitter posts using the Social Network Auto Poster plugin.
 
 ## Changelog ##
+	= Version 2.0.3 = 
+		* Metadata Processing will be centralizing in the Kind_Meta class
+		* Continuing to move toward WordPress Coding Standards including inline documentation
+		* Fixes for the OpenGraph Parsing of Content to Fill Additional Metadata
+		* Metadata fields not part of the user interface to be stored for future use
+		* You can now pre-select a kind by adding ?kind=reply to wp-admin/post-new.php
 	= Version 2.0.2 =
 		* Change markup to use e-content instead of p-content
 		* Add versioning for CSS

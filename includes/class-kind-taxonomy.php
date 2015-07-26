@@ -104,134 +104,16 @@ class Kind_Taxonomy {
 	// Sets up some starter terms...unless terms already exist 
 	// or any of the existing terms are defined
 	public static function kind_defaultterms () {
-		if ( ! term_exists( 'like', 'kind' ) ) {
-			wp_insert_term( 'like', 'kind', 
+		$terms = self::get_strings();
+		foreach ($terms as $key => $value) {
+			if ( ! term_exists( $key, 'kind' ) ) {
+				wp_insert_term( $key, 'kind', 
 				array(
-					'description'=> 'Like',
-					'slug' => 'like',
-			) );
+					'description'=> $value,
+					'slug' => $key,
+				) );
+			}
 		}  
-		if ( ! term_exists( 'favorite', 'kind') ) {
-			wp_insert_term('favorite', 'kind',
-				array(
-					'description'=> 'Favorite',
-					'slug' => 'favorite',
-				) );
-		} 
-		if (!term_exists('reply', 'kind')) {
-			wp_insert_term('reply', 'kind',
-				array(
-					'description'=> 'Reply',
-					'slug' => 'reply',
-			) );
-		}
-		if (!term_exists('rsvp', 'kind')) {
-			wp_insert_term('rsvp', 'kind',
-				array(
-					'description'=> 'RSVP for Event',
-					'slug' => 'rsvp',
-			) );
-		}
-		if (!term_exists('repost', 'kind')) {
-			wp_insert_term('repost', 'kind',
-			array(
-				'description'=> 'Repost',
-				'slug' => 'repost',
-			) );
-    }
-		if (!term_exists('bookmark', 'kind')) {
-			wp_insert_term('bookmark', 'kind',
-				array(
-					'description'=> 'Sharing a Link',
-					'slug' => 'bookmark',
-      ) );
-		}
-		if (!term_exists('tag', 'kind')) {
-			wp_insert_term('Tag', 'kind',
-				array(
-					'description'=> 'Tagging a Post',
-					'slug' => 'tag',
-			) );
-		}
-		if (!term_exists('article', 'kind')) {
-			wp_insert_term('article', 'kind',
-				array(
-					'description'=> 'Longer Content',
-					'slug' => 'article',
-			) );
-		}
-		if (!term_exists('note', 'kind')) {
-			wp_insert_term('note', 'kind',
-				array(
-					'description'=> 'Short Content',
-					'slug' => 'note',
-				) );
-		}
-		if (!term_exists('photo', 'kind')) {
-			wp_insert_term('photo', 'kind',
-				array(
-					'description'=> 'Image Post',
-					'slug' => 'photo',
-			) );
-		}
-		if (!term_exists('listen', 'kind')) {
-			wp_insert_term('listen', 'kind',
-				array(
-					'description'=> 'Listen',
-					'slug' => 'listen',
-				) );
-		}
-		if (!term_exists('watch', 'kind')) {
-			wp_insert_term('watch', 'kind',
-				array(
-					'description'=> 'Watch',
-					'slug' => 'watch',
-			) );
-		}
-		if (!term_exists('checkin', 'kind')) {
-			wp_insert_term('checkin', 'kind',
-				array(
-					'description'=> 'Checkin',
-					'slug' => 'checkin',
-				) );
-		}
-		if (!term_exists('play', 'kind')) {
-			wp_insert_term('play', 'kind',
-				array(
-					'description'=> 'Game Play',
-					'slug' => 'play',
-				) );
-		}
-		if (!term_exists('wish', 'kind')) {
-			wp_insert_term('wish', 'kind',
-				array(
-					'description'=> 'Wish or Desire',
-					'slug' => 'wish',
-			) );
-		}
-		if (!term_exists('weather', 'kind')) {
-			wp_insert_term('weather', 'kind',
-				array(
-					'description'=> 'Weather',
-					'slug' => 'weather',
-			) );
-		}
-		if (!term_exists('exercise', 'kind')) {
-			wp_insert_term('exercise', 'kind',
-				array(
-					'description'=> 'Exercise',
-					'slug' => 'exercise',
-				) );
-		}
-		if (!term_exists('travel', 'kind')) {
-			wp_insert_term('travel', 'kind',
-				array(
-					'description'=> 'Trip or Travel',
-					'slug' => 'travel',
-			) );
-		}
-		// Allows for extensions to add terms to the plugin
-		do_action('kind_add_term');
 	}
 	public static function kind_permalink($permalink, $post_id, $leavename) {
 		if (strpos($permalink, '%kind%') === FALSE) return $permalink;
@@ -294,7 +176,12 @@ class Kind_Taxonomy {
 		if (!in_array('note', $include) ) {
 			$include[]='note';
 		}
-		$default = get_term_by('slug', 'note', 'kind');
+		if ( isset( $_GET['kind'] ) ) {
+			$default = get_term_by( 'slug', $_GET['kind'], 'kind' );
+		}
+		else {
+			$default = get_term_by( 'slug', 'note', 'kind' );
+		}
 		$terms = get_terms('kind', array('hide_empty' => 0) );
 		$postterms = get_the_terms( $post->ID, 'kind' );
 		$current = ($postterms ? array_pop($postterms) : false);
@@ -400,6 +287,36 @@ class Kind_Taxonomy {
 		return apply_filters( 'kind_verbs', $strings );
 	}
 
+  /**
+   * Returns an array of properties associated with kinds.
+   *
+   * @return array The array of properties.
+   */
+  public static function get_kind_properties() {
+    $strings = array(
+      'article' => '',
+      'note'    => '',
+      'reply'     => 'in-reply-to',
+      'repost'  => 'repost-of', 
+      'like'     => 'like-of',
+      'favorite'    => 'favorite-of',
+      'bookmark'    => 'bookmark',
+      'photo'   => 'photo',
+      'tag'    => 'tag',
+      'rsvp'    => 'rsvp',
+      'listen'    => 'listen',
+      'watch'   => 'watch',
+      'checkin'   => 'checkin',
+      'wish'   => 'wish',
+      'play'   => 'play',
+      'weather'   => 'weather',
+      'exercise'   => 'exercise',
+      'travel'   => 'travel'
+    );
+		return $strings;
+  }
+
+
 	/**
 	 * Uses an array of post kind slugs with the author terminologies
 	 *
@@ -424,6 +341,9 @@ class Kind_Taxonomy {
 	 * @return array The post kind publication string.
 	 */
 	public static function get_publication_string($verb) {
+		if ( ! isset( $verb ) ) {
+			return '';
+		}
 		$strings = array(
  			'article' => _x( 'on', 'Post kind' ),
 			'listen' => _x( '-', 'Post kind' ),
@@ -505,13 +425,17 @@ class Kind_Taxonomy {
 		$cites = get_post_meta($ID, 'mf2_cite', true);
 		if (empty($cites)) { return; }   
 		if (isset($cites['url'])) {
-			 send_webmention(get_permalink($ID), $cites['url']);
-			 // error_log("WEBMENTION CALLED".get_permalink($ID)." : ".$cites['url']);
+			send_webmention(get_permalink($ID), $cites['url']);
+			if (WP_DEBUG) {
+				error_log("WEBMENTION CALLED".get_permalink($ID)." : ".$cites['url']);
+			}
 		} else {
 			foreach ($cites as $cite) {
 				if (!empty($cite) && isset($cite['url'])) {
 					send_webmention(get_permalink($ID), $cite['url']);
-			 		// error_log("WEBMENTIONS CALLED".get_permalink($ID)." : ".$cite['url']);
+					if (WP_DEBUG) {
+			 			error_log("WEBMENTIONS CALLED".get_permalink($ID)." : ".$cite['url']);
+					}
       	}
 			}
 		}
@@ -522,7 +446,7 @@ class Kind_Taxonomy {
 	} 
 
 	public static function json_rest_add_kindmeta($_post,$post,$context) {
-		$response = new kind_meta( $post["ID"]);
+		$response = new Kind_Meta( $post["ID"]);
 		if (!empty($response)) { $_post['mf2'] = $response->get_all_meta(); }
 		return $_post;
 	}

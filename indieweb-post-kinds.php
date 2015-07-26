@@ -7,13 +7,13 @@
  * Plugin Name: Post Kinds
  * Plugin URI: https://wordpress.org/plugins/indieweb-post-kinds/
  * Description: Ever want to reply to someone else's post with a post on your own site? Or to "like" someone else's post, but with your own site?
- * Version: 2.0.2
+ * Version: 2.0.3
  * Author: David Shanske
  * Author URI: https://david.shanske.com
  * Text Domain: Post kinds
  */
 
-define( 'POST_KINDS_VERSION', '2.0.2' );
+define( 'POST_KINDS_VERSION', '2.0.3' );
 
 load_plugin_textdomain( 'Post kind', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
@@ -34,18 +34,19 @@ $plugin = plugin_basename( __FILE__ );
 add_filter( 'plugin_action_links_$plugin', array( 'kind_config', 'settings_link' ) );
 
 
-// Add Kind Post Metadata.
+// Add Kind Post UI Configuration.
 require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind-postmeta.php' );
 
-// Add Kind Core Functions.
+// Add Kind Global Functions.
 require_once( plugin_dir_path( __FILE__ ) . '/includes/kind-functions.php' );
 // Add Kind Display Functions.
 require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind-view.php' );
 require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind-display.php' );
 
-// Add Kind Meta Display Functions.
+// Add Kind Meta Storage and Retrieval Functions.
 require_once( plugin_dir_path( __FILE__ ) . 'includes/class-kind-meta.php' );
 
+// Add an OpenGraph Parser
 if ( ! class_exists( 'ogp\Parser' ) ) {
 	require_once( plugin_dir_path( __FILE__ ) . 'includes/class-ogp-parser.php' );}
 
@@ -55,18 +56,21 @@ add_action( 'admin_enqueue_scripts', 'kind_admin_style' );
 
 /**
  * Loads the Stylesheet for the Plugin.
- *
  */
-function kindstyle_load() {
-        wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'css/kind.min.css', array(), POST_KINDS_VERSION );
-  }
+if ( ! function_exists( 'kindstyle_load' ) ) {
+	function kindstyle_load() {
+		wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'css/kind.min.css', array(), POST_KINDS_VERSION );
+	}
+}
+else {
+	die('You have another version of Post Kinds installed!');
+}
 
 /**
  * Loads the Admin Only Stylesheet for the Plugin.
- *
  */
 function kind_admin_style() {
-    wp_enqueue_style( 'kind-admin', plugins_url( 'css/kind-admin.min.css', __FILE__), array(), POST_KINDS_VERSION );
+	wp_enqueue_style( 'kind-admin', plugins_url( 'css/kind-admin.min.css', __FILE__ ), array(), POST_KINDS_VERSION );
 }
 
 // Add a notice to the Admin if the Webmentions Plugin isn't Activated.
@@ -87,43 +91,43 @@ function postkind_plugin_notice() {
 }
 
 
-/**
- * Returns the Domain Name out of a URL.
- *
- * @param string $url URL
- *
- * @return string domain name
- */
 if ( ! function_exists( 'extract_domain_name' ) ) {
-    function extract_domain_name( $url ) {
-      $host = parse_url( $url, PHP_URL_HOST );
-      $host = preg_replace( '/^www\./', '', $host );
-      return $host;
-    }
-  }
+	/**
+	 * Returns the Domain Name out of a URL.
+	 *
+	 * @param string $url URL
+	 *
+	 * @return string domain name
+	 */
+	function extract_domain_name( $url ) {
+		$host = parse_url( $url, PHP_URL_HOST );
+		$host = preg_replace( '/^www\./', '', $host );
+		return $host;
+	}
+}
 
-/**
- * Returns True if Array is Multidimensional.
- *
- * @param array $arr array
- *
- * @return boolean result
- */
 if ( ! function_exists( 'is_multi_array') ) {
+	/**
+	 * Returns True if Array is Multidimensional.
+	 *
+	 * @param array $arr array
+	 *
+	 * @return boolean result
+	 */
 	function is_multi_array( $arr ) {
 		if ( count( $arr ) == count( $arr, COUNT_RECURSIVE ) ) return false;
 		else return true;
 	}
 }
 
-/**
- * Array_Filter for multi-dimensional arrays.
- *
- * @param array $array 
- * @param function $callback
- * @return array
- */
-if (!  function_exists( 'array_filter_recursive' ) ) {
+if ( ! function_exists( 'array_filter_recursive' ) ) {
+	/**
+	 * Array_Filter for multi-dimensional arrays.
+	 *
+	 * @param array $array 
+	 * @param function $callback
+	 * @return array
+	 */
 	function array_filter_recursive( $array, $callback = null ) {
 		foreach ( $array as $key => & $value ) {
 			if ( is_array( $value ) ) {
@@ -145,4 +149,39 @@ if (!  function_exists( 'array_filter_recursive' ) ) {
 		unset( $value );
 		return $array;
 	}
-} ?>
+}
+
+if ( ! function_exists( 'is_url' ) ) {
+  /**
+   * Is String a URL
+   *
+   * @param string $url
+   * @return boolean
+   */
+  function is_url( $url ) {
+		return filter_var($url, FILTER_VALIDATE_URL) !== false;
+	}
+}
+
+
+if ( ! function_exists( 'str_prefix' ) ) {
+  /**
+   * Is prefix in string
+   *
+   * @param string $source
+	 * @param string $prefix
+   * @return boolean
+   */
+  function str_prefix( $source, $prefix ) {
+		return strncmp($source, $prefix, strlen($prefix)) == 0;
+  }
+}
+
+if (!function_exists('ifset') ) {
+  function ifset(&$var, $default = false) {
+      return isset($var) ? $var : $default;
+  }
+}
+
+
+?>

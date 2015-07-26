@@ -13,8 +13,10 @@ class Kind_Postmeta {
 		add_action( 'load-post.php', array( 'Kind_Postmeta' , 'kindbox_setup' ) );
 		add_action( 'load-post-new.php', array( 'Kind_Postmeta', 'kindbox_setup' ) );
 		add_action( 'save_post', array( 'Kind_Postmeta', 'save_post' ), 8, 2 );
-		add_action('transition_post_status', array( 'Kind_Postmeta', 'transition_post_status' ) ,5,3);
-//	  add_filter('wp_insert_post_data', array( 'Kind_Postmeta', 'change_title' ), 12, 2 );
+		add_action( 'transition_post_status', array( 'Kind_Postmeta', 'transition_post_status' ) ,5,3);
+	  // Experimental
+			// add_filter( 'get_post_metadata', array( 'Kind_Postmeta', 'get_post_metadata' ) ,5,4 );
+			// add_filter('wp_insert_post_data', array( 'Kind_Postmeta', 'change_title' ), 12, 2 );
 	}
 
 	/* Meta box setup function. */
@@ -43,8 +45,7 @@ class Kind_Postmeta {
                         'duration' => _x( "Duration", 'Post kind' )
                         );
 		return $cite_elements;
-	}	
-
+	}
 	public static function hcard_elements() {
 		$hcard_elements = array(
                         'name' => _x( "Author/Artist Name", 'Post kind' ),
@@ -140,7 +141,6 @@ class Kind_Postmeta {
 				return;
 			}
 		}
-		$kind = get_post_kind_slug( $post );
 		$hcard_elements = self::hcard_elements();
 		$cite_elements = self::cite_elements();
 		/* OK, its safe for us to save the data now. */
@@ -160,7 +160,7 @@ class Kind_Postmeta {
 		foreach ( $cite_elements as $key => $value ) {
 			if ( ! empty( $_POST[ 'cite_'.$key ] ) ) {
       		$cite[ $key ] = $_POST[ 'cite_'.$key ];
-	        if ( ! filter_var( $cite[ $key ], FILTER_VALIDATE_URL ) === false ) {  
+	        if ( is_url( $cite[$key] ) ) {  
 						$cite[ $key ] = esc_url_raw( $cite[ $key ] );
 					}
 					else {
@@ -177,46 +177,17 @@ class Kind_Postmeta {
       $cite[ 'content' ] =  wp_kses( ( string ) $_POST[ 'cite_content' ] , $allowed );
 		}
 		$card = array_filter( $card );
-		if ( isset( $card[ 'photo' ] ) ) {
-				if( $options[ 'authorimage' ] == 1 ) {
-			 		if( extract_domain_name( $card[ 'photo' ] ) != extract_domain_name( get_site_url() ) ) {
-			 			$card[ 'photo' ] = media_sideload_image( $card[ 'photo' ], $post_id, $card[ 'name' ], 'src' );
+		if ( isset( $card['photo'] ) ) {
+				if( $options['authorimage'] == 1 ) {
+			 		if( extract_domain_name( $card['photo'] ) != extract_domain_name( get_site_url() ) ) {
+			 			$card['photo'] = media_sideload_image( $card['photo'], $post_id, $card['name'], 'src' );
 					}
 			 }
 		}
-		$cite[ 'card' ] = $card;
-		$cite = array_filter( $cite );
-		if ( isset( $cite[ 'url' ]) ) {
-			$data = get_post_meta( $post_id, '_parse', true );
-			// Prevent Lookup More than Once
-			if ( $data!='true' ) {
-				$data = self::parse( $cite['url'] );
-      	update_post_meta( $post_id,'_parse',  'true' );
-				if ( ! isset( $cite[ 'name' ] ) ) {
-						$cite[ 'name' ] = $data[ 'name' ];
-				}
-      	if ( ! isset( $cite[ 'publication' ] ) ) {
-        	  $cite[ 'publication' ] = $data[ 'publication' ];
-      	}
-      	if ( ! isset( $cite[ 'content' ] ) ) {
-      	    $cite[ 'content' ] = $data[ 'content' ];
-      	}
-				if ( isset( $data[ 'image' ]) ) {
-						$images = get_children( array(
-																			'post_type' => 'attachment',
-																			'post_mime_type' => 'image',
-																			'post_parent' => 'post_id'
-																	) );
-						if ( empty( $images ) ) {
-							$media = media_sideload_image( $data[ 'image' ], $post_id );
-						}
-				}
-			}
-		}
-		$cite = array_filter( $cite );
-		if( ! empty( $cite ) ) {
-			update_post_meta( $post_id, 'mf2_cite', $cite );
-		}  
+		$cite['card'] = $card;
+		$meta = new Kind_Meta($post);
+		$meta->build_meta($cite);
+		$meta->save_meta($post);
 	}
 
 	public static function transition_post_status( $new, $old, $post ) {
@@ -225,37 +196,8 @@ class Kind_Postmeta {
 		}
 	}
 
-// Extract Relevant Data from a Web Page
-  public static function parse($url) {
-    if ( ! isset( $url ) ) {
-      return false;
-    }
-    elseif ( filter_var( $url, FILTER_VALIDATE_URL ) === false )  { 
-      return false; 
-    }
-    $response = wp_remote_get( $url );
-    if ( is_wp_error( $response ) ) {
-			return false;
-    }
-    $body = wp_remote_retrieve_body( $response );
-    $meta = \ogp\Parser::parse( $body );
-    $domain = parse_url( $url, PHP_URL_HOST );
-		$data = array();
-    $data[ 'name' ] = $meta[ 'og:title' ] ?: $meta[ 'twitter:title' ];
-    $data[ 'content' ] = $meta[ 'og:description' ] ?: $meta[ 'twitter:description' ];
-    $data[ 'site' ] = $meta[ 'og:site' ] ?: $meta[ 'twitter:site' ];
-    $data[ 'image' ] = $meta[ 'og:image' ] ?: $meta[ 'twitter:image' ];
-    $data[ 'publication' ] = $meta[ 'og:site_name' ];
-    $metatags = $meta[ 'article:tag' ] ?: $meta[ 'og:video:tag' ];
-    if( is_array( $metatags ) ) {
-      foreach ( $metatags as $tag ) {
-        $tags[] = str_replace( ',', ' -', $tag );
-      }
-      $tags = array_filter( $tags );
-    }
-    $data[ 'tags' ] = $data[ 'tags' ] ?: implode( "," ,$tags );
-    return array_filter( $data );
-  }
+	public static function get_post_metadata( $meta_value = null, $post_id, $meta_key, $single ) {
+		return $meta_value;
+	}
 }
-
 ?>

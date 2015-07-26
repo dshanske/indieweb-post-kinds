@@ -8,10 +8,10 @@
 
 class Kind_Display {
 	protected $meta;
-	protected $post_id;
-	public function __construct( $post_id ) {
-			$this->meta = new Kind_Meta( $post_id );
-			$this->post_id = $post_id;
+	protected $post;
+	public function __construct( $post ) {
+			$this->post = get_post($post);
+			$this->meta = new Kind_Meta( $this->post );
 	}
 	public function get_kind() {
 			return $this->meta->get_kind();
@@ -21,7 +21,7 @@ class Kind_Display {
 		$options = get_option( 'iwt_options' );
 		if( array_key_exists( 'contentelements',$options ) && json_decode( $options[ 'contentelements' ] ) != NULL ) {
         $allowed = json_decode( $options[ 'contentelements' ], true );
-		}
+		}	
     return wp_kses( ( string ) $content ,$allowed );
 	}
 
@@ -31,9 +31,10 @@ class Kind_Display {
    	if ( ! Kind_Taxonomy::response_kind( $this->get_kind( ) ) ) {
 			return apply_filters( 'kind-response-display', "", $this->meta->get_kind( ) );
     }
-  	$response = get_post_meta( $this->post_id, '_resp_full', true );
+  	$response = get_post_meta( $this->post->ID, '_resp_full', true );
   	$options = get_option( 'iwt_options' );
-		$content = "";
+		$content = '';
+		$final = '';
   	if ( ( $options[ 'cacher' ] == 1 ) && ( ! empty( $response ) ) ) {  
 			return apply_filters( 'kind-response-display', $response );
 		}
@@ -68,9 +69,9 @@ class Kind_Display {
 				$pub .= '<em>' . $m[ 'publication' ] . '</em>';
 			}
 			else {
-				$pub .= '<em>' . extract_domain_name( $m[ 'url' ]) . '</em>';
+				$pub .= '<em>' . extract_domain_name( $m['url']) . '</em>';
 			}
-			$content .= $this->get_embed( $m[ 'url' ] );
+			$content = $this->sanitize_output($content) . $this->get_embed( $m['url'] );
 		}
 		else {
 			$url = "";
@@ -89,11 +90,13 @@ class Kind_Display {
 		$c = $verb . ' ' . $url . $pub . $cards . $time . $content;		
 		$c = trim( $c );
 		if ( ! empty( $c ) ) {		
-	  	return $this->sanitize_output( '<div ' . $this->context_class( 'response h-cite', 'p' ) . '>' . $c . '</div>' );
+	  	$final =  '<div ' . $this->context_class( 'response h-cite', 'p' ) . '>' . $c . '</div>';
 		}
 		else {
-			return ""; 
+			apply_filters( 'kind-response-display', '' ); 
 		}
+		update_post_meta( $this->post->ID, '_resp_full', $final);
+		return apply_filters( 'kind-response-display', $final );;
 	}
 
 	// Echo the output of get_display 

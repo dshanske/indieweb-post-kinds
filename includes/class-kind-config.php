@@ -49,8 +49,8 @@ class Kind_Config {
 		$options = get_option( 'iwt_options' );
 		$name = $args[ 'name' ];
 		$checked = $options[ $name ];
-		echo "<input name='iwt_options[ $name ]' type='hidden' value='0' />";
-		echo "<input name='iwt_options[ $name ]' type='checkbox' value='1' " . checked( 1, $checked, false ) . " /> ";
+		echo "<input name='iwt_options[$name]' type='hidden' value='0' />";
+		echo "<input name='iwt_options[$name]' type='checkbox' value='1' " . checked( 1, $checked, false ) . " /> ";
 }
 
 	public static function textbox_callback( array $args ) {
