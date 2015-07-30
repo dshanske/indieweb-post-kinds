@@ -3,73 +3,70 @@
  * Post Kind Taxonomy Class
  *
  * Registers the taxonomy and sets its behavior.
- *
  */
 
-add_action( 'init' , array('Kind_Taxonomy', 'init' ) );
+add_action( 'init' , array( 'Kind_Taxonomy', 'init' ) );
 // Register Kind Taxonomy
-add_action( 'init', array( 'Kind_Taxonomy' , 'register' ), 1 );
+add_action( 'init', array( 'Kind_Taxonomy', 'register' ), 1 );
 
 
 // On Activation, add terms
-register_activation_hook( __FILE__, array( 'Kind_Taxonomy' , 'activate_kinds' ) );
+register_activation_hook( __FILE__, array( 'Kind_Taxonomy', 'activate_kinds' ) );
 
 class Kind_Taxonomy {
 	public static function init() {
 		// Semantic Linkbacks Override for Comments
-		add_action( 'init', array( 'Kind_Taxonomy' , 'remove_semantics' ), 11 );
+		add_action( 'init', array( 'Kind_Taxonomy', 'remove_semantics' ), 11 );
 
 		// Add Kind Permalinks
-		add_filter('post_link', array( 'Kind_Taxonomy' , 'kind_permalink' ) , 10, 3 );
-		add_filter('post_type_link', array( 'Kind_Taxonomy' , 'kind_permalink') , 10 , 3 );
+		add_filter( 'post_link', array( 'Kind_Taxonomy', 'kind_permalink' ) , 10, 3 );
+		add_filter( 'post_type_link', array( 'Kind_Taxonomy', 'kind_permalink' ) , 10 , 3 );
 
 		// Add Classes to Post and Body
-		add_filter( 'post_class', array( 'Kind_Taxonomy', 'post_class') );
-		add_filter( 'body_class', array( 'Kind_Taxonomy', 'body_class') );
-
+		add_filter( 'post_class', array( 'Kind_Taxonomy', 'post_class' ) );
+		add_filter( 'body_class', array( 'Kind_Taxonomy', 'body_class' ) );
 
 		// Trigger Webmention on Change in Post Status
-		add_filter('transition_post_status', array( 'Kind_Taxonomy', 'transition' ), 10, 3 );
+		add_filter( 'transition_post_status', array( 'Kind_Taxonomy', 'transition' ), 10, 3 );
 		// On Post Publush Invalidate any Stored Response
-    add_action( 'publish_post', array( 'Kind_Taxonomy', 'invalidate_response' ), 10, 2 );
-
+		add_action( 'publish_post', array( 'Kind_Taxonomy', 'invalidate_response' ), 10, 2 );
 
 		// Return Kind Meta as part of the JSON Rest API
-		add_filter( 'json_prepare_post' , array( 'Kind_Taxonomy' , 'json_rest_add_kindmeta' ) , 10 , 3 );
+		add_filter( 'json_prepare_post' , array( 'Kind_Taxonomy', 'json_rest_add_kindmeta' ) , 10 , 3 );
 
 		// Add the Correct Archive Title to Kind Archives
-		add_filter('get_the_archive_title', array( 'Kind_Taxonomy' , 'kind_archive_title' ) , 10 , 3 );
+		add_filter( 'get_the_archive_title', array( 'Kind_Taxonomy', 'kind_archive_title' ) , 10 , 3 );
 		// Remove the built-in meta box selector in place of a custom one
 		add_action( 'admin_menu', array( 'Kind_Taxonomy', 'remove_meta_box' ) );
 		add_action( 'add_meta_boxes', array( 'Kind_Taxonomy', 'add_meta_box' ) );
 	}
 
-  public static function invalidate_response( $ID, $post ) {
-    delete_post_meta( get_the_ID(), '_resp_full' );
-  }
+	public static function invalidate_response( $ID, $post ) {
+		delete_post_meta( get_the_ID(), '_resp_full' );
+	}
 
 	public static function activate_kinds() {
 		if ( function_exists( 'iwt_plugin_notice' ) ) {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
-    	wp_die( 'You have Indieweb Taxonomy activated. Post Kinds replaces this plugin. Please disable Taxonomy before activating' );
-  	}
-		if (!get_option( 'iwt_options' ) ) {
-			$option = array (
+			wp_die( 'You have Indieweb Taxonomy activated. Post Kinds replaces this plugin. Please disable Taxonomy before activating' );
+		}
+		if ( ! get_option( 'iwt_options' ) ) {
+			$option = array(
 				'embeds' => '1',
 				'cacher' => '0',
 				'disableformats' => '0',
 				'protection' => '0',
 				'intermediate' => '0',
-        'watchlisten' => '0'
+			'watchlisten' => '0',
 			);
 			update_option( 'iwt_options', $option );
-  	}
-  	self::register();
-  	self::kind_defaultterms();
+		}
+		self::register();
+		self::kind_defaultterms();
 	}
 
 	public static function register() {
-		$labels = array( 
+		$labels = array(
 			'name' => _x( 'Kinds', 'Post kind' ),
 			'singular_name' => _x( 'Kind', 'Post kind' ),
 			'search_items' => _x( 'Search Kinds', 'Post kind' ),
@@ -87,7 +84,7 @@ class Kind_Taxonomy {
 			'menu_name' => _x( 'Kinds', 'Post kind' ),
 		);
 
-		$args = array( 
+		$args = array(
 			'labels' => $labels,
 			'public' => true,
 			'show_in_nav_menus' => true,
@@ -96,105 +93,103 @@ class Kind_Taxonomy {
 			'show_admin_column' => true,
 			'hierarchical' => true,
 			'rewrite' => true,
-			'query_var' => true
+			'query_var' => true,
 		);
-		register_taxonomy( 'kind', array('post'), $args );
+		register_taxonomy( 'kind', array( 'post' ), $args );
 	}
 
-	// Sets up some starter terms...unless terms already exist 
+	// Sets up some starter terms...unless terms already exist
 	// or any of the existing terms are defined
 	public static function kind_defaultterms () {
 		$terms = self::get_strings();
-		foreach ($terms as $key => $value) {
+		foreach ( $terms as $key => $value ) {
 			if ( ! term_exists( $key, 'kind' ) ) {
-				wp_insert_term( $key, 'kind', 
-				array(
-					'description'=> $value,
+				wp_insert_term( $key, 'kind',
+					array(
+					'description' => $value,
 					'slug' => $key,
-				) );
+					) );
 			}
-		}  
+		}
 	}
 	public static function kind_permalink($permalink, $post_id, $leavename) {
-		if (strpos($permalink, '%kind%') === FALSE) return $permalink;
+		if ( strpos( $permalink, '%kind%' ) === false ) { return $permalink; }
 
 		// Get post
-		$post = get_post($post_id);
-		if (!$post) return $permalink;
+		$post = get_post( $post_id );
+		if ( ! $post ) { return $permalink; }
 
 		// Get taxonomy terms
-		$terms = wp_get_object_terms($post->ID, 'kind');   
-		if (!is_wp_error($terms) && !empty($terms) && is_object($terms[0])) $taxonomy_slug = $terms[0]->slug;
- 		else $taxonomy_slug = 'note';
-    return str_replace('%kind%', $taxonomy_slug, $permalink);
-	}   
+		$terms = wp_get_object_terms( $post->ID, 'kind' );
+		if ( ! is_wp_error( $terms ) && ! empty( $terms ) && is_object( $terms[0] ) ) { $taxonomy_slug = $terms[0]->slug;
+		} else { $taxonomy_slug = 'note'; }
+		return str_replace( '%kind%', $taxonomy_slug, $permalink );
+	}
 	public static function kind_archive_title($title) {
 		$strings = self::get_strings_plural();
 		if ( is_tax( 'kind' ) ) {
-			foreach ($strings as $key => $string) { 
-				if ( is_tax( 'kind', $key) ) { 
+			foreach ( $strings as $key => $string ) {
+				if ( is_tax( 'kind', $key ) ) {
 					$title = $string;
 					return $title;
 				}
 			}
-	 }
-   return $title;
-  }
+		}
+		return $title;
+	}
 
 	public static function remove_meta_box() {
-		remove_meta_box('kinddiv', 'post', 'normal');
+		remove_meta_box( 'kinddiv', 'post', 'normal' );
 	}
 
 	public static function add_meta_box() {
-		if (MULTIKIND=='0') {
-			add_meta_box( 'kind_select', 'Post Kinds', array('Kind_Taxonomy', 'select_metabox'),'post' ,'side','core');
-		}
-		else {
+		if ( MULTIKIND == '0' ) {
+			add_meta_box( 'kind_select', 'Post Kinds', array( 'Kind_Taxonomy', 'select_metabox' ),'post' ,'side','core' );
+		} else {
 			// Add Multi-Select Box for MultiKind support
-			add_meta_box( 'kind_select', 'Post Kinds', array('Kind_Taxonomy', 'multiselect_metabox'),'post' ,'side','core');
+			add_meta_box( 'kind_select', 'Post Kinds', array( 'Kind_Taxonomy', 'multiselect_metabox' ),'post' ,'side','core' );
 		}
 	}
 
 	public static function select_metabox( $post ) {
-		$strings=self::get_strings();
-		$include = explode(",", POST_KIND_INCLUDE);
-		$include = array_merge($include, array ( 'note', 'reply', 'article', 'photo') );
+		$strings = self::get_strings();
+		$include = explode( ',', POST_KIND_INCLUDE );
+		$include = array_merge( $include, array( 'note', 'reply', 'article', 'photo' ) );
 		// If Simple Location is Enabled, include the check-in type
-		if (function_exists('sloc_init') ) {
+		if ( function_exists( 'sloc_init' ) ) {
 			$include[] = 'checkin';
 		}
-		$option = get_option('iwt_options');
-		if ($option['linksharing']==1) {
-			$include = array_merge($include, array ( 'like', 'bookmark', 'favorite', 'repost') );
+		$option = get_option( 'iwt_options' );
+		if ( $option['linksharing'] == 1 ) {
+			$include = array_merge( $include, array( 'like', 'bookmark', 'favorite', 'repost' ) );
 		}
-		if ($option['mediacheckin']==1) {
-			$include = array_merge($include, array ( 'watch', 'listen', 'play') );
+		if ( $option['mediacheckin'] == 1 ) {
+			$include = array_merge( $include, array( 'watch', 'listen', 'play' ) );
 		}
 		// Filter Kinds
-		$include = array_unique(apply_filters('kind_include', $include));
+		$include = array_unique( apply_filters( 'kind_include', $include ) );
 		// Note cannot be removed or disabled without hacking the code
-		if (!in_array('note', $include) ) {
-			$include[]='note';
+		if ( ! in_array( 'note', $include ) ) {
+			$include[] = 'note';
 		}
 		if ( isset( $_GET['kind'] ) ) {
 			$default = get_term_by( 'slug', $_GET['kind'], 'kind' );
-		}
-		else {
+		} else {
 			$default = get_term_by( 'slug', 'note', 'kind' );
 		}
-		$terms = get_terms('kind', array('hide_empty' => 0) );
+		$terms = get_terms( 'kind', array( 'hide_empty' => 0 ) );
 		$postterms = get_the_terms( $post->ID, 'kind' );
-		$current = ($postterms ? array_pop($postterms) : false);
+		$current = ($postterms ? array_pop( $postterms ) : false);
 		$current = ($current ? $current->term_id : $default->term_id);
 		echo '<div id="kind-all">';
 		echo '<ul id="kindchecklist" class="list:kind categorychecklist form-no-clear">';
-		foreach($terms as $term){
+		foreach ( $terms as $term ) {
 			$id = 'kind-' . $term->term_id;
 			$slug = $term->slug;
-			if (in_array($slug, $include) ) {
+			if ( in_array( $slug, $include ) ) {
 				echo "<li id='$id' class='kind-$slug'><label class='selectit'>";
-				echo "<input type='radio' id='in-$id' name='tax_input[kind]'".checked($current,$term->term_id,false)."value='$term->term_id' />$strings[$slug]<br />";
-				echo "</label></li>";
+				echo "<input type='radio' id='in-$id' name='tax_input[kind]'".checked( $current,$term->term_id,false )."value='$term->term_id' />$strings[$slug]<br />";
+				echo '</label></li>';
 			}
 		}
 		echo '</ul></div>';
@@ -224,13 +219,13 @@ class Kind_Taxonomy {
 			'play'   => _x( 'Play', 'Post kind' ),
 			'weather'   => _x( 'Weather', 'Post kind' ),
 			'exercise'   => _x( 'Exercise', 'Post kind' ),
-			'travel'   => _x( 'Travel', 'Post kind' )
+			'travel'   => _x( 'Travel', 'Post kind' ),
 		);
 		return apply_filters( 'kind_strings', $strings );
- }
+	}
 
 	/**
-   * Returns an array of post kind slugs to their pluralized translated and pretty display versions
+	 * Returns an array of post kind slugs to their pluralized translated and pretty display versions
 	 *
 	 * @return array The array of translated post kind names.
 	 */
@@ -253,10 +248,10 @@ class Kind_Taxonomy {
 			'play'   => _x( 'Plays', 'Post kind' ),
 			'weather'   => _x( 'Weather', 'Post kind' ),
 			'exercise'   => _x( 'Exercises', 'Post kind' ),
-			'travel'   => _x( 'Travels', 'Post kind' )
+			'travel'   => _x( 'Travels', 'Post kind' ),
 		);
 		return apply_filters( 'kind_strings_plural', $strings );
-}
+	}
 
 	/**
 	 * Returns an array of post kind slugs to their translated verbs
@@ -282,39 +277,39 @@ class Kind_Taxonomy {
 			'play'   => _x( 'Played', 'Post kind' ),
 			'weather'   => _x( 'Weathered', 'Post kind' ),
 			'exercise'   => _x( 'Exercised', 'Post kind' ),
-			'travel'   => _x( 'Traveled', 'Post kind' )
+			'travel'   => _x( 'Traveled', 'Post kind' ),
 		);
 		return apply_filters( 'kind_verbs', $strings );
 	}
 
-  /**
-   * Returns an array of properties associated with kinds.
-   *
-   * @return array The array of properties.
-   */
-  public static function get_kind_properties() {
-    $strings = array(
-      'article' => '',
-      'note'    => '',
-      'reply'     => 'in-reply-to',
-      'repost'  => 'repost-of', 
-      'like'     => 'like-of',
-      'favorite'    => 'favorite-of',
-      'bookmark'    => 'bookmark',
-      'photo'   => 'photo',
-      'tag'    => 'tag',
-      'rsvp'    => 'rsvp',
-      'listen'    => 'listen',
-      'watch'   => 'watch',
-      'checkin'   => 'checkin',
-      'wish'   => 'wish',
-      'play'   => 'play',
-      'weather'   => 'weather',
-      'exercise'   => 'exercise',
-      'travel'   => 'travel'
-    );
+	/**
+	 * Returns an array of properties associated with kinds.
+	 *
+	 * @return array The array of properties.
+	 */
+	public static function get_kind_properties() {
+		$strings = array(
+		'article' => '',
+		'note'    => '',
+		'reply'     => 'in-reply-to',
+		'repost'  => 'repost-of',
+		'like'     => 'like-of',
+		'favorite'    => 'favorite-of',
+		'bookmark'    => 'bookmark',
+		'photo'   => 'photo',
+		'tag'    => 'tag',
+		'rsvp'    => 'rsvp',
+		'listen'    => 'listen',
+		'watch'   => 'watch',
+		'checkin'   => 'checkin',
+		'wish'   => 'wish',
+		'play'   => 'play',
+		'weather'   => 'weather',
+		'exercise'   => 'exercise',
+		'travel'   => 'travel',
+		);
 		return $strings;
-  }
+	}
 
 
 	/**
@@ -327,13 +322,12 @@ class Kind_Taxonomy {
 			'article' => _x( 'by', 'Post kind' ),
 		);
 		$strings = apply_filters( 'kind_author_string', $strings );
-		if (array_key_exists($verb, $strings) ) {
-			return $strings[$verb];
-		} 
-		else {
-			return _x('by', 'Post kind');
-		} 
-	} 
+		if ( array_key_exists( $verb, $strings ) ) {
+			return $strings[ $verb ];
+		} else {
+			return _x( 'by', 'Post kind' );
+		}
+	}
 
 	/**
 	 * Returns the publication terminology for the publication
@@ -345,116 +339,113 @@ class Kind_Taxonomy {
 			return '';
 		}
 		$strings = array(
- 			'article' => _x( 'on', 'Post kind' ),
+				'article' => _x( 'on', 'Post kind' ),
 			'listen' => _x( '-', 'Post kind' ),
-			'watch' => _x( '-', 'Post kind' )
+			'watch' => _x( '-', 'Post kind' ),
 		);
 		$strings = apply_filters( 'kind_publication_string', $strings );
-		if (array_key_exists($verb, $strings) ) {
-			return $strings[$verb];
-		}
-		else {
-			return _x('on', 'Post kind');
+		if ( array_key_exists( $verb, $strings ) ) {
+			return $strings[ $verb ];
+		} else {
+			return _x( 'on', 'Post kind' );
 		}
 	}
 
 	public static function get_duration_string($verb) {
 		$strings = array();
 		$strings = apply_filters( 'kind_duration_string', $strings );
-		if (array_key_exists($verb, $strings) ) {
-			return $strings[$verb];
+		if ( array_key_exists( $verb, $strings ) ) {
+			return $strings[ $verb ];
+		} else {
+			return _x( 'for', 'Post kind' );
 		}
-		else {
-			return _x('for', 'Post kind');
-		}
-	} 
+	}
 
 	public static function remove_semantics() {
-		if (class_exists('SemanticLinkbacksPlugin') ) {
-			remove_filter('comment_text', array('SemanticLinkbacksPlugin', 'comment_text_excerpt'),12);
-			add_filter('comment_text', array('Kind_Taxonomy' , 'comment_text_excerpt') , 12 , 3 );
-  	}
+		if ( class_exists( 'SemanticLinkbacksPlugin' ) ) {
+			remove_filter( 'comment_text', array( 'SemanticLinkbacksPlugin', 'comment_text_excerpt' ),12 );
+			add_filter( 'comment_text', array( 'Kind_Taxonomy', 'comment_text_excerpt' ) , 12 , 3 );
+		}
 	}
 
 	// Replacement for the Semantic Linkbacks Comment Excerpt
 	public static function comment_text_excerpt($text, $comment = null, $args = array()) {
-  	// only change text for pingbacks/trackbacks/webmentions
-    if (!$comment || $comment->comment_type == "" || !get_comment_meta($comment->comment_ID, "semantic_linkbacks_canonical", true)) {
+		// only change text for pingbacks/trackbacks/webmentions
+		if ( ! $comment || $comment->comment_type == '' || ! get_comment_meta( $comment->comment_ID, 'semantic_linkbacks_canonical', true ) ) {
 			return $text;
 		}
 		// check comment type
-		$comment_type = get_comment_meta($comment->comment_ID, "semantic_linkbacks_type", true);
-		if (!$comment_type || !in_array($comment_type, array_keys(SemanticLinkbacksPlugin::get_comment_type_strings()))) {
-			$comment_type = "mention";
+		$comment_type = get_comment_meta( $comment->comment_ID, 'semantic_linkbacks_type', true );
+		if ( ! $comment_type || ! in_array( $comment_type, array_keys( SemanticLinkbacksPlugin::get_comment_type_strings() ) ) ) {
+			$comment_type = 'mention';
 		}
 		$_kind = get_the_terms( $comment->comment_post_ID, 'kind' );
-		if (!empty($_kind)) {   
-			$kind = array_shift($_kind);
+		if ( ! empty( $_kind ) ) {
+			$kind = array_shift( $_kind );
 			$kindstrings = self::get_strings();
-			$post_format = $kindstrings[$kind->slug];
-		}
-		else {
-			$post_format = get_post_format($comment->comment_post_ID);
+			$post_format = $kindstrings[ $kind->slug ];
+		} else {
+			$post_format = get_post_format( $comment->comment_post_ID );
 			// replace "standard" with "Article"
-			if (!$post_format || $post_format == "standard") {
-				$post_format = "Article";
+			if ( ! $post_format || $post_format == 'standard' ) {
+				$post_format = 'Article';
 			} else {
-			$post_formatstrings = get_post_format_strings();
-			// get the "nice" name
-			$post_format = $post_formatstrings[$post_format];
+				$post_formatstrings = get_post_format_strings();
+				// get the "nice" name
+				$post_format = $post_formatstrings[ $post_format ];
 			}
-   	}
+		}
 		// generate the verb, for example "mentioned" or "liked"
 		$comment_type_excerpts = SemanticLinkbacksPlugin::get_comment_type_excerpts();
 		// get URL canonical url...
-		$url = get_comment_meta($comment->comment_ID, "semantic_linkbacks_canonical", true);
+		$url = get_comment_meta( $comment->comment_ID, 'semantic_linkbacks_canonical', true );
 		// ...or fall back to source
-		if (!$url) {
-			$url = get_comment_meta($comment->comment_ID, "semantic_linkbacks_source", true);
+		if ( ! $url ) {
+			$url = get_comment_meta( $comment->comment_ID, 'semantic_linkbacks_source', true );
 		}
 		// parse host
-		$host = parse_url($url, PHP_URL_HOST);
+		$host = parse_url( $url, PHP_URL_HOST );
 		// strip leading www, if any
-		$host = preg_replace("/^www\./", "", $host);
+		$host = preg_replace( '/^www\./', '', $host );
 		// generate output
-		$text = sprintf($comment_type_excerpts[$comment_type], get_comment_author_link($comment->comment_ID), 'this ' . $post_format, $url, $host);
-		return apply_filters("semantic_linkbacks_excerpt", $text);
+		$text = sprintf( $comment_type_excerpts[ $comment_type ], get_comment_author_link( $comment->comment_ID ), 'this ' . $post_format, $url, $host );
+		return apply_filters( 'semantic_linkbacks_excerpt', $text );
 	}
 
 	public static function publish ( $ID, $post=null) {
-		$cites = get_post_meta($ID, 'mf2_cite', true);
-		if (empty($cites)) { return; }   
-		if (isset($cites['url'])) {
-			send_webmention(get_permalink($ID), $cites['url']);
-			if (WP_DEBUG) {
-				error_log("WEBMENTION CALLED".get_permalink($ID)." : ".$cites['url']);
+		$cites = get_post_meta( $ID, 'mf2_cite', true );
+		if ( empty( $cites ) ) { return; }
+		if ( isset( $cites['url'] ) ) {
+			send_webmention( get_permalink( $ID ), $cites['url'] );
+			if ( WP_DEBUG ) {
+				error_log( 'WEBMENTION CALLED'.get_permalink( $ID ).' : '.$cites['url'] );
 			}
 		} else {
-			foreach ($cites as $cite) {
-				if (!empty($cite) && isset($cite['url'])) {
-					send_webmention(get_permalink($ID), $cite['url']);
-					if (WP_DEBUG) {
-			 			error_log("WEBMENTIONS CALLED".get_permalink($ID)." : ".$cite['url']);
+			foreach ( $cites as $cite ) {
+				if ( ! empty( $cite ) && isset( $cite['url'] ) ) {
+					send_webmention( get_permalink( $ID ), $cite['url'] );
+					if ( WP_DEBUG ) {
+			 			error_log( 'WEBMENTIONS CALLED'.get_permalink( $ID ).' : '.$cite['url'] );
 					}
-      	}
+				}
 			}
 		}
 	}
 
-	public static function transition($old,$new,$post){
-  	self::publish($post->ID,$post);
-	} 
+	public static function transition($old,$new,$post) {
+		self::publish( $post->ID,$post );
+	}
 
 	public static function json_rest_add_kindmeta($_post,$post,$context) {
-		$response = new Kind_Meta( $post["ID"]);
-		if (!empty($response)) { $_post['mf2'] = $response->get_all_meta(); }
+		$response = new Kind_Meta( $post['ID'] );
+		if ( ! empty( $response ) ) { $_post['mf2'] = $response->get_all_meta(); }
 		return $_post;
 	}
 
 	public static function kinds_as_type($classes) {
 		$kind = get_post_kind_slug();
-		switch ($kind) {
-			case "note":
+		switch ( $kind ) {
+			case 'note':
 				$classes[] = 'h-as-note';
 				break;
 			case 'article':
@@ -472,80 +463,76 @@ class Kind_Taxonomy {
 
 	public static function post_class($classes) {
 		// Adds kind classes to post
-		if (!is_singular() ) {
-			$classes = self::kinds_as_type($classes);
-		} 
+		if ( ! is_singular() ) {
+			$classes = self::kinds_as_type( $classes );
+		}
 		$classes[] = 'kind-' . get_post_kind_slug();
 		return $classes;
 	}
 
 	public static function body_class($classes) {
 		// Adds kind classes to body
-		if (is_singular() ) {
-			$classes = self::kinds_as_type($classes);
+		if ( is_singular() ) {
+			$classes = self::kinds_as_type( $classes );
 		}
 		return $classes;
 	}
 
 	/**
- 	 * Returns true if kind is a response type kind.
- 	 * This means dynamically generated content is added
- 	 *
- 	 * @param string $kind The post kind slug.
- 	 * @return true/false.
- 	 */
+	 * Returns true if kind is a response type kind.
+	 * This means dynamically generated content is added
+	 *
+	 * @param string $kind The post kind slug.
+	 * @return true/false.
+	 */
 	public static function response_kind( $kind ) {
-		$not_responses = array( "article", "note" , "photo");
-		if (in_array($kind, $not_responses)) { return false; }
-  	else { return true; }
-}
+		$not_responses = array( 'article', 'note' , 'photo' );
+		if ( in_array( $kind, $not_responses ) ) { return false;
+		} else { return true; }
+	}
 
 	/**
 	 * Returns a pretty, translated version of a post kind slug
-	 *
 	 *
 	 * @param string $slug A post format slug.
 	 * @return string The translated post format name.
 	 */
 	public static function get_post_kind_string( $slug ) {
 		$strings = self::get_strings();
-		return ( isset( $strings[$slug] ) ) ? $strings[$slug] : '';
+		return ( isset( $strings[ $slug ] ) ) ? $strings[ $slug ] : '';
 	}
 
 	/**
 	 * Returns a link to a post kind index.
 	 *
-	 *
 	 * @param string $kind The post kind slug.
 	 * @return string The post kind term link.
 	 */
 	public static function get_post_kind_link( $kind ) {
-		$term = get_term_by('slug', $kind, 'kind' );
-		if ( ! $term || is_wp_error( $term ) )
-			return false;
+		$term = get_term_by( 'slug', $kind, 'kind' );
+		if ( ! $term || is_wp_error( $term ) ) {
+			return false; }
 		return get_term_link( $term );
 	}
 
 	public static function get_post_kind_slug( $post = null ) {
-		$post = get_post($post);
-		if ( ! $post = get_post( $post ) )
-			return false;
+		$post = get_post( $post );
+		if ( ! $post = get_post( $post ) ) {
+			return false; }
 		$_kind = get_the_terms( $post->ID, 'kind' );
-		if (!empty($_kind)) {
-			$kind = array_shift($_kind);
-  	  return $kind->slug;
-		}
-		else { return false; }
+		if ( ! empty( $_kind ) ) {
+			$kind = array_shift( $_kind );
+			return $kind->slug;
+		} else { return false; }
 	}
 	public static function get_post_kind( $post = null ) {
-		$kind = get_post_kind_slug($post);
-		if ($kind) {
+		$kind = get_post_kind_slug( $post );
+		if ( $kind ) {
 			$strings = self::get_strings();
-			return $strings[$kind];
-		}	
-		else {
-			return false; 
-		}        
+			return $strings[ $kind ];
+		} else {
+			return false;
+		}
 	}
 
 
@@ -555,7 +542,7 @@ class Kind_Taxonomy {
 	 * @uses has_term()
 	 *
 	 * @param string|array $kinds Optional. The kind to check.
-	 * @param object|int $post Optional. The post to check. If not supplied, defaults to the current post if used in the loop.
+	 * @param object|int   $post Optional. The post to check. If not supplied, defaults to the current post if used in the loop.
 	 * @return bool True if the post has any of the given kinds (or any kind, if no kind specified), false otherwise.
 	 */
 	public static function has_post_kind( $kinds = array(), $post = null ) {
@@ -571,19 +558,17 @@ class Kind_Taxonomy {
 	/**
 	 * Assign a kind to a post
 	 *
-	 *
 	 * @param int|object $post The post for which to assign a kind.
-	 * @param string $kind A kind to assign. Using an empty string or array will default to note.
+	 * @param string     $kind A kind to assign. Using an empty string or array will default to note.
 	 * @return mixed WP_Error on error. Array of affected term IDs on success.
 	 */
 	public static function set_post_kind( $post, $kind ) {
 		$post = get_post( $post );
-		if ( empty( $post ) )
-			return new WP_Error( 'invalid_post', __( 'Invalid post' ) );
+		if ( empty( $post ) ) {
+			return new WP_Error( 'invalid_post', __( 'Invalid post' ) ); }
 		if ( ! empty( $kind ) ) {
 			$kind = sanitize_key( $kind );
-		}
-		else { 
+		} else {
 			$kind = 'note';
 		}
 		return wp_set_post_terms( $post->ID, $kind, 'kind' );
