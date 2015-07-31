@@ -11,11 +11,45 @@
  * @param int|WP_Post $post Optional. Post ID or post object. Defaults to global $post.
  * @return array False on failure.
  */
-function get_mf2_meta( $post ) {
+function get_post_mf2meta( $post ) {
 	$post = get_post( $post );
 	$meta = get_post_meta( $post->ID );
 	if ( ! $meta ) {
 		return false;
+	} 
+	if ( isset( $meta['response'] ) ) {
+		$response = maybe_unserialize($meta['response']);
+		// Retrieve from the old response array and store in new location.
+		if ( ! empty( $response ) ) {
+			$new = array();
+			// Convert to new format and update
+			if ( ! empty( $response['title'] ) ) {
+				$new['name'] = $response['title'];
+			}
+			if ( ! empty( $response['url'] ) ) {
+				$new['url'] = $response['url'];
+			}
+			if ( ! empty( $response['content'] ) ) {
+				$new['content'] = $response['content'];
+			}
+			if ( ! empty( $response['published'] ) ) {
+				$new['published'] = $response['published'];
+			}
+			if ( ! empty( $response['author'] ) ) {
+				$new['card'] = array();
+				$new['card']['name'] = $response['author'];
+				if ( ! empty( $response['icon'] ) ) {
+					$new['card']['photo'] = $response['icon'];
+				}
+			}
+			$new = array_unique( $new );
+			$new['card'] = array_unique( $new['card'] );
+			if ( isset( $new ) ) {
+				update_post_meta( $this->post->ID, 'mf2_cite', $new );
+				delete_post_meta( $this->post->ID, 'response' );
+				$meta['cite']=$new;
+			}
+		}
 	}
 	foreach ( $meta as $key => $value ) {
 		if ( ! str_prefix( $key, 'mf2_' ) ) {

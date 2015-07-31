@@ -8,7 +8,6 @@
 class Kind_Meta {
 	protected $meta; // Raw Meta Data
 	protected $kind = ''; // Actual or Implied Kind
-	protected $meta_key = 'cite'; // The primary meta key and default
 	protected $post;
 	public function __construct( $post ) {
 		$this->post = get_post( $post );
@@ -18,43 +17,7 @@ class Kind_Meta {
 		if ( class_exists( 'kind_taxonomy' ) ) {
 			$this->kind = get_post_kind_slug( get_post( $this->post->ID ) );
 		}
-
-		$this->meta = get_mf2_meta( $this->post->ID );
-		if ( ! $this->meta ) {
-			$response = get_post_meta( $this->post->ID, 'response', true );
-			// Retrieve from the old response array and store as the first
-			// entry in a new multidimensional array
-			if ( ! empty( $response ) ) {
-				$new = array();
-				// Convert to new format and update
-				if ( ! empty( $response['title'] ) ) {
-					$new['name'] = $response['title'];
-				}
-				if ( ! empty( $response['url'] ) ) {
-					$new['url'] = $response['url'];
-				}
-				if ( ! empty( $response['content'] ) ) {
-					$new['content'] = $response['content'];
-				}
-				if ( ! empty( $response['published'] ) ) {
-					$new['published'] = $response['published'];
-				}
-				if ( ! empty( $response['author'] ) ) {
-					$new['card'] = array();
-					$new['card']['name'] = $response['author'];
-					if ( ! empty( $response['icon'] ) ) {
-						$new['card']['photo'] = $response['icon'];
-					}
-				}
-				$new = array_unique( $new );
-				$new['card'] = array_unique( $new['card'] );
-				if ( isset( $new ) ) {
-					update_post_meta( $this->post->ID, 'mf2_cite', $new );
-					delete_post_meta( $this->post->ID, 'response' );
-					$this->meta = array( 'cite' => $new );
-				}
-			}
-		}
+		$this->meta = get_post_mf2meta( $this->post->ID );
 	}
 
 	public function build_meta( $raw ) {
@@ -62,36 +25,40 @@ class Kind_Meta {
 			$body = self::fetch( $raw['url'] );
 			$data = self::parse( $body );
 			$data = array_merge( $raw, $data );
-			$this->meta['cite'] = $data;
-		}
-		if ( empty( $this->meta_key ) ) {
-			if ( isset( $this->meta['cite'] ) ) {
-				$this->meta_key = 'cite';
+			$map = Kind_Taxonomy::get_kind_properties();
+			if ( array_key_exists( $this->kind, $map ) ) {
+					$this->meta[$map[$this->kind]] = $data['url'];
+					unset( $data['url'] );	
 			}
+			$this->meta['cite'] = array_filter($data);
 		}
 	}
 
 	// Save or Update Meta to Post
-	public function save_meta($post) {
-		error_Log( 'Save Test: ' . serialize( $this->meta ) );
-		$post = get_post( $post );
-		if ( ! $post || ! $this->meta ) {
+	public function save_meta() {
+		if ( WP_DEBUG ) {
+			// error_Log( 'Save MF2 Meta: ' . serialize( $this->meta ) );
+		}
+		if ( ! $this->post || ! $this->meta ) {
 			return false;
 		}
 		foreach ( $this->meta as $key => $value ) {
 			$key = 'mf2_' . $key;
-			update_post_meta( $post->ID, $key, $value );
+			update_post_meta( $this->post->ID, $key, $value );
 		}
 	}
 
 	// Return Body
-	public function fetch($url) {
-		if ( ! isset( $url ) ) {
-			return false;
-		} elseif ( filter_var( $url, FILTER_VALIDATE_URL ) === false ) {
-			return false;
+	private function fetch($url) {
+		if ( ! isset( $url ) || filter_var( $url, FILTER_VALIDATE_URL ) === false ) {
+			return new WP_Error( 'invalid-url', __( 'A valid URL was not provided.' ) );
 		}
-		$response = wp_remote_get( $url );
+		$response = wp_safe_remote_get( $url, array(
+			'timeout' => 30,
+			// Use an explicit user-agent for Post Kinds
+			'user-agent' => 'Post Kinds (WordPress/' . $wp_version . '); ' . get_bloginfo( 'url' )
+		) );
+
 		if ( is_wp_error( $response ) ) {
 			return false;
 		}
@@ -99,19 +66,20 @@ class Kind_Meta {
 		return $body;
 	}
 
-	public function parse ($content) {
+	private function parse ($content) {
 		$data = self::ogpparse( $content );
 		return array_filter( $data );
 	}
 
-	public function ogpparse($content) {
+	private function ogpparse($content) {
 		$meta = \ogp\Parser::parse( $content );
 		$data = array();
-			$data['name'] = ifset( $meta['og:title'] ) ?: ifset( $meta['twitter:title'] );
-			$data['content'] = ifset( $meta['og:description'] ) ?: ifset( $meta['twitter:description'] );
+		$data['name'] = ifset( $meta['og:title'] ) ?: ifset( $meta['twitter:title'] ) ?: ifset( $meta['og:music:song'] ) ;
+		$data['content'] = ifset( $meta['og:description'] ) ?: ifset( $meta['twitter:description'] );
 		$data['site'] = ifset( $meta['og:site'] ) ?: ifset( $meta['twitter:site'] );
 		$data['image'] = ifset( $meta['og:image'] ) ?: ifset( $meta['twitter:image'] );
-		$data['publication'] = ifset( $meta['og:site_name'] );
+		$data['publication'] = ifset( $meta['og:site_name'] ) ?: ifset( $meta['og:music:album'] );
+		$data['published'] = ifset( $meta['og:article:published_time'] ) ?: ifset( $meta['og:music:release_date'] ) ?: ifset( $meta['og:video:release_date'] );
 		$metatags = ifset( $meta['article:tag'] ) ?: ifset( $meta['og:video:tag'] );
 		$tags = array();
 		if ( is_array( $metatags ) ) {
@@ -121,14 +89,17 @@ class Kind_Meta {
 			$tags = array_filter( $tags );
 		}
 		$data['tags'] = $data['tags'] ?: implode( ',' ,$tags );
+		// Extended Parameters
+		$data['audio'] = ifset( $meta['og:audio'] );
+		$data['video'] = ifset( $meta['og:video'] );
+		$data['duration'] = ifset( $meta['music:duration'] ) ?: ifset( $meta['video:duration'] );
+		$data['type'] = ifset ( $meta['og:type'] );
+
 		return array_filter( $data );
 	}
 
 	public function get_kind() {
-		if ( isset( $this->kind ) ) {
-			return $this->kind;
-		}
-			return false;
+		return ifset( $this->kind );
 	}
 
 	public function get_all_meta() {
@@ -141,12 +112,15 @@ class Kind_Meta {
 		if ( ! isset( $this->meta ) ) {
 			return false;
 		}
-		if ( empty( $this->meta_key ) ) {
-			return false;
+		if (array_key_exists( 'cite', $this->meta ) ) {
+			$response = $this->meta['cite'];
 		}
-		$response = $this->meta[ $this->meta_key ];
-		if ( ! $response ) {
-			return false;
+		else {
+			$response = array();
+		}
+		$map = Kind_Taxonomy::get_kind_properties();
+		if ( array_key_exists( $this->kind, $map ) ) {
+			$response['url'] = ifset( $response['url'] ) ?: ifset ( $this->meta[ $map[$this->kind] ] );
 		}
 		$response = array_filter_recursive( $response );
 		return array_filter( $response );
@@ -165,67 +139,6 @@ class Kind_Meta {
 			return $this->meta[ $key ];
 		}
 		return false;
-	}
-
-
-	/**
-	 * maps classes to kinds
-	 * courtesy of a similar function in Semantic Linkbacks
-	 *
-	 * @return array
-	 */
-	public function get_class_mapper() {
-		$class_mapper = array();
-		/*
-		 * replies
-		 * @link http://indiewebcamp.com/replies
-		*/
-		$class_mapper['in-reply-to'] = 'reply';
-		$class_mapper['reply']       = 'reply';
-		$class_mapper['reply-of']    = 'reply';
-		/*
-		 * repost
-		 * @link http://indiewebcamp.com/repost
-		 */
-		$class_mapper['repost']      = 'repost';
-		$class_mapper['repost-of']   = 'repost';
-		/*
-		 * likes
-		 * @link http://indiewebcamp.com/likes
-		 */
-		$class_mapper['like']        = 'like';
-		$class_mapper['like-of']     = 'like';
-		/*
-		 * favorite
-		 * @link http://indiewebcamp.com/favorite
-		 */
-		$class_mapper['favorite']    = 'favorite';
-		$class_mapper['favorite-of'] = 'favorite';
-		/*
-		* bookmark
-		* @link http://indiewebcamp.com/bookmark
-		*/
-		$class_mapper['bookmark']    = 'bookmark';
-		$class_mapper['bookmark-of'] = 'bookmark';
-
-		/*
-		 * rsvp
-		 * @link http://indiewebcamp.com/rsvp
-		 */
-		$class_mapper['rsvp']        = 'rsvp';
-		/*
-		 * tag
-		 * @link http://indiewebcamp.com/tag
-		 */
-		$class_mapper['tag-of']      = 'tag';
-
-		$class_mapper['listen']      = 'listen';
-
-		$class_mapper['watch']       = 'watch';
-		$class_mapper['play']        = 'play';
-		$class_mapper['wish']        = 'wish';
-
-		return apply_filters( 'kind_class_mapper', $class_mapper );
 	}
 
 } // End Class

@@ -295,7 +295,7 @@ class Kind_Taxonomy {
 		'repost'  => 'repost-of',
 		'like'     => 'like-of',
 		'favorite'    => 'favorite-of',
-		'bookmark'    => 'bookmark',
+		'bookmark'    => 'bookmark-of',
 		'photo'   => 'photo',
 		'tag'    => 'tag',
 		'rsvp'    => 'rsvp',
