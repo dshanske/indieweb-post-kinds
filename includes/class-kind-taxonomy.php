@@ -3,48 +3,63 @@
  * Post Kind Taxonomy Class
  *
  * Registers the taxonomy and sets its behavior.
+ *
+ * @package Post Kinds
  */
 
 add_action( 'init' , array( 'Kind_Taxonomy', 'init' ) );
-// Register Kind Taxonomy
+// Register Kind Taxonomy.
 add_action( 'init', array( 'Kind_Taxonomy', 'register' ), 1 );
 
 
-// On Activation, add terms
+// On Activation, add terms.
 register_activation_hook( __FILE__, array( 'Kind_Taxonomy', 'activate_kinds' ) );
 
 class Kind_Taxonomy {
 	public static function init() {
-		// Semantic Linkbacks Override for Comments
+		// Semantic Linkbacks Override for Comments.
 		add_action( 'init', array( 'Kind_Taxonomy', 'remove_semantics' ), 11 );
 
-		// Add Kind Permalinks
+		// Add Kind Permalinks.
 		add_filter( 'post_link', array( 'Kind_Taxonomy', 'kind_permalink' ) , 10, 3 );
 		add_filter( 'post_type_link', array( 'Kind_Taxonomy', 'kind_permalink' ) , 10 , 3 );
 
-		// Add Classes to Post and Body
+		// Add Classes to Post and Body.
 		add_filter( 'post_class', array( 'Kind_Taxonomy', 'post_class' ) );
 		add_filter( 'body_class', array( 'Kind_Taxonomy', 'body_class' ) );
 
-		// Trigger Webmention on Change in Post Status
+		// Trigger Webmention on Change in Post Status.
 		add_filter( 'transition_post_status', array( 'Kind_Taxonomy', 'transition' ), 10, 3 );
-		// On Post Publush Invalidate any Stored Response
+		// On Post Publish Invalidate any Stored Response.
 		add_action( 'publish_post', array( 'Kind_Taxonomy', 'invalidate_response' ), 10, 2 );
 
-		// Return Kind Meta as part of the JSON Rest API
+		// Return Kind Meta as part of the JSON Rest API.
 		add_filter( 'json_prepare_post' , array( 'Kind_Taxonomy', 'json_rest_add_kindmeta' ) , 10 , 3 );
 
-		// Add the Correct Archive Title to Kind Archives
+		// Add the Correct Archive Title to Kind Archives.
 		add_filter( 'get_the_archive_title', array( 'Kind_Taxonomy', 'kind_archive_title' ) , 10 , 3 );
-		// Remove the built-in meta box selector in place of a custom one
+		// Remove the built-in meta box selector in place of a custom one.
 		add_action( 'admin_menu', array( 'Kind_Taxonomy', 'remove_meta_box' ) );
 		add_action( 'add_meta_boxes', array( 'Kind_Taxonomy', 'add_meta_box' ) );
+
+		// Set Post Kind for Micropub Inputs.
+		add_action( 'after_micropub', array( 'Kind_Taxonomy', 'micropub_set_kind' ) );
 	}
 
-	public static function invalidate_response( $ID, $post ) {
-		delete_post_meta( get_the_ID(), '_resp_full' );
+
+ /**
+   * Deletes cached response.
+   *  
+   * @param int $post_id Post to Delete Cache of
+   */ 
+	public static function invalidate_response( $post_id ) {
+		delete_post_meta( $post_id, '_resp_full' );
 	}
 
+ /**
+   * To Be Run on Plugin Activation.
+   *  
+   */ 
 	public static function activate_kinds() {
 		if ( function_exists( 'iwt_plugin_notice' ) ) {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
@@ -65,6 +80,10 @@ class Kind_Taxonomy {
 		self::kind_defaultterms();
 	}
 
+ /**
+   * Register the custom taxonomy for kinds.
+   *  
+   */ 
 	public static function register() {
 		$labels = array(
 			'name' => _x( 'Kinds', 'Post kind' ),
@@ -88,18 +107,20 @@ class Kind_Taxonomy {
 			'labels' => $labels,
 			'public' => true,
 			'show_in_nav_menus' => true,
-			'show_ui' => false,
+			'show_ui' => true,
 			'show_tagcloud' => true,
 			'show_admin_column' => true,
-			'hierarchical' => true,
+			'hierarchical' => false,
 			'rewrite' => true,
 			'query_var' => true,
 		);
 		register_taxonomy( 'kind', array( 'post' ), $args );
 	}
 
-	// Sets up some starter terms...unless terms already exist
-	// or any of the existing terms are defined
+ /**
+   * Sets up Default Terms for Kind Taxonomy.
+   *  
+   */
 	public static function kind_defaultterms () {
 		$terms = self::get_strings();
 		foreach ( $terms as $key => $value ) {
@@ -113,7 +134,7 @@ class Kind_Taxonomy {
 		}
 	}
 	public static function kind_permalink($permalink, $post_id, $leavename) {
-		if ( strpos( $permalink, '%kind%' ) === false ) { return $permalink; }
+		if ( false === strpos( $permalink, '%kind%' ) ) { return $permalink; }
 
 		// Get post
 		$post = get_post( $post_id );
@@ -143,7 +164,7 @@ class Kind_Taxonomy {
 	}
 
 	public static function add_meta_box() {
-		if ( MULTIKIND == '0' ) {
+		if ( MULTIKIND ) {
 			add_meta_box( 'kind_select', 'Post Kinds', array( 'Kind_Taxonomy', 'select_metabox' ),'post' ,'side','core' );
 		} else {
 			// Add Multi-Select Box for MultiKind support
@@ -160,10 +181,10 @@ class Kind_Taxonomy {
 			$include[] = 'checkin';
 		}
 		$option = get_option( 'iwt_options' );
-		if ( $option['linksharing'] == 1 ) {
+		if ( 1 === $option['linksharing'] ) {
 			$include = array_merge( $include, array( 'like', 'bookmark', 'favorite', 'repost' ) );
 		}
-		if ( $option['mediacheckin'] == 1 ) {
+		if ( 1 === $option['mediacheckin'] ) {
 			$include = array_merge( $include, array( 'watch', 'listen', 'play' ) );
 		}
 		// Filter Kinds
@@ -371,7 +392,7 @@ class Kind_Taxonomy {
 	// Replacement for the Semantic Linkbacks Comment Excerpt
 	public static function comment_text_excerpt($text, $comment = null, $args = array()) {
 		// only change text for pingbacks/trackbacks/webmentions
-		if ( ! $comment || $comment->comment_type == '' || ! get_comment_meta( $comment->comment_ID, 'semantic_linkbacks_canonical', true ) ) {
+		if ( ! $comment || '' === $comment->comment_type || ! get_comment_meta( $comment->comment_ID, 'semantic_linkbacks_canonical', true ) ) {
 			return $text;
 		}
 		// check comment type
@@ -387,7 +408,7 @@ class Kind_Taxonomy {
 		} else {
 			$post_format = get_post_format( $comment->comment_post_ID );
 			// replace "standard" with "Article"
-			if ( ! $post_format || $post_format == 'standard' ) {
+			if ( ! $post_format || 'standard' === $post_format ) {
 				$post_format = 'Article';
 			} else {
 				$post_formatstrings = get_post_format_strings();
@@ -562,16 +583,37 @@ class Kind_Taxonomy {
 	 * @param string     $kind A kind to assign. Using an empty string or array will default to note.
 	 * @return mixed WP_Error on error. Array of affected term IDs on success.
 	 */
-	public static function set_post_kind( $post, $kind ) {
+	public static function set_post_kind( $post, $kind = 'note' ) {
 		$post = get_post( $post );
 		if ( empty( $post ) ) {
 			return new WP_Error( 'invalid_post', __( 'Invalid post' ) ); }
-		if ( ! empty( $kind ) ) {
-			$kind = sanitize_key( $kind );
-		} else {
+		$kind = sanitize_key( $kind );
+		if ( ! array_key_exists( $kind, self::get_strings() ) ) {
 			$kind = 'note';
 		}
 		return wp_set_post_terms( $post->ID, $kind, 'kind' );
+	}
+
+	/**
+	 * Take mf2 properties and set a post kind
+	 *
+	 * @param int $post_id The post for which to assign a kind.
+	 */
+
+	public static function micropub_set_kind( $post_id ) {
+		if ( isset( $_POST['rsvp'] ) ) {
+			set_post_kind( $post_id, 'rsvp' );
+			return;
+		}
+		if ( isset( $_POST['in-reply-to'] ) ) {
+			set_post_kind( $post_id, 'reply' );
+			return;
+		}
+		if ( isset( $_POST['bookmark-of'] ) || isset( $_POST['bookmark'] ) ) {
+			set_post_kind( $post_id, 'bookmark' );
+			return;
+		}
+		set_post_kind( $post_id, 'note' );
 	}
 
 } // End Class Kind_Taxonomy

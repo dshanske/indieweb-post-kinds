@@ -7,13 +7,13 @@
  * Plugin Name: Post Kinds
  * Plugin URI: https://wordpress.org/plugins/indieweb-post-kinds/
  * Description: Ever want to reply to someone else's post with a post on your own site? Or to "like" someone else's post, but with your own site?
- * Version: 2.0.3
+ * Version: 2.1.0dev
  * Author: David Shanske
  * Author URI: https://david.shanske.com
  * Text Domain: Post kinds
  */
 
-define( 'POST_KINDS_VERSION', '2.0.3' );
+define( 'POST_KINDS_VERSION', '2.1.0' );
 
 load_plugin_textdomain( 'Post kind', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
@@ -22,7 +22,7 @@ if ( ! defined( 'POST_KIND_INCLUDE' ) ) {
 }
 
 if ( ! defined( 'MULTIKIND' ) ) {
-	define( 'MULTIKIND', '0' );
+	define( 'MULTIKIND', false );
 }
 
 // Add Kind Taxonomy.
@@ -43,12 +43,11 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-postmeta.php';
 require_once plugin_dir_path( __FILE__ ) . '/includes/kind-functions.php';
 // Add Kind Display Functions.
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-view.php';
-require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-display.php';
 
 // Add Kind Meta Storage and Retrieval Functions.
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-meta.php';
 
-// Add an OpenGraph Parser
+// Add an OpenGraph Parser.
 if ( ! class_exists( 'ogp\Parser' ) ) {
 	include_once plugin_dir_path( __FILE__ ) . 'includes/class-ogp-parser.php';
 }
@@ -61,8 +60,10 @@ add_action( 'admin_enqueue_scripts', 'kind_admin_style' );
  * Loads the Stylesheet for the Plugin.
  */
 if ( ! function_exists( 'kindstyle_load' ) ) {
+	/**
+	 * Loads Plugin Style Sheet.
+	 */
 	function kindstyle_load() {
-
 		wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'css/kind.min.css', array(), POST_KINDS_VERSION );
 	}
 } else {
@@ -99,7 +100,7 @@ if ( ! function_exists( 'extract_domain_name' ) ) {
 	/**
 	 * Returns the Domain Name out of a URL.
 	 *
-	 * @param string $url URL
+	 * @param string $url URL.
 	 *
 	 * @return string domain name
 	 */
@@ -115,13 +116,13 @@ if ( ! function_exists( 'is_multi_array' ) ) {
 	/**
 	 * Returns True if Array is Multidimensional.
 	 *
-	 * @param array $arr array
+	 * @param array $arr array.
 	 *
 	 * @return boolean result
 	 */
 	function is_multi_array( $arr ) {
 
-		if ( count( $arr ) == count( $arr, COUNT_RECURSIVE ) ) { return false;
+		if ( count( $arr ) === count( $arr, COUNT_RECURSIVE ) ) { return false;
 		} else { return true;
 		}
 	}
@@ -131,9 +132,9 @@ if ( ! function_exists( 'array_filter_recursive' ) ) {
 	/**
 	 * Array_Filter for multi-dimensional arrays.
 	 *
-	 * @param  array    $array
-	 * @param  function $callback
-	 * @return array
+	 * @param  array    $array Untouched Array.
+	 * @param  function $callback Function to Apply to Each Element.
+	 * @return array Filtered Array.
 	 */
 	function array_filter_recursive( $array, $callback = null ) {
 
@@ -146,7 +147,7 @@ if ( ! function_exists( 'array_filter_recursive' ) ) {
 						unset( $array[ $key ] );
 					}
 				} else {
-					if ( ! ( bool ) $value ) {
+					if ( ! (bool) $value ) {
 						unset( $array[ $key ] );
 					}
 				}
@@ -159,10 +160,10 @@ if ( ! function_exists( 'array_filter_recursive' ) ) {
 
 if ( ! function_exists( 'is_url' ) ) {
 	/**
-	 * Is String a URL
+	 * Is String a URL.
 	 *
-	 * @param  string $url
-	 * @return boolean
+	 * @param  string $url A string.
+	 * @return boolean Whether string is a URL.
 	 */
 	function is_url( $url ) {
 
@@ -173,19 +174,25 @@ if ( ! function_exists( 'is_url' ) ) {
 
 if ( ! function_exists( 'str_prefix' ) ) {
 	/**
-	 * Is prefix in string
+	 * Is prefix in string.
 	 *
-	 * @param  string $source
-	 * @param  string $prefix
-	 * @return boolean
+	 * @param  string $source The source string.
+	 * @param  string $prefix The prefix you wish to check for in source.
+	 * @return boolean The result.
 	 */
 	function str_prefix( $source, $prefix ) {
 
-		return strncmp( $source, $prefix, strlen( $prefix ) ) == 0;
+		return strncmp( $source, $prefix, strlen( $prefix ) ) === 0;
 	}
 }
 
 if ( ! function_exists( 'ifset' ) ) {
+	/**
+	 * If set, return otherwise false.
+	 *
+	 * @param type $var Check if set.
+	 * @return $var|false Return either $var or false.
+	 */
 	function ifset(&$var) {
 
 		return isset( $var ) ? $var : false;

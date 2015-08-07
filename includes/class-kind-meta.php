@@ -7,38 +7,109 @@
 
 class Kind_Meta {
 	protected $meta; // Raw Meta Data
-	protected $kind = ''; // Actual or Implied Kind
 	protected $post;
 	public function __construct( $post ) {
 		$this->post = get_post( $post );
 		if ( ! $this->post ) {
 			return false;
 		}
-		if ( class_exists( 'kind_taxonomy' ) ) {
-			$this->kind = get_post_kind_slug( get_post( $this->post->ID ) );
+		$this->get_mf2meta( $this->post->ID );
+	}
+
+	/**
+	 * Sets an array with only the mf2 prefixed meta.
+	 *
+	 * @param int|WP_Post $post Optional. Post ID or post object. Defaults to global $post.
+	 */
+	private function get_mf2meta( $post ) {
+		$post = get_post( $post );
+		$meta = get_post_meta( $post->ID );
+		if ( ! $meta ) {
+			$this->meta=array();
+			return;
 		}
-		$this->meta = get_post_mf2meta( $this->post->ID );
+		if ( isset( $meta['response'] ) ) {
+			$response = maybe_unserialize( $meta['response'] );
+			// Retrieve from the old response array and store in new location.
+			if ( ! empty( $response ) ) {
+				$new = array();
+				// Convert to new format and update.
+				if ( ! empty( $response['title'] ) ) {
+					$new['name'] = $response['title'];
+				}
+      	if ( ! empty( $response['url'] ) ) {
+        	$new['url'] = $response['url'];
+      	}
+				if ( ! empty( $response['content'] ) ) {
+					$new['content'] = $response['content'];
+				}
+				if ( ! empty( $response['published'] ) ) {
+					$new['published'] = $response['published'];
+				}
+				if ( ! empty( $response['author'] ) ) {
+					$new['card'] = array();
+					$new['card']['name'] = $response['author'];
+					if ( ! empty( $response['icon'] ) ) {
+						$new['card']['photo'] = $response['icon'];
+					}
+				}
+				$new = array_unique( $new );
+				$new['card'] = array_unique( $new['card'] );
+				if ( isset( $new ) ) {
+					update_post_meta( $this->post->ID, 'mf2_cite', $new );
+					delete_post_meta( $this->post->ID, 'response' );
+					$meta['cite'] = $new;
+				}
+			}
+		}
+		foreach ( $meta as $key => $value ) {
+			if ( ! str_prefix( $key, 'mf2_' ) ) {
+				unset( $meta[ $key ] );
+			} else {
+				unset( $meta[ $key ] );
+				$key = trim( $key, 'mf2_' );
+				$value = array_map( 'maybe_unserialize', $value );
+				$value = array_shift( $value );
+				// If value is a multi-array with only one element.
+				if ( is_multi_array( $value ) ) {
+					if ( 1 === count( $value ) ) {
+						$value = array_shift( $value );
+					}
+					if ( isset( $value['card'] ) ) {
+						if ( is_multi_array( $value['card'] ) ) {
+							if ( 1 === count( $value['card'] ) ) {
+								$value['card'] = array_shift( $value['card'] );
+							}
+						}
+						$value['card'] = array_filter( $value['card'] );
+					}
+				}
+				if ( is_array( $value ) ) {
+					$value = array_filter( $value );
+				}
+				$meta[ $key ] = $value;
+ 			}
+		}
+		$this->meta = array_filter( $meta );
 	}
 
 	public function build_meta( $raw ) {
+		$kind = get_post_kind_slug($this->post);
 		if ( isset( $raw['url'] ) ) {
 			$body = self::fetch( $raw['url'] );
 			$data = self::parse( $body );
 			$data = array_merge( $raw, $data );
 			$map = Kind_Taxonomy::get_kind_properties();
-			if ( array_key_exists( $this->kind, $map ) ) {
-					$this->meta[$map[$this->kind]] = $data['url'];
-					unset( $data['url'] );	
+			if ( array_key_exists( $kind, $map ) ) {
+					$this->meta[ $map[ $kind ] ] = $data['url'];
+					unset( $data['url'] );
 			}
-			$this->meta['cite'] = array_filter($data);
+			$this->meta['cite'] = array_filter( $data );
 		}
 	}
 
 	// Save or Update Meta to Post
 	public function save_meta() {
-		if ( WP_DEBUG ) {
-			// error_Log( 'Save MF2 Meta: ' . serialize( $this->meta ) );
-		}
 		if ( ! $this->post || ! $this->meta ) {
 			return false;
 		}
@@ -50,17 +121,18 @@ class Kind_Meta {
 
 	// Return Body
 	private function fetch($url) {
+		global $wp_version;
 		if ( ! isset( $url ) || filter_var( $url, FILTER_VALIDATE_URL ) === false ) {
 			return new WP_Error( 'invalid-url', __( 'A valid URL was not provided.' ) );
 		}
 		$response = wp_safe_remote_get( $url, array(
 			'timeout' => 30,
 			// Use an explicit user-agent for Post Kinds
-			'user-agent' => 'Post Kinds (WordPress/' . $wp_version . '); ' . get_bloginfo( 'url' )
+			'user-agent' => 'Post Kinds (WordPress/' . $wp_version . '); ' . get_bloginfo( 'url' ),
 		) );
 
 		if ( is_wp_error( $response ) ) {
-			return false;
+			return $response;
 		}
 		$body = wp_remote_retrieve_body( $response );
 		return $body;
@@ -74,7 +146,7 @@ class Kind_Meta {
 	private function ogpparse($content) {
 		$meta = \ogp\Parser::parse( $content );
 		$data = array();
-		$data['name'] = ifset( $meta['og:title'] ) ?: ifset( $meta['twitter:title'] ) ?: ifset( $meta['og:music:song'] ) ;
+		$data['name'] = ifset( $meta['og:title'] ) ?: ifset( $meta['twitter:title'] ) ?: ifset( $meta['og:music:song'] );
 		$data['content'] = ifset( $meta['og:description'] ) ?: ifset( $meta['twitter:description'] );
 		$data['site'] = ifset( $meta['og:site'] ) ?: ifset( $meta['twitter:site'] );
 		$data['image'] = ifset( $meta['og:image'] ) ?: ifset( $meta['twitter:image'] );
@@ -93,52 +165,43 @@ class Kind_Meta {
 		$data['audio'] = ifset( $meta['og:audio'] );
 		$data['video'] = ifset( $meta['og:video'] );
 		$data['duration'] = ifset( $meta['music:duration'] ) ?: ifset( $meta['video:duration'] );
-		$data['type'] = ifset ( $meta['og:type'] );
+		$data['type'] = ifset( $meta['og:type'] );
 
 		return array_filter( $data );
 	}
 
-	public function get_kind() {
-		return ifset( $this->kind );
-	}
-
 	public function get_all_meta() {
-		if ( ! empty( $this->meta ) ) {
-			return $this->meta;
-		}
-		return false;
+		return ifset( $this->meta );
 	}
 	public function get_meta() {
 		if ( ! isset( $this->meta ) ) {
 			return false;
 		}
-		if (array_key_exists( 'cite', $this->meta ) ) {
+		if ( array_key_exists( 'cite', $this->meta ) ) {
 			$response = $this->meta['cite'];
-		}
-		else {
+		} else {
 			$response = array();
 		}
+		$kind = get_post_kind_slug($this->post);
 		$map = Kind_Taxonomy::get_kind_properties();
-		if ( array_key_exists( $this->kind, $map ) ) {
-			$response['url'] = ifset( $response['url'] ) ?: ifset ( $this->meta[ $map[$this->kind] ] );
+		if ( array_key_exists( $kind, $map ) ) {
+			$response['url'] = ifset( $response['url'] ) ?: ifset( $this->meta[ $map[ $kind ] ] );
 		}
-		$response = array_filter_recursive( $response );
 		return array_filter( $response );
 	}
 
-	public function get_hcard() {
-		$m = $this->get_meta();
-		if ( isset( $m['card'] ) ) {
-			return $m['card'];
+	public function get_author() {
+		if ( isset( $this->meta['card'] ) ) {
+			return $this->meta['card'];
+		}
+		if ( isset( $this->meta['author'] ) ) {
+			return $this->meta['author'];
 		}
 		return false;
 	}
 
 	public function get( $key ) {
-		if ( isset( $this->meta[ $key ] ) ) {
-			return $this->meta[ $key ];
-		}
-		return false;
+		return ifset( $this->meta[ $key ] );
 	}
 
 } // End Class

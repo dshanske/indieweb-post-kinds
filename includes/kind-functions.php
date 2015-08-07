@@ -3,84 +3,25 @@
  * Kind Functions
  *
  * Global Scoped Functions for Handling Kinds.
+ *
+ * @package Post Kinds
  */
 
 /**
- * Return an array with only the mf2 prefixed meta.
+ * Retrieves an array of post kind slugs.
  *
- * @param int|WP_Post $post Optional. Post ID or post object. Defaults to global $post.
- * @return array False on failure.
+ * @param int|WP_Post $post A Post.
+ * @param string      $key
+ * @return array The array of post kind slugs.
  */
-function get_post_mf2meta( $post ) {
-	$post = get_post( $post );
-	$meta = get_post_meta( $post->ID );
-	if ( ! $meta ) {
-		return false;
-	} 
-	if ( isset( $meta['response'] ) ) {
-		$response = maybe_unserialize($meta['response']);
-		// Retrieve from the old response array and store in new location.
-		if ( ! empty( $response ) ) {
-			$new = array();
-			// Convert to new format and update
-			if ( ! empty( $response['title'] ) ) {
-				$new['name'] = $response['title'];
-			}
-			if ( ! empty( $response['url'] ) ) {
-				$new['url'] = $response['url'];
-			}
-			if ( ! empty( $response['content'] ) ) {
-				$new['content'] = $response['content'];
-			}
-			if ( ! empty( $response['published'] ) ) {
-				$new['published'] = $response['published'];
-			}
-			if ( ! empty( $response['author'] ) ) {
-				$new['card'] = array();
-				$new['card']['name'] = $response['author'];
-				if ( ! empty( $response['icon'] ) ) {
-					$new['card']['photo'] = $response['icon'];
-				}
-			}
-			$new = array_unique( $new );
-			$new['card'] = array_unique( $new['card'] );
-			if ( isset( $new ) ) {
-				update_post_meta( $this->post->ID, 'mf2_cite', $new );
-				delete_post_meta( $this->post->ID, 'response' );
-				$meta['cite']=$new;
-			}
-		}
+function get_post_mf2meta( $post, $key = '' ) {
+	$meta = new Kind_Meta( $post );
+	if ( empty( $key ) ) {
+		return $meta->get_all_meta();
 	}
-	foreach ( $meta as $key => $value ) {
-		if ( ! str_prefix( $key, 'mf2_' ) ) {
-			unset( $meta[ $key ] );
-		} else {
-			unset( $meta[ $key ] );
-			$key = trim( $key, 'mf2_' );
-			$value = array_map( 'maybe_unserialize', $value );
-			$value = array_shift( $value );
-			// If value is a multi-array with only one element
-			if ( is_multi_array( $value ) ) {
-				if ( count( $value ) == 1 ) {
-					$value = array_shift( $value );
-				}
-				if ( isset( $value['card'] ) ) {
-					if ( is_multi_array( $value['card'] ) ) {
-						if ( count( $value['card'] ) == 1 ) {
-							$value['card'] = array_shift( $value['card'] );
-						}
-					}
-					$value['card'] = array_filter( $value['card'] );
-				}
-			}
-			if ( is_array( $value ) ) {
-				$value = array_filter( $value );
-			}
-			$meta[ $key ] = $value;
-		}
-	}
-	return array_filter( $meta );
+	return $meta->get_key( $key );
 }
+
 
 
 /**

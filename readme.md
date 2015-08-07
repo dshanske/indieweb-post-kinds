@@ -1,8 +1,8 @@
 # Indieweb Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention  
-**Stable tag:** 2.0.3  
-**Requires at least:** 4.1  
+**Stable tag:** 2.1.0  
+**Requires at least:** 4.2  
 **Tested up to:** 4.2.3  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
@@ -40,7 +40,7 @@ For more information on the Indieweb and tools for WordPress, visit [Getting Sta
 
 ### How do I get support? ###
 
-The Development version of the plugin is hosted at [Github](https://github.com/dshanske/indieweb-post-kinds).
+The Development version of the plugin is hosted at [Github](https://github.com/dshanske/indieweb-post-kinds). You can file issues there.
 
 ## Installation ##
 
@@ -87,7 +87,7 @@ These kinds have an analog in post formats. Adding context to one of these
 may make it a Passive Kind.
 
  * **Article** - traditional long form content - a post with an explicit post name(title)
- * **Note** - short content - a post with just plain content
+ * **Note** - short content - a post with just plain content (also the default)
  * **Photo** - image or photo post - a post with an embedded image as its primary focus
 
 ### The Response Kinds ###
@@ -128,31 +128,25 @@ additional ones added. Feedback appreciated.
 ## Future Plans ##
 
 	* Contextual response box, hiding/changing options based on Kind selected. Example, an RSVP that shows Yes/No/Maybe.
-	* Support Micropub plugin
 	* Validate inputs based on type
 	* As of 2.0, customizable displays by type are set to be supported in the code. Will be writing some
-
-
-## MultiKind Support (Experimental) ##
-
-By request, multikind support has returned as a hidden mode that is not complete.
-
-By design, the plugin only allows one kind to be selected per post. Setting 
-this flag in your wp-config would change that.
-
-define('MULTIKIND', '1');
 
 ## SNAP ##
 
 Indieweb Post Kinds had support for replying to Twitter posts using the Social Network Auto Poster plugin.
 
 ## Changelog ##
-	= Version 2.0.3 = 
+	= Version 2.1.0 = 
 		* Metadata Processing will be centralizing in the Kind_Meta class
 		* Continuing to move toward WordPress Coding Standards including inline documentation
 		* Fixes for the OpenGraph Parsing of Content to Fill Additional Metadata
 		* Metadata fields not part of the user interface to be stored for future use
 		* You can now pre-select a kind by adding ?kind=reply to wp-admin/post-new.php
+		* Merged the Kind_View and Kind_Display into a single class
+		* Plan for Customizable Display Objects will be replaced by hooks/filters
+		* New Function get_post_mf2meta to retrieve the mf2 prefixed metadata
+		* Supports setting the post kind for posts created by Micropub plugin
+		* Rearrangement of classes and functions in an attempt to simplify
 	= Version 2.0.2 =
 		* Change markup to use e-content instead of p-content
 		* Add versioning for CSS
