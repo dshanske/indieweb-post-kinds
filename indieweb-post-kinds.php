@@ -17,10 +17,6 @@ define( 'POST_KINDS_VERSION', '2.1.0' );
 
 load_plugin_textdomain( 'Post kind', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
-if ( ! defined( 'POST_KIND_INCLUDE' ) ) {
-	define( 'POST_KIND_INCLUDE', '' );
-}
-
 if ( ! defined( 'MULTIKIND' ) ) {
 	define( 'MULTIKIND', false );
 }

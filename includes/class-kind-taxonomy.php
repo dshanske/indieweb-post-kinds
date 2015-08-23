@@ -47,19 +47,18 @@ class Kind_Taxonomy {
 	}
 
 
- /**
-   * Deletes cached response.
-   *  
-   * @param int $post_id Post to Delete Cache of
-   */ 
+	/**
+	 * Deletes cached response.
+	 *
+	 * @param int $post_id Post to Delete Cache of
+	 */
 	public static function invalidate_response( $post_id ) {
 		delete_post_meta( $post_id, '_resp_full' );
 	}
 
- /**
-   * To Be Run on Plugin Activation.
-   *  
-   */ 
+	/**
+	 * To Be Run on Plugin Activation.
+	 */
 	public static function activate_kinds() {
 		if ( function_exists( 'iwt_plugin_notice' ) ) {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
@@ -80,10 +79,9 @@ class Kind_Taxonomy {
 		self::kind_defaultterms();
 	}
 
- /**
-   * Register the custom taxonomy for kinds.
-   *  
-   */ 
+	/**
+	 * Register the custom taxonomy for kinds.
+	 */
 	public static function register() {
 		$labels = array(
 			'name' => _x( 'Kinds', 'Post kind' ),
@@ -117,10 +115,9 @@ class Kind_Taxonomy {
 		register_taxonomy( 'kind', array( 'post' ), $args );
 	}
 
- /**
-   * Sets up Default Terms for Kind Taxonomy.
-   *  
-   */
+	/**
+	 * Sets up Default Terms for Kind Taxonomy.
+	 */
 	public static function kind_defaultterms () {
 		$terms = self::get_strings();
 		foreach ( $terms as $key => $value ) {
@@ -160,30 +157,26 @@ class Kind_Taxonomy {
 	}
 
 	public static function remove_meta_box() {
-		remove_meta_box( 'kinddiv', 'post', 'normal' );
+		remove_meta_box( 'tagsdiv-kind', 'post', 'normal' );
 	}
 
 	public static function add_meta_box() {
-		if (! MULTIKIND ) {
+		if ( ! MULTIKIND ) {
 			add_meta_box( 'kind_select', 'Post Kinds', array( 'Kind_Taxonomy', 'select_metabox' ),'post' ,'side','core' );
 		} else {
 			// Add Multi-Select Box for MultiKind support
-			add_meta_box( 'kind_select', 'Post Kinds', array( 'Kind_Taxonomy', 'multiselect_metabox' ),'post' ,'side','core' );
+			add_meta_box( 'tagsdiv-kind', 'Post Kinds', array( 'Kind_Taxonomy', 'multiselect_metabox' ),'post' ,'side','core' );
 		}
 	}
 
 	public static function select_metabox( $post ) {
 		$strings = self::get_strings();
-		$include = explode( ',', POST_KIND_INCLUDE );
-		$include = array_merge( $include, array( 'note', 'reply', 'article', 'photo' ) );
-		// If Simple Location is Enabled, include the check-in type
-		if ( function_exists( 'sloc_init' ) ) {
-			$include[] = 'checkin';
-		}
 		$option = get_option( 'iwt_options' );
-		if ( array_key_exists('termslists', $option) ) {
-			$include = array_merge( $include, $option['termslists']);
+		if ( array_key_exists( 'termslists', $option ) ) {
+			$include = $option['termslists'];
 		}
+		$include = array_merge( $include, array( 'note', 'reply', 'article' ) );
+		// If Simple Location is Enabled, include the check-in type
 		// Filter Kinds
 		$include = array_unique( apply_filters( 'kind_include', $include ) );
 		// Note cannot be removed or disabled without hacking the code
@@ -200,13 +193,13 @@ class Kind_Taxonomy {
 		$current = ($postterms ? array_pop( $postterms ) : false);
 		$current = ($current ? $current->term_id : $default->term_id);
 		echo '<div id="kind-all">';
-		echo '<ul id="kindchecklist" class="list:kind categorychecklist form-no-clear">';
+		echo '<ul id="taxonomy-kind" class="list:kind category-tabs form-no-clear">';
 		foreach ( $terms as $term ) {
 			$id = 'kind-' . $term->term_id;
 			$slug = $term->slug;
 			if ( in_array( $slug, $include ) ) {
 				echo "<li id='$id' class='kind-$slug'><label class='selectit'>";
-				echo "<input type='radio' id='in-$id' name='tax_input[kind]'".checked( $current,$term->term_id,false )."value='$term->term_id' />$strings[$slug]<br />";
+				echo "<input type='radio' id='in-$id' name='tax_input[kind]'".checked( $current,$term->term_id,false )."value='$slug' />$strings[$slug]<br />";
 				echo '</label></li>';
 			}
 		}

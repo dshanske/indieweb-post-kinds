@@ -188,6 +188,9 @@ class Kind_Meta {
 			$response = array();
 		}
 		$kind = get_post_kind_slug( $this->post );
+		if ( ! $kind ) {
+			$kind = 'note';
+		}
 		$map = Kind_Taxonomy::get_kind_properties();
 		if ( array_key_exists( $kind, $map ) ) {
 			$response['url'] = ifset( $response['url'] ) ?: ifset( $this->meta[ $map[ $kind ] ] );

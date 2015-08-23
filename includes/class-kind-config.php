@@ -116,8 +116,12 @@ class Kind_Config {
 	public static function termlist_callback() {
 		$options = get_option( 'iwt_options' );
 		$terms = Kind_Taxonomy::get_strings();
-		// Hide these terms until ready for use for now
-		$hide = array( 'note', 'weather', 'exercise', 'travel', 'checkin', 'RSVP', 'tag' );
+		// Hide these terms until ready for use for now.
+		$hide = array( 'note', 'weather', 'exercise', 'travel', 'RSVP', 'tag' );
+		// Hide checkin option unless Simple Location is active.
+		if ( ! class_exists( 'loc_config' ) ) {
+			$hide[] = 'checkin';
+		}
 		foreach ( $hide as $hid ) {
 			unset( $terms[$hid] );
 		}
