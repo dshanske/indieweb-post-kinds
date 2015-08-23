@@ -164,7 +164,7 @@ class Kind_Taxonomy {
 	}
 
 	public static function add_meta_box() {
-		if ( MULTIKIND ) {
+		if (! MULTIKIND ) {
 			add_meta_box( 'kind_select', 'Post Kinds', array( 'Kind_Taxonomy', 'select_metabox' ),'post' ,'side','core' );
 		} else {
 			// Add Multi-Select Box for MultiKind support
@@ -181,11 +181,8 @@ class Kind_Taxonomy {
 			$include[] = 'checkin';
 		}
 		$option = get_option( 'iwt_options' );
-		if ( 1 === $option['linksharing'] ) {
-			$include = array_merge( $include, array( 'like', 'bookmark', 'favorite', 'repost' ) );
-		}
-		if ( 1 === $option['mediacheckin'] ) {
-			$include = array_merge( $include, array( 'watch', 'listen', 'play' ) );
+		if ( array_key_exists('termslists', $option) ) {
+			$include = array_merge( $include, $option['termslists']);
 		}
 		// Filter Kinds
 		$include = array_unique( apply_filters( 'kind_include', $include ) );

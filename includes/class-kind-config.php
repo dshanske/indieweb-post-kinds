@@ -34,8 +34,8 @@ class Kind_Config {
 				add_settings_field( 'contentelements', __( 'Response Content Allowed Html Elements', 'Post kind' ) . ' <a href="http://codex.wordpress.org/Function_Reference/wp_kses">*</a>', array( 'Kind_Config', 'textbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'contentelements' ) );
 			}
 		}
-		add_settings_field( 'linksharing', __( 'Enable Link Sharing Kinds', 'Post kind' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'linksharing' ) );
-		add_settings_field( 'mediacheckin', __( 'Enable Media Check-Ins', 'Post kind' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'mediacheckin' ) );
+		add_settings_field( 'termlist', __( 'Select All Kinds You Wish to Use', 'Post kind' ), array( 'Kind_Config', 'termlist_callback' ), 'iwt_options', 'iwt-content' );
+
 	}
 
 	/**
@@ -105,6 +105,36 @@ class Kind_Config {
 	}
 
 	/**
+	 * Generate a Term List.
+	 *
+	 * @access public
+	 * @param array $args {
+	 *    Arguments.
+	 *
+	 *    @type string $name Textbox Term List.
+	 */
+	public static function termlist_callback() {
+		$options = get_option( 'iwt_options' );
+		$terms = Kind_Taxonomy::get_strings();
+		// Hide these terms until ready for use for now
+		$hide = array( 'note', 'weather', 'exercise', 'travel', 'checkin', 'RSVP', 'tag' );
+		foreach ( $hide as $hid ) {
+			unset( $terms[$hid] );
+		}
+		if ( ! array_key_exists( 'termslists', $options ) ) {
+			$termslist = array();
+		} else {
+			$termslist = $options['termslists'];
+		}
+		echo '<select id="termslists" name="iwt_options[termslists][]" multiple>';
+		foreach ( $terms as $key => $value ) {
+			echo '<option value="' . $key . '" '. selected( in_array( $key, $termslist ) ) . '>' . $value . '</option>';
+		}
+		echo '</select>';
+	}
+
+
+	/**
 	 * Generate Options Form.
 	 * @access public
 	 */
@@ -113,7 +143,7 @@ class Kind_Config {
 		echo '<div class="wrap">';
 		echo '<h2>' . esc_html__( 'Indieweb Post Kinds', 'Post kinds' ) . '</h2>';
 		echo '<p>';
-		esc_html_e( 'Adds support for responding and interacting with other sites', 'Post kinds' );
+		esc_html_e( 'Adds support for responding and interacting with other sites.', 'Post kinds' );
 		echo '</p><hr />';
 		echo '<form method="post" action="options.php">';
 			settings_fields( 'iwt_options' );

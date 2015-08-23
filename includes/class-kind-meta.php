@@ -25,7 +25,7 @@ class Kind_Meta {
 		$post = get_post( $post );
 		$meta = get_post_meta( $post->ID );
 		if ( ! $meta ) {
-			$this->meta=array();
+			$this->meta = array();
 			return;
 		}
 		if ( isset( $meta['response'] ) ) {
@@ -37,9 +37,9 @@ class Kind_Meta {
 				if ( ! empty( $response['title'] ) ) {
 					$new['name'] = $response['title'];
 				}
-      	if ( ! empty( $response['url'] ) ) {
-        	$new['url'] = $response['url'];
-      	}
+				if ( ! empty( $response['url'] ) ) {
+					$new['url'] = $response['url'];
+				}
 				if ( ! empty( $response['content'] ) ) {
 					$new['content'] = $response['content'];
 				}
@@ -88,13 +88,13 @@ class Kind_Meta {
 					$value = array_filter( $value );
 				}
 				$meta[ $key ] = $value;
- 			}
+			}
 		}
 		$this->meta = array_filter( $meta );
 	}
 
 	public function build_meta( $raw ) {
-		$kind = get_post_kind_slug($this->post);
+		$kind = get_post_kind_slug( $this->post );
 		if ( isset( $raw['url'] ) ) {
 			$body = self::fetch( $raw['url'] );
 			$data = self::parse( $body );
@@ -173,6 +173,11 @@ class Kind_Meta {
 	public function get_all_meta() {
 		return ifset( $this->meta );
 	}
+
+	public function get_post() {
+		return $this->post;
+	}
+
 	public function get_meta() {
 		if ( ! isset( $this->meta ) ) {
 			return false;
@@ -182,7 +187,7 @@ class Kind_Meta {
 		} else {
 			$response = array();
 		}
-		$kind = get_post_kind_slug($this->post);
+		$kind = get_post_kind_slug( $this->post );
 		$map = Kind_Taxonomy::get_kind_properties();
 		if ( array_key_exists( $kind, $map ) ) {
 			$response['url'] = ifset( $response['url'] ) ?: ifset( $this->meta[ $map[ $kind ] ] );

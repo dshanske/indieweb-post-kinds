@@ -42,14 +42,6 @@ The Development version of the plugin is hosted at [Github](https://github.com/d
 
 The plugin requires the [webmention](https://wordpress.org/plugins/webmention/) plugin to support sending/receiving notice of a reply/like to another site which will appear as a comment. The [Semantic Linkbacks](https://wordpress.org/plugins/semantic-linkbacks/) plugin is available to more richly display the comment.
 
-To declare your theme supports post kinds(if it does):
-
-add_theme_support('post-kinds');
-
-If your theme does not declare support, then the context information will be added to the content 100% 
-of the time. It is assumed if your theme declares support, then it declares the alternate location for 
-presentation.
-
 == Upgrade Notice ==
 
 = 2.0.0 = 
@@ -123,6 +115,7 @@ additional ones added. Feedback appreciated.
 
 == Future Plans ==
 
+:q
 	* Contextual response box, hiding/changing options based on Kind selected. Example, an RSVP that shows Yes/No/Maybe.
 	* Validate inputs based on type
 	* As of 2.0, customizable displays by type are set to be supported in the code. Will be writing some
@@ -143,6 +136,7 @@ Indieweb Post Kinds had support for replying to Twitter posts using the Social N
 		* New Function get_post_mf2meta to retrieve the mf2 prefixed metadata
 		* Supports setting the post kind for posts created by Micropub plugin
 		* Rearrangement of classes and functions in an attempt to simplify
+		* Settings Page Now Allows You to Select which Kinds to Show in the New Post UI
 	= Version 2.0.2 =
 		* Change markup to use e-content instead of p-content
 		* Add versioning for CSS

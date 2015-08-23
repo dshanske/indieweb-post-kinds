@@ -108,12 +108,23 @@ class Kind_View {
 	}
 
 	// Return the Display
-	public function get_display($post) {
+	public static function get_display($post) {
 		$post = get_post();
 		$meta = new Kind_Meta( $post );
 		$kind = get_post_kind_slug( $post );
-		if ( ! Kind_Taxonomy::response_kind( $kind ) ) {
-			return apply_filters( 'kind-response-display', '', $kind );
+		$response = null;
+		/**
+		 * Filter whether to retrieve the display early.
+		 *
+		 * This allows for a filter to replace the entire string.
+		 *
+		 *
+		 * @param array	$args          The display. defaults to null.
+     * @param object	$meta	   A kind_meta object.
+     */
+    $response = apply_filters( 'pre_get_kind_display', $response, $meta );
+		if ( ! is_null( $response ) ) {
+			return $response;
 		}
 		$response = get_post_meta( $post->ID, '_resp_full', true );
 		$options = get_option( 'iwt_options' );
@@ -175,7 +186,7 @@ class Kind_View {
 		;
 	}
 
-	public function get_context_class ( $class = '', $classtype='u' ) {
+	public static function get_context_class ( $class = '', $classtype='u' ) {
 		$classes = array();
 		global $post;
 		if ( get_post_kind( $post ) ) {
@@ -233,7 +244,7 @@ class Kind_View {
 	 */
 		return apply_filters( 'kind_classes', $classes, $class, get_post_kind( $post ) );
 	}
-	public function context_class( $class = '', $classtype='u' ) {
+	public static function context_class( $class = '', $classtype='u' ) {
 		// Separates classes with a single space, collates classes
 		return 'class="' . join( ' ', self::get_context_class( $class, $classtype ) ) . '"';
 	}
@@ -257,7 +268,7 @@ class Kind_View {
 		}
 	}
 
-	public function get_hcards() {
+	public static function get_hcards() {
 		global $post;
 		$meta = new Kind_Meta( $post );
 		$cards = $meta->get_author( );
@@ -273,7 +284,7 @@ class Kind_View {
 		}
 		return self::get_hcard( $cards );
 	}
-	public function get_hcard( $card, $author = false ) {
+	public static function get_hcard( $card, $author = false ) {
 		if ( empty( $card ) ) {
 			return '';
 		}
@@ -317,7 +328,7 @@ class Kind_View {
 		return $hcard;
 	}
 
-	public function map_key( $key, $pre='' ) {
+	public static function map_key( $key, $pre='' ) {
 		if ( ! empty( $pre ) ) {
 			return $pre.'-' . $key;
 		}
@@ -357,12 +368,12 @@ class Kind_View {
 				return 'u-' . $key;
 		}
 	}
-	public function hcards() {
+	public static function hcards() {
 		echo self::get_hcards();
 	}
 
 	// Echo the output of get_display
-	public function display( ) {
+	public static function display( ) {
 		echo self::get_display( );
 	}
 
