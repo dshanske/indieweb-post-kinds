@@ -132,13 +132,13 @@ Indieweb Post Kinds had support for replying to Twitter posts using the Social N
 		* Metadata fields not part of the user interface to be stored for future use
 		* You can now pre-select a kind by adding ?kind=reply to wp-admin/post-new.php
 		* Merged the Kind_View and Kind_Display into a single class
-		* Plan for Customizable Display Objects will be replaced by hooks/filters
+		* Plan for Customizable Display Objects will be replaced by hooks/filters in the next version.
 		* New Function get_post_mf2meta to retrieve the mf2 prefixed metadata
 		* Supports setting the post kind for posts created by Micropub plugin
 		* Rearrangement of classes and functions in an attempt to simplify
 		* Settings Page Now Allows You to Select which Kinds to Show in the New Post UI
 		* Clarified that some terms are reserved for use as future kinds.
-		* Added reserved terms eat, drink, and jam.
+		* Added reserved terms eat, drink, follow and jam.
 		* Supports setting kind eat or drink when triggered by Teacup/Micropub only
 	= Version 2.0.2 =
 		* Change markup to use e-content instead of p-content
