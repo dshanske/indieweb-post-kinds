@@ -1,5 +1,4 @@
 <?php
-
 	/**
 	 * @file
 	 * Open Graph Protocol parser.

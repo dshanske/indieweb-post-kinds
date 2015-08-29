@@ -105,7 +105,7 @@ class Kind_Taxonomy {
 			'labels' => $labels,
 			'public' => true,
 			'show_in_nav_menus' => true,
-			'show_ui' => true,
+			'show_ui' => WP_DEBUG,
 			'show_tagcloud' => true,
 			'show_admin_column' => true,
 			'hierarchical' => false,
@@ -231,6 +231,10 @@ class Kind_Taxonomy {
 			'weather'   => _x( 'Weather', 'Post kind' ),
 			'exercise'   => _x( 'Exercise', 'Post kind' ),
 			'travel'   => _x( 'Travel', 'Post kind' ),
+		'eat'   => _x( 'Eat', 'Post kind' ),
+		'drink'   => _x( 'Drink', 'Post kind' ),
+		'follow'   => _x( 'Follow', 'Post kind' ),
+		'jam'   => _x( 'Jam', 'Post kind' ),
 		);
 		return apply_filters( 'kind_strings', $strings );
 	}
@@ -260,6 +264,11 @@ class Kind_Taxonomy {
 			'weather'   => _x( 'Weather', 'Post kind' ),
 			'exercise'   => _x( 'Exercises', 'Post kind' ),
 			'travel'   => _x( 'Travels', 'Post kind' ),
+		'eat'   => _x( 'Eat', 'Post kind' ),
+		'drink'   => _x( 'Drinks', 'Post kind' ),
+			'follow'   => _x( 'Follows', 'Post kind' ),
+		'jam'   => _x( 'Jams', 'Post kind' ),
+
 		);
 		return apply_filters( 'kind_strings_plural', $strings );
 	}
@@ -289,6 +298,11 @@ class Kind_Taxonomy {
 			'weather'   => _x( 'Weathered', 'Post kind' ),
 			'exercise'   => _x( 'Exercised', 'Post kind' ),
 			'travel'   => _x( 'Traveled', 'Post kind' ),
+		'eat'   => _x( 'Ate', 'Post kind' ),
+		'drink'   => _x( 'Drank', 'Post kind' ),
+		'follow'   => _x( 'Followed', 'Post kind' ),
+		'jam'   => _x( 'Listened to', 'Post kind' ),
+
 		);
 		return apply_filters( 'kind_verbs', $strings );
 	}
@@ -318,6 +332,11 @@ class Kind_Taxonomy {
 		'weather'   => 'weather',
 		'exercise'   => 'exercise',
 		'travel'   => 'travel',
+		'eat'   => 'p3k-food',
+		'drink'   => 'p3k-food',
+		'follow'   => 'u-follow-of',
+		'jam'   => 'jam',
+
 		);
 		return $strings;
 	}
@@ -602,6 +621,21 @@ class Kind_Taxonomy {
 		if ( isset( $_POST['bookmark-of'] ) || isset( $_POST['bookmark'] ) ) {
 			set_post_kind( $post_id, 'bookmark' );
 			return;
+		}
+		if ( isset( $_POST['in-reply-to'] ) ) {
+			set_post_kind( $post_id, 'reply' );
+			return;
+		}
+		// This basically adds Teacup support
+		if ( isset( $_POST['p3k-food'] ) ) {
+			if ( isset( $_POST['p3k-type'] ) ) {
+				if ( 'drink' === $_POST['p3k-type'] ) {
+					set_post_kind( $post_id, 'drink' );
+					return;
+				}
+				set_post_kind( $post_id, 'eat' );
+				return;
+			}
 		}
 		set_post_kind( $post_id, 'note' );
 	}

@@ -108,10 +108,6 @@ class Kind_Config {
 	 * Generate a Term List.
 	 *
 	 * @access public
-	 * @param array $args {
-	 *    Arguments.
-	 *
-	 *    @type string $name Textbox Term List.
 	 */
 	public static function termlist_callback() {
 		$options = get_option( 'iwt_options' );
@@ -123,7 +119,7 @@ class Kind_Config {
 			$hide[] = 'checkin';
 		}
 		foreach ( $hide as $hid ) {
-			unset( $terms[$hid] );
+			unset( $terms[ $hid ] );
 		}
 		if ( ! array_key_exists( 'termslists', $options ) ) {
 			$termslist = array();

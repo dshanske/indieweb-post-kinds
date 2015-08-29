@@ -11,7 +11,7 @@
  * Retrieves an array of post kind slugs.
  *
  * @param int|WP_Post $post A Post.
- * @param string      $key
+ * @param string      $key Meta Key to Retrieve. If empty, retrieve all.
  * @return array The array of post kind slugs.
  */
 function get_post_mf2meta( $post, $key = '' ) {
@@ -21,8 +21,6 @@ function get_post_mf2meta( $post, $key = '' ) {
 	}
 	return $meta->get_key( $key );
 }
-
-
 
 /**
  * Retrieves an array of post kind slugs.
@@ -56,7 +54,7 @@ function get_post_kind_link( $kind ) {
 /**
  * Returns the post kind slug for the current post.
  *
- * @@param int|WP_Post $post Optional. Post ID or post object. Defaults to global $post.
+ * @param int|WP_Post $post Optional. Post ID or post object. Defaults to global $post.
  * @return string The post kind slug.
  */
 function get_post_kind_slug( $post = null ) {
@@ -66,7 +64,7 @@ function get_post_kind_slug( $post = null ) {
 /**
  * Returns the post kind name for the current post.
  *
- * @@param int|WP_Post $post Optional. Post ID or post object. Defaults to global $post.
+ * @param int|WP_Post $post Optional. Post ID or post object. Defaults to global $post.
  * @return string The post kind name.
  */
 function get_post_kind( $post = null ) {

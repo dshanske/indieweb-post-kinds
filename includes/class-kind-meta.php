@@ -2,9 +2,14 @@
 /**
  * Post Kind Metadata Class
  *
+ * @package Post Kind
  * Retrieves and Processes the Metadata related to MF2
  */
 
+/**
+ * Class to Manage Kind Meta.
+ * @package Post Kinds
+ */
 class Kind_Meta {
 	protected $meta; // Raw Meta Data
 	protected $post;
@@ -93,6 +98,11 @@ class Kind_Meta {
 		$this->meta = array_filter( $meta );
 	}
 
+	/**
+	 * Adds additional meta out of an array of properties.
+	 *
+	 * @param array $raw An array of properties
+	 */
 	public function build_meta( $raw ) {
 		$kind = get_post_kind_slug( $this->post );
 		if ( isset( $raw['url'] ) ) {
@@ -108,7 +118,10 @@ class Kind_Meta {
 		}
 	}
 
-	// Save or Update Meta to Post
+	/**
+	 * Save meta to database.
+	 *
+	 */
 	public function save_meta() {
 		if ( ! $this->post || ! $this->meta ) {
 			return false;
@@ -119,7 +132,11 @@ class Kind_Meta {
 		}
 	}
 
-	// Return Body
+	/**
+	 * Retrieves the body of a URL for parsing.
+	 *
+	 * @param string $url A valid URL
+	 */
 	private function fetch($url) {
 		global $wp_version;
 		if ( ! isset( $url ) || filter_var( $url, FILTER_VALIDATE_URL ) === false ) {
@@ -138,11 +155,21 @@ class Kind_Meta {
 		return $body;
 	}
 
+	/**
+	 * Parses marked up HTML.
+	 *
+	 * @param string $content HTML marked up content
+	 */
 	private function parse ($content) {
 		$data = self::ogpparse( $content );
 		return array_filter( $data );
 	}
 
+	/**
+	 * Parses marked up HTML using OGP.
+	 *
+	 * @param string $content HTML marked up content
+	 */
 	private function ogpparse($content) {
 		$meta = \ogp\Parser::parse( $content );
 		$data = array();
@@ -170,14 +197,29 @@ class Kind_Meta {
 		return array_filter( $data );
 	}
 
+	/**
+	 * Return All Meta Stored in the Object.
+	 *
+	 * return array $meta All Mf2 meta.
+	 */
 	public function get_all_meta() {
 		return ifset( $this->meta );
 	}
 
+	/**
+	 * Returns the post associated with the meta object.
+	 *
+	 * return WP_Post $post
+	 */
 	public function get_post() {
 		return $this->post;
 	}
 
+	/**
+	 * Return Appropriate Meta Stored in the Object.
+	 *
+	 * return array $meta All Mf2 meta.
+	 */
 	public function get_meta() {
 		if ( ! isset( $this->meta ) ) {
 			return false;
@@ -198,6 +240,11 @@ class Kind_Meta {
 		return array_filter( $response );
 	}
 
+	/**
+	 * Return the Information on the Author.
+	 *
+	 * return array $author Data on Author.
+	 */
 	public function get_author() {
 		if ( isset( $this->meta['card'] ) ) {
 			return $this->meta['card'];
@@ -208,6 +255,11 @@ class Kind_Meta {
 		return false;
 	}
 
+	/**
+	 * Return a specific meta key.
+	 *
+	 * return $string An arbitray key.
+	 */
 	public function get( $key ) {
 		return ifset( $this->meta[ $key ] );
 	}

@@ -85,6 +85,22 @@
          content: '\f304';
         }
 
+.kind-eat .verb:before,
+.kind-eat label:before {
+         content: 'f50a';
+        }
+
+.kind-drink .verb:before,
+.kind-drink label:before {
+         content: 'f506';
+        }
+
+.kind-jam .verb:before,
+.kind-jam label:before {
+         content: 'f427';
+        }
+
+
 .kind-travel .verb:before,
 .kind-travel label:before {
          content: '\f427';

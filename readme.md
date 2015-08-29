@@ -64,14 +64,10 @@ to publish are specific to your needs.
 
 By default, only note, article, photo and reply are enabled so you can get used to them.
 
-You can add Media Check-Ins(watching or listening), or Link Sharing(likes, favorites, or bookmark) directly from the settings page.
-
 You can enable/disable more based on preference. Some may be enabled by plugins.
 
 Not having a post kind enabled will not disable the functionality on existing 
 posts.
-
-There is also a filter to do this on the fly.
 
 ### The Non-Response Kinds ###
 
@@ -88,9 +84,7 @@ may make it a Passive Kind.
  * **Repost** - a complete repost of someone else's content
  * **Like** -  props/compliments to the original post/poster
  * **Favorite** - special to the favoriter
- * **Bookmark** - also known as a linkblog. This is basically sharing/storing a link/bookmark.
- * **Tag** - Allows you to tag a post as being of a specific tag, or person tagging.
- * **RSVP** - A specific type of Reply regarding an event (Under Development)
+ * **Bookmark** - This is basically sharing/storing a link/bookmark. 
 
 ### The Passive Kinds ###
 
@@ -102,24 +96,30 @@ posts.
 
  * **Listen** - scrobble - listening to an audio post 
  * **Watch** - video - watching a video
- * **Play** - playing a game (Under Development)
+ * **Play** - playing a game 
+
+### Reserved ###
+
+The following Kinds are reserved for future use but will not show up in the 
+interface at this time.
+
  * **Wish** - a post indicating a desire/wish. The archive of which would be
-	a wishlist, such as a gift registry or similar. (Under Development)
+  a wishlist, such as a gift registry or similar. (Under Development)
  * **Weather** - A weather post would be current weather conditions
  * **Exercise** - Representing some form of physical activity
  * **Travel** - Representing a trip
- * **Check-In** - Identifying you are at a place. This would use the extended WordPress Geodata.
-   It will require the Simple Location plugin to add location awareness to posts.(Under Development)
+ * **Check-In** - Identifying you are at a place. This would use the extended WordPress Geodata. It will require the Simple Location plugin to add location awareness to posts.
+ * **Tag** - Allows you to tag a post as being of a specific tag, or person tagging.
+ * **RSVP** - A specific type of Reply regarding an event
+ * **Food** - Representing recording what you eat, perhaps for a food diary
+ * **Drink** - Similar to Food
+ * **Follow** - A post indicating you are now following someone's activities
+ * **Jam** - An active kind used to share a song you are recently enjoying, as
+opposed to a listen, which is merely recording your habits
 
-
-### Future Kinds ###
-
-With the recent expansion of kinds into passive types of posts, there may be
-additional ones added. Feedback appreciated.
 
 ## Future Plans ##
 
-:q
 	* Contextual response box, hiding/changing options based on Kind selected. Example, an RSVP that shows Yes/No/Maybe.
 	* Validate inputs based on type
 	* As of 2.0, customizable displays by type are set to be supported in the code. Will be writing some
@@ -141,6 +141,9 @@ Indieweb Post Kinds had support for replying to Twitter posts using the Social N
 		* Supports setting the post kind for posts created by Micropub plugin
 		* Rearrangement of classes and functions in an attempt to simplify
 		* Settings Page Now Allows You to Select which Kinds to Show in the New Post UI
+		* Clarified that some terms are reserved for use as future kinds.
+		* Added reserved terms eat, drink, and jam.
+		* Supports setting kind eat or drink when triggered by Teacup/Micropub only
 	= Version 2.0.2 =
 		* Change markup to use e-content instead of p-content
 		* Add versioning for CSS
