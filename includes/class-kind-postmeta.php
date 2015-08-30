@@ -39,9 +39,9 @@ class Kind_Postmeta {
 	public static function cite_elements() {
 		$cite_elements = array(
 						'url' => _x( 'URL', 'Post kind' ),
-						'name' => _x( 'Name', 'Post kind' ),
+						'name' => _x( 'Name/Title', 'Post kind' ),
 						'publication' => _x( 'Site Name/Publication/Album', 'Post kind' ),
-						'duration' => _x( 'Duration', 'Post kind' ),
+						'duration' => _x( 'Duration/Length', 'Post kind' ),
 						);
 		return $cite_elements;
 	}
@@ -57,6 +57,7 @@ class Kind_Postmeta {
 		wp_nonce_field( 'response_metabox', 'response_metabox_nonce' );
 		$meta = new kind_meta( $object->ID );
 		$kindmeta = $meta->get_meta();
+		$kindmeta['url'] = $meta->get_url();
 		$cite_elements = self::cite_elements();
 		echo '<p>';
 		foreach ( $cite_elements as $key => $value ) {

@@ -72,7 +72,7 @@ class Kind_Meta {
 				unset( $meta[ $key ] );
 			} else {
 				unset( $meta[ $key ] );
-				$key = trim( $key, 'mf2_' );
+				$key = str_replace( 'mf2_', '', $key);
 				$value = array_map( 'maybe_unserialize', $value );
 				$value = array_shift( $value );
 				// If value is a multi-array with only one element.
@@ -117,6 +117,48 @@ class Kind_Meta {
 			$this->meta['cite'] = array_filter( $data );
 		}
 	}
+
+  /**
+   * Gets URL
+   *
+   * @return string|array Either a string indicating the URL or an array of URLs
+   */
+  public function get_url( ) {
+    $kind = get_post_kind_slug( $this->post );
+		$map = Kind_Taxonomy::get_kind_properties();
+    if( array_key_exists( 'cite', $this->meta ) ) {
+      if( array_key_exists( 'url', $this->meta ) ) {
+        return $this->meta['cite']['url'];
+      }
+    }
+		if ( ! $kind ) {
+			return false;
+		}
+		if ( array_key_exists( $kind, $map ) ) {
+ 			return $this->meta[ $map[ $kind ] ];
+    }
+		return false; 
+	}
+
+  /**
+   * Sets URL
+   *
+   * @param $url string|array Either a string indicating the URL or an array of URLs
+   */
+  public function set_url( $url ) {
+		if ( empty($url) ) {
+			return;
+		}
+    $kind = get_post_kind_slug( $this->post );
+    $map = Kind_Taxonomy::get_kind_properties();
+    if ( array_key_exists( $kind, $map ) ) {
+      $this->meta[ $map[ $kind ] ] = $url;
+    }
+		if ( ! array_key_exists( 'cite', $this->meta ) ) {
+			$this->meta['url'] = $url;
+		}
+  }
+
 
 	/**
 	 * Save meta to database.
@@ -176,7 +218,7 @@ class Kind_Meta {
 		$data['name'] = ifset( $meta['og:title'] ) ?: ifset( $meta['twitter:title'] ) ?: ifset( $meta['og:music:song'] );
 		$data['content'] = ifset( $meta['og:description'] ) ?: ifset( $meta['twitter:description'] );
 		$data['site'] = ifset( $meta['og:site'] ) ?: ifset( $meta['twitter:site'] );
-		$data['image'] = ifset( $meta['og:image'] ) ?: ifset( $meta['twitter:image'] );
+		$data['featured'] = ifset( $meta['og:image'] ) ?: ifset( $meta['twitter:image'] );
 		$data['publication'] = ifset( $meta['og:site_name'] ) ?: ifset( $meta['og:music:album'] );
 		$data['published'] = ifset( $meta['og:article:published_time'] ) ?: ifset( $meta['og:music:release_date'] ) ?: ifset( $meta['og:video:release_date'] );
 		$metatags = ifset( $meta['article:tag'] ) ?: ifset( $meta['og:video:tag'] );
@@ -232,10 +274,13 @@ class Kind_Meta {
 		$kind = get_post_kind_slug( $this->post );
 		if ( ! $kind ) {
 			$kind = 'note';
+			return;
 		}
 		$map = Kind_Taxonomy::get_kind_properties();
-		if ( array_key_exists( $kind, $map ) ) {
-			$response['url'] = ifset( $response['url'] ) ?: ifset( $this->meta[ $map[ $kind ] ] );
+		if ( ! array_key_exists( 'url', $response ) ) {
+			if ( array_key_exists( $kind, $map ) ) {
+				$response['url'] = $this->meta[ $map[ $kind ] ];
+			}
 		}
 		return array_filter( $response );
 	}
