@@ -150,7 +150,6 @@ class Kind_View {
 		}
 		$m = $meta->get_meta();
 		$murl = $meta->get_url();
-		error_log( 'Display Murl: ' . $murl);
 		if ( $murl ) {
 			$urlatr = array(
 									'class' => array( 'u-url', 'p-name' ),
