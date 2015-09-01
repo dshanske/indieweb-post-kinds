@@ -127,7 +127,7 @@ class Kind_Meta {
     $kind = get_post_kind_slug( $this->post );
 		$map = Kind_Taxonomy::get_kind_properties();
     if( array_key_exists( 'cite', $this->meta ) ) {
-      if( array_key_exists( 'url', $this->meta ) ) {
+      if( array_key_exists( 'url', $this->meta['cite'] ) ) {
         return $this->meta['cite']['url'];
       }
     }
@@ -135,7 +135,9 @@ class Kind_Meta {
 			return false;
 		}
 		if ( array_key_exists( $kind, $map ) ) {
- 			return $this->meta[ $map[ $kind ] ];
+			if ( array_key_exists( $map[ $kind ], $this->meta ) ) { 
+	 			return $this->meta[ $map[ $kind ] ];
+			}
     }
 		return false; 
 	}
@@ -279,7 +281,9 @@ class Kind_Meta {
 		$map = Kind_Taxonomy::get_kind_properties();
 		if ( ! array_key_exists( 'url', $response ) ) {
 			if ( array_key_exists( $kind, $map ) ) {
-				$response['url'] = $this->meta[ $map[ $kind ] ];
+				if ( array_key_exists( $map[ $kind ], $this->meta ) ) {
+					$response['url'] = $this->meta[ $map[ $kind ] ];
+				}
 			}
 		}
 		return array_filter( $response );

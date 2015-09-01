@@ -126,6 +126,9 @@ class Kind_View {
 		if ( ! is_null( $response ) ) {
 			return $response;
 		}
+		if (!Kind_Taxonomy::response_kind($kind)) {
+			return '';
+		}
 		$response = get_post_meta( $post->ID, '_resp_full', true );
 		$options = get_option( 'iwt_options' );
 		$content = '';
@@ -145,23 +148,25 @@ class Kind_View {
 		} else {
 			$cards = '';
 		}
-		$m = $meta->get_meta( );
-		if ( isset( $m['url'] ) ) {
+		$m = $meta->get_meta();
+		$murl = $meta->get_url();
+		error_log( 'Display Murl: ' . $murl);
+		if ( $murl ) {
 			$urlatr = array(
 									'class' => array( 'u-url', 'p-name' ),
 								);
 			if ( isset( $m['name'] ) ) {
-					$url = self::get_url_link( $m['url'], $m['name'], $urlatr );
+					$url = self::get_url_link( $murl, $m['name'], $urlatr );
 			} else {
-				$url = self::get_url_link( $m['url'], self::get_post_type_string( $m['url'] ), $urlatr );
+				$url = self::get_url_link( $murl , self::get_post_type_string( $murl, $urlatr ) );
 			}
 			$pub = ' ' . Kind_Taxonomy::get_publication_string( $kind ) . ' ';
 			if ( isset( $m['publication'] ) ) {
 				$pub .= '<em>' . $m['publication'] . '</em>';
 			} else {
-				$pub .= '<em>' . extract_domain_name( $m['url'] ) . '</em>';
+				$pub .= '<em>' . extract_domain_name( $meta->get_url() ) . '</em>';
 			}
-			$content = self::sanitize_output( $content ) . self::get_embed( $m['url'] );
+			$content = self::sanitize_output( $content ) . self::get_embed( $murl );
 		} else {
 			$url = '';
 			$pub = '';

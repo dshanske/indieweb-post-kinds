@@ -17,8 +17,6 @@ register_activation_hook( __FILE__, array( 'Kind_Taxonomy', 'activate_kinds' ) )
 
 class Kind_Taxonomy {
 	public static function init() {
-		// Semantic Linkbacks Override for Comments.
-		add_action( 'init', array( 'Kind_Taxonomy', 'remove_semantics' ), 11 );
 
 		// Add Kind Permalinks.
 		add_filter( 'post_link', array( 'Kind_Taxonomy', 'kind_permalink' ) , 10, 3 );
@@ -44,6 +42,10 @@ class Kind_Taxonomy {
 
 		// Set Post Kind for Micropub Inputs.
 		add_action( 'after_micropub', array( 'Kind_Taxonomy', 'micropub_set_kind' ) );
+
+		// Override Post Type in Semantic Linkbacks.
+		add_filter( 'semantic_linkbacks_post_type', array( 'Kind_Taxonomy', 'semantic_post_type' ), 11, 2 );
+
 	}
 
 
@@ -391,11 +393,9 @@ class Kind_Taxonomy {
 		}
 	}
 
-	public static function remove_semantics() {
-		if ( class_exists( 'SemanticLinkbacksPlugin' ) ) {
-			remove_filter( 'comment_text', array( 'SemanticLinkbacksPlugin', 'comment_text_excerpt' ),12 );
-			add_filter( 'comment_text', array( 'Kind_Taxonomy', 'comment_text_excerpt' ) , 12 , 3 );
-		}
+	// Replaces need for Replacing the Entire Excerpt
+	public static function semantic_post_type($post_type, $post_id) {
+		return _x( 'this', 'Post kind') . ' ' . strtolower( get_post_kind( $post_id ) );
 	}
 
 	// Replacement for the Semantic Linkbacks Comment Excerpt
