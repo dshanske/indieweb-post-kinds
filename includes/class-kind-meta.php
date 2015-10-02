@@ -3,7 +3,7 @@
  * Post Kind Metadata Class
  *
  * @package Post Kind
- * Retrieves and Processes the Metadata related to MF2
+ * Retrieves and Processes the Metadata related to MF2.
  */
 
 /**
@@ -11,7 +11,7 @@
  * @package Post Kinds
  */
 class Kind_Meta {
-	protected $meta; // Raw Meta Data
+	protected $meta;
 	protected $post;
 	public function __construct( $post ) {
 		$this->post = get_post( $post );
@@ -72,7 +72,7 @@ class Kind_Meta {
 				unset( $meta[ $key ] );
 			} else {
 				unset( $meta[ $key ] );
-				$key = str_replace( 'mf2_', '', $key);
+				$key = str_replace( 'mf2_', '', $key );
 				$value = array_map( 'maybe_unserialize', $value );
 				$value = array_shift( $value );
 				// If value is a multi-array with only one element.
@@ -101,14 +101,21 @@ class Kind_Meta {
 	/**
 	 * Adds additional meta out of an array of properties.
 	 *
-	 * @param array $raw An array of properties
+	 * @param array $raw An array of properties.
 	 */
 	public function build_meta( $raw ) {
 		$kind = get_post_kind_slug( $this->post );
 		if ( isset( $raw['url'] ) ) {
 			$body = self::fetch( $raw['url'] );
 			$data = self::parse( $body );
-			$data = array_merge( $raw, $data );
+			$data = array_merge( $data, $raw );
+			/**
+			 * Allows additional changes to the kind data after parsing.
+			 *
+			 * @param array $data An array of properties.
+			 */
+
+			$data = apply_filters ( 'kind_build_meta', $data );
 			$map = Kind_Taxonomy::get_kind_properties();
 			if ( array_key_exists( $kind, $map ) ) {
 					$this->meta[ $map[ $kind ] ] = $data['url'];
@@ -118,53 +125,52 @@ class Kind_Meta {
 		}
 	}
 
-  /**
-   * Gets URL
-   *
-   * @return string|array Either a string indicating the URL or an array of URLs
-   */
-  public function get_url( ) {
-    $kind = get_post_kind_slug( $this->post );
+	/**
+	 * Gets URL.
+	 *
+	 * @return string|array Either a string indicating the URL or an array of URLs.
+	 */
+	public function get_url( ) {
+		$kind = get_post_kind_slug( $this->post );
 		$map = Kind_Taxonomy::get_kind_properties();
-    if( array_key_exists( 'cite', $this->meta ) ) {
-      if( array_key_exists( 'url', $this->meta['cite'] ) ) {
-        return $this->meta['cite']['url'];
-      }
-    }
+		if ( array_key_exists( 'cite', $this->meta ) ) {
+			if ( array_key_exists( 'url', $this->meta['cite'] ) ) {
+				return $this->meta['cite']['url'];
+			}
+		}
 		if ( ! $kind ) {
 			return false;
 		}
 		if ( array_key_exists( $kind, $map ) ) {
-			if ( array_key_exists( $map[ $kind ], $this->meta ) ) { 
-	 			return $this->meta[ $map[ $kind ] ];
+			if ( array_key_exists( $map[ $kind ], $this->meta ) ) {
+				return $this->meta[ $map[ $kind ] ];
 			}
-    }
-		return false; 
+		}
+		return false;
 	}
 
-  /**
-   * Sets URL
-   *
-   * @param $url string|array Either a string indicating the URL or an array of URLs
-   */
-  public function set_url( $url ) {
-		if ( empty($url) ) {
+	/**
+	 * Sets URL.
+	 *
+	 * @param $url string|array Either a string indicating the URL or an array of URLs.
+	 */
+	public function set_url( $url ) {
+		if ( empty( $url ) ) {
 			return;
 		}
-    $kind = get_post_kind_slug( $this->post );
-    $map = Kind_Taxonomy::get_kind_properties();
-    if ( array_key_exists( $kind, $map ) ) {
-      $this->meta[ $map[ $kind ] ] = $url;
-    }
+		$kind = get_post_kind_slug( $this->post );
+		$map = Kind_Taxonomy::get_kind_properties();
+		if ( array_key_exists( $kind, $map ) ) {
+			$this->meta[ $map[ $kind ] ] = $url;
+		}
 		if ( ! array_key_exists( 'cite', $this->meta ) ) {
 			$this->meta['url'] = $url;
 		}
-  }
+	}
 
 
 	/**
 	 * Save meta to database.
-	 *
 	 */
 	public function save_meta() {
 		if ( ! $this->post || ! $this->meta ) {
@@ -179,7 +185,7 @@ class Kind_Meta {
 	/**
 	 * Retrieves the body of a URL for parsing.
 	 *
-	 * @param string $url A valid URL
+	 * @param string $url A valid URL.
 	 */
 	private function fetch($url) {
 		global $wp_version;
@@ -202,17 +208,24 @@ class Kind_Meta {
 	/**
 	 * Parses marked up HTML.
 	 *
-	 * @param string $content HTML marked up content
+	 * @param string $content HTML marked up content.
 	 */
 	private function parse ($content) {
 		$data = self::ogpparse( $content );
-		return array_filter( $data );
+		$data =  array_filter( $data );
+		/**
+		 * Parse additionally by plugin.
+		 *
+		 * @param array $data An array of properties.
+		 * @param string $content The content of the retrieved page.
+		 */
+		return apply_filters ( 'kind_parse_data', $data, $content );
 	}
 
 	/**
 	 * Parses marked up HTML using OGP.
 	 *
-	 * @param string $content HTML marked up content
+	 * @param string $content HTML marked up content.
 	 */
 	private function ogpparse($content) {
 		$meta = \ogp\Parser::parse( $content );
