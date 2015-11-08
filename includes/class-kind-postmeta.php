@@ -57,6 +57,7 @@ class Kind_Postmeta {
 		wp_nonce_field( 'response_metabox', 'response_metabox_nonce' );
 		$meta = new kind_meta( $object->ID );
 		$kindmeta = $meta->get_meta();
+		$author = $meta->get_author();
 		$kindmeta['url'] = $meta->get_url();
 		$cite_elements = self::cite_elements();
 		echo '<p>';
@@ -75,8 +76,8 @@ class Kind_Postmeta {
 			echo '<label for="hcard_' . $key . '">' . $value . '</label>';
 			echo '<br />';
 			echo '<input type="text" name="hcard_' . $key . '"';
-			if ( isset( $kindmeta['card'][ $key ] ) ) {
-				echo ' value="'. esc_attr( $kindmeta['card'][ $key ] ) . '"';
+			if ( isset( $author[ $key ] ) ) {
+				echo ' value="'. esc_attr( $author[ $key ] ) . '"';
 			}
 			echo ' size="70" />';
 			echo '<br />';
@@ -181,7 +182,10 @@ class Kind_Postmeta {
 				}
 			}
 		}
-		$cite['card'] = $card;
+		$card = array_filter($card);
+		if (!empty($card) ) {
+			$cite['author'] = $card;
+		}
 		$meta = new Kind_Meta( $post );
 		$meta->build_meta( $cite );
 		$meta->save_meta( $post );

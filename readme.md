@@ -129,6 +129,10 @@ opposed to a listen, which is merely recording your habits
 Indieweb Post Kinds had support for replying to Twitter posts using the Social Network Auto Poster plugin.
 
 ## Changelog ##
+	= Version 2.1.1 =
+		* Bugfixes from Version 2.1.1
+		* Removal of Semantic Linkbacks code due upgrade in Semantic Linkbacks 
+			making it unnecessary 
 	= Version 2.1.0 = 
 		* Metadata Processing will be centralizing in the Kind_Meta class
 		* Continuing to move toward WordPress Coding Standards including inline documentation

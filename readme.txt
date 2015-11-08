@@ -1,7 +1,7 @@
 === Indieweb Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention
-Stable tag: 2.1.0
+Stable tag: 2.1.2
 Requires at least: 4.2
 Tested up to: 4.2.3
 License: GPLv2 or later
@@ -124,7 +124,14 @@ opposed to a listen, which is merely recording your habits
 
 Indieweb Post Kinds had support for replying to Twitter posts using the Social Network Auto Poster plugin.
 
-== Changelog == 
+== Changelog ==
+	= Version 2.1.2 =
+		* Fix priority - user entered values should override parsed ones
+		* Add filters for parsing from additional markup and building the metadata
+	= Version 2.1.1 =
+		* Bugfixes from Version 2.1.1
+		* Removal of Semantic Linkbacks code due upgrade in Semantic Linkbacks 
+			making it unnecessary 
 	= Version 2.1.0 = 
 		* Metadata Processing will be centralizing in the Kind_Meta class
 		* Continuing to move toward WordPress Coding Standards including inline documentation

@@ -107,7 +107,7 @@ class Kind_Meta {
 		$kind = get_post_kind_slug( $this->post );
 		if ( isset( $raw['url'] ) ) {
 			$body = self::fetch( $raw['url'] );
-			$data = self::parse( $body );
+			$data = self::parse( $body, $raw['url'] );
 			$data = array_merge( $data, $raw );
 			/**
 			 * Allows additional changes to the kind data after parsing.
@@ -120,6 +120,10 @@ class Kind_Meta {
 			if ( array_key_exists( $kind, $map ) ) {
 					$this->meta[ $map[ $kind ] ] = $data['url'];
 					unset( $data['url'] );
+			}
+			if ( array_key_exists( 'author', $data ) ) {
+				$this->meta['author'] = $data['author'];
+				unset( $data['author'] );
 			}
 			$this->meta['cite'] = array_filter( $data );
 		}
@@ -210,8 +214,10 @@ class Kind_Meta {
 	 *
 	 * @param string $content HTML marked up content.
 	 */
-	private function parse ($content) {
-		$data = self::ogpparse( $content );
+	private function parse ($content, $url) {
+		$ogpdata = self::ogpparse( $content );
+		$mf2data = self::mf2parse( $content, $url);
+		$data = array_merge( $ogpdata, $mf2data );
 		$data =  array_filter( $data );
 		/**
 		 * Parse additionally by plugin.
@@ -220,6 +226,39 @@ class Kind_Meta {
 		 * @param string $content The content of the retrieved page.
 		 */
 		return apply_filters ( 'kind_parse_data', $data, $content );
+	}
+
+  /**
+   * Parses marked up HTML using MF2.
+   *
+   * @param string $content HTML marked up content.
+   */
+  private function mf2parse($content, $url) {
+		$data = array();
+		$parsed = Mf2\parse($content, $url);
+		if(mf2_cleaner::isMicroformatCollection($parsed)) {
+      $entries = mf2_cleaner::findMicroformatsByType($parsed, 'h-entry');
+			if($entries) {
+				$entry = $entries[0];
+        if(mf2_cleaner::isMicroformat($entry)) {
+					$data['published'] = mf2_cleaner::getPublished($entry);
+					$data['updated'] = mf2_cleaner::getUpdated($entry);
+				  $data['name'] = mf2_cleaner::getPlaintext($entry, 'name');
+          $data['content'] = mf2_cleaner::getHtml($entry, 'content');
+					$data['summary'] = mf2_cleaner::getHtml($entry, 'summary');
+          $data['name'] = trim(preg_replace('/https?:\/\/([^ ]+|$)/', '', $data['name']));
+					$author = mf2_cleaner::getAuthor($entry);
+         	if ($author) {
+							$data['author']=array();
+							foreach($author['properties'] as $key => $value) {
+								$data['author'][$key] = mf2_cleaner::getPlaintext($author, $key);
+							}
+							$data['author']=array_filter($data['author']);
+          }
+				}
+			}		
+		}
+		return array_filter( $data );
 	}
 
 	/**
@@ -231,7 +270,7 @@ class Kind_Meta {
 		$meta = \ogp\Parser::parse( $content );
 		$data = array();
 		$data['name'] = ifset( $meta['og:title'] ) ?: ifset( $meta['twitter:title'] ) ?: ifset( $meta['og:music:song'] );
-		$data['content'] = ifset( $meta['og:description'] ) ?: ifset( $meta['twitter:description'] );
+		$data['summary'] = ifset( $meta['og:description'] ) ?: ifset( $meta['twitter:description'] );
 		$data['site'] = ifset( $meta['og:site'] ) ?: ifset( $meta['twitter:site'] );
 		$data['featured'] = ifset( $meta['og:image'] ) ?: ifset( $meta['twitter:image'] );
 		$data['publication'] = ifset( $meta['og:site_name'] ) ?: ifset( $meta['og:music:album'] );

@@ -16,7 +16,7 @@ class Kind_View {
 		} else {
 			add_filter( 'kind_response_display', array( 'Kind_View', 'content_response' ) );
 		}
-		add_filter( 'the_content_feed', array( 'Kind_View', 'kind_content_feed' ), 20 );
+//		add_filter( 'the_content_feed', array( 'Kind_View', 'kind_content_feed' ), 20 );
 
 	}
 
@@ -112,30 +112,28 @@ class Kind_View {
 		$post = get_post();
 		$meta = new Kind_Meta( $post );
 		$kind = get_post_kind_slug( $post );
-		$response = null;
+		$response = false;
+    $options = get_option( 'iwt_options' );
+    if ( $options['cacher'] == 1 ) {
+      $response = get_post_meta( $post->ID, '_resp_full', true );
+    }
 		/**
-		 * Filter whether to retrieve the display early.
+		 * Filter whether to bypass the entire display generation code.
 		 *
 		 * This allows for a filter to replace the entire string.
-		 *
-		 *
-		 * @param array	$args          The display. defaults to null.
-     * @param object	$meta	   A kind_meta object.
-     */
-    $response = apply_filters( 'pre_get_kind_display', $response, $meta );
-		if ( ! is_null( $response ) ) {
-			return $response;
-		}
-		if (!Kind_Taxonomy::response_kind($kind)) {
-			return '';
-		}
-		$response = get_post_meta( $post->ID, '_resp_full', true );
-		$options = get_option( 'iwt_options' );
-		$content = '';
-		$final = '';
-		if ( ( $options['cacher'] == 1 ) && ( ! empty( $response ) ) ) {
+         *
+		 * @param string	$response          The display. defaults to false.
+	 * @param object	$meta	   A kind_meta object.
+	 */
+		$response = apply_filters( 'pre_get_kind_display', $response, $meta );
+		if ( $response ) {
 			return apply_filters( 'kind-response-display', $response );
 		}
+		if ( ! Kind_Taxonomy::response_kind( $kind ) ) {
+			return '';
+		}
+		$content = '';
+		$final = '';
 		$verbstrings = Kind_Taxonomy::get_verb_strings();
 		if ( $kind ) {
 			$verb = '<span class="verb"><strong>' . $verbstrings[ $kind ] . '</strong></span>';
@@ -288,6 +286,12 @@ class Kind_View {
 		}
 		return self::get_hcard( $cards );
 	}
+
+	public static function get_formatted( $field, $attr ) {
+		$string = '<span ' . $attr . '>' . $field . '</span>';
+		return $string;
+	}
+
 	public static function get_hcard( $card, $author = false ) {
 		if ( empty( $card ) ) {
 			return '';

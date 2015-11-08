@@ -395,7 +395,7 @@ class Kind_Taxonomy {
 
 	// Replaces need for Replacing the Entire Excerpt
 	public static function semantic_post_type($post_type, $post_id) {
-		return _x( 'this', 'Post kind') . ' ' . strtolower( get_post_kind( $post_id ) );
+		return _x( 'this', 'Post kind' ) . ' ' . strtolower( get_post_kind( $post_id ) );
 	}
 
 	// Replacement for the Semantic Linkbacks Comment Excerpt
