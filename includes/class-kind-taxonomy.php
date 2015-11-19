@@ -462,8 +462,10 @@ class Kind_Taxonomy {
 		}
 	}
 
-	public static function transition($old,$new,$post) {
-		self::publish( $post->ID,$post );
+	public static function transition($new,$old,$post) {
+		if ( 'publish' === $new ) {
+			self::publish( $post->ID,$post );
+		}
 	}
 
 	public static function json_rest_add_kindmeta($_post,$post,$context) {

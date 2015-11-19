@@ -166,9 +166,9 @@ class Kind_Postmeta {
 				}
 			}
 		}
+    $options = get_option( 'iwt_options' );
 		if ( ! empty( $_POST['cite_content'] ) ) {
 			$allowed = wp_kses_allowed_html( 'post' );
-			$options = get_option( 'iwt_options' );
 			if ( array_key_exists( 'contentelements', $options ) && json_decode( $options['contentelements'] ) != null ) {
 				$allowed = json_decode( $options['contentelements'], true );
 			}
