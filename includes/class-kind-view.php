@@ -173,9 +173,12 @@ class Kind_View {
 		} else {
 			$time = '';
 		}
-		if ( isset( $m['content'] ) ) {
+   if ( isset( $m['summary'] ) ) {
+      $content .= '<blockquote class="e-summary">' . $m['summary'] . '</blockquote>';
+    }
+	 else if ( isset( $m['content'] ) ) {
 			$content .= '<blockquote class="e-content">' . $m['content'] . '</blockquote>';
-		}
+	 }
 		$c = $verb . ' ' . $url . $pub . $cards . $time . $content;
 		$c = trim( $c );
 		if ( ! empty( $c ) ) {
@@ -288,6 +291,9 @@ class Kind_View {
 	}
 
 	public static function get_formatted( $field, $attr ) {
+		if ( ! isset( $field ) ) {
+			return $string;
+		}
 		$string = '<span ' . $attr . '>' . $field . '</span>';
 		return $string;
 	}

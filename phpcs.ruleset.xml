@@ -3,7 +3,7 @@
 	<description>Defaults for Indieweb</description>
 	<rule ref="WordPress-Core" />	
 	<rule ref="WordPress-Extra" />
-	<rule ref="WordPress-Docs" />
+//	<rule ref="WordPress-Docs" />
 	<rule ref="WordPress-VIP">
 		<exclude name="WordPress.VIP.FileSystemWritesDisallow" />
 		<exclude name="WordPress.VIP.RestrictedFunctions" />

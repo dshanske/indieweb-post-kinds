@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the Post Kinds package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Kinds 2.1.0\n"
+"Project-Id-Version: Post Kinds 2.1.2\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2015-09-01 03:14:12+00:00\n"
+"POT-Creation-Date: 2015-11-19 04:18:03+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -58,7 +58,7 @@ msgstr ""
 msgid "Adds support for responding and interacting with other sites."
 msgstr ""
 
-#: includes/class-kind-meta.php:187
+#: includes/class-kind-meta.php:195
 msgid "A valid URL was not provided."
 msgstr ""
 
@@ -66,7 +66,7 @@ msgstr ""
 msgid "Citation/In Response To"
 msgstr ""
 
-#: includes/class-kind-postmeta.php:86
+#: includes/class-kind-postmeta.php:87
 msgid "Content or Excerpt"
 msgstr ""
 
@@ -74,7 +74,7 @@ msgstr ""
 msgid "Invalid post"
 msgstr ""
 
-#: indieweb-post-kinds.php:89
+#: indieweb-post-kinds.php:97
 msgid "This Plugin Requires the WordPress Webmention Plugin"
 msgstr ""
 

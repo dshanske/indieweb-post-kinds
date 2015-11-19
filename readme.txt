@@ -128,8 +128,12 @@ Indieweb Post Kinds had support for replying to Twitter posts using the Social N
 	= Version 2.1.2 =
 		* Fix priority - user entered values should override parsed ones
 		* Add filters for parsing from additional markup and building the metadata
+		* Support for microformats2 import of metadata in addition to existing
+			support for OpenGraph
+		* In the next version, will be rewriting the additions to the post editor.
+			per request, it will give more control over the automatic parsing.
 	= Version 2.1.1 =
-		* Bugfixes from Version 2.1.1
+		* Bugfixes from Version 2.1.0
 		* Removal of Semantic Linkbacks code due upgrade in Semantic Linkbacks 
 			making it unnecessary 
 	= Version 2.1.0 = 

@@ -1,7 +1,7 @@
 # Indieweb Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention  
-**Stable tag:** 2.1.0  
+**Stable tag:** 2.1.2  
 **Requires at least:** 4.2  
 **Tested up to:** 4.2.3  
 **License:** GPLv2 or later  
@@ -129,8 +129,15 @@ opposed to a listen, which is merely recording your habits
 Indieweb Post Kinds had support for replying to Twitter posts using the Social Network Auto Poster plugin.
 
 ## Changelog ##
+	= Version 2.1.2 =
+		* Fix priority - user entered values should override parsed ones
+		* Add filters for parsing from additional markup and building the metadata
+		* Support for microformats2 import of metadata in addition to existing
+			support for OpenGraph
+		* In the next version, will be rewriting the additions to the post editor.
+			per request, it will give more control over the automatic parsing.
 	= Version 2.1.1 =
-		* Bugfixes from Version 2.1.1
+		* Bugfixes from Version 2.1.0
 		* Removal of Semantic Linkbacks code due upgrade in Semantic Linkbacks 
 			making it unnecessary 
 	= Version 2.1.0 = 

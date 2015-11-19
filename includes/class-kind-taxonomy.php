@@ -367,7 +367,7 @@ class Kind_Taxonomy {
 	 * @return array The post kind publication string.
 	 */
 	public static function get_publication_string($verb) {
-		if ( ! isset( $verb ) ) {
+		if ( ! isset( $verb ) || ! is_string( $verb ) ) {
 			return '';
 		}
 		$strings = array(

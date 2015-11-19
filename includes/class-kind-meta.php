@@ -117,13 +117,11 @@ class Kind_Meta {
 
 			$data = apply_filters ( 'kind_build_meta', $data );
 			$map = Kind_Taxonomy::get_kind_properties();
-			if ( array_key_exists( $kind, $map ) ) {
-					$this->meta[ $map[ $kind ] ] = $data['url'];
-					unset( $data['url'] );
-			}
-			if ( array_key_exists( 'author', $data ) ) {
-				$this->meta['author'] = $data['author'];
-				unset( $data['author'] );
+			if ( ! isset( $kind ) ) {
+				if ( array_key_exists( $kind, $map ) ) {
+						$this->meta[ $map[ $kind ] ] = $data['url'];
+						unset( $data['url'] );
+				}
 			}
 			$this->meta['cite'] = array_filter( $data );
 		}
@@ -241,11 +239,17 @@ class Kind_Meta {
 			if($entries) {
 				$entry = $entries[0];
         if(mf2_cleaner::isMicroformat($entry)) {
+        	foreach($entry['properties'] as $key => $value) {
+           	$data[$key] = mf2_cleaner::getPlaintext($entry, $key);
+          }
 					$data['published'] = mf2_cleaner::getPublished($entry);
 					$data['updated'] = mf2_cleaner::getUpdated($entry);
 				  $data['name'] = mf2_cleaner::getPlaintext($entry, 'name');
-          $data['content'] = mf2_cleaner::getHtml($entry, 'content');
-					$data['summary'] = mf2_cleaner::getHtml($entry, 'summary');
+  //        $data['content'] = mf2_cleaner::getHtml($entry, 'content');
+	//				$data['summary'] = mf2_cleaner::getHtml($entry, 'summary');
+						// Temporary measure till next version
+					  $data['content'] = mf2_cleaner::getPlaintext($entry, 'summary');
+
           $data['name'] = trim(preg_replace('/https?:\/\/([^ ]+|$)/', '', $data['name']));
 					$author = mf2_cleaner::getAuthor($entry);
          	if ($author) {
@@ -270,7 +274,8 @@ class Kind_Meta {
 		$meta = \ogp\Parser::parse( $content );
 		$data = array();
 		$data['name'] = ifset( $meta['og:title'] ) ?: ifset( $meta['twitter:title'] ) ?: ifset( $meta['og:music:song'] );
-		$data['summary'] = ifset( $meta['og:description'] ) ?: ifset( $meta['twitter:description'] );
+//    $data['summary'] = ifset( $meta['og:description'] ) ?: ifset( $meta['twitter:description'] );
+		$data['content'] = ifset( $meta['og:description'] ) ?: ifset( $meta['twitter:description'] );
 		$data['site'] = ifset( $meta['og:site'] ) ?: ifset( $meta['twitter:site'] );
 		$data['featured'] = ifset( $meta['og:image'] ) ?: ifset( $meta['twitter:image'] );
 		$data['publication'] = ifset( $meta['og:site_name'] ) ?: ifset( $meta['og:music:album'] );
@@ -283,7 +288,7 @@ class Kind_Meta {
 			}
 			$tags = array_filter( $tags );
 		}
-		$data['tags'] = $data['tags'] ?: implode( ',' ,$tags );
+		$data['tags'] = ifset($data['tags']) ?: implode( ',' ,$tags );
 		// Extended Parameters
 		$data['audio'] = ifset( $meta['og:audio'] );
 		$data['video'] = ifset( $meta['og:video'] );
@@ -347,11 +352,11 @@ class Kind_Meta {
 	 * return array $author Data on Author.
 	 */
 	public function get_author() {
-		if ( isset( $this->meta['card'] ) ) {
-			return $this->meta['card'];
-		}
 		if ( isset( $this->meta['author'] ) ) {
 			return $this->meta['author'];
+		}
+		if ( isset( $this->meta['cite']['author'] ) ) {
+			return $this->meta['cite']['author'];
 		}
 		return false;
 	}
