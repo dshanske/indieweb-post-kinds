@@ -1,9 +1,9 @@
 # Indieweb Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention  
-**Stable tag:** 2.1.2  
+**Stable tag:** 2.2.0  
 **Requires at least:** 4.2  
-**Tested up to:** 4.2.3  
+**Tested up to:** 4.3  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -120,15 +120,20 @@ opposed to a listen, which is merely recording your habits
 
 ## Future Plans ##
 
-	* Contextual response box, hiding/changing options based on Kind selected. Example, an RSVP that shows Yes/No/Maybe.
 	* Validate inputs based on type
 	* As of 2.0, customizable displays by type are set to be supported in the code. Will be writing some
 
 ## SNAP ##
 
-Indieweb Post Kinds had support for replying to Twitter posts using the Social Network Auto Poster plugin.
+Indieweb Post Kinds had support for replying to Twitter posts using the Social Network Auto Poster plugin. The developers of that plugin have not contacted the
+developer of this plugin.
 
 ## Changelog ##
+	= Version 2.2.0 = 
+		* New Tabbed Metabox - More Fields are Always Desired and this new design
+			allows for more fields to be added without overwhelming the interface
+		* AJAX Enabled Retrieve Function instead of Automatic Retrieval
+		* New Fields for Citation (Published, Updated, Featured Image)
 	= Version 2.1.2 =
 		* Fix priority - user entered values should override parsed ones
 		* Add filters for parsing from additional markup and building the metadata
@@ -136,6 +141,7 @@ Indieweb Post Kinds had support for replying to Twitter posts using the Social N
 			support for OpenGraph
 		* In the next version, will be rewriting the additions to the post editor.
 			per request, it will give more control over the automatic parsing.
+		* Webmentions are now only sent if the new status is publish
 	= Version 2.1.1 =
 		* Bugfixes from Version 2.1.0
 		* Removal of Semantic Linkbacks code due upgrade in Semantic Linkbacks 

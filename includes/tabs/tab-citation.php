@@ -13,12 +13,20 @@
 		<div id="kindmetatab-citation">
       <label for="publication"><?php _e( 'Site Name/Publication/Album', 'Post kind' ); ?></label><br/>
       <input type="text" name="publication" id="publication" size="70" value="<?php echo ifset($kindmeta['publication']); ?>"/><br/>
+
+      <label for="published"><?php _e( 'Publish Date', 'Post kind' ); ?></label><br/>
+      <input type="text" name="published" id="published" class="datepick" size="70" value="<?php echo ifset($kindmeta['published']); ?>"/><br/>
+      <label for="updated"><?php _e( 'Last Updated Date', 'Post kind' ); ?></label><br/>
+      <input type="text" name="updated" id="updated" size="70" class="datepick" value="<?php echo ifset($kindmeta['updated']); ?>"/><br/>
+
+
+
 			<label for="featured"><?php _e( 'Featured Image', 'Post kind' ); ?></label><br/>
       <input type="text" name="featured" id="featured" size="70" value="<?php echo ifset($kindmeta['featured']); ?>" />
      <br/>
 		 <br/><br/>
 		 <label for="cite_content"><?php _e( 'Summary', 'Post kind' ); ?></label><br/>
-		 <textarea name="cite_content" id="cite_content" cols="70"><?php echo ifset($kindmeta['content']); ?></textarea>
+		 <textarea name="cite_content" id="cite_content" cols="70"><?php echo ifset($kindmeta['summary']); ?></textarea>
 
 
       <br />

@@ -45,14 +45,14 @@ namespace ogp {
 
 					foreach ( array( 'name', 'property' ) as $name ) {
 						$meta_bits = explode( ':', $meta->getAttribute( $name ) );
-						if ( in_array( $meta_bits[0], $interested_in ) ) {
+					if ( in_array( $meta_bits[0], $interested_in ) ) {
 
 							// If we're adding to an existing element, convert it to an array
 							if ( isset( $ogp[ $meta->getAttribute( $name ) ] ) && ( ! is_array( $ogp[ $meta->getAttribute( $name ) ] ) ) ) {
 								$ogp[ $meta->getAttribute( $name ) ] = array( $ogp[ $meta->getAttribute( $name ) ], $meta->getAttribute( 'content' ) ); } else if ( isset( $ogp[ $meta->getAttribute( $name ) ] ) && ( is_array( $ogp[ $meta->getAttribute( $name ) ] ) ) ) {
 								$ogp[ $meta->getAttribute( $name ) ][] = $meta->getAttribute( 'content' );
 								} else { 							   $ogp[ $meta->getAttribute( $name ) ] = $meta->getAttribute( 'content' ); }
-						}
+ 							}
 					}
 				}
 			}

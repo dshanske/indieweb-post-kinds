@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the Post Kinds package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Kinds 2.1.2\n"
+"Project-Id-Version: Post Kinds 2.2.0\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2015-11-19 04:18:03+00:00\n"
+"POT-Creation-Date: 2015-11-21 17:05:27+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -58,23 +58,59 @@ msgstr ""
 msgid "Adds support for responding and interacting with other sites."
 msgstr ""
 
-#: includes/class-kind-meta.php:195
+#: includes/class-kind-tabmeta.php:59
+msgid "Post Properties"
+msgstr ""
+
+#: includes/class-kind-tabmeta.php:177
 msgid "A valid URL was not provided."
 msgstr ""
 
-#: includes/class-kind-postmeta.php:31
-msgid "Citation/In Response To"
-msgstr ""
-
-#: includes/class-kind-postmeta.php:87
-msgid "Content or Excerpt"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:598
+#: includes/class-kind-taxonomy.php:600
 msgid "Invalid post"
 msgstr ""
 
-#: indieweb-post-kinds.php:97
+#: includes/tabs/tab-citation.php:14
+msgid "Site Name/Publication/Album"
+msgstr ""
+
+#: includes/tabs/tab-citation.php:17
+msgid "Publish Date"
+msgstr ""
+
+#: includes/tabs/tab-citation.php:19
+msgid "Last Updated Date"
+msgstr ""
+
+#: includes/tabs/tab-citation.php:24
+msgid "Featured Image"
+msgstr ""
+
+#: includes/tabs/tab-citation.php:28
+msgid "Summary"
+msgstr ""
+
+#: includes/tabs/tab-citation.php:36
+msgid "Author/Artist Name"
+msgstr ""
+
+#: includes/tabs/tab-citation.php:39
+msgid "Author Photo"
+msgstr ""
+
+#: includes/tabs/tab-other.php:14
+msgid "Duration/Length"
+msgstr ""
+
+#: includes/tabs/tab-response.php:14
+msgid "URL"
+msgstr ""
+
+#: includes/tabs/tab-response.php:18
+msgid "Name/Title"
+msgstr ""
+
+#: indieweb-post-kinds.php:98
 msgid "This Plugin Requires the WordPress Webmention Plugin"
 msgstr ""
 
@@ -94,36 +130,6 @@ msgstr ""
 
 #. Author URI of the plugin/theme
 msgid "https://david.shanske.com"
-msgstr ""
-
-#: includes/class-kind-postmeta.php:41
-msgctxt "Post kind"
-msgid "URL"
-msgstr ""
-
-#: includes/class-kind-postmeta.php:42
-msgctxt "Post kind"
-msgid "Name/Title"
-msgstr ""
-
-#: includes/class-kind-postmeta.php:43
-msgctxt "Post kind"
-msgid "Site Name/Publication/Album"
-msgstr ""
-
-#: includes/class-kind-postmeta.php:44
-msgctxt "Post kind"
-msgid "Duration/Length"
-msgstr ""
-
-#: includes/class-kind-postmeta.php:50
-msgctxt "Post kind"
-msgid "Author/Artist Name"
-msgstr ""
-
-#: includes/class-kind-postmeta.php:51
-msgctxt "Post kind"
-msgid "Author Photo"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:89 includes/class-kind-taxonomy.php:103

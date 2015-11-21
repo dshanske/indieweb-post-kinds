@@ -10,8 +10,16 @@ jQuery( document ).on( 'click', '.kind-retrieve-button', function($) {
       if ( 'publication' in response['data'] ) {
         jQuery("#publication").val(response['data']['publication']) ;
       }
-      if ( 'content' in response['data'] ) {
-        jQuery("#cite_content").val(response['data']['content']) ;
+
+      if ( 'published' in response['data'] ) {
+        jQuery("#published").val(response['data']['published']) ;
+      }
+      if ( 'updated' in response['data'] ) {
+        jQuery("#updated").val(response['data']['updated']) ;
+      }
+
+      if ( 'summary' in response['data'] ) {
+        jQuery("#cite_content").val(response['data']['summary']) ;
       }
       if ( 'featured' in response['data'] ) {
         jQuery("#featured").val(response['data']['featured']) ;

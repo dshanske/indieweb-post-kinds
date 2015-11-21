@@ -131,7 +131,7 @@ class Kind_Tabmeta {
 
 	public static function whitelist() {
 		$clean = array();
-		$whitelist = array('name','url', 'publication', 'cite_content', 'featured', 'duration', 'author_name', 'author_photo' );
+		$whitelist = array('name','url', 'publication', 'published', 'updated', 'cite_content', 'featured', 'duration', 'author_name', 'author_photo' );
 		$whitelist = apply_filters('kind_formmeta_whitelist', $whitelist);
 		foreach ( $_POST as $key => $value ) {
 			if( in_array($key, $whitelist) ) {
@@ -234,10 +234,8 @@ class Kind_Tabmeta {
 					$data['published'] = mf2_cleaner::getPublished($entry);
 					$data['updated'] = mf2_cleaner::getUpdated($entry);
 				  $data['name'] = mf2_cleaner::getPlaintext($entry, 'name');
-  //        $data['content'] = mf2_cleaner::getHtml($entry, 'content');
-	//				$data['summary'] = mf2_cleaner::getHtml($entry, 'summary');
-						// Temporary measure till next version
-					  $data['content'] = mf2_cleaner::getPlaintext($entry, 'summary');
+          $data['content'] = mf2_cleaner::getHtml($entry, 'content');
+					$data['summary'] = mf2_cleaner::getHtml($entry, 'summary');
           $data['name'] = trim(preg_replace('/https?:\/\/([^ ]+|$)/', '', $data['name']));
 					$author = mf2_cleaner::getAuthor($entry);
          	if ($author) {
@@ -252,8 +250,10 @@ class Kind_Tabmeta {
 		}
 		return array_filter( $data );
 	}
+
+
 	/**
-	 * Parses marked up HTML using OGP.
+	 * Parses marked up HTML using OGP or other meta tags.
 	 *
 	 * @param string $content HTML marked up content.
 	 */
@@ -261,12 +261,11 @@ class Kind_Tabmeta {
 		$meta = \ogp\Parser::parse( $content );
 		$data = array();
 		$data['name'] = ifset( $meta['og:title'] ) ?: ifset( $meta['twitter:title'] ) ?: ifset( $meta['og:music:song'] );
-//    $data['summary'] = ifset( $meta['og:description'] ) ?: ifset( $meta['twitter:description'] );
-		$data['content'] = ifset( $meta['og:description'] ) ?: ifset( $meta['twitter:description'] );
+		$data['summary'] = ifset( $meta['og:description'] ) ?: ifset( $meta['twitter:description'] );
 		$data['site'] = ifset( $meta['og:site'] ) ?: ifset( $meta['twitter:site'] );
 		$data['featured'] = ifset( $meta['og:image'] ) ?: ifset( $meta['twitter:image'] );
 		$data['publication'] = ifset( $meta['og:site_name'] ) ?: ifset( $meta['og:music:album'] );
-		$data['published'] = ifset( $meta['og:article:published_time'] ) ?: ifset( $meta['og:music:release_date'] ) ?: ifset( $meta['og:video:release_date'] );
+		$data['published'] = ifset( $meta['og:article:published_time'] ) ?: ifset( $meta['pdate'] ) ?: ifset( $meta['og:article:published'] ) ?: ifset( $meta['og:music:release_date'] ) ?: ifset( $meta['og:video:release_date'] );
 		$metatags = ifset( $meta['article:tag'] ) ?: ifset( $meta['og:video:tag'] );
 		$tags = array();
 		if ( is_array( $metatags ) ) {
