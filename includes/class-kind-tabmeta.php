@@ -209,8 +209,10 @@ class Kind_Tabmeta {
 
 	public static function urlfetch() {
 		global $wpdb;
-		error_log($_POST['kind_url']);
 		$content = self::fetch($_POST['kind_url']);
+		if (is_wp_error($content)) {
+		wp_send_json_error($response);
+		}
 	  wp_send_json_success( self::parse($content, $_POST['kind_url']) );
 	}
 

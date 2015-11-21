@@ -4,10 +4,12 @@ jQuery( document ).on( 'click', '.kind-retrieve-button', function($) {
 			kind_url: jQuery("#kind-url").val()
 		},
 		function( response ) {
-			alert( jQuery("#kind-url").val() );
 			if ( 'name' in response['data'] ) {
 				jQuery("#mf2_name").val(response['data']['name']) ;
 			}
+      if ( 'publication' in response['data'] ) {
+        jQuery("#publication").val(response['data']['publication']) ;
+      }
       if ( 'content' in response['data'] ) {
         jQuery("#cite_content").val(response['data']['content']) ;
       }
@@ -26,6 +28,7 @@ jQuery( document ).on( 'click', '.kind-retrieve-button', function($) {
           jQuery("#author_photo").val(response['data']['author']['photo']) ;
         }
 			}
+			console.log(response);
 		}
 	);
 })

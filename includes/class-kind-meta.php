@@ -104,27 +104,23 @@ class Kind_Meta {
 	 * @param array $raw An array of properties.
 	 */
 	public function build_meta( $raw ) {
+    $raw = apply_filters ( 'kind_build_meta', $raw );
 		$kind = get_post_kind_slug( $this->post );
 		if ( isset( $raw['url'] ) ) {
-//			$body = self::fetch( $raw['url'] );
-//			$data = self::parse( $body, $raw['url'] );
-			$data = array_filter( $raw );
 			/**
 			 * Allows additional changes to the kind data after parsing.
 			 *
-			 * @param array $data An array of properties.
+			 * @param array $raw An array of properties.
 			 */
-
-			$data = apply_filters ( 'kind_build_meta', $data );
-			$map = Kind_Taxonomy::get_kind_properties();
-			if ( ! isset( $kind ) ) {
+			$map = array_filter( Kind_Taxonomy::get_kind_properties() );
+			if ( isset( $kind ) ) {
 				if ( array_key_exists( $kind, $map ) ) {
-						$this->meta[ $map[ $kind ] ] = $data['url'];
-						unset( $data['url'] );
+						$this->meta[ $map[ $kind ] ] = $raw['url'];
+						unset( $raw['url'] );
 				}
 			}
-			$this->meta['cite'] = array_filter( $data );
 		}
+		$this->meta['cite'] = array_filter( $raw );
 	}
 
 	/**
@@ -182,120 +178,6 @@ class Kind_Meta {
 			$key = 'mf2_' . $key;
 			update_post_meta( $this->post->ID, $key, $value );
 		}
-	}
-
-	/**
-	 * Retrieves the body of a URL for parsing.
-	 *
-	 * @param string $url A valid URL.
-	 */
-	private function fetch($url) {
-		global $wp_version;
-		if ( ! isset( $url ) || filter_var( $url, FILTER_VALIDATE_URL ) === false ) {
-			return new WP_Error( 'invalid-url', __( 'A valid URL was not provided.' ) );
-		}
-		$response = wp_safe_remote_get( $url, array(
-			'timeout' => 30,
-			// Use an explicit user-agent for Post Kinds
-			'user-agent' => 'Post Kinds (WordPress/' . $wp_version . '); ' . get_bloginfo( 'url' ),
-		) );
-
-		if ( is_wp_error( $response ) ) {
-			return $response;
-		}
-		$body = wp_remote_retrieve_body( $response );
-		return $body;
-	}
-
-	/**
-	 * Parses marked up HTML.
-	 *
-	 * @param string $content HTML marked up content.
-	 */
-	private function parse ($content, $url) {
-		$ogpdata = self::ogpparse( $content );
-		$mf2data = self::mf2parse( $content, $url);
-		$data = array_merge( $ogpdata, $mf2data );
-		$data =  array_filter( $data );
-		/**
-		 * Parse additionally by plugin.
-		 *
-		 * @param array $data An array of properties.
-		 * @param string $content The content of the retrieved page.
-		 */
-		return apply_filters ( 'kind_parse_data', $data, $content );
-	}
-
-  /**
-   * Parses marked up HTML using MF2.
-   *
-   * @param string $content HTML marked up content.
-   */
-  private function mf2parse($content, $url) {
-		$data = array();
-		$parsed = Mf2\parse($content, $url);
-		if(mf2_cleaner::isMicroformatCollection($parsed)) {
-      $entries = mf2_cleaner::findMicroformatsByType($parsed, 'h-entry');
-			if($entries) {
-				$entry = $entries[0];
-        if(mf2_cleaner::isMicroformat($entry)) {
-        	foreach($entry['properties'] as $key => $value) {
-           	$data[$key] = mf2_cleaner::getPlaintext($entry, $key);
-          }
-					$data['published'] = mf2_cleaner::getPublished($entry);
-					$data['updated'] = mf2_cleaner::getUpdated($entry);
-				  $data['name'] = mf2_cleaner::getPlaintext($entry, 'name');
-  //        $data['content'] = mf2_cleaner::getHtml($entry, 'content');
-	//				$data['summary'] = mf2_cleaner::getHtml($entry, 'summary');
-						// Temporary measure till next version
-					  $data['content'] = mf2_cleaner::getPlaintext($entry, 'summary');
-
-          $data['name'] = trim(preg_replace('/https?:\/\/([^ ]+|$)/', '', $data['name']));
-					$author = mf2_cleaner::getAuthor($entry);
-         	if ($author) {
-							$data['author']=array();
-							foreach($author['properties'] as $key => $value) {
-								$data['author'][$key] = mf2_cleaner::getPlaintext($author, $key);
-							}
-							$data['author']=array_filter($data['author']);
-          }
-				}
-			}		
-		}
-		return array_filter( $data );
-	}
-
-	/**
-	 * Parses marked up HTML using OGP.
-	 *
-	 * @param string $content HTML marked up content.
-	 */
-	private function ogpparse($content) {
-		$meta = \ogp\Parser::parse( $content );
-		$data = array();
-		$data['name'] = ifset( $meta['og:title'] ) ?: ifset( $meta['twitter:title'] ) ?: ifset( $meta['og:music:song'] );
-//    $data['summary'] = ifset( $meta['og:description'] ) ?: ifset( $meta['twitter:description'] );
-		$data['content'] = ifset( $meta['og:description'] ) ?: ifset( $meta['twitter:description'] );
-		$data['site'] = ifset( $meta['og:site'] ) ?: ifset( $meta['twitter:site'] );
-		$data['featured'] = ifset( $meta['og:image'] ) ?: ifset( $meta['twitter:image'] );
-		$data['publication'] = ifset( $meta['og:site_name'] ) ?: ifset( $meta['og:music:album'] );
-		$data['published'] = ifset( $meta['og:article:published_time'] ) ?: ifset( $meta['og:music:release_date'] ) ?: ifset( $meta['og:video:release_date'] );
-		$metatags = ifset( $meta['article:tag'] ) ?: ifset( $meta['og:video:tag'] );
-		$tags = array();
-		if ( is_array( $metatags ) ) {
-			foreach ( $metatags as $tag ) {
-				$tags[] = str_replace( ',', ' -', $tag );
-			}
-			$tags = array_filter( $tags );
-		}
-		$data['tags'] = ifset($data['tags']) ?: implode( ',' ,$tags );
-		// Extended Parameters
-		$data['audio'] = ifset( $meta['og:audio'] );
-		$data['video'] = ifset( $meta['og:video'] );
-		$data['duration'] = ifset( $meta['music:duration'] ) ?: ifset( $meta['video:duration'] );
-		$data['type'] = ifset( $meta['og:type'] );
-
-		return array_filter( $data );
 	}
 
 	/**
