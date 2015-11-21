@@ -12,11 +12,11 @@
     <p>Add URL.</p>
     <div id="kindmetatab-response">
 			<label for="url"><?php _e( 'URL', 'Post kind' ); ?></label><br/>
-			<input type="url" name="url" id="kind-url" size="70" />
+			<input type="url" name="url" id="kind-url" size="70" value="<?php echo ifset($url); ?>" />
       <button type="button" class="kind-retrieve-button button-primary">Retrieve</button>
 			<br/>
       <label for="name"><?php _e( 'Name/Title', 'Post kind' ); ?></label><br/>
-      <input type="text" name="name" size="70" />
+      <input type="text" name="name" id="mf2_name" size="70" value="<?php echo ifset($kindmeta['name']); ?>" />
 			<br />
 
 		</div><!-- #kindmetatab-resources -->

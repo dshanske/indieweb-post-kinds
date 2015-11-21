@@ -5,7 +5,14 @@
  * Sets Up Tabbed Metabox in the Posting UI for Kind data.
  */
 add_action( 'init' , array( 'Kind_Tabmeta', 'init' ) );
-add_action( 'wp_ajax_kind_urlfetch', array( 'Kind_Tabmeta', 'urlfetch' ) );
+
+add_action( 'wp_ajax_kind_test', 'kind_ajaxtest' );
+
+function kind_ajaxtest() {
+	$response = array ( 'result' => 'successful' ); 
+	wp_send_json($response);
+}
+
 
 class Kind_Tabmeta {
 	public static function init() {
@@ -14,6 +21,7 @@ class Kind_Tabmeta {
 		add_action( 'load-post-new.php', array( 'Kind_Tabmeta', 'kindbox_setup' ) );
 		add_action( 'save_post', array( 'Kind_Tabmeta', 'save_post' ), 8, 2 );
 		add_action( 'transition_post_status', array( 'Kind_Tabmeta', 'transition_post_status' ) ,5,3 );		
+		add_action( 'wp_ajax_kind_urlfetch', array( 'Kind_Tabmeta', 'urlfetch' ) );
 	}
 
 	/* Meta box setup function. */
@@ -61,6 +69,7 @@ class Kind_Tabmeta {
 		$meta = new kind_meta( $object->ID );
 		$kindmeta = $meta->get_meta();
 		$author = $meta->get_author();
+		$url = $meta->get_url();
 		include_once( 'tabs/tab-navigation.php' );
 	}
 
@@ -114,10 +123,41 @@ class Kind_Tabmeta {
 				return;
 			}
 		}
-
+		$clean = self::whitelist();
 		$meta = new Kind_Meta( $post );
-		$meta->build_meta( $cite );
+		$meta->build_meta( $clean );
 		$meta->save_meta( $post );
+	}
+
+	public static function whitelist() {
+		$clean = array();
+		$whitelist = array('name','url', 'publication', 'cite_content', 'featured', 'duration', 'author_name', 'author_photo' );
+		$whitelist = apply_filters('kind_formmeta_whitelist', $whitelist);
+		foreach ( $_POST as $key => $value ) {
+			if( in_array($key, $whitelist) ) {
+				if ( is_url( $_POST[ $key ] ) ) {
+						$clean[ $key ] = esc_url_raw( $_POST[ $key ] );
+				} else {
+					$clean[ $key ] = esc_attr( $_POST[ $key ] );
+				}
+			}
+		}
+    if ( isset( $clean['cite_content'] ) ) {
+      $clean['content'] = $clean['cite_content'];
+      unset( $clean['cite_content'] );
+    }
+    if ( isset( $clean['author_name'] ) ) {  
+      $clean['author'] = array();
+      $clean['author']['name'] = $clean['author_name'];
+      unset( $clean['author_name'] );
+      if ( isset( $clean['author_photo'] ) ) {
+        $clean['author']['photo'] = $clean['author_photo'];
+        unset( $clean['author_photo'] );
+      }
+    } 
+
+
+		return $clean;
 	}
 
 	public static function transition_post_status( $new, $old, $post ) {
@@ -169,11 +209,9 @@ class Kind_Tabmeta {
 
 	public static function urlfetch() {
 		global $wpdb;
-		error_log('I got here' . $_POST['kind_url']);
-//		$content = self::fetch($_POST['kind_url']);
-//	  wp_send_json( self::parse($content, $_POST['kind_url']) );
-			wp_send_json_success();	
-		wp_die();
+		error_log($_POST['kind_url']);
+		$content = self::fetch($_POST['kind_url']);
+	  wp_send_json_success( self::parse($content, $_POST['kind_url']) );
 	}
 
 	/* Parses marked up HTML using MF2.

@@ -1,14 +1,31 @@
-jQuery( document ).on( 'click', '.kind-retrieve-button', function() {
-	var post_id = jQuery(this).data('id');
-	jQuery.ajax({
-		url : ajaxurl,
-		type : 'post',
-		data : {
-			action : 'kind_urlfetch',
-			post_id : jQuery(this).val('input:url')
+jQuery( document ).on( 'click', '.kind-retrieve-button', function($) {
+	jQuery.post(ajaxurl, { 
+			action: 'kind_urlfetch',
+			kind_url: jQuery("#kind-url").val()
 		},
-		success : function( response ) {
-			alert( response.join('\n') );
+		function( response ) {
+			alert( jQuery("#kind-url").val() );
+			if ( 'name' in response['data'] ) {
+				jQuery("#mf2_name").val(response['data']['name']) ;
+			}
+      if ( 'content' in response['data'] ) {
+        jQuery("#cite_content").val(response['data']['content']) ;
+      }
+      if ( 'featured' in response['data'] ) {
+        jQuery("#featured").val(response['data']['featured']) ;
+      }
+      if ( 'duration' in response['data'] ) {
+        jQuery("#duration").val(response['data']['duration']) ;
+      }
+
+      if ( 'author' in response['data'] ) {
+	      if ( 'name' in response['data']['author'] ) {
+  	      jQuery("#author_name").val(response['data']['author']['name']) ;
+    	  }
+        if ( 'photo' in response['data']['author'] ) {
+          jQuery("#author_photo").val(response['data']['author']['photo']) ;
+        }
+			}
 		}
-	});
+	);
 })

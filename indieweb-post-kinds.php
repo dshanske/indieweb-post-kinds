@@ -33,7 +33,8 @@ add_filter( 'plugin_action_links_$plugin', array( 'kind_config', 'settings_link'
 
 
 // Add Kind Post UI Configuration.
-require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-postmeta.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-tabmeta.php';
+
 
 // Add Kind Global Functions.
 require_once plugin_dir_path( __FILE__ ) . '/includes/kind-functions.php';

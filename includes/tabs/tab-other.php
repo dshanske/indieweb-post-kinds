@@ -12,7 +12,7 @@
     <p>This is where the Other content will reside.</p>
     <div id="kindmetatab-other">
       <label for="duration"><?php _e( 'Duration/Length', 'Post kind' ); ?></label><br/>
-      <input type="text" name="duration" size="30" />
+      <input type="text" name="duration" id="duration" size="30" />
       <br />
 
     </div><!-- #kindmetatab-other -->
