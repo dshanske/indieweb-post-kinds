@@ -106,9 +106,9 @@ class Kind_Meta {
 	public function build_meta( $raw ) {
 		$kind = get_post_kind_slug( $this->post );
 		if ( isset( $raw['url'] ) ) {
-			$body = self::fetch( $raw['url'] );
-			$data = self::parse( $body, $raw['url'] );
-			$data = array_merge( $data, $raw );
+//			$body = self::fetch( $raw['url'] );
+//			$data = self::parse( $body, $raw['url'] );
+			$data = array_filter( $raw );
 			/**
 			 * Allows additional changes to the kind data after parsing.
 			 *
