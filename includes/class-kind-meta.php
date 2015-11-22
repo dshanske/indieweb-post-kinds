@@ -98,6 +98,28 @@ class Kind_Meta {
 		$this->meta = array_filter( $meta );
 	}
 
+  public static function sanitize_content( $value ) {
+    $options = get_option( 'iwt_options' );
+    $allowed = wp_kses_allowed_html( 'post' );
+    if ( array_key_exists( 'contentelements', $options ) && json_decode( $options['contentelements'] ) != null ) {
+      $allowed = json_decode( $options['contentelements'], true );
+    }
+    return wp_kses( ( string ) $value , $allowed );
+  }
+
+  public static function sanitize_text( $value ) {
+				if ( is_array( $value ) ) {
+					return array_map( $value, array('Kind_Meta', 'sanitize_text') );
+				}
+        if ( is_url( $value ) ) {
+            $value = esc_url_raw( $value );
+        } else {
+          $value = esc_attr( $value );
+        }
+    return $value;
+  }
+
+
 	/**
 	 * Adds additional meta out of an array of properties.
 	 *
@@ -129,6 +151,9 @@ class Kind_Meta {
 	 * @return string|array Either a string indicating the URL or an array of URLs.
 	 */
 	public function get_url( ) {
+   	if ( ! isset( $this->meta ) ) {
+    	  return false;
+    }
 		$kind = get_post_kind_slug( $this->post );
 		$map = Kind_Taxonomy::get_kind_properties();
 		if ( array_key_exists( 'cite', $this->meta ) ) {
@@ -156,8 +181,9 @@ class Kind_Meta {
 		if ( empty( $url ) ) {
 			return;
 		}
+		$url = self::sanitize_text($url);
 		$kind = get_post_kind_slug( $this->post );
-		$map = Kind_Taxonomy::get_kind_properties();
+		$map = array_diff( Kind_Taxonomy::get_kind_properties(), array( '' ) );
 		if ( array_key_exists( $kind, $map ) ) {
 			$this->meta[ $map[ $kind ] ] = $url;
 		}
@@ -176,7 +202,12 @@ class Kind_Meta {
 		}
 		foreach ( $this->meta as $key => $value ) {
 			$key = 'mf2_' . $key;
-			update_post_meta( $this->post->ID, $key, $value );
+			if ( !empty($value) ) {
+				update_post_meta( $this->post->ID, $key, $value );
+			}
+			else {
+				delete_post_meta( $this->post->ID, $key);
+			}
 		}
 	}
 
@@ -199,33 +230,15 @@ class Kind_Meta {
 	}
 
 	/**
-	 * Return Appropriate Meta Stored in the Object.
+	 * Return Appropriate Cite Stored in the Object.
 	 *
-	 * return array $meta All Mf2 meta.
+	 * return array $meta Return cite.
 	 */
-	public function get_meta() {
-		if ( ! isset( $this->meta ) ) {
-			return false;
-		}
+	public function get_cite() {
 		if ( array_key_exists( 'cite', $this->meta ) ) {
-			$response = $this->meta['cite'];
-		} else {
-			$response = array();
+			return $this->meta['cite'];
 		}
-		$kind = get_post_kind_slug( $this->post );
-		if ( ! $kind ) {
-			$kind = 'note';
-			return;
-		}
-		$map = Kind_Taxonomy::get_kind_properties();
-		if ( ! array_key_exists( 'url', $response ) ) {
-			if ( array_key_exists( $kind, $map ) ) {
-				if ( array_key_exists( $map[ $kind ], $this->meta ) ) {
-					$response['url'] = $this->meta[ $map[ $kind ] ];
-				}
-			}
-		}
-		return array_filter( $response );
+		return false;
 	}
 
 	/**
@@ -234,6 +247,9 @@ class Kind_Meta {
 	 * return array $author Data on Author.
 	 */
 	public function get_author() {
+   	if ( ! isset( $this->meta ) ) {
+      return false;
+    }
 		if ( isset( $this->meta['author'] ) ) {
 			return $this->meta['author'];
 		}
@@ -243,6 +259,46 @@ class Kind_Meta {
 		return false;
 	}
 
+  /**
+   * Return the Information on the Author.
+   *
+   * array $author Data on Author.
+   */
+  public function set_author($author) {
+		if ( ! isset($author) ) {
+			return false;
+		}
+		if ( is_array($author) ) {
+			$author = array_map( array('Kind_Meta', 'sanitize_text'), $author );
+			$author = array_filter($author);
+		}
+   	if (! isset($this->meta['cite']) ) {
+			$this->meta['cite'] = array();
+		}
+    $author = array_filter( array_diff( $author, array( '' ) ) );
+
+		$this->meta['cite']['author'] = $author;	
+  }
+
+	public function set_cite($cite) { 
+		if ( ! $cite ) {
+			return false;
+		}
+		$summary = ifset($cite['summary']);
+		$content = ifset($cite['content']);
+		$cite = array_map( array('Kind_Meta', 'sanitize_text'), $cite );
+		
+		if ( isset($cite['summary']) ) {
+				$cite['summary'] = self::sanitize_content($summary);
+		}
+		if ( isset($cite['content']) ) {
+				$cite['content'] = self::sanitize_content($content);
+		}
+    $cite = array_filter( array_diff( $cite, array( '' ) ) );
+		$this->meta['cite']=$cite;
+	}
+
+
 	/**
 	 * Return a specific meta key.
 	 *
@@ -250,6 +306,10 @@ class Kind_Meta {
 	 */
 	public function get( $key ) {
 		return ifset( $this->meta[ $key ] );
+	}
+
+	public function set( $key, $value) {
+		$this->meta[$key] = self::sanitize_text($value);
 	}
 
 } // End Class

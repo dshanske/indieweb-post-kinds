@@ -1,7 +1,7 @@
 === Indieweb Post Kinds ===
 Contributors: dshanske
-Tags: indieweb, interaction, posts, webmention
-Stable tag: 2.2.0
+Tags: indieweb, interaction, posts, webmention, share, like
+Stable tag: 2.2.1
 Requires at least: 4.2
 Tested up to: 4.3
 License: GPLv2 or later
@@ -125,6 +125,16 @@ Indieweb Post Kinds had support for replying to Twitter posts using the Social N
 developer of this plugin.
 
 == Changelog ==
+	= Version 2.2.1 = 
+		* Minor Tweaks and Bugfixes from changes in 2.2.0.
+		* Inputs Sanitized for Your Protection
+		* Summary currently shows summary of input if available. Full content is
+			parsed if marked up with microformats, however this, like many elements,
+			is not currently used.
+		* Rewrote storage protocol for better retrieval but still in intermediate
+			state.
+		* Plan to rewrite and improve the display functionality with more templates
+			for version 2.3.0.
 	= Version 2.2.0 = 
 		* New Tabbed Metabox - More Fields are Always Desired and this new design
 			allows for more fields to be added without overwhelming the interface

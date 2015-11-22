@@ -1,28 +1,28 @@
 jQuery( document ).on( 'click', '.kind-retrieve-button', function($) {
 	jQuery.post(ajaxurl, { 
 			action: 'kind_urlfetch',
-			kind_url: jQuery("#kind-url").val()
+			kind_url: jQuery("#cite_url").val()
 		},
 		function( response ) {
 			if ( 'name' in response['data'] ) {
-				jQuery("#mf2_name").val(response['data']['name']) ;
+				jQuery("#cite_name").val(response['data']['name']) ;
 			}
       if ( 'publication' in response['data'] ) {
-        jQuery("#publication").val(response['data']['publication']) ;
+        jQuery("#cite_publication").val(response['data']['publication']) ;
       }
 
       if ( 'published' in response['data'] ) {
-        jQuery("#published").val(response['data']['published']) ;
+        jQuery("#cite_published").val(response['data']['published']) ;
       }
       if ( 'updated' in response['data'] ) {
-        jQuery("#updated").val(response['data']['updated']) ;
+        jQuery("#cite_updated").val(response['data']['updated']) ;
       }
 
       if ( 'summary' in response['data'] ) {
-        jQuery("#cite_content").val(response['data']['summary']) ;
+        jQuery("#cite_summary").val(response['data']['summary']) ;
       }
       if ( 'featured' in response['data'] ) {
-        jQuery("#featured").val(response['data']['featured']) ;
+        jQuery("#cite_featured").val(response['data']['featured']) ;
       }
       if ( 'duration' in response['data'] ) {
         jQuery("#duration").val(response['data']['duration']) ;

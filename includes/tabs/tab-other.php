@@ -9,7 +9,7 @@
 ?>
  
 <div class="inside hidden">
-    <p>This is where the Other content will reside.</p>
+    <p>Other Properties</p>
     <div id="kindmetatab-other">
       <label for="duration"><?php _e( 'Duration/Length', 'Post kind' ); ?></label><br/>
       <input type="text" name="duration" id="duration" size="30" value="<?php echo ifset($kindmeta['duration']); ?>" />

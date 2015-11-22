@@ -146,7 +146,7 @@ class Kind_View {
 		} else {
 			$cards = '';
 		}
-		$m = $meta->get_meta();
+		$m = $meta->get_cite();
 		$murl = $meta->get_url();
 		if ( $murl ) {
 			$urlatr = array(

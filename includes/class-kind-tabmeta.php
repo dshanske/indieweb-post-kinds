@@ -67,7 +67,7 @@ class Kind_Tabmeta {
 	public static function display_metabox( $object, $box ) {
 		wp_nonce_field( 'tabkind_metabox', 'tabkind_metabox_nonce' );
 		$meta = new kind_meta( $object->ID );
-		$kindmeta = $meta->get_meta();
+		$cite = $meta->get_cite();
 		$author = $meta->get_author();
 		$url = $meta->get_url();
 		include_once( 'tabs/tab-navigation.php' );
@@ -123,41 +123,22 @@ class Kind_Tabmeta {
 				return;
 			}
 		}
-		$clean = self::whitelist();
+		
 		$meta = new Kind_Meta( $post );
-		$meta->build_meta( $clean );
-		$meta->save_meta( $post );
-	}
-
-	public static function whitelist() {
-		$clean = array();
-		$whitelist = array('name','url', 'publication', 'published', 'updated', 'cite_content', 'featured', 'duration', 'author_name', 'author_photo' );
-		$whitelist = apply_filters('kind_formmeta_whitelist', $whitelist);
-		foreach ( $_POST as $key => $value ) {
-			if( in_array($key, $whitelist) ) {
-				if ( is_url( $_POST[ $key ] ) ) {
-						$clean[ $key ] = esc_url_raw( $_POST[ $key ] );
-				} else {
-					$clean[ $key ] = esc_attr( $_POST[ $key ] );
-				}
-			}
+		if( isset($_POST['cite']) ) {
+			$meta->set_cite($_POST['cite']);
 		}
-    if ( isset( $clean['cite_content'] ) ) {
-      $clean['content'] = $clean['cite_content'];
-      unset( $clean['cite_content'] );
-    }
-    if ( isset( $clean['author_name'] ) ) {  
-      $clean['author'] = array();
-      $clean['author']['name'] = $clean['author_name'];
-      unset( $clean['author_name'] );
-      if ( isset( $clean['author_photo'] ) ) {
-        $clean['author']['photo'] = $clean['author_photo'];
-        unset( $clean['author_photo'] );
-      }
-    } 
-
-
-		return $clean;
+		if( isset($_POST['author']) ) {
+			$meta->set_author($_POST['author']);
+		}
+		if( isset($_POST['url']) ) {
+			$meta->set_url($_POST['url']);
+		}
+		// This is temporary - planning on improving this later
+		if( isset($_POST['duration']) ) {
+			$meta->set('duration', $_POST['duration']);
+		}
+		$meta->save_meta( $post );
 	}
 
 	public static function transition_post_status( $new, $old, $post ) {

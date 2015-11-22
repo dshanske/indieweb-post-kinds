@@ -7,16 +7,15 @@
  * @package    Indieweb_Post_Kinds
  */
 ?>
- 
 <div class="inside">
-    <p>Add URL.</p>
+    <p>Add the URL and/or the Name You Wish to Respond To</p>
     <div id="kindmetatab-response">
 			<label for="url"><?php _e( 'URL', 'Post kind' ); ?></label><br/>
-			<input type="url" name="url" id="kind-url" size="70" value="<?php echo ifset($url); ?>" />
+			<input type="url" name="url" id="cite_url" size="70" value="<?php echo ifset($url); ?>" />
       <button type="button" class="kind-retrieve-button button-primary">Retrieve</button>
 			<br/>
       <label for="name"><?php _e( 'Name/Title', 'Post kind' ); ?></label><br/>
-      <input type="text" name="name" id="mf2_name" size="70" value="<?php echo ifset($kindmeta['name']); ?>" />
+      <input type="text" name="cite[name]" id="cite_name" size="70" value="<?php echo ifset($cite['name']); ?>" />
 			<br />
 
 		</div><!-- #kindmetatab-resources -->

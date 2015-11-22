@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the Post Kinds package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Kinds 2.2.0\n"
+"Project-Id-Version: Post Kinds 2.2.1\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2015-11-21 17:05:27+00:00\n"
+"POT-Creation-Date: 2015-11-22 03:46:35+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -62,12 +62,16 @@ msgstr ""
 msgid "Post Properties"
 msgstr ""
 
-#: includes/class-kind-tabmeta.php:177
+#: includes/class-kind-tabmeta.php:158
 msgid "A valid URL was not provided."
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:600
 msgid "Invalid post"
+msgstr ""
+
+#: includes/tabs/tab-citation.php:12
+msgid "Details of the site you are responding to"
 msgstr ""
 
 #: includes/tabs/tab-citation.php:14
@@ -94,7 +98,11 @@ msgstr ""
 msgid "Author/Artist Name"
 msgstr ""
 
-#: includes/tabs/tab-citation.php:39
+#: includes/tabs/tab-citation.php:40
+msgid "Author/Artist URL"
+msgstr ""
+
+#: includes/tabs/tab-citation.php:45
 msgid "Author Photo"
 msgstr ""
 
@@ -102,11 +110,11 @@ msgstr ""
 msgid "Duration/Length"
 msgstr ""
 
-#: includes/tabs/tab-response.php:14
+#: includes/tabs/tab-response.php:13
 msgid "URL"
 msgstr ""
 
-#: includes/tabs/tab-response.php:18
+#: includes/tabs/tab-response.php:17
 msgid "Name/Title"
 msgstr ""
 
