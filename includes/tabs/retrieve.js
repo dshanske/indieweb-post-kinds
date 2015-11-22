@@ -1,9 +1,14 @@
 jQuery( document ).on( 'click', '.kind-retrieve-button', function($) {
-	jQuery.post(ajaxurl, { 
-			action: 'kind_urlfetch',
-			kind_url: jQuery("#cite_url").val()
-		},
-		function( response ) {
+	jQuery.ajax({ 
+			type: 'POST',
+			url: ajaxurl,
+			data: {
+				action: 'kind_urlfetch',
+				kind_url: jQuery("#cite_url").val()
+			},
+		success : function( response ) {
+      if ( typeof response == 'undefined' )
+        alert ('Undefined Response');
 			if ( 'name' in response['data'] ) {
 				jQuery("#cite_name").val(response['data']['name']) ;
 			}
@@ -37,6 +42,9 @@ jQuery( document ).on( 'click', '.kind-retrieve-button', function($) {
         }
 			}
 			console.log(response);
+		},
+	  error: function(request, status, error){
+			alert(request.responseText);
 		}
-	);
+	});
 })
