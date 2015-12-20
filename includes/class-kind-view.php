@@ -9,15 +9,7 @@ add_action( 'init' , array( 'Kind_View', 'init' ) );
 // The Kind_View class sets up the kind display behavior for kinds
 class Kind_View {
 	public static function init() {
-		// If the Theme Has Not Declared Support for Post Kinds
-		// Add the Response Display to the Content Filter
-		if ( ! current_theme_supports( 'post-kinds' ) ) {
 			add_filter( 'the_content', array( 'Kind_View', 'content_response' ), 20 );
-		} else {
-			add_filter( 'kind_response_display', array( 'Kind_View', 'content_response' ) );
-		}
-//		add_filter( 'the_content_feed', array( 'Kind_View', 'kind_content_feed' ), 20 );
-
 	}
 
 	public static function sanitize_output( $content ) {
@@ -52,6 +44,16 @@ class Kind_View {
 		$return = '<a ' . $atr . ' href="' . $url . '">' . $name . '</a>';
 		return $return;
 	}
+
+	public static function get_formatted( $field, $attr ) {
+		if ( ! isset( $field ) ) {
+			return $string;
+		}
+		$string = '<span ' . $attr . '>' . $field . '</span>';
+		return $string;
+	}
+
+
 
 	public static function get_embed( $url ) {
 			$options = get_option( 'iwt_options' );
@@ -91,168 +93,28 @@ class Kind_View {
 		return $embed;
 	}
 
-	public static function kind_content_feed( $content ) {
-		$response = self::get_kind_response_display();
-		$response = str_replace( ']]>', ']]&gt;', $response );
-		return $response . $content;
-	}
-	public static function get_kind_response_display() {
-		global $post;
-		return self::get_display( $post );
-	}
 	public static function content_response ( $content ) {
-		$c = '';
-		$c .= self::get_kind_response_display();
-		$c .= $content;
-		return $c;
+		return self::get_display( get_the_ID(), is_single() ) . $content;
 	}
 
 	// Return the Display
-	public static function get_display($post) {
-		$post = get_post();
-		$meta = new Kind_Meta( $post );
-		$kind = get_post_kind_slug( $post );
-		$response = false;
-    $options = get_option( 'iwt_options' );
-    if ( $options['cacher'] == 1 ) {
-      $response = get_post_meta( $post->ID, '_resp_full', true );
-    }
-		/**
-		 * Filter whether to bypass the entire display generation code.
-		 *
-		 * This allows for a filter to replace the entire string.
-         *
-		 * @param string	$response          The display. defaults to false.
-	 * @param object	$meta	   A kind_meta object.
-	 */
-		$response = apply_filters( 'pre_get_kind_display', $response, $meta );
-		if ( $response ) {
-			return apply_filters( 'kind-response-display', $response );
-		}
-		if ( ! Kind_Taxonomy::response_kind( $kind ) ) {
-			return '';
-		}
+	public static function get_display( $post_ID, $single = false ) {
+		$meta = new Kind_Meta( $post_ID );
+		$kind = get_post_kind_slug( $post_ID );
+		$cite = $meta->get_cite();
+		$hcard = 'Unknown Author';
 		$content = '';
-		$final = '';
-		$verbstrings = Kind_Taxonomy::get_verb_strings();
-		if ( $kind ) {
-			$verb = '<span class="verb"><strong>' . $verbstrings[ $kind ] . '</strong></span>';
-		} else {
-			$verb = '';
+		switch ( $kind ) {
+			case 'note':
+			case 'article':
+			case 'photo':
+				break;
+			default:
+				include( 'views/kind-default.php' );
 		}
-		$card = self::hcards( );
-		if ( ! empty( $card ) ) {
-			$cards = ' ' . Kind_Taxonomy::get_author_string( $verb ) . ' ' . $card;
-		} else {
-			$cards = '';
-		}
-		$m = $meta->get_cite();
-		$murl = $meta->get_url();
-		if ( $murl ) {
-			$urlatr = array(
-									'class' => array( 'u-url', 'p-name' ),
-								);
-			if ( isset( $m['name'] ) ) {
-					$url = self::get_url_link( $murl, $m['name'], $urlatr );
-			} else {
-				$url = self::get_url_link( $murl , self::get_post_type_string( $murl, $urlatr ) );
-			}
-			$pub = ' ' . Kind_Taxonomy::get_publication_string( $kind ) . ' ';
-			if ( isset( $m['publication'] ) ) {
-				$pub .= '<em>' . $m['publication'] . '</em>';
-			} else {
-				$pub .= '<em>' . extract_domain_name( $meta->get_url() ) . '</em>';
-			}
-			$content = self::sanitize_output( $content ) . self::get_embed( $murl );
-		} else {
-			$url = '';
-			$pub = '';
-		}
-		if ( isset( $m['duration'] ) ) {
-			$time = ' <em>' . Kind_Taxonomy::get_duration_string( $kind ) . ' ' . '<span class="p-duration">' . $m['duration'] . '</span></em>';
-		} else {
-			$time = '';
-		}
-   if ( isset( $m['summary'] ) ) {
-      $content .= '<blockquote class="e-summary">' . $m['summary'] . '</blockquote>';
-    }
-	 else if ( isset( $m['content'] ) ) {
-			$content .= '<blockquote class="e-content">' . $m['content'] . '</blockquote>';
-	 }
-		$c = $verb . ' ' . $url . $pub . $cards . $time . $content;
-		$c = trim( $c );
-		if ( ! empty( $c ) ) {
-			$final = '<div ' . self::context_class( 'response h-cite', 'p' ) . '>' . $c . '</div>';
-		} else {
-			apply_filters( 'kind-response-display', '' );
-		}
-		update_post_meta( $post->ID, '_resp_full', $final );
-		return apply_filters( 'kind-response-display', $final );
-		;
+		return apply_filters( 'kind-response-display', $content );
 	}
 
-	public static function get_context_class ( $class = '', $classtype='u' ) {
-		$classes = array();
-		global $post;
-		if ( get_post_kind( $post ) ) {
-			switch ( get_post_kind( $post ) ) {
-				case 'like':
-					$classes[] = $classtype.'-like-of';
-				break;
-				case 'favorite':
-					$classes[] = $classtype.'-favorite-of';
-				break;
-				case 'repost':
-					$classes[] = $classtype.'-repost-of';
-				break;
-				case 'reply':
-					$classes[] = $classtype.'-in-reply-to';
-				break;
-				case 'rsvp':
-					$classes[] = $classtype.'-in-reply-to';
-				break;
-				case 'tag':
-					$classes[] = $classtype.'-tag-of';
-				break;
-				case 'bookmark':
-					$classes[] = $classtype.'-bookmark-of';
-				break;
-				case 'listen':
-					$classes[] = $classtype.'-listen';
-				break;
-				case 'watch':
-					$classes[] = $classtype.'-watch';
-				break;
-				case 'game':
-					$classes[] = $classtype.'-play';
-				break;
-				case 'wish':
-					$classes[] = $classtype.'-wish';
-				break;
-			}
-		}
-		if ( ! empty( $class ) ) {
-			if ( ! is_array( $class ) ) {
-				$class = preg_split( '#\s+#', $class ); }
-			$classes = array_merge( $classes, $class );
-		} else {
-			// Ensure that we always coerce class to being an array.
-			$class = array( $class );
-		}
-		$classes = array_map( 'esc_attr', $classes );
-		/**
-	 * Filter the list of CSS kind classes for the current response URL.
-	 *
-	 * @param array  $classes An array of kind classes.
-	 * @param string $class   A comma-separated list of additional classes added to the link.
-	 * @param string $kind    The slug of the kind the post is set to
-	 */
-		return apply_filters( 'kind_classes', $classes, $class, get_post_kind( $post ) );
-	}
-	public static function context_class( $class = '', $classtype='u' ) {
-		// Separates classes with a single space, collates classes
-		return 'class="' . join( ' ', self::get_context_class( $class, $classtype ) ) . '"';
-	}
 	/**
 	 * Returns an array of domains with the post type terminologies
 	 *
@@ -260,9 +122,9 @@ class Kind_View {
 	 */
 	public static function get_post_type_string($url) {
 		$strings = array(
-		'twitter.com' => _x( 'a tweet', 'Post kind' ),
-		'vimeo.com' => _x( 'a video', 'Post kind' ),
-		'youtube.com'   => _x( 'a video', 'Post kind' ),
+			'twitter.com' => _x( 'a tweet', 'Post kind' ),
+			'vimeo.com' => _x( 'a video', 'Post kind' ),
+			'youtube.com'   => _x( 'a video', 'Post kind' ),
 			'instagram.com' => _x( 'an image', 'Post kind' ),
 		);
 		$domain = extract_domain_name( $url );
@@ -273,118 +135,113 @@ class Kind_View {
 		}
 	}
 
-	public static function get_hcards() {
-		global $post;
-		$meta = new Kind_Meta( $post );
-		$cards = $meta->get_author( );
-		if ( ! $cards ) {
+	/**
+	 * Retrieve/Generate the h-card.
+	 *
+	 * @param mixed $author The author to generate Accepts an array or optionally other info
+	 * @param array $args       {
+	 *    Optional. Extra arguments to retrieve the avatar.
+	 *
+	 *     @type int          $height        Display height of the author image in pixels. Defaults to $size.
+	 *     @type int          $width         Display width of the author image in pixels. Defaults to $size.
+	 *     @type string       $display			 Display 'photo', 'name', or 'both'. Defaults to 'name'.
+	 * }
+	 * @return false|string Marked up H-Card as String. False on failure.
+	 */
+	public static function get_hcard($author, $args = null) {
+		$default = array(
+										'height' => 32,
+										'width' => 32,
+										'display' => 'both',
+					 );
+		$args = wp_parse_args( $args, $default );
+		/**
+	 * Filter for alternate retrieval types
+	 *
+	 * This could be using WordPress's gravatar system, retrieval by pure URL, etc.
+	 *
+		 * @param string|boolean $author Defaults to false, but may return string.
+		 * @param mixed  $author Data on the author, type optional. Defaults to array.
+	 * @param array  $args        Arguments passed to get_hcard.
+		 */
+		$author = apply_filters( 'get_hcard_data', $author, $args );
+		// If it didn't return an array as expected, then there is no valid author data.
+		if ( ! is_array( $author ) ) {
 			return false;
 		}
-		$output = '';
-		if ( is_multi_array( $cards ) ) {
-			foreach ( $cards as $card ) {
-				$output .= self::get_hcard( $card );
-			}
-			return $output;
+		/**
+	 * Filter for alternate presentation
+	 *
+	 * @param string|boolean $card Defaults to false, but may return string.
+	 * @param mixed  $author Data on the author, type optional. Defaults to array.
+	 * @param array  $args        Arguments passed to get_hcard.
+	 */
+		$card = apply_filters( 'get_hcard', '', $author, $args );
+		if ( ! empty( $card ) ) {
+			return $card;
 		}
-		return self::get_hcard( $cards );
+		// If no filter generated the card, generate the card.
+		switch ( $args['display'] ) {
+			case 'photo':
+				if ( ! array_key_exists( 'photo', $author ) ) {
+						return false;
+				}
+				if ( ! array_key_exists( 'url', $author ) ) {
+						return sprintf( '<img src="%1s" class="h-card u-photo p-author" alt="%2s" width=%3s height=%4s />', $author['photo'], $author['name'], $args['width'], $args['height'] );
+				} else {
+						return sprintf( '<a class="h-card p-author" href="%1s"><img class="u-photo" src="%2s" alt="%3s" width=%4s height=%5s /></a>', $author['url'], $author['photo'], $author['name'], $args['width'], $args['height'] );
+				}
+				break;
+			case 'name':
+				return sprintf( '<span class="h-card p-author">%1s</span>', $author['name'] );
+				break;
+			case 'both':
+				if ( array_key_exists( 'photo', $author ) ) {
+					if ( ! array_key_exists( 'url', $author ) ) {
+						return sprintf( '<span class="h-card p-author"><img src="%1s" class="u-photo" alt="%2s" width=%3s height=%4s />%5s</span>', $author['photo'], $author['name'], $args['width'], $args['height'], $author['name'] );
+					} else {
+						return sprintf( '<a href="%1s" class="h-card p-author"><img class="u-photo" src="%2s" alt="%3s" width=%4s height=%5s />%6s</a>', $author['url'], $author['photo'], $author['name'], $args['width'], $args['height'], $author['name'] );
+					}
+				} else {
+					return sprintf( '<span class="h-card p-author">%1s</span>', $author['name'] );
+				}
+				break;
+			default:
+				return false;
+		}
+		return $card;
 	}
 
-	public static function get_formatted( $field, $attr ) {
-		if ( ! isset( $field ) ) {
-			return $string;
+	public static function get_cite_title($cite, $url) {
+		if ( ! $cite ) {
+			return false;
 		}
-		$string = '<span ' . $attr . '>' . $field . '</span>';
-		return $string;
-	}
-
-	public static function get_hcard( $card, $author = false ) {
-		if ( empty( $card ) ) {
-			return '';
+		if ( ! array_key_exists( 'name', $cite ) && ! empty( $url ) ) {
+			$cite['name'] = self::get_post_type_string( $cite['url'] );
 		}
-		$hcardatr = array(
-									'class' => array( 'h-card' ),
-								);
-		if ( $author ) {
-			$hcardatr['class'][] = 'p-author';
-			$hcardatr['rel'][] = 'author';
-		}
-		$data = '';
-		$name = '';
-		if ( isset( $card['family-name'] ) ) {
-				$name .= self::get_formatted( $card['honorific-prefix'], ' class="p-honorific-prefix"' );
-				$name .= self::get_formatted( $card['given-name'], ' class="p-given-name"' );
-			$name .= self::get_formatted( $card['additional-name'], ' class="p-additional-name"' );
-			$name .= self::get_formatted( $card['honorific-suffix'], ' class="p-honorific-suffix"' );
+		if ( isset( $url ) ) {
+			return sprintf( '<a href="%1s" class="p-name u-url">%2s</a>', $url, $cite['name'] );
 		} else {
-				$name .= $card['name'];
+			return sprintf( '<span class="p-name">%1s</span>', $cite['name'] );
 		}
-		if ( ! empty( $card['photo'] ) ) {
-			$data .= '<img class="u-photo" src="' . $card['photo'] . '" title="' . $card['name'] . '" />';
-		}
-		$data .= self::get_formatted( $name, $atr = array(
-														  'class' => array( 'p-name' ),
-														) );
-		if ( ! empty( $card['url'] ) ) {
-				$data = self::get_url_link( $card['url'], $data, array(
-																													'class' => array( 'u-url' ),
-																													'title' => array( $card['name'] ),
-																												 ) );
-		}
-		foreach ( $card as $key => $value ) {
-			if ( ! in_array( $key, array( 'photo', 'name', 'url' ) ) ) {
-				$data .= self::get_formatted( $value, $atr = array(
-																												'class' => array( $this->map_key( '$key' ) ),
-																											) );
-			}
-		}
-		$hcard = self::get_formatted( $data, $hcardatr );
-		return $hcard;
 	}
 
-	public static function map_key( $key, $pre='' ) {
-		if ( ! empty( $pre ) ) {
-			return $pre.'-' . $key;
+	public static function get_site_name($cite, $url) {
+		if ( ! $cite ) {
+			return false;
 		}
-		$p = array(
-		'name',
-		'honorific-prefix',
-		'given-name',
-		'additional-name',
-		'family-name',
-		'sort-string',
-								'honorific-suffix',
-		'nickname',
-		'category',
-		'adr',
-		'post-office-box',
-		'extended-address',
-								'street-address',
-		'locality',
-		'region',
-		'postal-code',
-		'country-name',
-		'label',
-		'latitude',
-								'longitude',
-		'altitude',
-		'tel',
-		'note',
-		'org',
-		'job-title',
-		'role',
-		'sex',
-		'gender-identity',
-		);
-		if ( in_array( $key, $p ) ) {
-				return 'p-' . $key;
+		if ( ! empty( $url ) ) {
+			if ( ! array_key_exists( 'publication', $cite ) ) {
+				$cite['publication'] = Kind_Tabmeta::pretty_domain_name( $cite['url'] );
+			}
 		} else {
-				return 'u-' . $key;
+			if ( ! array_key_exists( 'publication', $cite ) ) {
+				   return false;
+			}
 		}
+		return sprintf( '<span class="p-publication">%1s</span>', $cite['publication'] );
 	}
-	public static function hcards() {
-		echo self::get_hcards();
-	}
+
 
 	// Echo the output of get_display
 	public static function display( ) {

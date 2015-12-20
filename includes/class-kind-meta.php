@@ -98,26 +98,31 @@ class Kind_Meta {
 		$this->meta = array_filter( $meta );
 	}
 
-  public static function sanitize_content( $value ) {
-    $options = get_option( 'iwt_options' );
-    $allowed = wp_kses_allowed_html( 'post' );
-    if ( array_key_exists( 'contentelements', $options ) && json_decode( $options['contentelements'] ) != null ) {
-      $allowed = json_decode( $options['contentelements'], true );
-    }
-    return wp_kses( ( string ) $value , $allowed );
-  }
+	public static function sanitize_content( $value ) {
+		global $wpdb;
+		$options = get_option( 'iwt_options' );
+		$allowed = wp_kses_allowed_html( 'post' );
+		if ( array_key_exists( 'contentelements', $options ) && json_decode( $options['contentelements'] ) != null ) {
+			$allowed = json_decode( $options['contentelements'], true );
+		}
+		$charset = $wpdb->get_col_charset( $wpdb->posts, $emoji_field );
+		if ( 'utf8' === $charset ) {
+			$value = wp_encode_emoji( $value );
+		}
+		return wp_kses( ( string ) $value , $allowed );
+	}
 
-  public static function sanitize_text( $value ) {
-				if ( is_array( $value ) ) {
-					return array_map( $value, array('Kind_Meta', 'sanitize_text') );
-				}
-        if ( is_url( $value ) ) {
-            $value = esc_url_raw( $value );
-        } else {
-          $value = esc_attr( $value );
-        }
-    return $value;
-  }
+	public static function sanitize_text( $value ) {
+		if ( is_array( $value ) ) {
+			return array_map( $value, array( 'Kind_Meta', 'sanitize_text' ) );
+		}
+		if ( is_url( $value ) ) {
+			$value = esc_url_raw( $value );
+		} else {
+			$value = esc_attr( $value );
+		}
+		return $value;
+	}
 
 
 	/**
@@ -126,7 +131,7 @@ class Kind_Meta {
 	 * @param array $raw An array of properties.
 	 */
 	public function build_meta( $raw ) {
-    $raw = apply_filters ( 'kind_build_meta', $raw );
+		$raw = apply_filters( 'kind_build_meta', $raw );
 		$kind = get_post_kind_slug( $this->post );
 		if ( isset( $raw['url'] ) ) {
 			/**
@@ -151,9 +156,9 @@ class Kind_Meta {
 	 * @return string|array Either a string indicating the URL or an array of URLs.
 	 */
 	public function get_url( ) {
-   	if ( ! isset( $this->meta ) ) {
-    	  return false;
-    }
+		if ( ! isset( $this->meta ) ) {
+			return false;
+		}
 		$kind = get_post_kind_slug( $this->post );
 		$map = Kind_Taxonomy::get_kind_properties();
 		if ( array_key_exists( 'cite', $this->meta ) ) {
@@ -181,7 +186,7 @@ class Kind_Meta {
 		if ( empty( $url ) ) {
 			return;
 		}
-		$url = self::sanitize_text($url);
+		$url = self::sanitize_text( $url );
 		$kind = get_post_kind_slug( $this->post );
 		$map = array_diff( Kind_Taxonomy::get_kind_properties(), array( '' ) );
 		if ( array_key_exists( $kind, $map ) ) {
@@ -202,11 +207,10 @@ class Kind_Meta {
 		}
 		foreach ( $this->meta as $key => $value ) {
 			$key = 'mf2_' . $key;
-			if ( !empty($value) ) {
+			if ( ! empty( $value ) ) {
 				update_post_meta( $this->post->ID, $key, $value );
-			}
-			else {
-				delete_post_meta( $this->post->ID, $key);
+			} else {
+				delete_post_meta( $this->post->ID, $key );
 			}
 		}
 	}
@@ -247,9 +251,9 @@ class Kind_Meta {
 	 * return array $author Data on Author.
 	 */
 	public function get_author() {
-   	if ( ! isset( $this->meta ) ) {
-      return false;
-    }
+		if ( ! isset( $this->meta ) ) {
+			return false;
+		}
 		if ( isset( $this->meta['author'] ) ) {
 			return $this->meta['author'];
 		}
@@ -259,43 +263,64 @@ class Kind_Meta {
 		return false;
 	}
 
-  /**
-   * Return the Information on the Author.
-   *
-   * array $author Data on Author.
-   */
-  public function set_author($author) {
-		if ( ! isset($author) ) {
+	/**
+	 * Return the Information on the Author.
+	 *
+	 * array $author Data on Author.
+	 */
+	public function set_author($author) {
+		if ( ! isset( $author ) ) {
 			return false;
 		}
-		if ( is_array($author) ) {
-			$author = array_map( array('Kind_Meta', 'sanitize_text'), $author );
-			$author = array_filter($author);
+		if ( is_array( $author ) ) {
+			$author = array_map( array( 'Kind_Meta', 'sanitize_text' ), $author );
+			$author = array_filter( $author );
 		}
-   	if (! isset($this->meta['cite']) ) {
+		if ( ! isset( $this->meta['cite'] ) ) {
 			$this->meta['cite'] = array();
 		}
-    $author = array_filter( array_diff( $author, array( '' ) ) );
+		$author = array_filter( array_diff( $author, array( '' ) ) );
 
-		$this->meta['cite']['author'] = $author;	
-  }
+		$this->meta['cite']['author'] = $author;
+	}
 
-	public function set_cite($cite) { 
+	public function set_cite($cite) {
 		if ( ! $cite ) {
 			return false;
 		}
-		$summary = ifset($cite['summary']);
-		$content = ifset($cite['content']);
-		$cite = array_map( array('Kind_Meta', 'sanitize_text'), $cite );
-		
-		if ( isset($cite['summary']) ) {
-				$cite['summary'] = self::sanitize_content($summary);
+		$summary = ifset( $cite['summary'] );
+		$content = ifset( $cite['content'] );
+		$cite = array_map( array( 'Kind_Meta', 'sanitize_text' ), $cite );
+
+		if ( isset( $cite['summary'] ) ) {
+				$cite['summary'] = self::sanitize_content( $summary );
 		}
-		if ( isset($cite['content']) ) {
-				$cite['content'] = self::sanitize_content($content);
+		if ( isset( $cite['content'] ) ) {
+				$cite['content'] = self::sanitize_content( $content );
 		}
-    $cite = array_filter( array_diff( $cite, array( '' ) ) );
-		$this->meta['cite']=$cite;
+		$cite = array_filter( array_diff( $cite, array( '' ) ) );
+		$this->meta['cite'] = $cite;
+	}
+
+	public function build_time($date, $time, $offset) {
+		if ( empty( $date ) || empty( $time ) || empty( $offset ) ) {
+			return false;
+		}
+		return $date . 'T' . $time . $offset;
+	}
+
+	public function set_time($dt_start, $dt_end) {
+		if ( ! empty( $dt_start ) || $dt_start ) {
+			$this->meta['dt-start'] = $dt_start;
+		}
+		if ( ! empty( $dt_end ) || $dt_end ) {
+			$this->meta['dt-end'] = $dt_end;
+		}
+	}
+
+	public function get_time() {
+		$time = array();
+		return $time;
 	}
 
 
@@ -309,7 +334,11 @@ class Kind_Meta {
 	}
 
 	public function set( $key, $value) {
-		$this->meta[$key] = self::sanitize_text($value);
+		$this->meta[$key] = self::sanitize_text( $value );
+	}
+
+	public function del( $key ) {
+		delete_post_meta( $this->post->ID, 'mf2_' . $key );
 	}
 
 } // End Class

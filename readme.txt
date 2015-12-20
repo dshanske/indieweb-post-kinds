@@ -1,7 +1,7 @@
 === Indieweb Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like
-Stable tag: 2.2.1
+Stable tag: 2.3.0
 Requires at least: 4.2
 Tested up to: 4.3
 License: GPLv2 or later
@@ -91,8 +91,9 @@ They are formed by having content in the context box on one of these types of
 posts.
 
  * **Listen** - scrobble - listening to an audio post 
+ * **Jam** - Indicating a particularly personally meaningful song
  * **Watch** - video - watching a video
- * **Play** - playing a game 
+ * **Play** - playing a game
 
 = Reserved =
 
@@ -107,11 +108,10 @@ interface at this time.
  * **Check-In** - Identifying you are at a place. This would use the extended WordPress Geodata. It will require the Simple Location plugin to add location awareness to posts.
  * **Tag** - Allows you to tag a post as being of a specific tag, or person tagging.
  * **RSVP** - A specific type of Reply regarding an event
+ * **Event** - An event post is one announcing an upcoming event
  * **Food** - Representing recording what you eat, perhaps for a food diary
  * **Drink** - Similar to Food
  * **Follow** - A post indicating you are now following someone's activities
- * **Jam** - An active kind used to share a song you are recently enjoying, as
-opposed to a listen, which is merely recording your habits
 
 
 == Future Plans ==
@@ -125,6 +125,17 @@ Indieweb Post Kinds had support for replying to Twitter posts using the Social N
 developer of this plugin.
 
 == Changelog ==
+	= Version 2.3.0 = 
+		* Attempt to fix emoji issue reported by @acegiak
+		* Duration to be deprecated and replaced by start date and end date. The presence of a duration field will still be used.
+		* Start/Published Date and End/Updated Date have an updated input field instead of a text string
+		* Response caching removed due limited utility
+		* Removal of older code in favor of new templating system for each kind
+		* Font icon replaced with SVG icons.
+		* Retrieve button now generates an alert if the URL box is blank or does not have a URL.
+		* Start of contextual help system
+		* Hooks for possible future author data to be stored/retrieved from a nicknames cache
+		* Activation of the jam post kind, previously reserved.
 	= Version 2.2.1 = 
 		* Minor Tweaks and Bugfixes from changes in 2.2.0.
 		* Inputs Sanitized for Your Protection

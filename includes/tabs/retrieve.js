@@ -9,6 +9,9 @@ jQuery( document ).on( 'click', '.kind-retrieve-button', function($) {
 		success : function( response ) {
       if ( typeof response == 'undefined' )
         alert ('Undefined Response');
+			if ( 'code' in response['data'][0] ) {
+					alert(response['data'][0]['message']);
+			}
 			if ( 'name' in response['data'] ) {
 				jQuery("#cite_name").val(response['data']['name']) ;
 			}
@@ -17,10 +20,16 @@ jQuery( document ).on( 'click', '.kind-retrieve-button', function($) {
       }
 
       if ( 'published' in response['data'] ) {
-        jQuery("#cite_published").val(response['data']['published']) ;
+				var published = moment.parseZone( response['data']['published'] );
+        jQuery("#start_date").val( published.format('YYYY-MM-DD') ) ;
+				jQuery("#start_time").val(published.format('HH:mm:ss') ) ;
+				jQuery("#start_offset").val(published.format('Z') );
       }
       if ( 'updated' in response['data'] ) {
-        jQuery("#cite_updated").val(response['data']['updated']) ;
+        var updated = moment.parseZone( response['data']['updated'] );
+        jQuery("#end_date").val( updated.format('YYYY-MM-DD') ) ;
+        jQuery("#end_time").val(updated.format('HH:mm:ss') ) ;
+        jQuery("#end_offset").val(updated.format('Z') );  
       }
 
       if ( 'summary' in response['data'] ) {
@@ -40,6 +49,10 @@ jQuery( document ).on( 'click', '.kind-retrieve-button', function($) {
         if ( 'photo' in response['data']['author'] ) {
           jQuery("#author_photo").val(response['data']['author']['photo']) ;
         }
+        if ( 'url' in response['data']['author'] ) {
+          jQuery("#author_url").val(response['data']['author']['url']) ;
+        }
+
 			}
 			console.log(response);
 		},

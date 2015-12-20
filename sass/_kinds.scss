@@ -1,10 +1,29 @@
 .response {
     margin-bottom: 10px;
     margin-top: 10px;
-    margin-left: 10px;
+    margin-left: 20px;
     padding: 5px;
     font-size: 16px;
     border-bottom: inset #D6D6D6;
+		.kind-icon {
+			margin-right: 3px;
+		}
+		blockquote {
+			margin-left: 25px;
+		}
+
+	.u-url:link {
+		text-decoration: none;
+	}
+
+	.u-url:hover {
+		text-decoration: none;
+	}
+
+	.u-photo, .u-featured  {
+  	padding: 0;
+  	margin: 2px;
+   }
 }
 
 ul.cites {
@@ -19,20 +38,17 @@ ul.cites {
     margin-top: 5px;
 }
 
-.response .u-url:link {
-   text-decoration: none;
-  }
-
-.response .u-url:hover {
-  text-decoration: none;
+svg {
+	fill: currentColor;
+	width: 24px;
+	height: 24px;
 }
-   
-.verb:before, a.empty:before {
-    @include genericons();
- }
 
-.response .u-photo  {
-	height: 20px;
-	padding: 0;
-	margin: 2px;
-   }
+#kind-all {
+  .kind-icon {
+    padding-left: 2px;
+    padding-right: 2px;
+		color: grey;
+	}
+}
+

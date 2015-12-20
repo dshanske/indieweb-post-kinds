@@ -9,8 +9,8 @@ add_action( 'init' , array( 'Kind_Tabmeta', 'init' ) );
 add_action( 'wp_ajax_kind_test', 'kind_ajaxtest' );
 
 function kind_ajaxtest() {
-	$response = array ( 'result' => 'successful' ); 
-	wp_send_json($response);
+	$response = array( 'result' => 'successful' );
+	wp_send_json( $response );
 }
 
 
@@ -20,7 +20,7 @@ class Kind_Tabmeta {
 		add_action( 'load-post.php', array( 'Kind_Tabmeta', 'kindbox_setup' ) );
 		add_action( 'load-post-new.php', array( 'Kind_Tabmeta', 'kindbox_setup' ) );
 		add_action( 'save_post', array( 'Kind_Tabmeta', 'save_post' ), 8, 2 );
-		add_action( 'transition_post_status', array( 'Kind_Tabmeta', 'transition_post_status' ) ,5,3 );		
+		add_action( 'transition_post_status', array( 'Kind_Tabmeta', 'transition_post_status' ) ,5,3 );
 		add_action( 'wp_ajax_kind_urlfetch', array( 'Kind_Tabmeta', 'urlfetch' ) );
 	}
 
@@ -33,22 +33,28 @@ class Kind_Tabmeta {
 	}
 
 	public static function enqueue_admin_scripts() {
-    if ( 'post' === get_current_screen()->id ) {
-        wp_enqueue_script(
-            'kindmeta-tabs',
-            plugins_url( 'indieweb-post-kinds/includes/tabs/tabs.js' ),
-            array( 'jquery' ),
-            POST_KINDS_VERSION
-        );
+		if ( 'post' === get_current_screen()->id ) {
+			wp_enqueue_script(
+				'kindmeta-tabs',
+				plugins_url( 'indieweb-post-kinds/includes/tabs/tabs.js' ),
+				array( 'jquery' ),
+				POST_KINDS_VERSION
+			);
 
-        wp_enqueue_script(
-            'kindmeta-response',
-            plugins_url( 'indieweb-post-kinds/includes/tabs/retrieve.js' ),
-            array( 'jquery' ),
-            POST_KINDS_VERSION
-        );
- 
-    }
+			wp_enqueue_script(
+				'kindmeta-response',
+				plugins_url( 'indieweb-post-kinds/includes/tabs/retrieve.js' ),
+				array( 'jquery' ),
+				POST_KINDS_VERSION
+			);
+
+			wp_enqueue_script(
+				'moment',
+				'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js',
+				array( 'jquery' ),
+				'2.10.6'
+			);
+		}
 	}
 
 
@@ -70,6 +76,7 @@ class Kind_Tabmeta {
 		$cite = $meta->get_cite();
 		$author = $meta->get_author();
 		$url = $meta->get_url();
+		$time = $meta->get_time();
 		include_once( 'tabs/tab-navigation.php' );
 	}
 
@@ -123,20 +130,38 @@ class Kind_Tabmeta {
 				return;
 			}
 		}
-		
+		$kind = get_post_kind_slug( $post );
 		$meta = new Kind_Meta( $post );
-		if( isset($_POST['cite']) ) {
-			$meta->set_cite($_POST['cite']);
+		if ( isset( $_POST['time'] ) ) {
+			if ( isset( $_POST['time']['start_date'] ) || isset( $_POST['time']['start_time'] ) ) {
+				$start = $meta->build_time( $_POST['time']['start_date'], $_POST['time']['start_time'], $_POST['time']['start_offset'] );
+			}
+			if ( isset( $_POST['time']['end_date'] ) || isset( $_POST['time']['end_time'] ) ) {
+				$end = $meta->build_time( $_POST['time']['end_date'], $_POST['time']['end_time'], $_POST['time']['end_offset'] );
+			}
 		}
-		if( isset($_POST['author']) ) {
-			$meta->set_author($_POST['author']);
+		if ( isset( $_POST['cite'] ) ) {
+			if ( in_array( $kind, array( 'like', 'reply', 'repost', 'favorite', 'bookmark' ) ) ) {
+				if ( $start ) {
+					$_POST['cite']['published'] = $start;
+				}
+				if ( $end ) {
+					$_POST['cite']['updated'] = $end;
+				}
+			} else {
+				$meta->set_time( $start, $end );
+			}
+			$meta->set_cite( $_POST['cite'] );
 		}
-		if( isset($_POST['url']) ) {
-			$meta->set_url($_POST['url']);
+		if ( isset( $_POST['author'] ) ) {
+			$meta->set_author( $_POST['author'] );
+		}
+		if ( isset( $_POST['url'] ) ) {
+			$meta->set_url( $_POST['url'] );
 		}
 		// This is temporary - planning on improving this later
-		if( isset($_POST['duration']) ) {
-			$meta->set('duration', $_POST['duration']);
+		if ( isset( $_POST['duration'] ) ) {
+			$meta->set( 'duration', $_POST['duration'] );
 		}
 		$meta->save_meta( $post );
 	}
@@ -175,9 +200,16 @@ class Kind_Tabmeta {
 	 */
 	private static function parse ($content, $url) {
 		$ogpdata = self::ogpparse( $content );
-		$mf2data = self::mf2parse( $content, $url);
+		$mf2data = self::mf2parse( $content, $url );
 		$data = array_merge( $ogpdata, $mf2data );
-		$data =  array_filter( $data );
+		$data = array_filter( $data );
+		// If Publication is Not Set, use the domain name instead
+		$data['publication'] = ifset( $data['publication'] ) ?: self::pretty_domain_name( $url );
+		// If Name is Not Set Use Title Tag
+		if ( ! isset( $data['name'] ) ) {
+			preg_match( '/<title>(.+)<\/title>/i', $content, $match );
+			$data['name'] = trim( $match[1] );
+		}
 		/**
 		 * Parse additionally by plugin.
 		 *
@@ -185,49 +217,75 @@ class Kind_Tabmeta {
 		 * @param string $content The content of the retrieved page.
 		 * @param string $url Source URL
 		 */
-		return apply_filters ( 'kind_parse_data', $data, $content, $url );
+		return apply_filters( 'kind_parse_data', $data, $content, $url );
+	}
+
+	// Give a Proper Name for Set Sites
+	public static function pretty_domain_name( $url ) {
+		switch ( $url ) {
+			case 'twitter.com':
+			return  _( 'Twitter', 'Post kinds' );
+			break;
+			default:
+			return extract_domain_name( $url );
+		}
 	}
 
 	public static function urlfetch() {
 		global $wpdb;
-		$content = self::fetch($_POST['kind_url']);
-		if (is_wp_error($content)) {
-		wp_send_json_error($response);
+		if ( empty( $_POST['kind_url'] ) ) {
+				wp_send_json_error( new WP_Error( 'nourl', __( 'You must specify a URL' ) ) );
 		}
-	  wp_send_json_success( self::parse($content, $_POST['kind_url']) );
+		if ( filter_var( $_POST['kind_url'], FILTER_VALIDATE_URL ) === false ) {
+				wp_send_json_error( new WP_Error( 'badurl', __( 'Input is not a valid URL' ) ) );
+		}
+
+		$content = self::fetch( $_POST['kind_url'] );
+		if ( is_wp_error( $content ) ) {
+			wp_send_json_error( $response );
+		}
+		wp_send_json_success( self::parse( $content, $_POST['kind_url'] ) );
 	}
 
-	/* Parses marked up HTML using MF2.
-   *
-   * @param string $content HTML marked up content.
-   */
-  private static function mf2parse($content, $url) {
+	/*
+	Parses marked up HTML using MF2.
+	*
+	* @param string $content HTML marked up content.
+	*/
+	private static function mf2parse($content, $url) {
 		$data = array();
-		$parsed = Mf2\parse($content, $url);
-		if(mf2_cleaner::isMicroformatCollection($parsed)) {
-      $entries = mf2_cleaner::findMicroformatsByType($parsed, 'h-entry');
-			if($entries) {
+		$host = extract_domain_name( $url );
+		switch ( $host ) {
+			case 'twitter.com':
+				$parsed = Mf2\Shim\parseTwitter( $content, $url );
+				break;
+			default:
+				$parsed = Mf2\parse( $content, $url );
+		}
+		if ( mf2_cleaner::isMicroformatCollection( $parsed ) ) {
+			$entries = mf2_cleaner::findMicroformatsByType( $parsed, 'h-entry' );
+			if ( $entries ) {
 				$entry = $entries[0];
-        if(mf2_cleaner::isMicroformat($entry)) {
-        	foreach($entry['properties'] as $key => $value) {
-           	$data[$key] = mf2_cleaner::getPlaintext($entry, $key);
-          }
-					$data['published'] = mf2_cleaner::getPublished($entry);
-					$data['updated'] = mf2_cleaner::getUpdated($entry);
-				  $data['name'] = mf2_cleaner::getPlaintext($entry, 'name');
-          $data['content'] = mf2_cleaner::getHtml($entry, 'content');
-					$data['summary'] = mf2_cleaner::getHtml($entry, 'summary');
-          $data['name'] = trim(preg_replace('/https?:\/\/([^ ]+|$)/', '', $data['name']));
-					$author = mf2_cleaner::getAuthor($entry);
-         	if ($author) {
-							$data['author']=array();
-							foreach($author['properties'] as $key => $value) {
-								$data['author'][$key] = mf2_cleaner::getPlaintext($author, $key);
-							}
-							$data['author']=array_filter($data['author']);
-          }
+				if ( mf2_cleaner::isMicroformat( $entry ) ) {
+					foreach ( $entry['properties'] as $key => $value ) {
+						$data[$key] = mf2_cleaner::getPlaintext( $entry, $key );
+					}
+					$data['published'] = mf2_cleaner::getPublished( $entry );
+					$data['updated'] = mf2_cleaner::getUpdated( $entry );
+						  $data['name'] = mf2_cleaner::getPlaintext( $entry, 'name' );
+					$data['content'] = mf2_cleaner::getHtml( $entry, 'content' );
+					$data['summary'] = mf2_cleaner::getHtml( $entry, 'summary' );
+					$data['name'] = trim( preg_replace( '/https?:\/\/([^ ]+|$)/', '', $data['name'] ) );
+					$author = mf2_cleaner::getAuthor( $entry );
+					if ( $author ) {
+							$data['author'] = array();
+						foreach ( $author['properties'] as $key => $value ) {
+							$data['author'][$key] = mf2_cleaner::getPlaintext( $author, $key );
+						}
+							$data['author'] = array_filter( $data['author'] );
+					}
 				}
-			}		
+			}
 		}
 		return array_filter( $data );
 	}
@@ -255,7 +313,7 @@ class Kind_Tabmeta {
 			}
 			$tags = array_filter( $tags );
 		}
-		$data['tags'] = ifset($data['tags']) ?: implode( ',' ,$tags );
+		$data['tags'] = ifset( $data['tags'] ) ?: implode( ',' ,$tags );
 		// Extended Parameters
 		$data['audio'] = ifset( $meta['og:audio'] );
 		$data['video'] = ifset( $meta['og:video'] );

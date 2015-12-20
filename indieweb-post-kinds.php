@@ -7,13 +7,13 @@
  * Plugin Name: Post Kinds
  * Plugin URI: https://wordpress.org/plugins/indieweb-post-kinds/
  * Description: Ever want to reply to someone else's post with a post on your own site? Or to "like" someone else's post, but with your own site?
- * Version: 2.2.1
+ * Version: 2.3.0
  * Author: David Shanske
  * Author URI: https://david.shanske.com
  * Text Domain: Post kinds
  */
 
-define( 'POST_KINDS_VERSION', '2.2.1' );
+define( 'POST_KINDS_VERSION', '2.3.0' );
 
 load_plugin_textdomain( 'Post kind', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
@@ -52,6 +52,8 @@ if ( ! class_exists( 'ogp\Parser' ) ) {
 // Add an MF2 Parser
 if ( ! class_exists( 'Mf2\Parser' ) ) {
   include_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Parser.php';
+	include_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/functions.php';
+	include_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Twitter.php';
 }
 
 include_once plugin_dir_path( __FILE__ ) . 'includes/class-mf2-cleaner.php';
@@ -59,7 +61,8 @@ include_once plugin_dir_path( __FILE__ ) . 'includes/class-mf2-cleaner.php';
 
 // Load stylesheets.
 add_action( 'wp_enqueue_scripts', 'kindstyle_load' );
-add_action( 'admin_enqueue_scripts', 'kind_admin_style' );
+add_action( 'admin_enqueue_scripts', 'kindstyle_load' );
+
 
 /**
  * Loads the Stylesheet for the Plugin.
@@ -73,14 +76,6 @@ if ( ! function_exists( 'kindstyle_load' ) ) {
 	}
 } else {
 	die( 'You have another version of Post Kinds installed!' );
-}
-
-/**
- * Loads the Admin Only Stylesheet for the Plugin.
- */
-function kind_admin_style() {
-
-	wp_enqueue_style( 'kind-admin', plugins_url( 'css/kind-admin.min.css', __FILE__ ), array(), POST_KINDS_VERSION );
 }
 
 // Add a notice to the Admin if the Webmentions Plugin isn't Activated.
@@ -204,5 +199,52 @@ if ( ! function_exists( 'ifset' ) ) {
 	}
 }
 
+function tz_seconds_to_offset($seconds) {
+  return ($seconds < 0 ? '-' : '+') . sprintf('%02d:%02d', abs($seconds/60/60), abs($seconds/60)%60);
+}
+function tz_offset_to_seconds($offset) {
+  if(preg_match('/([+-])(\d{2}):?(\d{2})/', $offset, $match)) {
+    $sign = ($match[1] == '-' ? -1 : 1);
+    return (($match[2] * 60 * 60) + ($match[3] * 60)) * $sign;
+  } else {
+    return 0;
+  }
+}
+
+function kind_get_timezones()
+{
+    $o = array();
+     
+    $t_zones = timezone_identifiers_list();
+     
+    foreach($t_zones as $a)
+    {
+        $t = '';
+         
+        try
+        {
+            //this throws exception for 'US/Pacific-New'
+            $zone = new DateTimeZone($a);
+             
+            $seconds = $zone->getOffset( new DateTime("now" , $zone) );
+            $o[] = tz_seconds_to_offset($seconds);
+        }
+         
+        //exceptions must be catched, else a blank page
+        catch(Exception $e)
+        {
+            //die("Exception : " . $e->getMessage() . '<br />');
+            //what to do in catch ? , nothing just relax
+        }
+    }
+    $o = array_unique($o);
+    asort($o);
+     
+    return $o;
+} 
+
+function kind_icon($slug) { 
+	return '<span class="kind-icon">' . file_get_contents( plugin_dir_url( __FILE__) . 'svg/' . $slug . '.svg' ) . '</span>';
+}
 
 ?>

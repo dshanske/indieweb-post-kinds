@@ -46,6 +46,9 @@ class Kind_Taxonomy {
 		// Override Post Type in Semantic Linkbacks.
 		add_filter( 'semantic_linkbacks_post_type', array( 'Kind_Taxonomy', 'semantic_post_type' ), 11, 2 );
 
+		// Remove the Automatic Post Generation that the Micropub Plugin Offers
+		remove_filter( 'before_micropub', array( 'Micropub', 'generate_post_content' ) );
+
 	}
 
 
@@ -201,8 +204,11 @@ class Kind_Taxonomy {
 			$slug = $term->slug;
 			if ( in_array( $slug, $include ) ) {
 				echo "<li id='$id' class='kind-$slug'><label class='selectit'>";
-				echo "<input type='radio' id='in-$id' name='tax_input[kind]'".checked( $current,$term->term_id,false )."value='$slug' />$strings[$slug]<br />";
+				echo "<input type='radio' id='in-$id' name='tax_input[kind]'".checked( $current,$term->term_id,false )."value='$slug' />";
+				echo kind_icon( $slug );
+				echo "$strings[$slug]<br />";
 				echo '</label></li>';
+
 			}
 		}
 		echo '</ul></div>';
@@ -341,56 +347,6 @@ class Kind_Taxonomy {
 
 		);
 		return $strings;
-	}
-
-
-	/**
-	 * Uses an array of post kind slugs with the author terminologies
-	 *
-	 * @return array The appropriate post kind author string.
-	 */
-	public static function get_author_string($verb) {
-		$strings = array(
-			'article' => _x( 'by', 'Post kind' ),
-		);
-		$strings = apply_filters( 'kind_author_string', $strings );
-		if ( array_key_exists( $verb, $strings ) ) {
-			return $strings[ $verb ];
-		} else {
-			return _x( 'by', 'Post kind' );
-		}
-	}
-
-	/**
-	 * Returns the publication terminology for the publication
-	 *
-	 * @return array The post kind publication string.
-	 */
-	public static function get_publication_string($verb) {
-		if ( ! isset( $verb ) || ! is_string( $verb ) ) {
-			return '';
-		}
-		$strings = array(
-				'article' => _x( 'on', 'Post kind' ),
-			'listen' => _x( '-', 'Post kind' ),
-			'watch' => _x( '-', 'Post kind' ),
-		);
-		$strings = apply_filters( 'kind_publication_string', $strings );
-		if ( array_key_exists( $verb, $strings ) ) {
-			return $strings[ $verb ];
-		} else {
-			return _x( 'on', 'Post kind' );
-		}
-	}
-
-	public static function get_duration_string($verb) {
-		$strings = array();
-		$strings = apply_filters( 'kind_duration_string', $strings );
-		if ( array_key_exists( $verb, $strings ) ) {
-			return $strings[ $verb ];
-		} else {
-			return _x( 'for', 'Post kind' );
-		}
 	}
 
 	// Replaces need for Replacing the Entire Excerpt

@@ -1,6 +1,39 @@
 module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
+
+    svg_sprite      : {
+        options     : {
+            // Task-specific options go here. 
+        },
+        complex : {
+            //Target-specific file lists and/or options go here. 
+						src: ['svg/*.svg'],
+						dest: 'svg',
+						options : {
+						        shape               : {
+                    dimension       : {         // Set maximum dimensions 
+                        maxWidth    : 32,
+                        maxHeight   : 32
+                    },
+                    spacing         : {         // Add padding 
+                        padding     : 10
+                    }
+                },
+                mode                : {
+                    symbol          : {
+											prefix : 'svg-%s',
+											render: {
+												scss: {
+													dest: '_sprites.scss'
+												}
+											}
+										}
+                }
+					}
+		},
+	},
+
     wp_deploy: {
         deploy: { 
             options: {
@@ -45,7 +78,6 @@ module.exports = function(grunt) {
              },
           files: {                         // Dictionary of files
         'css/kind.css': 'sass/main.scss',       // 'destination': 'source'
-	'css/kind-admin.css': 'sass/admin.scss',
          }
 	},
        dist: {                            // Target
@@ -54,7 +86,6 @@ module.exports = function(grunt) {
              },
           files: {                         // Dictionary of files
         'css/kind.min.css': 'sass/main.scss',       // 'destination': 'source'
-        'css/kind-admin.min.css': 'sass/admin.scss',
          }
 	}
   },
@@ -74,6 +105,7 @@ module.exports = function(grunt) {
       },
   });
 
+	grunt.loadNpmTasks('grunt-svg-sprite');
   grunt.loadNpmTasks('grunt-wp-readme-to-markdown');
   grunt.loadNpmTasks( 'grunt-wp-i18n' );
   grunt.loadNpmTasks('grunt-contrib-sass');
