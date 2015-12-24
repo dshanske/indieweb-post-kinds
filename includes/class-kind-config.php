@@ -9,6 +9,8 @@
 add_action( 'admin_init' , array( 'Kind_Config', 'admin_init' ) );
 add_action( 'after_setup_theme', array( 'Kind_Config', 'remove_post_formats' ), 11 );
 add_action( 'admin_menu', array( 'Kind_Config', 'admin_menu' ) );
+// Add post help tab
+add_action( 'load-post.php', array( 'Kind_Config', 'add_post_help_tab') , 20 );
 
 /**
  * Static Class to Configure Admin Options.
@@ -35,7 +37,6 @@ class Kind_Config {
 			}
 		}
 		add_settings_field( 'termlist', __( 'Select All Kinds You Wish to Use', 'Post kind' ), array( 'Kind_Config', 'termlist_callback' ), 'iwt_options', 'iwt-content' );
-
 	}
 
 	/**
@@ -43,7 +44,7 @@ class Kind_Config {
 	 * @access public
 	 */
 	public static function admin_menu() {
-		add_options_page( '', __( 'Post Kinds', 'Post kind' ), 'manage_options', 'kind_options', array( 'Kind_Config', 'options_form' ) );
+		add_options_page( '', __( 'Post Kinds', 'Post kind' ), 'manage_options', 'kind_options', array( 'Kind_Config', 'options_form' ) );		
 	}
 
 	/**
@@ -179,6 +180,36 @@ class Kind_Config {
 	public static function remove_post_formats() {
 		$options = get_option( 'iwt_option' );
 		if ( 1 === $options['disableformats'] ) { remove_theme_support( 'post-formats' ); }
+	}
+
+	public static function add_post_help_tab() {
+		get_current_screen()->add_help_tab( array(
+			 'id'       => 'post_kind_help'
+			,'title'    => __( 'Post Properties', 'Post kind' )
+			,'content'  => __('
+						<p> The Post Properties tab represents the Microformats properties of a Post. For different kinds of posts, the different
+						fields mean something different. Example: Artist Name vs Author Name</p>
+						<ul><strong>Response</strong>
+							<li><strong>URL</strong> - The URL the post is responding to</li>
+							<li><strong>Name/Title</strong> - The name of what is being responded to</li>
+						</ul>
+						<ul><strong>Citation</strong>
+							<li><strong>Summary</strong> - Summary of what the post is responding to</li>
+							<li><strong>Site Name/Publication/Album</strong></li>
+							<li><strong>Featured Image</strong> - The URL of a featured image of what is being responded to </li>
+							<li><strong>Author/Artist Name</strong> </li>
+							<li><strong>Author/Artist URL</strong></li>
+							<li><strong>Author Photo URL</strong></li>
+						</ul>
+            <ul><strong>Time</strong>
+              <li><strong>Start/Published Time</strong></li>
+              <li><strong>End/Updated Time</strong></li>
+            </ul>
+
+
+			', 'Post kind')
+
+		) );
 	}
 
 } // End Class

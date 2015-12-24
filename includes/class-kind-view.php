@@ -217,7 +217,7 @@ class Kind_View {
 			return false;
 		}
 		if ( ! array_key_exists( 'name', $cite ) && ! empty( $url ) ) {
-			$cite['name'] = self::get_post_type_string( $cite['url'] );
+			$cite['name'] = self::get_post_type_string( $url );
 		}
 		if ( isset( $url ) ) {
 			return sprintf( '<a href="%1s" class="p-name u-url">%2s</a>', $url, $cite['name'] );

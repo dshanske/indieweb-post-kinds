@@ -62,12 +62,10 @@ first as a precaution.
 Many sites will not need all of the kinds set up. What kinds of posts you wish
 to publish are specific to your needs.
 
-By default, only note, article, photo and reply are enabled so you can get used to them.
-
 You can enable/disable more based on preference. Some may be enabled by plugins.
 
 Not having a post kind enabled will not disable the functionality on existing 
-posts.
+posts, it only hides the selection in adding new posts.
 
 ### The Non-Response Kinds ###
 
@@ -117,12 +115,6 @@ interface at this time.
  * **Drink** - Similar to Food
  * **Follow** - A post indicating you are now following someone's activities
 
-
-## Future Plans ##
-
-	* Validate inputs based on type
-	* As of 2.0, customizable displays by type are set to be supported in the code. Will be writing some
-
 ## SNAP ##
 
 Indieweb Post Kinds had support for replying to Twitter posts using the Social Network Auto Poster plugin. The developers of that plugin have not contacted the
@@ -134,10 +126,10 @@ developer of this plugin.
 		* Duration to be deprecated and replaced by start date and end date. The presence of a duration field will still be used.
 		* Start/Published Date and End/Updated Date have an updated input field instead of a text string
 		* Response caching removed due limited utility
-		* Removal of older code in favor of new templating system for each kind
+		* Removal of older code in favor of new templating system for each kind. Have tried this before, but really want to make it work.
 		* Font icon replaced with SVG icons.
 		* Retrieve button now generates an alert if the URL box is blank or does not have a URL.
-		* Start of contextual help system
+		* Start of help system
 		* Hooks for possible future author data to be stored/retrieved from a nicknames cache
 		* Activation of the jam post kind, previously reserved.
 	= Version 2.2.1 = 

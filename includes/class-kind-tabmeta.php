@@ -142,11 +142,13 @@ class Kind_Tabmeta {
 		}
 		if ( isset( $_POST['cite'] ) ) {
 			if ( in_array( $kind, array( 'like', 'reply', 'repost', 'favorite', 'bookmark' ) ) ) {
-				if ( $start ) {
+				if ( !empty($start) ) {
 					$_POST['cite']['published'] = $start;
+					error_log('Start: ' . $start);
 				}
-				if ( $end ) {
+				if ( !empty($end)  ) {
 					$_POST['cite']['updated'] = $end;
+					error_log('End: ' . $end);
 				}
 			} else {
 				$meta->set_time( $start, $end );
@@ -209,6 +211,13 @@ class Kind_Tabmeta {
 		if ( ! isset( $data['name'] ) ) {
 			preg_match( '/<title>(.+)<\/title>/i', $content, $match );
 			$data['name'] = trim( $match[1] );
+		}
+		if ( isset( $data['name'] ) ) {
+			if ( isset( $data['summary'] ) ) {
+				if ( false !== stripos( $data['summary'], $data['name'] ) ) {
+					unset( $data['name'] );
+				}
+			}
 		}
 		/**
 		 * Parse additionally by plugin.

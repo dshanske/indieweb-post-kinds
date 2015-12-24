@@ -106,7 +106,7 @@ class Twitter extends Mf2\Parser {
    * 
    * @return array
    */
-  public function parse() {
+  public function parse($convertClassic = true, DOMElement $context = NULL) {
     $items = array();
 		
 		foreach($this->query('//*' . Mf2\xpcs('profile-card')) as $node) {

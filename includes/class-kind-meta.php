@@ -320,7 +320,33 @@ class Kind_Meta {
 
 	public function get_time() {
 		$time = array();
-		return $time;
+		if ( ! empty ( $this->meta['dt-start'] ) ) {
+				$start = date_create_from_format("Y-m-d\TH:i:sP", $this->meta['dt-start']);
+		}
+		else if (! empty ($this->meta['cite']['published']) ) {
+				$start = date_create_from_format("Y-m-d\TH:i:sP",$this->meta['cite']['published']);
+		}
+		if ( isset($start) && $start ) {
+			$time['start_date'] = $start->format('Y-m-d');
+    	$time['start_time'] = $start->format('H:i:s');
+    	$time['start_offset'] = $start->format('P');
+		}
+
+    if ( ! empty ( $this->meta['dt-end'] ) ) {
+        $end = date_create_from_format("Y-m-d\TH:i:sP", $this->meta['dt-end']);
+    }
+    else if (! empty ($this->meta['cite']['updated']) ) {
+        $end = date_create_from_format("Y-m-d\TH:i:sP",$this->meta['cite']['updated']);
+    }
+    if ( isset($end) && $end ) {
+      $time['end_date'] = $end->format('Y-m-d');
+      $time['end_time'] = $end->format('H:i:s');
+      $time['end_offset'] = $end->format('P');
+    }
+
+
+		error_log('Time: ' . serialize($time) ) ;
+		return $time;	
 	}
 
 

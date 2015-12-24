@@ -47,7 +47,7 @@ if ($author) {
 }
 $site_name = self::get_site_name( $meta->get_cite(), $meta->get_url() );
 if ($site_name) {
-	$content .= ' ' . __('on', 'Post kinds') . ' ' . $site_name;
+	$content .= '<em>(' . $site_name . ')</em>';
 }
 if ($cite) {
 	if ( array_key_exists( 'summary', $cite ) ) {
