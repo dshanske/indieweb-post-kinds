@@ -303,10 +303,56 @@ class Kind_Meta {
 	}
 
 	public function build_time($date, $time, $offset) {
-		if ( empty( $date ) || empty( $time ) || empty( $offset ) ) {
+		if (! isset($date) ) {
 			return false;
 		}
+		if (empty($time) ) {
+			$time = '00:00:00';
+		}
 		return $date . 'T' . $time . $offset;
+	}
+
+	public static function dateIntervalToString(\DateInterval $interval) {
+    // Reading all non-zero date parts.
+    $date = array_filter(array(
+        'Y' => $interval->y,
+        'M' => $interval->m,
+        'D' => $interval->d
+    ));
+
+    // Reading all non-zero time parts.
+    $time = array_filter(array(
+        'H' => $interval->h,
+        'M' => $interval->i,
+        'S' => $interval->s
+    ));
+
+    $specString = 'P';
+
+    // Adding each part to the spec-string.
+    foreach ($date as $key => $value) {
+        $specString .= $value . $key;
+    }
+    if (count($time) > 0) {
+        $specString .= 'T';
+        foreach ($time as $key => $value) {
+            $specString .= $value . $key;
+        }
+    }
+    return $specString;
+	}
+
+	public function get_duration($dt_start, $dt_end) {
+		if ( isset($this->meta['duration'] ) ) {
+			return $this->meta['duration'];
+		}
+		$start = date_create_from_format("Y-m-d\TH:i:sP", $dt_start);
+		$end = date_create_from_format("Y-m-d\TH:i:sP", $dt_end);
+		if  ( isset($start) && isset($end) ) {
+			$duration = $start->diff($end);
+			return self::dateIntervalToString($duration);
+		}
+		return false;
 	}
 
 	public function set_time($dt_start, $dt_end) {
@@ -343,9 +389,6 @@ class Kind_Meta {
       $time['end_time'] = $end->format('H:i:s');
       $time['end_offset'] = $end->format('P');
     }
-
-
-		error_log('Time: ' . serialize($time) ) ;
 		return $time;	
 	}
 

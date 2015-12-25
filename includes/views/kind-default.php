@@ -50,7 +50,11 @@ if ($site_name) {
 	$content .= '<em>(' . $site_name . ')</em>';
 }
 if ($cite) {
-	if ( array_key_exists( 'summary', $cite ) ) {
+	$embed = self::get_embed ($meta->get_url());
+	if ($embed) {
+		$content .= sprintf('<blockquote class="e-summary">%1s</blockquote>', $embed);
+	}
+	else if ( array_key_exists( 'summary', $cite ) ) {
 		$content .= sprintf('<blockquote class="e-summary">%1s</blockquote>', $cite['summary']);
 	}
 }

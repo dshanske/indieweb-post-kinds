@@ -243,7 +243,10 @@ function kind_get_timezones()
     return $o;
 } 
 
-function kind_icon($slug) { 
+function kind_icon($slug) {
+	if ( empty($slug) ) {
+		return '';
+	}
 	return '<span class="kind-icon">' . file_get_contents( plugin_dir_url( __FILE__) . 'svg/' . $slug . '.svg' ) . '</span>';
 }
 
