@@ -44,7 +44,7 @@ class Kind_Config {
 	 * @access public
 	 */
 	public static function admin_menu() {
-		add_options_page( '', __( 'Post Kinds', 'Post kind' ), 'manage_options', 'kind_options', array( 'Kind_Config', 'options_form' ) );		
+		add_options_page( '', __( 'Post Kinds', 'Post kind' ), 'manage_options', 'kind_options', array( 'Kind_Config', 'options_form' ) );
 	}
 
 	/**
@@ -111,7 +111,7 @@ class Kind_Config {
 	 * @access public
 	 */
 	public static function termlist_callback() {
-		$options = get_option( 'iwt_options' );
+		$options = get_option( 'iwt_options', array() );
 		$terms = Kind_Taxonomy::get_strings();
 		// Hide these terms until ready for use for now.
 		$hide = array( 'note', 'weather', 'exercise', 'travel', 'rsvp', 'tag', 'follow', 'drink', 'eat' );
