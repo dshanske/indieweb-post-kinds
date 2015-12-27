@@ -346,7 +346,7 @@ class Kind_Taxonomy {
 		'jam'   => 'jam',
 
 		);
-		return $strings;
+		return apply_filters( 'kind_properties', $strings );
 	}
 
 	// Replaces need for Replacing the Entire Excerpt
