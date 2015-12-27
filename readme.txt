@@ -92,6 +92,7 @@ posts.
  * **Jam** - Indicating a particularly personally meaningful song
  * **Watch** - video - watching a video
  * **Play** - playing a game
+ * **Read** - reading a book, compared to online material
 
 = Reserved =
 
@@ -99,7 +100,7 @@ The following Kinds are reserved for future use but will not show up in the
 interface at this time.
 
  * **Wish** - a post indicating a desire/wish. The archive of which would be
-  a wishlist, such as a gift registry or similar. (Under Development)
+  a wishlist, such as a gift registry or similar. 
  * **Weather** - A weather post would be current weather conditions
  * **Exercise** - Representing some form of physical activity
  * **Travel** - Representing a trip
@@ -110,6 +111,7 @@ interface at this time.
  * **Food** - Representing recording what you eat, perhaps for a food diary
  * **Drink** - Similar to Food
  * **Follow** - A post indicating you are now following someone's activities
+ * **Quote** - Quoted Content
 
 == SNAP ==
 
@@ -119,7 +121,8 @@ developer of this plugin.
 == Changelog ==
 	= Version 2.3.0 = 
 		* Attempt to fix emoji issue reported by @acegiak
-		* Duration to be deprecated and replaced by start date and end date. The presence of a duration field will still be used.
+		* Duration to be deprecated and replaced by start date and end date. The presence of a duration field will be used over start minus 
+			end date..
 		* Start/Published Date and End/Updated Date have an updated input field instead of a text string
 		* Response caching removed due limited utility
 		* Removal of older code in favor of new templating system for each kind. Have tried this before, but really want to make it work.
@@ -128,6 +131,8 @@ developer of this plugin.
 		* Start of help system
 		* Hooks for possible future author data to be stored/retrieved from a nicknames cache
 		* Activation of the jam post kind, previously reserved.
+		* Addition of the read post kind, reflecting the reading of a book, as opposed to online content.
+		* Reserving of the quote post kind, for excerpting. Will be added in future version
 	= Version 2.2.1 = 
 		* Minor Tweaks and Bugfixes from changes in 2.2.0.
 		* Inputs Sanitized for Your Protection

@@ -76,7 +76,6 @@ class Kind_Taxonomy {
 				'disableformats' => '0',
 				'protection' => '0',
 				'intermediate' => '0',
-			'watchlisten' => '0',
 			);
 			update_option( 'iwt_options', $option );
 		}
@@ -243,6 +242,8 @@ class Kind_Taxonomy {
 		'drink'   => _x( 'Drink', 'Post kind' ),
 		'follow'   => _x( 'Follow', 'Post kind' ),
 		'jam'   => _x( 'Jam', 'Post kind' ),
+		'read' => _x( 'Read', 'Post kind' ),
+		'quote' => _x( 'Quote', 'Post kind' )
 		);
 		return apply_filters( 'kind_strings', $strings );
 	}
@@ -276,7 +277,8 @@ class Kind_Taxonomy {
 		'drink'   => _x( 'Drinks', 'Post kind' ),
 			'follow'   => _x( 'Follows', 'Post kind' ),
 		'jam'   => _x( 'Jams', 'Post kind' ),
-
+		'read' => _x( 'Read', 'Post kind' ),
+		'quote' => _x( 'Quotes', 'Post kind' )
 		);
 		return apply_filters( 'kind_strings_plural', $strings );
 	}
@@ -310,6 +312,8 @@ class Kind_Taxonomy {
 		'drink'   => _x( 'Drank', 'Post kind' ),
 		'follow'   => _x( 'Followed', 'Post kind' ),
 		'jam'   => _x( 'Listened to', 'Post kind' ),
+		'read' => _x( 'Is Reading', 'Post kind' ),
+		'quote' => _x( 'Quoted', 'Post kind' )
 
 		);
 		return apply_filters( 'kind_verbs', $strings );
@@ -344,7 +348,8 @@ class Kind_Taxonomy {
 		'drink'   => 'p3k-food',
 		'follow'   => 'u-follow-of',
 		'jam'   => 'jam',
-
+		'read' => 'read',
+		'quote' => 'quote'
 		);
 		return $strings;
 	}
