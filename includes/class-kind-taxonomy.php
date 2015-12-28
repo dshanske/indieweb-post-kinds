@@ -176,6 +176,7 @@ class Kind_Taxonomy {
 	public static function select_metabox( $post ) {
 		$strings = self::get_strings();
 		$option = get_option( 'iwt_options' );
+		$include = array();
 		if ( array_key_exists( 'termslists', $option ) ) {
 			$include = $option['termslists'];
 		}
@@ -351,7 +352,7 @@ class Kind_Taxonomy {
 		'read' => 'read',
 		'quote' => 'quote'
 		);
-		return $strings;
+		return apply_filters( 'kind_properties', $strings );
 	}
 
 	// Replaces need for Replacing the Entire Excerpt

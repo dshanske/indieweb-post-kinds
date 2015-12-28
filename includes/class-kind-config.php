@@ -23,7 +23,7 @@ class Kind_Config {
 	 * @access public
 	 */
 	public static function admin_init() {
-		$options = get_option( 'iwt_options' );
+		$options = get_option( 'iwt_options', array() );
 		register_setting( 'iwt_options', 'iwt_options' );
 		add_settings_section( 'iwt-content', __( 'Content Options', 'Post kind' ), array( 'Kind_Config', 'options_callback' ), 'iwt_options' );
 		add_settings_field( 'embeds', __( 'Add Rich Embed Support for Facebook, Google Plus, Instagram, etc', 'Post kind' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'embeds' ) );
@@ -77,9 +77,9 @@ class Kind_Config {
 	 *		@type string $name Checkbox Name.
 	 */
 	public static function checkbox_callback( array $args ) {
-		$options = get_option( 'iwt_options' );
+		$options = get_option( 'iwt_options', array() );
 		$name = $args['name'];
-		$checked = $options[ $name ];
+		$checked = ifset($options[ $name ]);
 		echo "<input name='iwt_options[" . esc_html( $name ) . "]' type='hidden' value='0' />";
 		echo "<input name='iwt_options[" . esc_html( $name ) . "]' type='checkbox' value='1' " . checked( 1, $checked, false ) . ' /> ';
 	}
@@ -94,7 +94,7 @@ class Kind_Config {
 	 *    @type string $name Textbox Name.
 	 */
 	public static function textbox_callback( array $args ) {
-		$options = get_option( 'iwt_options' );
+		$options = get_option( 'iwt_options', array() );
 		$name = $args['name'];
 		$val = '';
 		if ( 'contentelements' === $name && ! array_key_exists( 'contentelements', $options ) ) {
@@ -111,7 +111,7 @@ class Kind_Config {
 	 * @access public
 	 */
 	public static function termlist_callback() {
-		$options = get_option( 'iwt_options' );
+		$options = get_option( 'iwt_options', array() );
 		$terms = Kind_Taxonomy::get_strings();
 		// Hide these terms until ready for use for now.
 		$hide = array( 'note', 'weather', 'exercise', 'travel', 'rsvp', 'tag', 'follow', 'drink', 'eat', 'quote' );
@@ -178,8 +178,8 @@ class Kind_Config {
 	 * @access public
 	 */
 	public static function remove_post_formats() {
-		$options = get_option( 'iwt_option' );
-		if ( 1 === $options['disableformats'] ) { remove_theme_support( 'post-formats' ); }
+		$options = get_option( 'iwt_option', array() );
+		if ( 1 === ifset($options['disableformats']) ) { remove_theme_support( 'post-formats' ); }
 	}
 
 	public static function add_post_help_tab() {
