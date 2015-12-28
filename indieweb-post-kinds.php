@@ -247,7 +247,8 @@ function kind_icon($slug) {
 	if ( empty($slug) ) {
 		return '';
 	}
-	return '<span class="kind-icon">' . file_get_contents( plugin_dir_url( __FILE__) . 'svg/' . $slug . '.svg' ) . '</span>';
+	$icon = '<span class="kind-icon">' . file_get_contents( plugin_dir_url( __FILE__) . 'svg/' . $slug . '.svg' ) . '</span>';
+	return apply_filters('kind-icon', $icon, $slug);
 }
 
 ?>
