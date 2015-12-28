@@ -175,7 +175,8 @@ class Kind_Taxonomy {
 
 	public static function select_metabox( $post ) {
 		$strings = self::get_strings();
-		$option = get_option( 'iwt_options' );
+		$option = get_option( 'iwt_options', array() );
+		$include = array();
 		if ( array_key_exists( 'termslists', $option ) ) {
 			$include = $option['termslists'];
 		}
