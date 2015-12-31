@@ -37,6 +37,12 @@ switch ( $kind )  {
         case 'wish':
           $content .= 'p-wish';
         break;
+				case 'read':
+					$content .= 'p-read-of';
+				break;
+				case 'quote':
+					$content .= 'p-in-reply-to';
+				break;
 	}
 $content .= '">';
 $content .= kind_icon($kind);
@@ -47,7 +53,13 @@ if ($author) {
 }
 $site_name = self::get_site_name( $meta->get_cite(), $meta->get_url() );
 if ($site_name) {
-	$content .= '<em>(' . $site_name . ')</em>';
+	$content .= '<em>(<span class="p-publication">' . $site_name . '</span>)</em>';
+}
+if ( in_array( $kind, array('jam', 'listen', 'play', 'read', 'watch') ) ) {
+	$duration = $meta->get_duration();
+	if ($duration) {
+		$content .= '(' . __( 'Duration: ', 'Post kind') . '<span class="p-duration">' . $duration . '</span>)';
+	}
 }
 if ($cite) {
 	$embed = self::get_embed ($meta->get_url());

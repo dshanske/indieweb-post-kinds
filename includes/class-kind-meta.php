@@ -303,7 +303,7 @@ class Kind_Meta {
 	}
 
 	public function build_time($date, $time, $offset) {
-		if (! isset($date) ) {
+		if ( empty($date) ) {
 			return false;
 		}
 		if (empty($time) ) {
@@ -342,13 +342,25 @@ class Kind_Meta {
     return $specString;
 	}
 
-	public function get_duration($dt_start, $dt_end) {
-		if ( isset($this->meta['duration'] ) ) {
+	public function get_duration() {
+		if ( array_key_exists('duration', $this->meta) ) {
 			return $this->meta['duration'];
 		}
-		$start = date_create_from_format("Y-m-d\TH:i:sP", $dt_start);
-		$end = date_create_from_format("Y-m-d\TH:i:sP", $dt_end);
-		if  ( isset($start) && isset($end) ) {
+		$start = array();
+		$end = array();
+	  if ( array_key_exists('dt-start', $this->meta) ) {
+        $start = date_create_from_format("Y-m-d\TH:i:sP", $this->meta['dt-start']);
+    }
+    else if (! empty ($this->meta['cite']['published']) ) {
+        $start = date_create_from_format("Y-m-d\TH:i:sP",$this->meta['cite']['published']);
+    }
+    if ( ! empty ( $this->meta['dt-end'] ) ) {
+        $end = date_create_from_format("Y-m-d\TH:i:sP", $this->meta['dt-end']);
+    }
+    else if (! empty ($this->meta['cite']['updated']) ) {
+        $end = date_create_from_format("Y-m-d\TH:i:sP",$this->meta['cite']['updated']);
+    }
+		if  ( ($start instanceof DateTime) && ($end instanceof DateTime)  ) {
 			$duration = $start->diff($end);
 			return self::dateIntervalToString($duration);
 		}

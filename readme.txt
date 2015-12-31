@@ -131,7 +131,7 @@ developer of this plugin.
 		* Start of help system
 		* Hooks for possible future author data to be stored/retrieved from a nicknames cache
 		* Activation of the jam post kind, previously reserved.
-		* Addition of the read post kind, reflecting the reading of a book, as opposed to online content.
+		* Addition of the read post kind, reflecting having read a book, as opposed to shorter content.
 		* Reserving of the quote post kind, for excerpting. Will be added in future version
 	= Version 2.2.1 = 
 		* Minor Tweaks and Bugfixes from changes in 2.2.0.
