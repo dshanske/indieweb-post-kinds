@@ -1,9 +1,9 @@
 === Indieweb Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like
-Stable tag: 2.3.0
+Stable tag: 2.3.1
 Requires at least: 4.2
-Tested up to: 4.3
+Tested up to: 4.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -119,6 +119,9 @@ Indieweb Post Kinds had support for replying to Twitter posts using the Social N
 developer of this plugin.
 
 == Changelog ==
+	= Version 2.3.1 = 
+		* Changed method of retrieving svg files due server restrictions
+		* Jquery Date and Time Picker now enables when HTML5 input date/time not supported
 	= Version 2.3.0 = 
 		* Attempt to fix emoji issue reported by @acegiak
 		* Duration to be deprecated and replaced by start date and end date. The presence of a duration field will be used over start minus 

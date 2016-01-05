@@ -1,6 +1,5 @@
 (function( $ ) {
 	'use strict';
-
 	$(function() {
 
 		// Grab the wrapper for the Navigation Tabs

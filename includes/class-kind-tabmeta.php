@@ -34,6 +34,23 @@ class Kind_Tabmeta {
 
 	public static function enqueue_admin_scripts() {
 		if ( 'post' === get_current_screen()->id ) {
+			wp_enqueue_script('jquery-ui-datepicker');
+			wp_enqueue_style('jquery-ui');
+
+			wp_enqueue_script(
+				'jquery-ui-timepicker',
+				plugins_url( 'indieweb-post-kinds/includes/tabs/jquery.timepicker.min.js' ),
+				array( 'jquery' ),
+				POST_KINDS_VERSION
+			);
+
+			wp_enqueue_script(
+				'kindmeta-time',
+				plugins_url( 'indieweb-post-kinds/includes/tabs/time.js' ),
+				array( 'jquery' ),
+				POST_KINDS_VERSION
+			);
+
 			wp_enqueue_script(
 				'kindmeta-tabs',
 				plugins_url( 'indieweb-post-kinds/includes/tabs/tabs.js' ),
