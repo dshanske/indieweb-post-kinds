@@ -99,20 +99,22 @@ class Kind_View {
 
 	// Return the Display
 	public static function get_display( $post_ID, $single = false ) {
-		$meta = new Kind_Meta( $post_ID );
-		$kind = get_post_kind_slug( $post_ID );
-		$cite = $meta->get_cite();
-		$hcard = 'Unknown Author';
-		$content = '';
-		switch ( $kind ) {
-			case 'note':
-			case 'article':
-			case 'photo':
-				break;
-			default:
-				include( 'views/kind-default.php' );
+		if ( 'post' === get_post_type($post_ID) ) {
+			$meta = new Kind_Meta( $post_ID );
+			$kind = get_post_kind_slug( $post_ID );
+			$cite = $meta->get_cite();
+			$hcard = 'Unknown Author';
+			$content = '';
+			switch ( $kind ) {
+				case 'note':
+				case 'article':
+				case 'photo':
+					break;
+				default:
+					include( 'views/kind-default.php' );
+			}
+			return apply_filters( 'kind-response-display', $content );
 		}
-		return apply_filters( 'kind-response-display', $content );
 	}
 
 	/**
