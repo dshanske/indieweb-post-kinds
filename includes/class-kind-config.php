@@ -8,7 +8,7 @@
 
 add_action( 'admin_init' , array( 'Kind_Config', 'admin_init' ) );
 add_action( 'after_setup_theme', array( 'Kind_Config', 'remove_post_formats' ), 11 );
-add_action( 'admin_menu', array( 'Kind_Config', 'admin_menu' ) );
+add_action( 'admin_menu', array( 'Kind_Config', 'admin_menu' ), 11 );
 // Add post help tab
 add_action( 'load-post.php', array( 'Kind_Config', 'add_post_help_tab') , 20 );
 
@@ -44,7 +44,20 @@ class Kind_Config {
 	 * @access public
 	 */
 	public static function admin_menu() {
-		add_options_page( '', __( 'Post Kinds', 'Post kind' ), 'manage_options', 'kind_options', array( 'Kind_Config', 'options_form' ) );		
+		// If the IndieWeb Plugin is installed use its menu.
+		if ( class_exists('IndieWebPlugin') ) {
+ 	    add_submenu_page(
+  	    'indieweb',
+    	  __( 'Post Kinds', 'Post kind' ), // page title
+  	    __( 'Post Kinds', 'Post kind' ), // menu title
+   	   'manage_options', // access capability
+  	    'kind_options',
+      	array('Kind_Config', 'options_form')
+    );
+		}
+		else{ 
+			add_options_page( '', __( 'Post Kinds', 'Post kind' ), 'manage_options', 'kind_options', array( 'Kind_Config', 'options_form' ) );		
+		}
 	}
 
 	/**
