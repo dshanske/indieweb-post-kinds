@@ -10,6 +10,7 @@ add_action( 'init' , array( 'Kind_View', 'init' ) );
 class Kind_View {
 	public static function init() {
 			add_filter( 'the_content', array( 'Kind_View', 'content_response' ), 20 );
+			add_filter( 'the_excerpt', array( 'Kind_View', 'excerpt_response' ), 20 );
 	}
 
 	public static function sanitize_output( $content ) {
@@ -96,6 +97,17 @@ class Kind_View {
 	public static function content_response ( $content ) {
 		return self::get_display( get_the_ID(), is_single() ) . $content;
 	}
+
+
+	public static function excerpt_response ( $content ) {
+		global $post;
+		if ( has_excerpt( get_the_ID() ) ) {
+    	return self::get_display( get_the_ID(), is_single() ) . get_the_excerpt();
+		}
+		else {
+			return self::get_display( get_the_ID(), is_single() ) . wp_trim_words($post->post_content);
+		}
+  }
 
 	// Return the Display
 	public static function get_display( $post_ID, $single = false ) {
