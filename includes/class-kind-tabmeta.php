@@ -313,7 +313,13 @@ class Kind_Tabmeta {
 				}
 			}
 		}
-		return array_filter( $data );
+		$data = array_filter( $data );
+		if ( array_key_exists( 'name', $data ) ) {
+			if ( ! array_key_exists( 'summary', $data ) || ! array_key_exists( 'content', $data ) ) {
+				unset( $data['name'] );
+			}
+		}
+		return $data;
 	}
 
 
