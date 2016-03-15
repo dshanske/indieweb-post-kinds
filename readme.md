@@ -261,7 +261,8 @@ developer of this plugin.
 		* Option to Update Metadata Deliberately Commented Out. 
 		* Anyone who used the old plugin should backup their database before considering migration. The data should still be in the database regardless.
 	= Version 0.1 = 
-**		* Revised settings page to use WordPress Settings API. Alert:** This version switches to using an array for storage of response data for future development. To migrate your data, please backup your database and then check "Migrate to new data structure on update" on the options page.  
+		* Revised settings page to use WordPress Settings API. 
+		* **ALERT:** This version switches to using an array for storage of response data for future development. To migrate your data, please backup your database and then check "Migrate to new data structure on update" on the options page.  
 	= Version 0.06 = 
 		* Added in support for Favorite
 		* fixed webmention support.
