@@ -93,6 +93,11 @@ class Kind_Tabmeta {
 		$cite = $meta->get_cite();
 		$author = $meta->get_author();
 		$url = $meta->get_url();
+		if (!$url) {
+			if ( array_key_exists( 'kindurl', $_GET) ) {
+				$url = $_GET['kindurl'];
+			}
+	  }
 		$time = $meta->get_time();
 		include_once( 'tabs/tab-navigation.php' );
 	}

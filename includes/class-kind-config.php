@@ -11,7 +11,6 @@ add_action( 'after_setup_theme', array( 'Kind_Config', 'remove_post_formats' ), 
 add_action( 'admin_menu', array( 'Kind_Config', 'admin_menu' ), 11 );
 // Add post help tab
 add_action( 'load-post.php', array( 'Kind_Config', 'add_post_help_tab') , 20 );
-
 /**
  * Static Class to Configure Admin Options.
  * @package Post Kinds
@@ -51,9 +50,16 @@ class Kind_Config {
 		}
 		add_settings_field( 'termslist', __( 'Select All Kinds You Wish to Use', 'Post kind' ), array( 'Kind_Config', 'termlist_callback' ), 'iwt_options', 'iwt-content' );
     add_settings_field( 'defaultkind', __( 'Default Kind', 'Post kind' ), array( 'Kind_Config', 'defaultkind_callback' ), 'iwt_options', 'iwt-content' );
-
+		// Add Query Var to Admin
+    add_filter('query_vars', array('Kind_Config', 'query_var'));
 
 	}
+
+
+  public static function query_var($vars) {
+    $vars[] = 'kindurl';
+    return $vars;
+  }
 
 	/**
 	 * Adds Options Page for Plugin Options.

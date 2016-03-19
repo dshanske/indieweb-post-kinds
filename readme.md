@@ -130,6 +130,8 @@ developer of this plugin.
 		* Bug fix by acegiak to content protection override
 		* Feature added by acegiak to set default kind if no kind is set when post is saved
 		* Add post_id to filter kind_response_display
+		* When retrieving information on a URL, set the title to the title of the URL if no title is set
+		* Add kindurl query variable to admin. If you add it to wp-admin/post-new.php with a URL then it will automatically put that URL in the URL box. For use by bookmarklets
 	= Version 2.3.2 = 
 		* Fix rendering issues when no response
 		* Add support for Indieweb Plugin
@@ -268,7 +270,7 @@ developer of this plugin.
 		* Option to Update Metadata Deliberately Commented Out. 
 		* Anyone who used the old plugin should backup their database before considering migration. The data should still be in the database regardless.
 	= Version 0.1 = 
-**		* Revised settings page to use WordPress Settings API. Alert:** This version switches to using an array for storage of response data for future development. To migrate your data, please backup your database and then check "Migrate to new data structure on update" on the options page.  
+**		* Revised settings page to use WordPress Settings API. Alert:** This version switches to using an array for storage of response data for future development. To migrate your data, please backup your database and then check Migrate to new data structure on update on the options page.  
 	= Version 0.06 = 
 		* Added in support for Favorite
 		* fixed webmention support.
