@@ -34,8 +34,8 @@ class Kind_Tabmeta {
 
 	public static function enqueue_admin_scripts() {
 		if ( 'post' === get_current_screen()->id ) {
-			wp_enqueue_script('jquery-ui-datepicker');
-			wp_enqueue_style('jquery-ui');
+			wp_enqueue_script( 'jquery-ui-datepicker' );
+			wp_enqueue_style( 'jquery-ui' );
 
 			wp_enqueue_script(
 				'jquery-ui-timepicker',
@@ -93,11 +93,11 @@ class Kind_Tabmeta {
 		$cite = $meta->get_cite();
 		$author = $meta->get_author();
 		$url = $meta->get_url();
-		if (!$url) {
-			if ( array_key_exists( 'kindurl', $_GET) ) {
+		if ( ! $url ) {
+			if ( array_key_exists( 'kindurl', $_GET ) ) {
 				$url = $_GET['kindurl'];
 			}
-	  }
+		}
 		$time = $meta->get_time();
 		include_once( 'tabs/tab-navigation.php' );
 	}
@@ -164,13 +164,13 @@ class Kind_Tabmeta {
 		}
 		if ( isset( $_POST['cite'] ) ) {
 			if ( in_array( $kind, array( 'like', 'reply', 'repost', 'favorite', 'bookmark' ) ) ) {
-				if ( !empty($start) ) {
+				if ( ! empty( $start ) ) {
 					$_POST['cite']['published'] = $start;
-					error_log('Start: ' . $start);
+					error_log( 'Start: ' . $start );
 				}
-				if ( !empty($end)  ) {
+				if ( ! empty( $end )  ) {
 					$_POST['cite']['updated'] = $end;
-					error_log('End: ' . $end);
+					error_log( 'End: ' . $end );
 				}
 			} else {
 				$meta->set_time( $start, $end );

@@ -10,16 +10,17 @@ add_action( 'admin_init' , array( 'Kind_Config', 'admin_init' ) );
 add_action( 'after_setup_theme', array( 'Kind_Config', 'remove_post_formats' ), 11 );
 add_action( 'admin_menu', array( 'Kind_Config', 'admin_menu' ), 11 );
 // Add post help tab
-add_action( 'load-post.php', array( 'Kind_Config', 'add_post_help_tab') , 20 );
+add_action( 'load-post.php', array( 'Kind_Config', 'add_post_help_tab' ) , 20 );
 /**
  * Static Class to Configure Admin Options.
+ *
  * @package Post Kinds
  */
 class Kind_Config {
 
 
 	public static function Defaults() {
-		return array( 
+		return array(
 			'embeds' => '0',
 			'cacher' => '0',
 			'authorimages' => '0',
@@ -27,13 +28,14 @@ class Kind_Config {
 			'protection' => '0',
 			'contentelements' => '',
 			'defaultkind' => 'note',
-			'termslist' => array( 'article', 'reply', 'bookmark' )
+			'termslist' => array( 'article', 'reply', 'bookmark' ),
 		);
 
 	}
 
 	/**
 	 * Function to Set up Admin Settings.
+	 *
 	 * @access public
 	 */
 	public static function admin_init() {
@@ -49,41 +51,42 @@ class Kind_Config {
 				add_settings_field( 'contentelements', __( 'Response Content Allowed Html Elements', 'Post kind' ) . ' <a href="http://codex.wordpress.org/Function_Reference/wp_kses">*</a>', array( 'Kind_Config', 'textbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'contentelements' ) );
 		}
 		add_settings_field( 'termslist', __( 'Select All Kinds You Wish to Use', 'Post kind' ), array( 'Kind_Config', 'termlist_callback' ), 'iwt_options', 'iwt-content' );
-    add_settings_field( 'defaultkind', __( 'Default Kind', 'Post kind' ), array( 'Kind_Config', 'defaultkind_callback' ), 'iwt_options', 'iwt-content' );
+		add_settings_field( 'defaultkind', __( 'Default Kind', 'Post kind' ), array( 'Kind_Config', 'defaultkind_callback' ), 'iwt_options', 'iwt-content' );
 		// Add Query Var to Admin
-    add_filter('query_vars', array('Kind_Config', 'query_var'));
+		add_filter( 'query_vars', array( 'Kind_Config', 'query_var' ) );
 
 	}
 
 
-  public static function query_var($vars) {
-    $vars[] = 'kindurl';
-    return $vars;
-  }
+	public static function query_var($vars) {
+		$vars[] = 'kindurl';
+		return $vars;
+	}
 
 	/**
 	 * Adds Options Page for Plugin Options.
+	 *
 	 * @access public
 	 */
 	public static function admin_menu() {
 		// If the IndieWeb Plugin is installed use its menu.
-		if ( class_exists('IndieWeb_Plugin') ) {
- 	    add_submenu_page(
-  	    'indieweb',
-    	  __( 'Post Kinds', 'Post kind' ), // page title
-  	    __( 'Post Kinds', 'Post kind' ), // menu title
-   	   'manage_options', // access capability
-  	    'kind_options',
-      	array('Kind_Config', 'options_form')
-    );
-		}
-		else{ 
-			add_options_page( '', __( 'Post Kinds', 'Post kind' ), 'manage_options', 'kind_options', array( 'Kind_Config', 'options_form' ) );		
+		if ( class_exists( 'IndieWeb_Plugin' ) ) {
+		    add_submenu_page(
+				'indieweb',
+				__( 'Post Kinds', 'Post kind' ), // page title
+				__( 'Post Kinds', 'Post kind' ), // menu title
+				'manage_options', // access capability
+				'kind_options',
+				array( 'Kind_Config', 'options_form' )
+			);
+		} else {
+			add_options_page( '', __( 'Post Kinds', 'Post kind' ), 'manage_options', 'kind_options', array( 'Kind_Config', 'options_form' ) );
 		}
 	}
 
 	/**
 	 * Adds link to Plugin Page for Options Page.
+	 *
 	 * @access public
 	 * @param array $links Array of Existing Links.
 	 * @return array Modified Links.
@@ -96,6 +99,7 @@ class Kind_Config {
 
 	/**
 	 * Callback for Options on Options Page.
+	 *
 	 * @access public
 	 */
 	public static function options_callback() {
@@ -114,7 +118,7 @@ class Kind_Config {
 	public static function checkbox_callback( array $args ) {
 		$options = get_option( 'iwt_options', self::Defaults() );
 		$name = $args['name'];
-		$checked = ifset($options[ $name ]);
+		$checked = ifset( $options[ $name ] );
 		echo "<input name='iwt_options[" . esc_html( $name ) . "]' type='hidden' value='0' />";
 		echo "<input name='iwt_options[" . esc_html( $name ) . "]' type='checkbox' value='1' " . checked( 1, $checked, false ) . ' /> ';
 	}
@@ -165,30 +169,31 @@ class Kind_Config {
 		echo '</select>';
 	}
 
-  /**
-   * Generate a Term List.
-   *
-   * @access public
-   */
-  public static function defaultkind_callback() {
-    $options = get_option( 'iwt_options', self::Defaults() );
-    $terms = $options['termslist'];
+	/**
+	 * Generate a Term List.
+	 *
+	 * @access public
+	 */
+	public static function defaultkind_callback() {
+		$options = get_option( 'iwt_options', self::Defaults() );
+		$terms = $options['termslist'];
 		$terms[] = 'note';
-    $strings = Kind_Taxonomy::get_strings();
+		$strings = Kind_Taxonomy::get_strings();
 
-    $defaultkind = $options['defaultkind'];
-    
-    echo '<select id="defaultkind" name="iwt_options[defaultkind]">';
-    foreach ( $terms as $term ) {
-      echo '<option value="' . $term . '" '. selected( $term, $defaultkind ) . '>' . $strings[$term] . '</option>';
-    }
-    echo '</select>';
-  }
+		$defaultkind = $options['defaultkind'];
+
+		echo '<select id="defaultkind" name="iwt_options[defaultkind]">';
+		foreach ( $terms as $term ) {
+			echo '<option value="' . $term . '" '. selected( $term, $defaultkind ) . '>' . $strings[$term] . '</option>';
+		}
+		echo '</select>';
+	}
 
 
 
 	/**
 	 * Generate Options Form.
+	 *
 	 * @access public
 	 */
 	public static function options_form() {
@@ -207,6 +212,7 @@ class Kind_Config {
 
 	/**
 	 * Purge the response code stored in metadata.
+	 *
 	 * @access public
 	 */
 	public static function response_purge() {
@@ -227,18 +233,19 @@ class Kind_Config {
 
 	/**
 	 * Disable Post Formats.
+	 *
 	 * @access public
 	 */
 	public static function remove_post_formats() {
 		$options = get_option( 'iwt_option', self::Defaults() );
-		if ( 1 === ifset($options['disableformats']) ) { remove_theme_support( 'post-formats' ); }
+		if ( 1 === ifset( $options['disableformats'] ) ) { remove_theme_support( 'post-formats' ); }
 	}
 
 	public static function add_post_help_tab() {
 		get_current_screen()->add_help_tab( array(
-			 'id'       => 'post_kind_help'
-			,'title'    => __( 'Post Properties', 'Post kind' )
-			,'content'  => __('
+			'id'       => 'post_kind_help',
+			'title'    => __( 'Post Properties', 'Post kind' ),
+			'content'  => __('
 						<p> The Post Properties tab represents the Microformats properties of a Post. For different kinds of posts, the different
 						fields mean something different. Example: Artist Name vs Author Name</p>
 						<ul><strong>Response</strong>
@@ -259,8 +266,7 @@ class Kind_Config {
             </ul>
 
 
-			', 'Post kind')
-
+			', 'Post kind'),
 		) );
 	}
 

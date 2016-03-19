@@ -20,7 +20,7 @@ class Kind_View {
 			$allowed = json_decode( $options['contentelements'], true );
 		}
 
-		if(ifset($options[ 'protection' ])){
+		if ( ifset( $options[ 'protection' ] ) ) {
 			return $content;
 		}
 		return wp_kses( ( string ) $content ,$allowed );
@@ -106,16 +106,15 @@ class Kind_View {
 	public static function excerpt_response ( $content ) {
 		global $post;
 		if ( has_excerpt( get_the_ID() ) ) {
-    	return self::get_display( get_the_ID(), is_single() ) . get_the_excerpt();
+			return self::get_display( get_the_ID(), is_single() ) . get_the_excerpt();
+		} else {
+			return self::get_display( get_the_ID(), is_single() ) . wp_trim_words( $post->post_content );
 		}
-		else {
-			return self::get_display( get_the_ID(), is_single() ) . wp_trim_words($post->post_content);
-		}
-  }
+	}
 
 	// Return the Display
 	public static function get_display( $post_ID, $single = false ) {
-		if ( 'post' === get_post_type($post_ID) ) {
+		if ( 'post' === get_post_type( $post_ID ) ) {
 			$meta = new Kind_Meta( $post_ID );
 			$kind = get_post_kind_slug( $post_ID );
 			$cite = $meta->get_cite();

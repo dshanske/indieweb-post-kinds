@@ -46,9 +46,9 @@ class mf2_cleaner {
 	}
 	public static function toHtml($v) {
 		if ( self::isEmbeddedHtml( $v ) ) {
-			return $v['html']; } elseif (self::isMicroformat( $v ))
-		return htmlspecialchars( $v['value'] );
-		return htmlspecialchars( $v );
+			return $v['html']; } elseif ( self::isMicroformat( $v ) ) {
+			return htmlspecialchars( $v['value'] ); }
+			return htmlspecialchars( $v );
 	}
 	public static function getHtml(array $mf, $propName, $fallback = null) {
 		if ( ! empty( $mf['properties'][$propName] ) and is_array( $mf['properties'][$propName] ) ) {
@@ -71,18 +71,18 @@ class mf2_cleaner {
 	public static function getDateTimeProperty($name, array $mf, $ensureValid = false, $fallback = null) {
 		$compliment = 'published' === $name ? 'updated' : 'published';
 		if ( self::hasProp( $mf, $name ) ) {
-			$return = self::getProp( $mf, $name ); } elseif (self::hasProp( $mf, $compliment ))
-		$return = self::getProp( $mf, $compliment );
-		else { 		return $fallback; }
-		if ( ! $ensureValid ) {
-			return $return; } else {
-			try {
-				new DateTime( $return );
-				return $return;
-			} catch (Exception $e) {
-				return $fallback;
-			}
-			}
+			$return = self::getProp( $mf, $name ); } elseif ( self::hasProp( $mf, $compliment ) ) {
+			$return = self::getProp( $mf, $compliment );
+			} else { 		return $fallback; }
+			if ( ! $ensureValid ) {
+				return $return; } else {
+				try {
+					new DateTime( $return );
+					return $return;
+				} catch (Exception $e) {
+					return $fallback;
+				}
+				}
 	}
 	public static function sameHostname($u1, $u2) {
 		return parse_url( $u1, PHP_URL_HOST ) === parse_url( $u2, PHP_URL_HOST );
@@ -96,62 +96,61 @@ class mf2_cleaner {
 			$url = self::getProp( $mf, 'url' ); }
 
 		if ( self::hasProp( $mf, 'author' ) and self::isMicroformat( current( $mf['properties']['author'] ) ) ) {
-			$entryAuthor = current( $mf['properties']['author'] ); } elseif (self::hasProp( $mf, 'reviewer' ) and self::isMicroformat( current( $mf['properties']['author'] ) ))
-		$entryAuthor = current( $mf['properties']['reviewer'] );
-		elseif (self::hasProp( $mf, 'author' ))
-		$entryAuthor = self::getPlaintext( $mf, 'author' );
+			$entryAuthor = current( $mf['properties']['author'] ); } elseif ( self::hasProp( $mf, 'reviewer' ) and self::isMicroformat( current( $mf['properties']['author'] ) ) ) {
+			$entryAuthor = current( $mf['properties']['reviewer'] ); } elseif ( self::hasProp( $mf, 'author' ) ) {
+				$entryAuthor = self::getPlaintext( $mf, 'author' ); }
 
-		// If we have no context that’s the best we can do
-		if ( null === $context ) {
-			return $entryAuthor; }
+			// If we have no context that’s the best we can do
+			if ( null === $context ) {
+				return $entryAuthor; }
 
-		// Whatever happens after this we’ll need these
-		$flattenedMf = self::flattenMicroformats( $context );
-		$hCards = self::findMicroformatsByType( $flattenedMf, 'h-card', false );
-		if ( is_string( $entryAuthor ) ) {
-			// look through all page h-cards for one with this URL
-			$authorHCards = self::findMicroformatsByProperty( $hCards, 'url', $entryAuthor, false );
-			if ( ! empty( $authorHCards ) ) {
-				$entryAuthor = current( $authorHCards ); }
-		}
-		if ( is_string( $entryAuthor ) and $matchName ) {
-			// look through all page h-cards for one with this name
-			$authorHCards = self::findMicroformatsByProperty( $hCards, 'name', $entryAuthor, false );
+			// Whatever happens after this we’ll need these
+			$flattenedMf = self::flattenMicroformats( $context );
+			$hCards = self::findMicroformatsByType( $flattenedMf, 'h-card', false );
+			if ( is_string( $entryAuthor ) ) {
+				// look through all page h-cards for one with this URL
+				$authorHCards = self::findMicroformatsByProperty( $hCards, 'url', $entryAuthor, false );
+				if ( ! empty( $authorHCards ) ) {
+					$entryAuthor = current( $authorHCards ); }
+			}
+			if ( is_string( $entryAuthor ) and $matchName ) {
+				// look through all page h-cards for one with this name
+				$authorHCards = self::findMicroformatsByProperty( $hCards, 'name', $entryAuthor, false );
 
-			if ( ! empty( $authorHCards ) ) {
-				$entryAuthor = current( $authorHCards ); }
-		}
+				if ( ! empty( $authorHCards ) ) {
+					$entryAuthor = current( $authorHCards ); }
+			}
 
-		if ( null !== $entryAuthor ) {
-			return $entryAuthor; }
+			if ( null !== $entryAuthor ) {
+				return $entryAuthor; }
 
-		// look for page-wide rel-author, h-card with that
-		if ( ! empty( $context['rels'] ) and ! empty( $context['rels']['author'] ) ) {
-			// Grab first href with rel=author
-			$relAuthorHref = current( $context['rels']['author'] );
+			// look for page-wide rel-author, h-card with that
+			if ( ! empty( $context['rels'] ) and ! empty( $context['rels']['author'] ) ) {
+				// Grab first href with rel=author
+				$relAuthorHref = current( $context['rels']['author'] );
 
-			$relAuthorHCards = self::findMicroformatsByProperty( $hCards, 'url', $relAuthorHref );
+				$relAuthorHCards = self::findMicroformatsByProperty( $hCards, 'url', $relAuthorHref );
 
-			if ( ! empty( $relAuthorHCards ) ) {
-				return current( $relAuthorHCards ); }
-		}
-		// look for h-card with same hostname as $url if given
-		if ( null !== $url and $matchHostname ) {
-			$sameHostnameHCards = self::findMicroformatsByCallable($hCards, function ($mf) use ($url) {
-				if ( ! hasProp( $mf, 'url' ) ) {
-					return false; }
-				foreach ( $mf['properties']['url'] as $u ) {
-					if ( sameHostname( $url, $u ) ) {
-						return true; }
-				}
-			}, false);
-			if ( ! empty( $sameHostnameHCards ) ) {
-				return current( $sameHostnameHCards ); }
-		}
-		// Without fetching, this is the best we can do. Return the found string value, or null.
-		return empty( $relAuthorHref )
-		? null
-		: $relAuthorHref;
+				if ( ! empty( $relAuthorHCards ) ) {
+					return current( $relAuthorHCards ); }
+			}
+			// look for h-card with same hostname as $url if given
+			if ( null !== $url and $matchHostname ) {
+				$sameHostnameHCards = self::findMicroformatsByCallable($hCards, function ($mf) use ($url) {
+					if ( ! hasProp( $mf, 'url' ) ) {
+						return false; }
+					foreach ( $mf['properties']['url'] as $u ) {
+						if ( sameHostname( $url, $u ) ) {
+							return true; }
+					}
+				}, false);
+				if ( ! empty( $sameHostnameHCards ) ) {
+					return current( $sameHostnameHCards ); }
+			}
+			// Without fetching, this is the best we can do. Return the found string value, or null.
+			return empty( $relAuthorHref )
+			? null
+			: $relAuthorHref;
 	}
 	public static function parseUrl($url) {
 		$r = parse_url( $url );
@@ -236,26 +235,26 @@ class mf2_cleaner {
 	}
 	public static function flattenMicroformats(array $mfs) {
 		if ( self::isMicroformatCollection( $mfs ) ) {
-			$mfs = $mfs['items']; } elseif (self::isMicroformat( $mfs ))
-		$mfs = array( $mfs );
+			$mfs = $mfs['items']; } elseif ( self::isMicroformat( $mfs ) ) {
+			$mfs = array( $mfs ); }
 
-		$items = array();
+			$items = array();
 
-		foreach ( $mfs as $mf ) {
-			$items[] = $mf;
+			foreach ( $mfs as $mf ) {
+				$items[] = $mf;
 
-			$items = array_merge( $items, self::flattenMicroformatProperties( $mf ) );
+				$items = array_merge( $items, self::flattenMicroformatProperties( $mf ) );
 
-			if ( empty( $mf['children'] ) ) {
-				continue; }
+				if ( empty( $mf['children'] ) ) {
+					continue; }
 
-			foreach ( $mf['children'] as $child ) {
-				$items[] = $child;
-				$items = array_merge( $items, self::flattenMicroformatProperties( $child ) );
+				foreach ( $mf['children'] as $child ) {
+					$items[] = $child;
+					$items = array_merge( $items, self::flattenMicroformatProperties( $child ) );
+				}
 			}
-		}
 
-		return $items;
+			return $items;
 	}
 	public static function findMicroformatsByType(array $mfs, $name, $flatten = true) {
 		return self::findMicroformatsByCallable($mfs, function ($mf) use ($name) {

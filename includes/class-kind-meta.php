@@ -8,6 +8,7 @@
 
 /**
  * Class to Manage Kind Meta.
+ *
  * @package Post Kinds
  */
 class Kind_Meta {
@@ -110,7 +111,7 @@ class Kind_Meta {
 			$value = wp_encode_emoji( $value );
 		}
 
-		if(ifset($options[ 'protection' ])){
+		if ( ifset( $options[ 'protection' ] ) ) {
 			return $value;
 		}
 		return wp_kses( ( string ) $value , $allowed );
@@ -307,66 +308,64 @@ class Kind_Meta {
 	}
 
 	public function build_time($date, $time, $offset) {
-		if ( empty($date) ) {
+		if ( empty( $date ) ) {
 			return false;
 		}
-		if (empty($time) ) {
+		if ( empty( $time ) ) {
 			$time = '00:00:00';
 		}
 		return $date . 'T' . $time . $offset;
 	}
 
 	public static function dateIntervalToString(\DateInterval $interval) {
-    // Reading all non-zero date parts.
-    $date = array_filter(array(
-        'Y' => $interval->y,
-        'M' => $interval->m,
-        'D' => $interval->d
-    ));
+		// Reading all non-zero date parts.
+		$date = array_filter(array(
+			'Y' => $interval->y,
+			'M' => $interval->m,
+			'D' => $interval->d,
+		));
 
-    // Reading all non-zero time parts.
-    $time = array_filter(array(
-        'H' => $interval->h,
-        'M' => $interval->i,
-        'S' => $interval->s
-    ));
+		// Reading all non-zero time parts.
+		$time = array_filter(array(
+			'H' => $interval->h,
+			'M' => $interval->i,
+			'S' => $interval->s,
+		));
 
-    $specString = 'P';
+		$specString = 'P';
 
-    // Adding each part to the spec-string.
-    foreach ($date as $key => $value) {
-        $specString .= $value . $key;
-    }
-    if (count($time) > 0) {
-        $specString .= 'T';
-        foreach ($time as $key => $value) {
-            $specString .= $value . $key;
-        }
-    }
-    return $specString;
+		// Adding each part to the spec-string.
+		foreach ( $date as $key => $value ) {
+			$specString .= $value . $key;
+		}
+		if ( count( $time ) > 0 ) {
+			$specString .= 'T';
+			foreach ( $time as $key => $value ) {
+				$specString .= $value . $key;
+			}
+		}
+		return $specString;
 	}
 
 	public function get_duration() {
-		if ( array_key_exists('duration', $this->meta) ) {
+		if ( array_key_exists( 'duration', $this->meta ) ) {
 			return $this->meta['duration'];
 		}
 		$start = array();
 		$end = array();
-	  if ( array_key_exists('dt-start', $this->meta) ) {
-        $start = date_create_from_format("Y-m-d\TH:i:sP", $this->meta['dt-start']);
-    }
-    else if (! empty ($this->meta['cite']['published']) ) {
-        $start = date_create_from_format("Y-m-d\TH:i:sP",$this->meta['cite']['published']);
-    }
-    if ( ! empty ( $this->meta['dt-end'] ) ) {
-        $end = date_create_from_format("Y-m-d\TH:i:sP", $this->meta['dt-end']);
-    }
-    else if (! empty ($this->meta['cite']['updated']) ) {
-        $end = date_create_from_format("Y-m-d\TH:i:sP",$this->meta['cite']['updated']);
-    }
-		if  ( ($start instanceof DateTime) && ($end instanceof DateTime)  ) {
-			$duration = $start->diff($end);
-			return self::dateIntervalToString($duration);
+		if ( array_key_exists( 'dt-start', $this->meta ) ) {
+			$start = date_create_from_format( 'Y-m-d\TH:i:sP', $this->meta['dt-start'] );
+		} else if ( ! empty( $this->meta['cite']['published'] ) ) {
+			$start = date_create_from_format( 'Y-m-d\TH:i:sP',$this->meta['cite']['published'] );
+		}
+		if ( ! empty( $this->meta['dt-end'] ) ) {
+			$end = date_create_from_format( 'Y-m-d\TH:i:sP', $this->meta['dt-end'] );
+		} else if ( ! empty( $this->meta['cite']['updated'] ) ) {
+			$end = date_create_from_format( 'Y-m-d\TH:i:sP',$this->meta['cite']['updated'] );
+		}
+		if ( ($start instanceof DateTime) && ($end instanceof DateTime)  ) {
+			$duration = $start->diff( $end );
+			return self::dateIntervalToString( $duration );
 		}
 		return false;
 	}
@@ -382,30 +381,28 @@ class Kind_Meta {
 
 	public function get_time() {
 		$time = array();
-		if ( ! empty ( $this->meta['dt-start'] ) ) {
-				$start = date_create_from_format("Y-m-d\TH:i:sP", $this->meta['dt-start']);
+		if ( ! empty( $this->meta['dt-start'] ) ) {
+				$start = date_create_from_format( 'Y-m-d\TH:i:sP', $this->meta['dt-start'] );
+		} else if ( ! empty( $this->meta['cite']['published'] ) ) {
+				$start = date_create_from_format( 'Y-m-d\TH:i:sP',$this->meta['cite']['published'] );
 		}
-		else if (! empty ($this->meta['cite']['published']) ) {
-				$start = date_create_from_format("Y-m-d\TH:i:sP",$this->meta['cite']['published']);
-		}
-		if ( isset($start) && $start ) {
-			$time['start_date'] = $start->format('Y-m-d');
-    	$time['start_time'] = $start->format('H:i:s');
-    	$time['start_offset'] = $start->format('P');
+		if ( isset( $start ) && $start ) {
+			$time['start_date'] = $start->format( 'Y-m-d' );
+			$time['start_time'] = $start->format( 'H:i:s' );
+			$time['start_offset'] = $start->format( 'P' );
 		}
 
-    if ( ! empty ( $this->meta['dt-end'] ) ) {
-        $end = date_create_from_format("Y-m-d\TH:i:sP", $this->meta['dt-end']);
-    }
-    else if (! empty ($this->meta['cite']['updated']) ) {
-        $end = date_create_from_format("Y-m-d\TH:i:sP",$this->meta['cite']['updated']);
-    }
-    if ( isset($end) && $end ) {
-      $time['end_date'] = $end->format('Y-m-d');
-      $time['end_time'] = $end->format('H:i:s');
-      $time['end_offset'] = $end->format('P');
-    }
-		return $time;	
+		if ( ! empty( $this->meta['dt-end'] ) ) {
+			$end = date_create_from_format( 'Y-m-d\TH:i:sP', $this->meta['dt-end'] );
+		} else if ( ! empty( $this->meta['cite']['updated'] ) ) {
+			$end = date_create_from_format( 'Y-m-d\TH:i:sP',$this->meta['cite']['updated'] );
+		}
+		if ( isset( $end ) && $end ) {
+			$time['end_date'] = $end->format( 'Y-m-d' );
+			$time['end_time'] = $end->format( 'H:i:s' );
+			$time['end_offset'] = $end->format( 'P' );
+		}
+		return $time;
 	}
 
 

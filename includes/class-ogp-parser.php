@@ -25,6 +25,7 @@ namespace ogp {
 
 		/**
 		 * Parse content into an array.
+		 *
 		 * @param $content html The HTML
 		 * @return array
 		 */
