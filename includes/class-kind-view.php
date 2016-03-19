@@ -129,7 +129,7 @@ class Kind_View {
 				default:
 					include( 'views/kind-default.php' );
 			}
-			return apply_filters( 'kind-response-display', $content );
+			return apply_filters( 'kind-response-display', $content, $post_ID );
 		}
 	}
 
