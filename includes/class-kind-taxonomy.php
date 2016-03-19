@@ -69,16 +69,6 @@ class Kind_Taxonomy {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
 			wp_die( 'You have Indieweb Taxonomy activated. Post Kinds replaces this plugin. Please disable Taxonomy before activating' );
 		}
-		if ( ! get_option( 'iwt_options' ) ) {
-			$option = array(
-				'embeds' => '1',
-				'cacher' => '0',
-				'disableformats' => '0',
-				'protection' => '0',
-				'intermediate' => '0',
-			);
-			update_option( 'iwt_options', $option );
-		}
 		self::register();
 		self::kind_defaultterms();
 	}
@@ -175,7 +165,7 @@ class Kind_Taxonomy {
 
 	public static function select_metabox( $post ) {
 		$strings = self::get_strings();
-		$option = get_option( 'iwt_options', array() );
+		$option = get_option( 'iwt_options', Kind_Config::Defaults() );
 		$include = array();
 		if ( array_key_exists( 'termslists', $option ) ) {
 			$include = $option['termslists'];

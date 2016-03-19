@@ -100,7 +100,7 @@ class Kind_Meta {
 
 	public static function sanitize_content( $value ) {
 		global $wpdb;
-		$options = get_option( 'iwt_options' );
+		$options = get_option( 'iwt_options', Kind_Config::Defaults() );
 		$allowed = wp_kses_allowed_html( 'post' );
 		if ( array_key_exists( 'contentelements', $options ) && json_decode( $options['contentelements'] ) != null ) {
 			$allowed = json_decode( $options['contentelements'], true );

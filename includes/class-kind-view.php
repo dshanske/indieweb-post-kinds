@@ -15,7 +15,7 @@ class Kind_View {
 
 	public static function sanitize_output( $content ) {
 		$allowed = wp_kses_allowed_html( 'post' );
-		$options = get_option( 'iwt_options' );
+		$options = get_option( 'iwt_options', Kind_Config::Defaults() );
 		if ( array_key_exists( 'contentelements',$options ) && json_decode( $options['contentelements'] ) != null ) {
 			$allowed = json_decode( $options['contentelements'], true );
 		}
@@ -61,7 +61,7 @@ class Kind_View {
 
 
 	public static function get_embed( $url ) {
-			$options = get_option( 'iwt_options' );
+			$options = get_option( 'iwt_options', Kind_Config::Defaults() );
 		if ( $options['embeds'] == 0 ) {
 				return '';
 		}

@@ -18,12 +18,26 @@ add_action( 'load-post.php', array( 'Kind_Config', 'add_post_help_tab') , 20 );
  */
 class Kind_Config {
 
+
+	public static function Defaults() {
+		return array( 
+			'embeds' => '0',
+			'cacher' => '0',
+			'authorimages' => '0',
+			'disableformats' => '0',
+			'protection' => '0',
+			'contentelements' => '',
+			'termslist' => array( 'article', 'reply', 'bookmark' )
+		);
+
+	}
+
 	/**
 	 * Function to Set up Admin Settings.
 	 * @access public
 	 */
 	public static function admin_init() {
-		$options = get_option( 'iwt_options', array() );
+		$options = get_option( 'iwt_options', self::Defaults() );
 		register_setting( 'iwt_options', 'iwt_options' );
 		add_settings_section( 'iwt-content', __( 'Content Options', 'Post kind' ), array( 'Kind_Config', 'options_callback' ), 'iwt_options' );
 		add_settings_field( 'embeds', __( 'Add Rich Embed Support for Facebook, Google Plus, Instagram, etc', 'Post kind' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'embeds' ) );
@@ -36,7 +50,7 @@ class Kind_Config {
 				add_settings_field( 'contentelements', __( 'Response Content Allowed Html Elements', 'Post kind' ) . ' <a href="http://codex.wordpress.org/Function_Reference/wp_kses">*</a>', array( 'Kind_Config', 'textbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'contentelements' ) );
 			}
 		}
-		add_settings_field( 'termlist', __( 'Select All Kinds You Wish to Use', 'Post kind' ), array( 'Kind_Config', 'termlist_callback' ), 'iwt_options', 'iwt-content' );
+		add_settings_field( 'termslist', __( 'Select All Kinds You Wish to Use', 'Post kind' ), array( 'Kind_Config', 'termlist_callback' ), 'iwt_options', 'iwt-content' );
 	}
 
 	/**
@@ -90,7 +104,7 @@ class Kind_Config {
 	 *		@type string $name Checkbox Name.
 	 */
 	public static function checkbox_callback( array $args ) {
-		$options = get_option( 'iwt_options', array() );
+		$options = get_option( 'iwt_options', self::Defaults() );
 		$name = $args['name'];
 		$checked = ifset($options[ $name ]);
 		echo "<input name='iwt_options[" . esc_html( $name ) . "]' type='hidden' value='0' />";
@@ -107,7 +121,7 @@ class Kind_Config {
 	 *    @type string $name Textbox Name.
 	 */
 	public static function textbox_callback( array $args ) {
-		$options = get_option( 'iwt_options', array() );
+		$options = get_option( 'iwt_options', self::Defaults() );
 		$name = $args['name'];
 		$val = '';
 		if ( 'contentelements' === $name && ! array_key_exists( 'contentelements', $options ) ) {
@@ -124,7 +138,7 @@ class Kind_Config {
 	 * @access public
 	 */
 	public static function termlist_callback() {
-		$options = get_option( 'iwt_options', array() );
+		$options = get_option( 'iwt_options', self::Defaults() );
 		$terms = Kind_Taxonomy::get_strings();
 		// Hide these terms until ready for use for now.
 		$hide = array( 'note', 'weather', 'exercise', 'travel', 'rsvp', 'tag', 'follow', 'drink', 'eat', 'quote' );
@@ -135,12 +149,12 @@ class Kind_Config {
 		foreach ( $hide as $hid ) {
 			unset( $terms[ $hid ] );
 		}
-		if ( ! array_key_exists( 'termslists', $options ) ) {
+		if ( ! array_key_exists( 'termslist', $options ) ) {
 			$termslist = array();
 		} else {
-			$termslist = $options['termslists'];
+			$termslist = $options['termslist'];
 		}
-		echo '<select id="termslists" name="iwt_options[termslists][]" multiple>';
+		echo '<select id="termslist" name="iwt_options[termslist][]" multiple>';
 		foreach ( $terms as $key => $value ) {
 			echo '<option value="' . $key . '" '. selected( in_array( $key, $termslist ) ) . '>' . $value . '</option>';
 		}
@@ -191,7 +205,7 @@ class Kind_Config {
 	 * @access public
 	 */
 	public static function remove_post_formats() {
-		$options = get_option( 'iwt_option', array() );
+		$options = get_option( 'iwt_option', self::Defaults() );
 		if ( 1 === ifset($options['disableformats']) ) { remove_theme_support( 'post-formats' ); }
 	}
 
