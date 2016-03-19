@@ -10,7 +10,10 @@ jQuery( document ).on( 'click', '.kind-retrieve-button', function($) {
       if ( typeof response !== 'undefined' ) {
 				if ( typeof response['data'] !== 'undefined' ) {
 					if ( 'name' in response['data'] ) {
-						jQuery("#cite_name").val(response['data']['name']) ;
+						jQuery("#cite_name").val(response['data']['name']);
+						if ( jQuery('#title').val() === '' ) {
+							jQuery("#title").val(response['data']['name']);
+						}
 					}
  		     	if ( 'publication' in response['data'] ) {
    		      jQuery("#cite_publication").val(response['data']['publication']) ;
