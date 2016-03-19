@@ -1,7 +1,7 @@
 === Indieweb Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like
-Stable tag: 2.3.2
+Stable tag: 2.3.3
 Requires at least: 4.2
 Tested up to: 4.4
 License: GPLv2 or later
@@ -119,6 +119,13 @@ Indieweb Post Kinds had support for replying to Twitter posts using the Social N
 developer of this plugin.
 
 == Changelog ==
+	= Version 2.3.3 =
+		* Fix issue with improper microformats generating bad parsed results.
+		* Add default kind option
+		* Change how plugin handles default options by adding Defaults function
+		* Bug fix by acegiak to content protection override
+		* Feature added by acegiak to set default kind if no kind is set when post is saved
+		* Add post_id to filter kind_response_display
 	= Version 2.3.2 = 
 		* Fix rendering issues when no response
 		* Add support for Indieweb Plugin

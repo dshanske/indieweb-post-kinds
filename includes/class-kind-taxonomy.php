@@ -167,8 +167,8 @@ class Kind_Taxonomy {
 		$strings = self::get_strings();
 		$option = get_option( 'iwt_options', Kind_Config::Defaults() );
 		$include = array();
-		if ( array_key_exists( 'termslists', $option ) ) {
-			$include = $option['termslists'];
+		if ( array_key_exists( 'termslist', $option ) ) {
+			$include = $option['termslist'];
 		}
 		$include = array_merge( $include, array( 'note', 'reply', 'article' ) );
 		// If Simple Location is Enabled, include the check-in type
@@ -181,7 +181,7 @@ class Kind_Taxonomy {
 		if ( isset( $_GET['kind'] ) ) {
 			$default = get_term_by( 'slug', $_GET['kind'], 'kind' );
 		} else {
-			$default = get_term_by( 'slug', 'note', 'kind' );
+			$default = get_term_by( 'slug', $option['defaultkind'], 'kind' );
 		}
 		$terms = get_terms( 'kind', array( 'hide_empty' => 0 ) );
 		$postterms = get_the_terms( $post->ID, 'kind' );
@@ -395,11 +395,10 @@ class Kind_Taxonomy {
 	}
 
 	public static function publish ( $ID, $post=null) {
-
+    $option = get_option( 'iwt_options', Kind_Config::Defaults() );
 		if(count(wp_get_post_terms($ID,'kind'))<=0){
-			set_post_kind($ID,'note');
+			set_post_kind($ID, $option['defaultkind']);
 		}
-
 
 		$cites = get_post_meta( $ID, 'mf2_cite', true );
 		if ( empty( $cites ) ) { return; }

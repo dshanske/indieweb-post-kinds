@@ -27,6 +27,7 @@ class Kind_Config {
 			'disableformats' => '0',
 			'protection' => '0',
 			'contentelements' => '',
+			'defaultkind' => 'note',
 			'termslist' => array( 'article', 'reply', 'bookmark' )
 		);
 
@@ -45,12 +46,13 @@ class Kind_Config {
 		// add_settings_field( 'authorimages', __( 'Sideload Author Images', 'Post kind' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'authorimage' ) );
 		add_settings_field( 'disableformats', __( 'Disable Post Formats', 'Post kind' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'disableformats' ) );
 		add_settings_field( 'protection', __( 'Disable Content Protection on Responses', 'Post kind' ) , array( 'Kind_Config', 'checkbox_callback' ) , 'iwt_options', 'iwt-content' ,  array( 'name' => 'protection' ) );
-		if ( $options ) {
-			if ( array_key_exists( 'protection', $options ) && 1 === $options['protection'] ) {
+		if ( array_key_exists( 'protection', $options ) && 1 === $options['protection'] ) {
 				add_settings_field( 'contentelements', __( 'Response Content Allowed Html Elements', 'Post kind' ) . ' <a href="http://codex.wordpress.org/Function_Reference/wp_kses">*</a>', array( 'Kind_Config', 'textbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'contentelements' ) );
-			}
 		}
 		add_settings_field( 'termslist', __( 'Select All Kinds You Wish to Use', 'Post kind' ), array( 'Kind_Config', 'termlist_callback' ), 'iwt_options', 'iwt-content' );
+    add_settings_field( 'defaultkind', __( 'Default Kind', 'Post kind' ), array( 'Kind_Config', 'defaultkind_callback' ), 'iwt_options', 'iwt-content' );
+
+
 	}
 
 	/**
@@ -149,17 +151,34 @@ class Kind_Config {
 		foreach ( $hide as $hid ) {
 			unset( $terms[ $hid ] );
 		}
-		if ( ! array_key_exists( 'termslist', $options ) ) {
-			$termslist = array();
-		} else {
-			$termslist = $options['termslist'];
-		}
+		$termslist = $options['termslist'];
 		echo '<select id="termslist" name="iwt_options[termslist][]" multiple>';
 		foreach ( $terms as $key => $value ) {
 			echo '<option value="' . $key . '" '. selected( in_array( $key, $termslist ) ) . '>' . $value . '</option>';
 		}
 		echo '</select>';
 	}
+
+  /**
+   * Generate a Term List.
+   *
+   * @access public
+   */
+  public static function defaultkind_callback() {
+    $options = get_option( 'iwt_options', self::Defaults() );
+    $terms = $options['termslist'];
+		$terms[] = 'note';
+    $strings = Kind_Taxonomy::get_strings();
+
+    $defaultkind = $options['defaultkind'];
+    
+    echo '<select id="defaultkind" name="iwt_options[defaultkind]">';
+    foreach ( $terms as $term ) {
+      echo '<option value="' . $term . '" '. selected( $term, $defaultkind ) . '>' . $strings[$term] . '</option>';
+    }
+    echo '</select>';
+  }
+
 
 
 	/**
