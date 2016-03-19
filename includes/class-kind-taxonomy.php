@@ -405,6 +405,12 @@ class Kind_Taxonomy {
 	}
 
 	public static function publish ( $ID, $post=null) {
+
+		if(count(wp_get_post_terms($ID,'kind'))<=0){
+			set_post_kind($ID,'note');
+		}
+
+
 		$cites = get_post_meta( $ID, 'mf2_cite', true );
 		if ( empty( $cites ) ) { return; }
 		if ( isset( $cites['url'] ) ) {

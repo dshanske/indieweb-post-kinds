@@ -19,6 +19,10 @@ class Kind_View {
 		if ( array_key_exists( 'contentelements',$options ) && json_decode( $options['contentelements'] ) != null ) {
 			$allowed = json_decode( $options['contentelements'], true );
 		}
+
+		if(ifset($options[ 'protection' ])){
+			return $content;
+		}
 		return wp_kses( ( string ) $content ,$allowed );
 	}
 

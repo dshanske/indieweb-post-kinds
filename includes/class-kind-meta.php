@@ -109,6 +109,10 @@ class Kind_Meta {
 		if ( 'utf8' === $charset ) {
 			$value = wp_encode_emoji( $value );
 		}
+
+		if(ifset($options[ 'protection' ])){
+			return $value;
+		}
 		return wp_kses( ( string ) $value , $allowed );
 	}
 
