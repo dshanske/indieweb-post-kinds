@@ -49,6 +49,9 @@ class Kind_Taxonomy {
 		// Remove the Automatic Post Generation that the Micropub Plugin Offers
 		remove_filter( 'before_micropub', array( 'Micropub', 'generate_post_content' ) );
 
+		//send salmention when comment on post approved
+		add_action('transition_comment_status', array( 'Kind_Taxonomy', 'comment_transition' ), 10, 3);
+
 	}
 
 
@@ -423,6 +426,15 @@ class Kind_Taxonomy {
 		if ( 'publish' === $new ) {
 			self::publish( $post->ID,$post );
 		}
+	}
+
+	public static function comment_transition($new_status, $old_status, $comment) {
+	    if($old_status != $new_status) {
+		if($new_status == 'approved') {
+		    $postid = $comment->comment_post_ID;
+		    self::publish( $postid );
+		}
+	    }
 	}
 
 	public static function json_rest_add_kindmeta($_post,$post,$context) {
