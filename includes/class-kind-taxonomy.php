@@ -432,7 +432,7 @@ class Kind_Taxonomy {
 	    if($old_status != $new_status) {
 		if($new_status == 'approved') {
 		    $postid = $comment->comment_post_ID;
-		    publish( $postid );
+		    self::publish( $postid );
 		}
 	    }
 	}
