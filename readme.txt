@@ -119,6 +119,8 @@ Indieweb Post Kinds had support for replying to Twitter posts using the Social N
 developer of this plugin.
 
 == Changelog ==
+	= Version 2.3.4 = 
+		* The CSS included with Post Kinds hides entry-title by default where applicable for non-aware themes.
 	= Version 2.3.3 =
 		* Fix issue with improper microformats generating bad parsed results.
 		* Add default kind option

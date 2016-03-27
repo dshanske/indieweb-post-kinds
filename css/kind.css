@@ -49,6 +49,10 @@ svg {
   color: grey;
 }
 
+.kind-note .entry-title, .kind-bookmark .entry-title, .kind-reply .entry-title, .kind-like .entry-title, .kind-favorite .entry-title, .kind-photo .entry-title, .kind-tag .entry-title, .kind-rsvp .entry-title, .kind-listen .entry-title, .kind-watch .entry-title, .kind-checkin .entry-title, .kind-wish .entry-title, .kind-play .entry-title, .kind-weather .entry-title, .kind-exercise .entry-title, .kind-travel .entry-title, .kind-eat .entry-title, .kind-drink .entry-title, .kind-follow .entry-title, .kind-jam .entry-title, .kind-read .entry-title, .kind-quote .entry-title {
+  display: none;
+}
+
 .ui-timepicker-wrapper {
   overflow-y: auto;
   height: 150px;
