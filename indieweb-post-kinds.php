@@ -247,7 +247,12 @@ function kind_icon($slug) {
 	if ( empty($slug) ) {
 		return '';
 	}
-	$icon = '<span class="kind-icon">' . wp_remote_retrieve_body( wp_remote_get( plugin_dir_url( __FILE__) . 'svg/' . $slug . '.svg' ) ) . '</span>';
+	$file = wp_remote_get( plugin_dir_url( __FILE__) . 'svg/' . $slug . '.svg' );
+	// If it fails to retrieve, then retrieve website as the default icon
+	if ( is_wp_error( $file ) ) {
+		$file = wp_remote_get( plugin_dir_url( __FILE__) . 'svg/' . 'website.svg' );
+	}
+	$icon = '<span class="kind-icon">' . wp_remote_retrieve_body( $file ) . '</span>';
 	return apply_filters('kind-icon', $icon, $slug);
 }
 
