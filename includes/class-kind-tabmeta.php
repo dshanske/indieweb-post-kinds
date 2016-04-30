@@ -327,6 +327,29 @@ class Kind_Tabmeta {
 		return $data;
 	}
 
+  public static function get_meta_tags( $source_content ) {
+    if ( ! $source_content ) {
+      return null;
+    }
+    $meta = array();
+    if ( preg_match_all( '/<meta [^>]+>/', $source_content, $matches ) ) {
+      $items = $matches[0];
+
+      foreach ( $items as $value ) {
+        if ( preg_match( '/(property|name)="([^"]+)"[^>]+content="([^"]+)"/', $value, $new_matches ) ) {
+          $meta_name  = $new_matches[2];
+          $meta_value = $new_matches[3];
+
+          // Sanity check. $key is usually things like 'title', 'description', 'keywords', etc.
+          if ( strlen( $meta_name ) > 100 ) {
+            continue;
+          }
+          $meta[$meta_name] = $meta_value;
+        }
+      }
+    }
+    return $meta;
+  }
 
 	/**
 	 * Parses marked up HTML using OGP or other meta tags.
@@ -334,7 +357,7 @@ class Kind_Tabmeta {
 	 * @param string $content HTML marked up content.
 	 */
 	private static function ogpparse($content) {
-		$meta = \ogp\Parser::parse( $content );
+		$meta = self::get_meta_tags( $content );
 		$data = array();
 		$data['name'] = ifset( $meta['og:title'] ) ?: ifset( $meta['twitter:title'] ) ?: ifset( $meta['og:music:song'] );
 		$data['summary'] = ifset( $meta['og:description'] ) ?: ifset( $meta['twitter:description'] );

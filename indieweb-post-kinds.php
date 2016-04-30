@@ -44,11 +44,6 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-view.php';
 // Add Kind Meta Storage and Retrieval Functions.
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-meta.php';
 
-// Add an OpenGraph Parser.
-if ( ! class_exists( 'ogp\Parser' ) ) {
-	include_once plugin_dir_path( __FILE__ ) . 'includes/class-ogp-parser.php';
-}
-
 // Add an MF2 Parser
 if ( ! class_exists( 'Mf2\Parser' ) ) {
   include_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Parser.php';
