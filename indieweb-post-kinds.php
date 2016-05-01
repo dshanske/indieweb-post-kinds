@@ -46,12 +46,15 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-meta.php';
 
 // Add an MF2 Parser
 if ( ! class_exists( 'Mf2\Parser' ) ) {
-  include_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Parser.php';
-	include_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/functions.php';
-	include_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Twitter.php';
+  require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Parser.php';
+	require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/functions.php';
+	require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Twitter.php';
 }
 
-include_once plugin_dir_path( __FILE__ ) . 'includes/class-mf2-cleaner.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-mf2-cleaner.php';
+
+// Add Link Preview Parsing
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-link-preview.php';
 
 
 // Load stylesheets.
