@@ -1,9 +1,9 @@
 === Indieweb Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like
-Stable tag: 2.3.3
+Stable tag: 2.3.4
 Requires at least: 4.2
-Tested up to: 4.4
+Tested up to: 4.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,6 +121,10 @@ developer of this plugin.
 == Changelog ==
 	= Version 2.3.4 = 
 		* The CSS included with Post Kinds hides entry-title by default where applicable for non-aware themes.
+		* Attempted to fix reported issue with wrong URL being sent webmention
+		* Fix error with emoji decode test backcompat
+		* Separate parsing code into separate class
+		* Retire separate OGP Parser in favor of simpler built in code
 	= Version 2.3.3 =
 		* Fix issue with improper microformats generating bad parsed results.
 		* Add default kind option

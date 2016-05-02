@@ -189,7 +189,7 @@ class Link_Preview {
 		$meta = self::get_meta_tags( $content );
 		$data = array();
 		$data['name'] = ifset( $meta['og:title'] ) ?: ifset( $meta['twitter:title'] ) ?: ifset( $meta['og:music:song'] );
-		$data['summary'] = ifset( $meta['og:description'] ) ?: ifset( $meta['twitter:description'] );
+		$data['summary'] = ifset( $meta['og:description'] ) ?: ifset( $meta['twitter:description'] ) ?: ifset( $meta['description']);
 		$data['site'] = ifset( $meta['og:site'] ) ?: ifset( $meta['twitter:site'] );
 		if ( array_key_exists( 'author', $meta ) ) {
 			$data['author'] = array();
