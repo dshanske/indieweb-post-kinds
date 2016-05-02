@@ -157,11 +157,9 @@ class Kind_Tabmeta {
 			if ( in_array( $kind, array( 'like', 'reply', 'repost', 'favorite', 'bookmark' ) ) ) {
 				if ( ! empty( $start ) ) {
 					$_POST['cite']['published'] = $start;
-					error_log( 'Start: ' . $start );
 				}
 				if ( ! empty( $end )  ) {
 					$_POST['cite']['updated'] = $end;
-					error_log( 'End: ' . $end );
 				}
 			} else {
 				$meta->set_time( $start, $end );

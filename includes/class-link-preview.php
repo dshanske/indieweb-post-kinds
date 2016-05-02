@@ -28,14 +28,21 @@ class Link_Preview {
 		if ( ! isset( $url ) || filter_var( $url, FILTER_VALIDATE_URL ) === false ) {
 			return new WP_Error( 'invalid-url', __( 'A valid URL was not provided.' ) );
 		}
-		$response = wp_safe_remote_get( $url, array(
-			'timeout' => 30,
+		$args = array(
+			'timeout' => 10,
+			'limit_response_size' => 1048576,
+			'redirection' => 20,
 			// Use an explicit user-agent for Post Kinds
 			'user-agent' => 'Post Kinds (WordPress/' . $wp_version . '); ' . get_bloginfo( 'url' ),
-		) );
-		if ( is_wp_error( $response ) ) {
+		);
+		$response = wp_safe_remote_head( $url, $args );
+	  if ( is_wp_error( $response ) ) {
 			return $response;
 		}
+		if ( preg_match( '#(image|audio|video|model)/#is', wp_remote_retrieve_header( $response, 'content-type' ) ) ) {
+			return new WP_Error( 'content-type', 'Content Type is Media' );
+		}
+		$response = wp_safe_remote_get( $url, $args );
 		$body = wp_remote_retrieve_body( $response );
 		return $body;
 	}
@@ -45,9 +52,9 @@ class Link_Preview {
 	 * @param string $content HTML marked up content.
 	 */
 	private static function parse ($content, $url) {
-		$ogpdata = self::ogpparse( $content );
+		$metadata = self::metaparse( $content );
 		$mf2data = self::mf2parse( $content, $url );
-		$data = array_merge( $ogpdata, $mf2data );
+		$data = array_merge( $metadata, $mf2data );
 		$data = array_filter( $data );
 		// If Publication is Not Set, use the domain name instead
 		$data['publication'] = ifset( $data['publication'] ) ?: self::pretty_domain_name( $url );
@@ -178,12 +185,16 @@ class Link_Preview {
 	 *
 	 * @param string $content HTML marked up content.
 	 */
-	private static function ogpparse($content) {
+	private static function metaparse($content) {
 		$meta = self::get_meta_tags( $content );
 		$data = array();
 		$data['name'] = ifset( $meta['og:title'] ) ?: ifset( $meta['twitter:title'] ) ?: ifset( $meta['og:music:song'] );
 		$data['summary'] = ifset( $meta['og:description'] ) ?: ifset( $meta['twitter:description'] );
 		$data['site'] = ifset( $meta['og:site'] ) ?: ifset( $meta['twitter:site'] );
+		if ( array_key_exists( 'author', $meta ) ) {
+			$data['author'] = array();
+			$data['author']['name'] = $meta['author'];
+		}
 		$data['featured'] = ifset( $meta['og:image'] ) ?: ifset( $meta['twitter:image'] );
 		$data['publication'] = ifset( $meta['og:site_name'] ) ?: ifset( $meta['og:music:album'] );
 		$data['published'] = ifset( $meta['og:article:published_time'] ) ?: ifset( $meta['pdate'] ) ?: ifset( $meta['og:article:published'] ) ?: ifset( $meta['og:music:release_date'] ) ?: ifset( $meta['og:video:release_date'] );

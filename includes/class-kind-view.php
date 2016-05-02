@@ -249,7 +249,7 @@ class Kind_View {
 		}
 		if ( ! empty( $url ) ) {
 			if ( ! array_key_exists( 'publication', $cite ) ) {
-				$cite['publication'] = Kind_Tabmeta::pretty_domain_name( $cite['url'] );
+				$cite['publication'] = Link_Preview::pretty_domain_name( $cite['url'] );
 			}
 		} else {
 			if ( ! array_key_exists( 'publication', $cite ) ) {

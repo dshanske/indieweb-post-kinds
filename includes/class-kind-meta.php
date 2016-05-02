@@ -106,7 +106,7 @@ class Kind_Meta {
 		if ( array_key_exists( 'contentelements', $options ) && json_decode( $options['contentelements'] ) != null ) {
 			$allowed = json_decode( $options['contentelements'], true );
 		}
-		$charset = $wpdb->get_col_charset( $wpdb->posts, $emoji_field );
+		$charset = $wpdb->get_col_charset( $wpdb->posts, $value );
 		if ( 'utf8' === $charset ) {
 			$value = wp_encode_emoji( $value );
 		}

@@ -402,20 +402,20 @@ class Kind_Taxonomy {
 		if(count(wp_get_post_terms($ID,'kind'))<=0){
 			set_post_kind($ID, $option['defaultkind']);
 		}
-
-		$cites = get_post_meta( $ID, 'mf2_cite', true );
-		if ( empty( $cites ) ) { return; }
-		if ( isset( $cites['url'] ) ) {
-			send_webmention( get_permalink( $ID ), $cites['url'] );
+		$meta = new Kind_Meta( $ID );
+		$cites = $meta->get_url();
+		if ( is_string( $cites ) ) {
+			send_webmention( get_permalink( $ID ), $cites );
 			if ( WP_DEBUG ) {
-				error_log( 'WEBMENTION CALLED'.get_permalink( $ID ).' : '.$cites['url'] );
+				error_log( 'WEBMENTION CALLED'.get_permalink( $ID ).' : '.$cites );
 			}
-		} else {
+		}
+		if ( is_array( $cites ) ) {
 			foreach ( $cites as $cite ) {
-				if ( ! empty( $cite ) && isset( $cite['url'] ) ) {
-					send_webmention( get_permalink( $ID ), $cite['url'] );
+				if ( ! empty( $cite ) ) {
+					send_webmention( get_permalink( $ID ), $cite );
 					if ( WP_DEBUG ) {
-			 			error_log( 'WEBMENTIONS CALLED'.get_permalink( $ID ).' : '.$cite['url'] );
+			 			error_log( 'WEBMENTIONS CALLED'.get_permalink( $ID ).' : '.$cite );
 					}
 				}
 			}
