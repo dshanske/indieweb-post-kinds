@@ -46,6 +46,10 @@ class Kind_Taxonomy {
 		// Override Post Type in Semantic Linkbacks.
 		add_filter( 'semantic_linkbacks_post_type', array( 'Kind_Taxonomy', 'semantic_post_type' ), 11, 2 );
 
+    // Add Links to Ping to the Webmention Sender.
+    add_filter( 'webmention_links', array( 'Kind_Taxonomy', 'webmention_links' ), 11, 2 );
+
+
 		// Remove the Automatic Post Generation that the Micropub Plugin Offers
 		remove_filter( 'before_micropub', array( 'Micropub', 'generate_post_content' ) );
 
@@ -394,28 +398,23 @@ class Kind_Taxonomy {
 		return apply_filters( 'semantic_linkbacks_excerpt', $text );
 	}
 
+	public static function webmention_links( $links, $post_ID ) {
+		$meta = new Kind_Meta( $post_ID );
+		$cites = $meta->get_url();
+    if ( is_string( $cites ) ) {
+			$links[] = $cites;
+		}
+		if ( is_array( $cites ) ) {
+			$links = array_merge( $links, $cite );
+			$links = array_unique( $links );
+		}
+		return $links;
+	}
+
 	public static function publish ( $ID, $post=null) {
     $option = get_option( 'iwt_options', Kind_Config::Defaults() );
 		if(count(wp_get_post_terms($ID,'kind'))<=0){
 			set_post_kind($ID, $option['defaultkind']);
-		}
-		$meta = new Kind_Meta( $ID );
-		$cites = $meta->get_url();
-		if ( is_string( $cites ) ) {
-			send_webmention( get_permalink( $ID ), $cites );
-			if ( WP_DEBUG ) {
-				error_log( 'WEBMENTION CALLED'.get_permalink( $ID ).' : '.$cites );
-			}
-		}
-		if ( is_array( $cites ) ) {
-			foreach ( $cites as $cite ) {
-				if ( ! empty( $cite ) ) {
-					send_webmention( get_permalink( $ID ), $cite );
-					if ( WP_DEBUG ) {
-			 			error_log( 'WEBMENTIONS CALLED'.get_permalink( $ID ).' : '.$cite );
-					}
-				}
-			}
 		}
 	}
 
