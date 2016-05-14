@@ -1,0 +1,39 @@
+.response {
+    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-left: 20px;
+    padding: 5px;
+    font-size: 16px;
+    border-bottom: inset #D6D6D6;
+		.kind-icon {
+			margin-right: 3px;
+		}
+		blockquote {
+			margin-left: 25px;
+		}
+
+	.u-url:link {
+		text-decoration: none;
+	}
+
+	.u-url:hover {
+		text-decoration: none;
+	}
+
+	.u-photo, .u-featured  {
+  	padding: 0;
+  	margin: 2px;
+   }
+}
+
+ul.cites {
+    list-style: none;
+    display: inline;
+}
+
+.embeds {
+    text-align: center;
+    position: relative;
+    width: 100%;
+    margin-top: 5px;
+}

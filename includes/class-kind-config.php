@@ -29,6 +29,7 @@ class Kind_Config {
 			'contentelements' => '',
 			'defaultkind' => 'note',
 			'termslist' => array( 'article', 'reply', 'bookmark' ),
+			'themecompat' => '0'
 		);
 
 	}
@@ -43,6 +44,9 @@ class Kind_Config {
 		register_setting( 'iwt_options', 'iwt_options' );
 		add_settings_section( 'iwt-content', __( 'Content Options', 'Post kind' ), array( 'Kind_Config', 'options_callback' ), 'iwt_options' );
 		add_settings_field( 'embeds', __( 'Add Rich Embed Support for Facebook, Google Plus, Instagram, etc', 'Post kind' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'embeds' ) );
+    add_settings_field( 'themecompat', __( 'Extra Styling for Themes That May Not Support Post Kinds', 'Post kind' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name'
+ => 'themecompat' ) );
+
 		// add_settings_field( 'cacher', __( 'Store Cached Responses', 'Post kind' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'cacher' ) );
 		// add_settings_field( 'authorimages', __( 'Sideload Author Images', 'Post kind' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'authorimage' ) );
 		add_settings_field( 'disableformats', __( 'Disable Post Formats', 'Post kind' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'disableformats' ) );
