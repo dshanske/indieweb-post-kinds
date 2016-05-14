@@ -194,8 +194,10 @@ class Kind_Meta {
 		$url = self::sanitize_text( $url );
 		$kind = get_post_kind_slug( $this->post );
 		$map = array_diff( Kind_Taxonomy::get_kind_properties(), array( '' ) );
-		if ( array_key_exists( $kind, $map ) ) {
-			$this->meta[ $map[ $kind ] ] = $url;
+		if ( $kind ) {
+			if ( array_key_exists( $kind, $map ) ) {
+				$this->meta[ $map[ $kind ] ] = $url;
+			}
 		}
 		if ( ! array_key_exists( 'cite', $this->meta ) ) {
 			$this->meta['url'] = $url;
