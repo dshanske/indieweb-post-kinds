@@ -1,7 +1,7 @@
 === Indieweb Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like
-Stable tag: 2.3.4
+Stable tag: 2.3.5
 Requires at least: 4.2
 Tested up to: 4.5
 License: GPLv2 or later
@@ -119,6 +119,13 @@ Indieweb Post Kinds had support for replying to Twitter posts using the Social N
 developer of this plugin.
 
 == Changelog ==
+	= Version 2.3.5 = 
+		* Remove comment transition action in favor of proposing it be moved into webmentions plugin
+		* Replace send webmentions code with a hook
+		* Add PHP docblocks to php-mf-cleaner
+		* Update to latest version of MF2 Parser
+		* Theme Compatibility CSS separated from Basic CSS and Admin CSS again
+		* Remove helper functions no longer used
 	= Version 2.3.4 = 
 		* The CSS included with Post Kinds hides entry-title by default where applicable for non-aware themes.
 		* Attempted to fix reported issue with wrong URL being sent webmention
