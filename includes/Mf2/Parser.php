@@ -353,7 +353,7 @@ class Parser {
 			if ($child->hasAttribute('src'))
 				$child->setAttribute('src', $this->resolveUrl($child->getAttribute('src')));
 			if ($child->hasAttribute('srcset'))
-				$child->setAttribute('srcset', applySrcsetUrlTransformation($child->getAttribute('href'), [$this, 'resolveUrl']));
+				$child->setAttribute('srcset', applySrcsetUrlTransformation($child->getAttribute('href'), array($this, 'resolveUrl')));
 			if ($child->hasAttribute('data'))
 				$child->setAttribute('data', $this->resolveUrl($child->getAttribute('data')));
 		}
@@ -455,14 +455,14 @@ class Parser {
 	public function resolveUrl($url) {
 		// If the URL is seriously malformed it’s probably beyond the scope of this
 		// parser to try to do anything with it.
-		if (parse_url($url) === false) {
+		if (wp_parse_url($url) === false) {
 			return $url;
 		}
 
 		// per issue #40 valid URLs could have a space on either side
 		$url = trim($url);
-
-		$scheme = parse_url($url, PHP_URL_SCHEME);
+		$parse = wp_parse_url($url);
+		$scheme = $parse['scheme'];
 
 		if (empty($scheme) and !empty($this->baseurl)) {
 			return resolveUrl($this->baseurl, $url);
@@ -1325,7 +1325,7 @@ function parseUriToComponents($uri) {
 		'fragment' => null
 	);
 
-	$u = @parse_url($uri);
+	$u = wp_parse_url($uri);
 
 	if(array_key_exists('scheme', $u))
 		$result['scheme'] = $u['scheme'];
