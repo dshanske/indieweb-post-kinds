@@ -23,6 +23,43 @@ class Kind_Meta {
 	}
 
 	/**
+	 * Is String a URL.
+	 *
+	 * @param  string $url A string.
+	 * @return boolean Whether string is a URL.
+	 */
+	public static function is_url( $url ) {
+		return filter_var( $url, FILTER_VALIDATE_URL ) !== false;
+	}
+
+	/**
+	 * Is prefix in string.
+	 *
+	 * @param  string $source The source string.
+	 * @param  string $prefix The prefix you wish to check for in source.
+	 * @return boolean The result.
+	 */
+	public static function str_prefix( $source, $prefix ) {
+		return strncmp( $source, $prefix, strlen( $prefix ) ) === 0;
+	}
+
+	/**
+	 * Returns True if Array is Multidimensional.
+	 *
+	 * @param array $arr array.
+	 *
+	 * @return boolean result
+	 */
+	public static function is_multi_array( $arr ) {
+		if ( count( $arr ) === count( $arr, COUNT_RECURSIVE ) ) { 
+			return false;
+		} else { 
+			return true;
+		}
+	}
+
+
+	/**
 	 * Sets an array with only the mf2 prefixed meta.
 	 *
 	 * @param int|WP_Post $post Optional. Post ID or post object. Defaults to global $post.
@@ -69,7 +106,7 @@ class Kind_Meta {
 			}
 		}
 		foreach ( $meta as $key => $value ) {
-			if ( ! str_prefix( $key, 'mf2_' ) ) {
+			if ( ! self::str_prefix( $key, 'mf2_' ) ) {
 				unset( $meta[ $key ] );
 			} else {
 				unset( $meta[ $key ] );
@@ -77,12 +114,12 @@ class Kind_Meta {
 				$value = array_map( 'maybe_unserialize', $value );
 				$value = array_shift( $value );
 				// If value is a multi-array with only one element.
-				if ( is_multi_array( $value ) ) {
+				if ( self::is_multi_array( $value ) ) {
 					if ( 1 === count( $value ) ) {
 						$value = array_shift( $value );
 					}
 					if ( isset( $value['card'] ) ) {
-						if ( is_multi_array( $value['card'] ) ) {
+						if ( self::is_multi_array( $value['card'] ) ) {
 							if ( 1 === count( $value['card'] ) ) {
 								$value['card'] = array_shift( $value['card'] );
 							}
@@ -121,7 +158,7 @@ class Kind_Meta {
 		if ( is_array( $value ) ) {
 			return array_map( $value, array( 'Kind_Meta', 'sanitize_text' ) );
 		}
-		if ( is_url( $value ) ) {
+		if ( self::is_url( $value ) ) {
 			$value = esc_url_raw( $value );
 		} else {
 			$value = esc_attr( $value );

@@ -13,6 +13,12 @@ class Kind_View {
 			add_filter( 'the_excerpt', array( 'Kind_View', 'excerpt_response' ), 20 );
 	}
 
+	public static function extract_domain_name( $url ) {
+		$parse = wp_parse_url( $url );
+		return preg_replace( '/^www\./', '', $parse['host'] );
+	}
+
+
 	public static function sanitize_output( $content ) {
 		$allowed = wp_kses_allowed_html( 'post' );
 		$options = get_option( 'iwt_options', Kind_Config::Defaults() );
@@ -69,7 +75,7 @@ class Kind_View {
 			$embed = $GLOBALS['wp_embed']->autoembed( $url );
 		}
 			// Passes through the oembed handler in WordPress
-			$host = extract_domain_name( $url );
+			$host = self::extract_domain_name( $url );
 		switch ( $host ) {
 			case 'facebook.com':
 				$embed = self::get_embed_facebook( $url );
@@ -144,7 +150,7 @@ class Kind_View {
 			'youtube.com'   => _x( 'a video', 'Post kind' ),
 			'instagram.com' => _x( 'an image', 'Post kind' ),
 		);
-		$domain = extract_domain_name( $url );
+		$domain = self::extract_domain_name( $url );
 		if ( array_key_exists( $domain, $strings ) ) {
 			return apply_filters( 'kind_post_type_string', $strings[ $domain ] );
 		} else {

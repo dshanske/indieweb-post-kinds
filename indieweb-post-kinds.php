@@ -99,65 +99,6 @@ if ( ! function_exists( 'admin_kindstyle_load' ) ) {
   die( 'You have another version of Post Kinds installed!' );
 }
 
-if ( ! function_exists( 'extract_domain_name' ) ) {
-	/**
-	 * Returns the Domain Name out of a URL.
-	 *
-	 * @param string $url URL.
-	 *
-	 * @return string domain name
-	 */
-	function extract_domain_name( $url ) {
-
-		$parse = wp_parse_url( $url );
-		return preg_replace( '/^www\./', '', $parse['host'] );
-	}
-}
-
-if ( ! function_exists( 'is_multi_array' ) ) {
-	/**
-	 * Returns True if Array is Multidimensional.
-	 *
-	 * @param array $arr array.
-	 *
-	 * @return boolean result
-	 */
-	function is_multi_array( $arr ) {
-
-		if ( count( $arr ) === count( $arr, COUNT_RECURSIVE ) ) { return false;
-		} else { return true;
-		}
-	}
-}
-
-if ( ! function_exists( 'is_url' ) ) {
-	/**
-	 * Is String a URL.
-	 *
-	 * @param  string $url A string.
-	 * @return boolean Whether string is a URL.
-	 */
-	function is_url( $url ) {
-
-		return filter_var( $url, FILTER_VALIDATE_URL ) !== false;
-	}
-}
-
-
-if ( ! function_exists( 'str_prefix' ) ) {
-	/**
-	 * Is prefix in string.
-	 *
-	 * @param  string $source The source string.
-	 * @param  string $prefix The prefix you wish to check for in source.
-	 * @return boolean The result.
-	 */
-	function str_prefix( $source, $prefix ) {
-
-		return strncmp( $source, $prefix, strlen( $prefix ) ) === 0;
-	}
-}
-
 if ( ! function_exists( 'ifset' ) ) {
 	/**
 	 * If set, return otherwise false.

@@ -18,6 +18,12 @@ class Link_Preview {
 		add_action( 'wp_ajax_kind_urlfetch', array( 'Link_Preview', 'urlfetch' ) );
 	}
 
+	public static function extract_domain_name( $url ) {
+		$parse = wp_parse_url( $url );
+		return preg_replace( '/^www\./', '', $parse['host'] );
+	}
+
+
 	/**
 	 * Retrieves the body of a URL for parsing.
 	 *
@@ -89,7 +95,7 @@ class Link_Preview {
 			return  _( 'Twitter', 'Post kinds' );
 			break;
 			default:
-			return extract_domain_name( $url );
+			return self::extract_domain_name( $url );
 		}
 	}
 
@@ -116,7 +122,7 @@ class Link_Preview {
 	*/
 	private static function mf2parse($content, $url) {
 		$data = array();
-		$host = extract_domain_name( $url );
+		$host = self::extract_domain_name( $url );
 		switch ( $host ) {
 			case 'twitter.com':
 				$parsed = Mf2\Shim\parseTwitter( $content, $url );
