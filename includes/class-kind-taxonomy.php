@@ -412,6 +412,9 @@ class Kind_Taxonomy {
 	}
 
 	public static function publish ( $ID, $post=null) {
+		if ( 'post' !== get_post_type( $ID ) ) {
+			return;
+		}
     $option = get_option( 'iwt_options', Kind_Config::Defaults() );
 		if(count(wp_get_post_terms($ID,'kind'))<=0){
 			set_post_kind($ID, $option['defaultkind']);

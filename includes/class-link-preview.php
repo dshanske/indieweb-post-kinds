@@ -53,8 +53,10 @@ class Link_Preview {
 	 */
 	private static function parse ($content, $url) {
 		$metadata = self::metaparse( $content );
-		$mf2data = self::mf2parse( $content, $url );
-		$data = array_merge( $metadata, $mf2data );
+		if ( version_compare( phpversion(), 5.3, '<=' ) ) {
+			$mf2data = self::mf2parse( $content, $url );
+			$data = array_merge( $metadata, $mf2data );
+		}
 		$data = array_filter( $data );
 		// If Publication is Not Set, use the domain name instead
 		$data['publication'] = ifset( $data['publication'] ) ?: self::pretty_domain_name( $url );

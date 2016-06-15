@@ -1,7 +1,7 @@
 === Indieweb Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like
-Stable tag: 2.3.5
+Stable tag: 2.3.6
 Requires at least: 4.2
 Tested up to: 4.5
 License: GPLv2 or later
@@ -119,6 +119,9 @@ Indieweb Post Kinds had support for replying to Twitter posts using the Social N
 developer of this plugin.
 
 == Changelog ==
+	= Version 2.3.6 = 
+		* Manually fix Parser which in latest version has one line that breaks compatibility with PHP 5.3
+		* Disable MF2 Parser usage if version lower than 5.3
 	= Version 2.3.5 = 
 		* Remove comment transition action in favor of proposing it be moved into webmentions plugin
 		* Replace send webmentions code with a hook

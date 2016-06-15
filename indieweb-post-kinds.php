@@ -7,13 +7,13 @@
  * Plugin Name: Post Kinds
  * Plugin URI: https://wordpress.org/plugins/indieweb-post-kinds/
  * Description: Ever want to reply to someone else's post with a post on your own site? Or to "like" someone else's post, but with your own site?
- * Version: 2.3.4
+ * Version: 2.3.6
  * Author: David Shanske
  * Author URI: https://david.shanske.com
  * Text Domain: Post kinds
  */
 
-define( 'POST_KINDS_VERSION', '2.3.4' );
+define( 'POST_KINDS_VERSION', '2.3.6' );
 
 load_plugin_textdomain( 'Post kind', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
@@ -45,10 +45,12 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-view.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-meta.php';
 
 // Add an MF2 Parser
-if ( ! class_exists( 'Mf2\Parser' ) ) {
-  require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Parser.php';
-	require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/functions.php';
-	require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Twitter.php';
+if ( version_compare( phpversion(), 5.3, '<' ) ) {
+	if ( ! class_exists( 'Mf2\Parser' ) ) {
+  	require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Parser.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/functions.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Twitter.php';
+	}
 }
 
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-mf2-cleaner.php';
@@ -59,7 +61,7 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/class-link-preview.php';
 
 // Load stylesheets.
 add_action( 'wp_enqueue_scripts', 'kindstyle_load' );
-add_action( 'admin_enqueue_scripts', 'kindstyle_load' );
+add_action( 'admin_enqueue_scripts', 'admin_kindstyle_load' );
 
 
 /**
@@ -70,29 +72,32 @@ if ( ! function_exists( 'kindstyle_load' ) ) {
 	 * Loads Plugin Style Sheet.
 	 */
 	function kindstyle_load() {
-		wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'css/kind.min.css', array(), POST_KINDS_VERSION );
+    $option = get_option( 'iwt_options', Kind_Config::Defaults() );
+		if ( ! isset($option['themecompat']) ) {
+			wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'css/kind.min.css', array(), POST_KINDS_VERSION );
+		}
+   else {
+      wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'css/kind.themecompat.min.css', array(), POST_KINDS_VERSION );
+    }
+
 	}
 } else {
 	die( 'You have another version of Post Kinds installed!' );
 }
 
-// Add a notice to the Admin if the Webmentions Plugin isn't Activated.
-add_action( 'admin_notices', 'postkind_plugin_notice' );
-
-
 /**
- * Adds a notice if the Webmentions Plugin is Not Installed.
+ * Loads the Admin Stylesheet for the Plugin.
  */
-function postkind_plugin_notice() {
-
-	if ( ! class_exists( 'WebMentionPlugin' ) ) {
-		echo '<div class="error"><p>';
-		echo '<a href="https://wordpress.org/plugins/webmention/">';
-		esc_html_e( 'This Plugin Requires the WordPress Webmention Plugin', 'post_kinds' );
-		echo '</a></p></div>';
-	}
+if ( ! function_exists( 'admin_kindstyle_load' ) ) {
+  /**
+   * Loads Plugin Style Sheet.
+   */
+  function admin_kindstyle_load() {
+    wp_enqueue_style( 'kind-admin', plugin_dir_url( __FILE__ ) . 'css/kind.admin.min.css', array(), POST_KINDS_VERSION );
+  }
+} else {
+  die( 'You have another version of Post Kinds installed!' );
 }
-
 
 if ( ! function_exists( 'extract_domain_name' ) ) {
 	/**
@@ -104,9 +109,8 @@ if ( ! function_exists( 'extract_domain_name' ) ) {
 	 */
 	function extract_domain_name( $url ) {
 
-		$host = parse_url( $url, PHP_URL_HOST );
-		$host = preg_replace( '/^www\./', '', $host );
-		return $host;
+		$parse = wp_parse_url( $url );
+		return preg_replace( '/^www\./', '', $parse['host'] );
 	}
 }
 
@@ -123,36 +127,6 @@ if ( ! function_exists( 'is_multi_array' ) ) {
 		if ( count( $arr ) === count( $arr, COUNT_RECURSIVE ) ) { return false;
 		} else { return true;
 		}
-	}
-}
-
-if ( ! function_exists( 'array_filter_recursive' ) ) {
-	/**
-	 * Array_Filter for multi-dimensional arrays.
-	 *
-	 * @param  array    $array Untouched Array.
-	 * @param  function $callback Function to Apply to Each Element.
-	 * @return array Filtered Array.
-	 */
-	function array_filter_recursive( $array, $callback = null ) {
-
-		foreach ( $array as $key => & $value ) {
-			if ( is_array( $value ) ) {
-				$value = array_filter_recursive( $value, $callback );
-			} else {
-				if ( ! is_null( $callback ) ) {
-					if ( ! $callback( $value ) ) {
-						unset( $array[ $key ] );
-					}
-				} else {
-					if ( ! (bool) $value ) {
-						unset( $array[ $key ] );
-					}
-				}
-			}
-		}
-		unset( $value );
-		return $array;
 	}
 }
 
