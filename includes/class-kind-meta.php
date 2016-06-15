@@ -51,9 +51,9 @@ class Kind_Meta {
 	 * @return boolean result
 	 */
 	public static function is_multi_array( $arr ) {
-		if ( count( $arr ) === count( $arr, COUNT_RECURSIVE ) ) { 
+		if ( count( $arr ) === count( $arr, COUNT_RECURSIVE ) ) {
 			return false;
-		} else { 
+		} else {
 			return true;
 		}
 	}

@@ -123,6 +123,10 @@ Indieweb Post Kinds had support for replying to Twitter posts using the Social N
 developer of this plugin.
 
 ## Changelog ##
+	= Version 2.3.7 =
+		* Remove auto-set function for kind if not post type post
+		* Move global functions to the class in which they were used
+		* Refine MF2 parser check to hide retrieve button if version is less than 5.3
 	= Version 2.3.6 = 
 		* Manually fix Parser which in latest version has one line that breaks compatibility with PHP 5.3
 		* Disable MF2 Parser usage if version lower than 5.3

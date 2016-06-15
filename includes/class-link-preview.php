@@ -42,7 +42,7 @@ class Link_Preview {
 			'user-agent' => 'Post Kinds (WordPress/' . $wp_version . '); ' . get_bloginfo( 'url' ),
 		);
 		$response = wp_safe_remote_head( $url, $args );
-	  if ( is_wp_error( $response ) ) {
+		if ( is_wp_error( $response ) ) {
 			return $response;
 		}
 		if ( preg_match( '#(image|audio|video|model)/#is', wp_remote_retrieve_header( $response, 'content-type' ) ) ) {
@@ -59,11 +59,13 @@ class Link_Preview {
 	 */
 	private static function parse ($content, $url) {
 		$metadata = self::metaparse( $content );
-		if ( version_compare( phpversion(), 5.3, '<=' ) ) {
+		if ( version_compare( PHP_VERSION, '5.3', '>' ) ) {
 			$mf2data = self::mf2parse( $content, $url );
 			$data = array_merge( $metadata, $mf2data );
+			$data = array_filter( $data );
+		} else {
+			$data = array_filter( $metadata );
 		}
-		$data = array_filter( $data );
 		// If Publication is Not Set, use the domain name instead
 		$data['publication'] = ifset( $data['publication'] ) ?: self::pretty_domain_name( $url );
 		// If Name is Not Set Use Title Tag
@@ -164,29 +166,29 @@ class Link_Preview {
 		return $data;
 	}
 
-  public static function get_meta_tags( $source_content ) {
-    if ( ! $source_content ) {
-      return null;
-    }
-    $meta = array();
-    if ( preg_match_all( '/<meta [^>]+>/', $source_content, $matches ) ) {
-      $items = $matches[0];
+	public static function get_meta_tags( $source_content ) {
+		if ( ! $source_content ) {
+			return null;
+		}
+		$meta = array();
+		if ( preg_match_all( '/<meta [^>]+>/', $source_content, $matches ) ) {
+			$items = $matches[0];
 
-      foreach ( $items as $value ) {
-        if ( preg_match( '/(property|name)="([^"]+)"[^>]+content="([^"]+)"/', $value, $new_matches ) ) {
-          $meta_name  = $new_matches[2];
-          $meta_value = $new_matches[3];
+			foreach ( $items as $value ) {
+				if ( preg_match( '/(property|name)="([^"]+)"[^>]+content="([^"]+)"/', $value, $new_matches ) ) {
+					$meta_name  = $new_matches[2];
+					$meta_value = $new_matches[3];
 
-          // Sanity check. $key is usually things like 'title', 'description', 'keywords', etc.
-          if ( strlen( $meta_name ) > 100 ) {
-            continue;
-          }
-          $meta[$meta_name] = $meta_value;
-        }
-      }
-    }
-    return $meta;
-  }
+					// Sanity check. $key is usually things like 'title', 'description', 'keywords', etc.
+					if ( strlen( $meta_name ) > 100 ) {
+						continue;
+					}
+					$meta[$meta_name] = $meta_value;
+				}
+			}
+		}
+		return $meta;
+	}
 
 	/**
 	 * Parses marked up HTML using OGP or other meta tags.
@@ -197,7 +199,7 @@ class Link_Preview {
 		$meta = self::get_meta_tags( $content );
 		$data = array();
 		$data['name'] = ifset( $meta['og:title'] ) ?: ifset( $meta['twitter:title'] ) ?: ifset( $meta['og:music:song'] );
-		$data['summary'] = ifset( $meta['og:description'] ) ?: ifset( $meta['twitter:description'] ) ?: ifset( $meta['description']);
+		$data['summary'] = ifset( $meta['og:description'] ) ?: ifset( $meta['twitter:description'] ) ?: ifset( $meta['description'] );
 		$data['site'] = ifset( $meta['og:site'] ) ?: ifset( $meta['twitter:site'] );
 		if ( array_key_exists( 'author', $meta ) ) {
 			$data['author'] = array();
