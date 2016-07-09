@@ -7,13 +7,11 @@
  * Plugin Name: Post Kinds
  * Plugin URI: https://wordpress.org/plugins/indieweb-post-kinds/
  * Description: Ever want to reply to someone else's post with a post on your own site? Or to "like" someone else's post, but with your own site?
- * Version: 2.3.7
+ * Version: 2.3.8
  * Author: David Shanske
  * Author URI: https://david.shanske.com
  * Text Domain: Post kinds
  */
-
-define( 'POST_KINDS_VERSION', '2.3.7' );
 
 if ( ! defined( 'MULTIKIND' ) ) {
 	define( 'MULTIKIND', false );
@@ -22,6 +20,7 @@ if ( ! defined( 'MULTIKIND' ) ) {
 add_action( 'plugins_loaded', array( 'Post_Kinds_Plugin', 'init' ) );
 
 class Post_Kinds_Plugin {
+	public static $version = '2.3.8';
 	public static function init() {
 		load_plugin_textdomain( 'Post kind', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 		// Add Kind Taxonomy.
@@ -93,9 +92,9 @@ class Post_Kinds_Plugin {
 	public static function style_load() {
 		$option = get_option( 'iwt_options', Kind_Config::Defaults() );
 		if ( ! isset( $option['themecompat'] ) ) {
-			wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'css/kind.min.css', array(), POST_KINDS_VERSION );
+			wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'css/kind.min.css', array(), self::$version );
 		} else {
-			wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'css/kind.themecompat.min.css', array(), POST_KINDS_VERSION );
+			wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'css/kind.themecompat.min.css', array(), self::$version );
 		}
 	}
 	
@@ -103,7 +102,7 @@ class Post_Kinds_Plugin {
 	 * Loads the Admin Stylesheet for the Plugin.
 	 */
 	public static function admin_style_load() {
-		wp_enqueue_style( 'kind-admin', plugin_dir_url( __FILE__ ) . 'css/kind.admin.min.css', array(), POST_KINDS_VERSION );
+		wp_enqueue_style( 'kind-admin', plugin_dir_url( __FILE__ ) . 'css/kind.admin.min.css', array(), self::$version);
 	}
 }
 
