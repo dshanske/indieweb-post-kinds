@@ -7,14 +7,6 @@
  * @package Post Kinds
  */
 
-add_action( 'init' , array( 'Kind_Taxonomy', 'init' ) );
-// Register Kind Taxonomy.
-add_action( 'init', array( 'Kind_Taxonomy', 'register' ), 1 );
-
-
-// On Activation, add terms.
-register_activation_hook( __FILE__, array( 'Kind_Taxonomy', 'activate_kinds' ) );
-
 class Kind_Taxonomy {
 	public static function init() {
 
@@ -52,7 +44,6 @@ class Kind_Taxonomy {
 
 		// Remove the Automatic Post Generation that the Micropub Plugin Offers
 		remove_filter( 'before_micropub', array( 'Micropub', 'generate_post_content' ) );
-
 	}
 
 

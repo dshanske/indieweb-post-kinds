@@ -4,14 +4,6 @@
  *
  * Parses Arbitrary URLs
  */
-add_action( 'init' , array( 'Link_Preview', 'init' ) );
-add_action( 'wp_ajax_kind_test', 'kind_ajaxtest' );
-
-function kind_ajaxtest() {
-	$response = array( 'result' => 'successful' );
-	wp_send_json( $response );
-}
-
 
 class Link_Preview {
 	public static function init() {

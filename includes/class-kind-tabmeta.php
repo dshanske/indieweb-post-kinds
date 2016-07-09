@@ -4,7 +4,6 @@
  *
  * Sets Up Tabbed Metabox in the Posting UI for Kind data.
  */
-add_action( 'init' , array( 'Kind_Tabmeta', 'init' ) );
 
 class Kind_Tabmeta {
 	public static function init() {

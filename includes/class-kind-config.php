@@ -6,19 +6,12 @@
  * Sets Up Configuration Options for the Plugin.
  */
 
-add_action( 'admin_init' , array( 'Kind_Config', 'admin_init' ) );
-add_action( 'after_setup_theme', array( 'Kind_Config', 'remove_post_formats' ), 11 );
-add_action( 'admin_menu', array( 'Kind_Config', 'admin_menu' ), 11 );
-// Add post help tab
-add_action( 'load-post.php', array( 'Kind_Config', 'add_post_help_tab' ) , 20 );
 /**
  * Static Class to Configure Admin Options.
  *
  * @package Post Kinds
  */
 class Kind_Config {
-
-
 	public static function Defaults() {
 		return array(
 			'embeds' => '0',
@@ -32,6 +25,19 @@ class Kind_Config {
 			'themecompat' => '0',
 		);
 
+	}
+
+	/**
+	 * Function to Initialize the Configuration.
+	 *
+	 * @access public
+	 */
+	public static function init() {
+		add_action( 'admin_init' , array( 'Kind_Config', 'admin_init' ) );
+		add_action( 'after_setup_theme', array( 'Kind_Config', 'remove_post_formats' ), 11 );
+		add_action( 'admin_menu', array( 'Kind_Config', 'admin_menu' ), 11 );
+		// Add post help tab
+		add_action( 'load-post.php', array( 'Kind_Config', 'add_post_help_tab' ) , 20 );
 	}
 
 	/**
@@ -88,19 +94,6 @@ class Kind_Config {
 		} else {
 			add_options_page( '', __( 'Post Kinds', 'Post kind' ), 'manage_options', 'kind_options', array( 'Kind_Config', 'options_form' ) );
 		}
-	}
-
-	/**
-	 * Adds link to Plugin Page for Options Page.
-	 *
-	 * @access public
-	 * @param array $links Array of Existing Links.
-	 * @return array Modified Links.
-	 */
-	public static function settings_link( $links ) {
-		$settings_link = '<a href="options-general.php?page=kind_options">Settings</a>';
-		array_unshift( $links, $settings_link );
-			return $links;
 	}
 
 	/**

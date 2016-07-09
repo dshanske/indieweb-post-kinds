@@ -15,49 +15,74 @@
 
 define( 'POST_KINDS_VERSION', '2.3.7' );
 
-load_plugin_textdomain( 'Post kind', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-
 if ( ! defined( 'MULTIKIND' ) ) {
 	define( 'MULTIKIND', false );
 }
 
-// Add Kind Taxonomy.
-require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-taxonomy.php';
+add_action( 'plugins_loaded', array( 'Post_Kinds_Plugin', 'init' ) );
 
-// Config Settings.
-require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-config.php';
+class Post_Kinds_Plugin {
+	public static function init() {
+		load_plugin_textdomain( 'Post kind', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+		// Add Kind Taxonomy.
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-taxonomy.php';
+		add_action( 'init' , array( 'Kind_Taxonomy', 'init' ) );
+		// Register Kind Taxonomy.
+		add_action( 'init', array( 'Kind_Taxonomy', 'register' ), 1 );
 
-// Add a Settings Link to the Plugins Page.
-$plugin = plugin_basename( __FILE__ );
-add_filter( 'plugin_action_links_$plugin', array( 'kind_config', 'settings_link' ) );
+		// On Activation, add terms.
+		register_activation_hook( __FILE__, array( 'Kind_Taxonomy', 'activate_kinds' ) );
 
+		// Config Settings.
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-config.php';
+		add_action( 'init' , array( 'Kind_Config', 'init' ) );
 
-// Add Kind Post UI Configuration.
-require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-tabmeta.php';
+		// Add a Settings Link to the Plugins Page.
+		$plugin = plugin_basename( __FILE__ );
+		add_filter( 'plugin_action_links_$plugin', array( 'Post_Kinds_Plugin', 'settings_link' ) );
+		
+		// Add Kind Post UI Configuration
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-tabmeta.php';
+		add_action( 'init' , array( 'Kind_Tabmeta', 'init' ) );
 
+		// Add Kind Global Functions.
+		require_once plugin_dir_path( __FILE__ ) . '/includes/kind-functions.php';
+		
+		// Add Kind Display Functions.
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-view.php';
+		add_action( 'init' , array( 'Kind_View', 'init' ) );
 
-// Add Kind Global Functions.
-require_once plugin_dir_path( __FILE__ ) . '/includes/kind-functions.php';
-// Add Kind Display Functions.
-require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-view.php';
+		// Add Kind Meta Storage and Retrieval Functions.
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-meta.php';
+		
+		// Add an MF2 Parser
+		if ( version_compare( PHP_VERSION, '5.3', '>' ) ) {
+			if ( ! class_exists( 'Mf2\Parser' ) ) {
+				require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Parser.php';
+				require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/functions.php';
+				require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Twitter.php';
+			}
+		}
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class-mf2-cleaner.php';
+		
+		// Add Link Preview Parsing
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class-link-preview.php';
+		add_action( 'init' , array( 'Link_Preview', 'init' ) );
+	}
 
-// Add Kind Meta Storage and Retrieval Functions.
-require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-meta.php';
-
-// Add an MF2 Parser
-if ( version_compare( PHP_VERSION, '5.3', '>' ) ) {
-	if ( ! class_exists( 'Mf2\Parser' ) ) {
-		require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Parser.php';
-		require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/functions.php';
-		require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Twitter.php';
+  /**
+	 * Adds link to Plugin Page for Options Page.
+	 *
+	 * @access public
+	 * @param array $links Array of Existing Links.
+	 * @return array Modified Links.
+	 */
+	public static function settings_link( $links ) {
+		$settings_link = '<a href="options-general.php?page=kind_options">Settings</a>';
+		array_unshift( $links, $settings_link );
+		return $links;
 	}
 }
-
-require_once plugin_dir_path( __FILE__ ) . 'includes/class-mf2-cleaner.php';
-
-// Add Link Preview Parsing
-require_once plugin_dir_path( __FILE__ ) . 'includes/class-link-preview.php';
-
 
 // Load stylesheets.
 add_action( 'wp_enqueue_scripts', 'kindstyle_load' );

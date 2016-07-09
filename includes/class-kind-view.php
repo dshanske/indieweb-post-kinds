@@ -4,7 +4,6 @@
  *
  * Handles the logic of adding the kind displays to the post content.
  */
-add_action( 'init' , array( 'Kind_View', 'init' ) );
 
 // The Kind_View class sets up the kind display behavior for kinds
 class Kind_View {
