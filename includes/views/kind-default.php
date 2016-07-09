@@ -46,7 +46,7 @@ switch ( $kind ) {
 				break;
 }
 $content .= '">';
-$content .= kind_icon( $kind );
+$content .= Kind_Taxonomy::get_icon( $kind );
 $content .= self::get_cite_title( $meta->get_cite(), $meta->get_url() );
 $author = self::get_hcard( $meta->get_author() );
 if ( $author ) {

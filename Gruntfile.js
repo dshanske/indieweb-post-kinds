@@ -2,38 +2,6 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
 
-    svg_sprite      : {
-        options     : {
-            // Task-specific options go here. 
-        },
-        complex : {
-            //Target-specific file lists and/or options go here. 
-						src: ['svg/*.svg'],
-						dest: 'svg',
-						options : {
-						        shape               : {
-                    dimension       : {         // Set maximum dimensions 
-                        maxWidth    : 32,
-                        maxHeight   : 32
-                    },
-                    spacing         : {         // Add padding 
-                        padding     : 10
-                    }
-                },
-                mode                : {
-                    symbol          : {
-											prefix : 'svg-%s',
-											render: {
-												scss: {
-													dest: '_sprites.scss'
-												}
-											}
-										}
-                }
-					}
-		},
-	},
-
     wp_deploy: {
         deploy: { 
             options: {
@@ -86,9 +54,29 @@ module.exports = function(grunt) {
              },
           files: {                         // Dictionary of files
         'css/kind.min.css': 'sass/main.scss',       // 'destination': 'source'
+        'css/kind.admin.min.css': 'sass/admin.scss',       // 'destination': 'source'
+        'css/kind.themecompat.min.css': 'sass/themecompat.scss',       // 'destination': 'source'
+
          }
 	}
   },
+
+	svgstore: {
+		options: {
+			prefix : '', // Unused by us, but svgstore demands this variable
+			cleanup : ['style', 'fill', 'id'],
+			svg: { // will add and overide the the default xmlns="http://www.w3.org/2000/svg" attribute to the resulting SVG
+				viewBox : '0 0 24 24',
+				xmlns: 'http://www.w3.org/2000/svg'
+			},
+		},
+		dist: {
+				files: {
+					'includes/kind-sprite.svg': ['svgs/*.svg']
+				}
+		}
+	},
+
    makepot: {
         target: {
             options: {
@@ -105,15 +93,15 @@ module.exports = function(grunt) {
       },
   });
 
-	grunt.loadNpmTasks('grunt-svg-sprite');
   grunt.loadNpmTasks('grunt-wp-readme-to-markdown');
   grunt.loadNpmTasks( 'grunt-wp-i18n' );
   grunt.loadNpmTasks('grunt-contrib-sass');
   grunt.loadNpmTasks('grunt-wp-deploy');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks( 'grunt-contrib-clean' );
+	grunt.loadNpmTasks('grunt-svgstore');
   grunt.loadNpmTasks( 'grunt-git' );
   // Default task(s).
-  grunt.registerTask('default', ['wp_readme_to_markdown', 'makepot', 'sass', 'copy']);
+  grunt.registerTask('default', ['wp_readme_to_markdown', 'makepot', 'sass', 'svgstore']);
 
 };

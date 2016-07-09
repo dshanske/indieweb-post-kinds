@@ -190,7 +190,7 @@ class Kind_Taxonomy {
 			if ( in_array( $slug, $include ) ) {
 				echo "<li id='$id' class='kind-$slug'><label class='selectit'>";
 				echo "<input type='radio' id='in-$id' name='tax_input[kind]'".checked( $current,$term->term_id,false )."value='$slug' />";
-				echo kind_icon( $slug );
+				echo self::get_icon( $slug );
 				echo "$strings[$slug]<br />";
 				echo '</label></li>';
 
@@ -553,6 +553,12 @@ class Kind_Taxonomy {
 			$kind = 'note';
 		}
 		return wp_set_post_terms( $post->ID, $kind, 'kind' );
+	}
+	
+	public static function get_icon( $kind ) {
+		// Substitute another svg sprite file
+		$sprite = apply_filters( 'kind_icon_sprite', plugin_dir_url( __FILE__ ) . 'kind-sprite.svg', $kind );
+		return '<svg class="svg-icon ' . 'svg-' . $kind . '" aria-hidden="true"><use xlink:href="' . $sprite . '#' . $kind . '"></use></svg>';
 	}
 
 	/**

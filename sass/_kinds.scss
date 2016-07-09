@@ -1,13 +1,12 @@
-svg {
-	fill: currentColor;
-	width: 24px;
-	height: 24px;
-}
-
-#kind-all {
-  .kind-icon {
-    padding-left: 2px;
-    padding-right: 2px;
-		color: grey;
+#kind-all, .response {
+	.svg-icon {
+		fill: currentColor;
+		padding-left: 2px;
+		padding-right: 2px;
+		width: 24px;
+		height: 24px;
+		vertical-align: middle;
+		top: -0.0625em;
+		color: grey
 	}
 }

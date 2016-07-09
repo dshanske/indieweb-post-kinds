@@ -68,6 +68,10 @@ class Post_Kinds_Plugin {
 		// Add Link Preview Parsing
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-link-preview.php';
 		add_action( 'init' , array( 'Link_Preview', 'init' ) );
+		
+		// Load stylesheets.
+		add_action( 'wp_enqueue_scripts', array( 'Post_Kinds_Plugin', 'style_load' ) );
+		add_action( 'admin_enqueue_scripts', array( 'Post_Kinds_Plugin', 'admin_style_load' ) );
 	}
 
   /**
@@ -82,45 +86,25 @@ class Post_Kinds_Plugin {
 		array_unshift( $links, $settings_link );
 		return $links;
 	}
-}
-
-// Load stylesheets.
-add_action( 'wp_enqueue_scripts', 'kindstyle_load' );
-add_action( 'admin_enqueue_scripts', 'admin_kindstyle_load' );
-
-
-/**
- * Loads the Stylesheet for the Plugin.
- */
-if ( ! function_exists( 'kindstyle_load' ) ) {
+	
 	/**
-	 * Loads Plugin Style Sheet.
+	 * Loads the Stylesheet for the Plugin.
 	 */
-	function kindstyle_load() {
+	public static function style_load() {
 		$option = get_option( 'iwt_options', Kind_Config::Defaults() );
 		if ( ! isset( $option['themecompat'] ) ) {
 			wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'css/kind.min.css', array(), POST_KINDS_VERSION );
 		} else {
 			wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'css/kind.themecompat.min.css', array(), POST_KINDS_VERSION );
 		}
-
 	}
-} else {
-	die( 'You have another version of Post Kinds installed!' );
-}
-
-/**
- * Loads the Admin Stylesheet for the Plugin.
- */
-if ( ! function_exists( 'admin_kindstyle_load' ) ) {
+	
 	/**
-	 * Loads Plugin Style Sheet.
+	 * Loads the Admin Stylesheet for the Plugin.
 	 */
-	function admin_kindstyle_load() {
+	public static function admin_style_load() {
 		wp_enqueue_style( 'kind-admin', plugin_dir_url( __FILE__ ) . 'css/kind.admin.min.css', array(), POST_KINDS_VERSION );
 	}
-} else {
-	die( 'You have another version of Post Kinds installed!' );
 }
 
 if ( ! function_exists( 'ifset' ) ) {
@@ -173,19 +157,6 @@ function kind_get_timezones() {
 	asort( $o );
 
 	return $o;
-}
-
-function kind_icon($slug) {
-	if ( empty( $slug ) ) {
-		return '';
-	}
-	$file = wp_remote_get( plugin_dir_url( __FILE__ ) . 'svg/' . $slug . '.svg' );
-	// If it fails to retrieve, then retrieve website as the default icon
-	if ( is_wp_error( $file ) ) {
-		$file = wp_remote_get( plugin_dir_url( __FILE__ ) . 'svg/' . 'website.svg' );
-	}
-	$icon = '<span class="kind-icon">' . wp_remote_retrieve_body( $file ) . '</span>';
-	return apply_filters( 'kind-icon', $icon, $slug );
 }
 
 ?>
