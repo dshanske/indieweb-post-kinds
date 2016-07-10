@@ -117,6 +117,31 @@ class Kind_View {
 		}
 	}
 
+	// This mirrors get_template_part but for views and locates the correct file
+	public static function get_view_part($slug, $name = null) {
+		$name = (string) $name;
+		if ( '' !== $name ) {
+			$templates[] = "{$slug}-{$name}.php";
+		} 		    
+		$templates[] = "{$slug}.php";
+		foreach ( (array) $templates as $template_name ) {
+			if ( !$template_name ) {
+					continue;
+			}
+			// If the Theme Has a kind_views directory look there first.
+			if ( file_exists( get_template_directory() . '/kind_views/' . $template_name) ) {
+				$located = get_template_directory() . '/kind_views/' . $template_name;
+				break;
+			}
+			// Look in the views subdirectory.
+			if ( file_exists( plugin_dir_path( __FILE__ ) . 'views/' . $template_name) ) {
+				$located = plugin_dir_path( __FILE__ ) . 'views/' . $template_name;
+				break;
+			}
+		}
+		return $located;
+	}
+
 	// Return the Display
 	public static function get_display( $post_ID, $single = false ) {
 		if ( 'post' === get_post_type( $post_ID ) ) {
@@ -125,14 +150,7 @@ class Kind_View {
 			$cite = $meta->get_cite();
 			$hcard = 'Unknown Author';
 			$content = '';
-			switch ( $kind ) {
-				case 'note':
-				case 'article':
-				case 'photo':
-					break;
-				default:
-					include( 'views/kind-default.php' );
-			}
+			include( self::get_view_part( 'kind', $kind ) );	
 			return apply_filters( 'kind-response-display', $content, $post_ID );
 		}
 	}
