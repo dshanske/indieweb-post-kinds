@@ -6,6 +6,7 @@
  */
 
 class Kind_Tabmeta {
+	public static $version;
 	public static function init() {
 		// Add meta box to new post/post pages only
 		add_action( 'load-post.php', array( 'Kind_Tabmeta', 'kindbox_setup' ) );
@@ -31,28 +32,28 @@ class Kind_Tabmeta {
 				'jquery-ui-timepicker',
 				plugins_url( 'indieweb-post-kinds/includes/tabs/jquery.timepicker.min.js' ),
 				array( 'jquery' ),
-				POST_KINDS_VERSION
+				self::$version
 			);
 
 			wp_enqueue_script(
 				'kindmeta-time',
 				plugins_url( 'indieweb-post-kinds/includes/tabs/time.js' ),
 				array( 'jquery' ),
-				POST_KINDS_VERSION
+				self::$version
 			);
 
 			wp_enqueue_script(
 				'kindmeta-tabs',
 				plugins_url( 'indieweb-post-kinds/includes/tabs/tabs.js' ),
 				array( 'jquery' ),
-				POST_KINDS_VERSION
+				self::$version
 			);
 
 			wp_enqueue_script(
 				'kindmeta-response',
 				plugins_url( 'indieweb-post-kinds/includes/tabs/retrieve.js' ),
 				array( 'jquery' ),
-				POST_KINDS_VERSION
+				self::$version
 			);
 
 			wp_enqueue_script(
@@ -64,6 +65,42 @@ class Kind_Tabmeta {
 		}
 	}
 
+	public static function kind_get_timezones() {
+		$o = array();
+		$t_zones = timezone_identifiers_list();
+
+		foreach ( $t_zones as $a ) {
+			$t = '';
+			try {
+      	// this throws exception for 'US/Pacific-New'
+        $zone = new DateTimeZone( $a );
+
+        $seconds = $zone->getOffset( new DateTime( 'now' , $zone ) );
+        $o[] = self::tz_seconds_to_offset( $seconds );
+      } // exceptions must be catched, else a blank page
+      catch (Exception $e) {
+      	// die("Exception : " . $e->getMessage() . '<br />');
+        // what to do in catch ? , nothing just relax
+    	}
+    }
+    $o = array_unique( $o );
+    asort( $o );
+
+    return $o;
+	}
+
+	public static function tz_seconds_to_offset($seconds) {
+    return ($seconds < 0 ? '-' : '+') . sprintf( '%02d:%02d', abs( $seconds / 60 / 60 ), abs( $seconds / 60 ) % 60 );
+	}
+
+	public static function tz_offset_to_seconds($offset) {
+    if ( preg_match( '/([+-])(\d{2}):?(\d{2})/', $offset, $match ) ) {
+      $sign = ($match[1] == '-' ? -1 : 1);
+      return (($match[2] * 60 * 60) + ($match[3] * 60)) * $sign;
+    } else {
+      return 0;
+    }
+	}
 
 	/* Create one or more meta boxes to be displayed on the post editor screen. */
 	public static function add_meta_boxes() {

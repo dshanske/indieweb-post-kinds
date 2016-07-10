@@ -6,9 +6,9 @@
  * @package    Indieweb_Post_Kinds
  */
 
-$tzlist = kind_get_timezones();
+$tzlist = self::kind_get_timezones();
 $tz_seconds = get_option( 'gmt_offset' ) * 3600;
-$offset = tz_seconds_to_offset( $tz_seconds );
+$offset = self::tz_seconds_to_offset( $tz_seconds );
 $start_offset = ifset( $time['start_offset'] ) ?: $offset;
 $end_offset = ifset( $time['end_offset'] ) ?: $offset;
 
