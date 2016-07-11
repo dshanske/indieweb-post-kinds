@@ -210,27 +210,6 @@ class Kind_Config {
 	}
 
 	/**
-	 * Purge the response code stored in metadata.
-	 *
-	 * @access public
-	 */
-	public static function response_purge() {
-		$args = array(
-	  	'post_type' => 'post',
-			'nopaging' => 'true',
-		);
-		$the_query = new WP_Query( $args );
-		// The Loop.
-		if ( $the_query->have_posts() ) {
-			foreach ( $the_query->posts as $post ) {
-				$the_query->the_post();
-				delete_post_meta( $post->ID, '_resp_full' );
-			}
-		}
-		wp_reset_postdata();
-	}
-
-	/**
 	 * Disable Post Formats.
 	 *
 	 * @access public
