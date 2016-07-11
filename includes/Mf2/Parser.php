@@ -455,14 +455,14 @@ class Parser {
 	public function resolveUrl($url) {
 		// If the URL is seriously malformed it’s probably beyond the scope of this
 		// parser to try to do anything with it.
-		if (wp_parse_url($url) === false) {
+		if (parse_url($url) === false) {
 			return $url;
 		}
 
 		// per issue #40 valid URLs could have a space on either side
 		$url = trim($url);
-		$parse = wp_parse_url($url);
-		$scheme = $parse['scheme'];
+
+		$scheme = parse_url($url, PHP_URL_SCHEME);
 
 		if (empty($scheme) and !empty($this->baseurl)) {
 			return resolveUrl($this->baseurl, $url);
@@ -1325,7 +1325,7 @@ function parseUriToComponents($uri) {
 		'fragment' => null
 	);
 
-	$u = wp_parse_url($uri);
+	$u = @parse_url($uri);
 
 	if(array_key_exists('scheme', $u))
 		$result['scheme'] = $u['scheme'];
