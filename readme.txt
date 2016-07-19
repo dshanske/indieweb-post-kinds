@@ -1,4 +1,4 @@
-=== Indieweb Post Kinds ===
+=== Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like
 Stable tag: 2.4.0
@@ -11,8 +11,9 @@ Ever want to reply to someone else's post with a post on your own site? Or to "l
 
 == Description == 
 
-Post Kinds adds support for responding to and interacting with other sites using the standards developed by IndieWebCamp by implementing
-[kinds of posts](http://indiewebcamp.com/post_kinds).
+Post Kinds adds support for responding to and interacting with other sites using the standards
+developed by the IndieWeb by implementing
+[kinds of posts](http://indieweb.org/post_kinds).
 
 It can also distinguish certain types of passive posts in a manner similar to [post formats](http://codex.wordpress.org/Post_Formats).
 
@@ -32,7 +33,8 @@ It can also distinguish certain types of passive posts in a manner similar to [p
 
 = How do I learn more? =
 
-For more information on the Indieweb and tools for WordPress, visit [Getting Started on WordPress](http://indiewebcamp.com/Getting_Started_on_WordPress).
+For more information on the Indieweb and tools for WordPress, visit [Getting Started on
+WordPress](http://indieweb.org/Getting_Started_on_WordPress).
 
 = How do I get support? = 
 
@@ -267,7 +269,7 @@ developer of this plugin.
 		* Add filter to support post kinds for Semantic Linkbacks plugin. 
 		* Add responses to feed content. 
 	= Version 1.2.0 = 
-		* Change to store meta using [WordPress Data](https://indiewebcamp.com/WordPress_Data) proposal. 
+		* Change to store meta using [WordPress Data](https://indieweb.org/WordPress_Data) proposal. 
 		* Display functionality broken into individual pieces to make it easier to customize and edit
 		* Multi-reply support in the data structure/display but not in entry
 	= Version 1.1.1 =
