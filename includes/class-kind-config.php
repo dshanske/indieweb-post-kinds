@@ -50,7 +50,8 @@ class Kind_Config {
 		register_setting( 'iwt_options', 'iwt_options' );
 		add_settings_section( 'iwt-content', __( 'Content Options', 'Post kind' ), array( 'Kind_Config', 'options_callback' ), 'iwt_options' );
 		add_settings_field( 'embeds', __( 'Add Rich Embed Support for Facebook, Google Plus, Instagram, etc', 'Post kind' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'embeds' ) );
-		add_settings_field( 'themecompat', __( 'Extra Styling for Themes That May Not Support Post Kinds', 'Post kind' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array(
+		add_settings_field( 'themecompat', __( 'Extra Styling for Themes That May Not Support Post
+					Kinds. Includes hiding of titles on kinds that do not usually have an explicit title.', 'Post kind' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array(
 			'name'
 			=> 'themecompat',
 		) );

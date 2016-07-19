@@ -9,8 +9,8 @@
 					// echo '<a class="nav-tab" href="javascript:;">Location</a>';
 				}
 				?>
-    </h2>
-    <?php
+	</h2>
+	<?php
 		include_once( 'tab-response.php' );
 		include_once( 'tab-citation.php' );
 		include_once( 'tab-time.php' );

@@ -17,6 +17,17 @@ class Link_Preview {
 
 
 	/**
+	 * Returns if valid URL
+	 *
+	 * @param string $url
+	 *
+	 * @return boolean
+	 */
+	public static function is_url($url) {
+		return filter_var( $url, FILTER_VALIDATE_URL );
+	}
+
+	/**
 	 * Retrieves the body of a URL for parsing.
 	 *
 	 * @param string $url A valid URL.
@@ -56,7 +67,7 @@ class Link_Preview {
 			$data = array_merge( $metadata, $mf2data );
 			$data = array_filter( $data );
 		} else {
-			$data = array_filter( $metadata );
+			$data = $metadata;
 		}
 		// If Publication is Not Set, use the domain name instead
 		$data['publication'] = ifset( $data['publication'] ) ?: self::pretty_domain_name( $url );
@@ -138,6 +149,7 @@ class Link_Preview {
 					$data['content'] = mf2_cleaner::getHtml( $entry, 'content' );
 					$data['summary'] = mf2_cleaner::getHtml( $entry, 'summary' );
 					$data['name'] = trim( preg_replace( '/https?:\/\/([^ ]+|$)/', '', $data['name'] ) );
+					$data['featured'] = mf2_cleaner::getPlainText( $entry, 'featured' );
 					$author = mf2_cleaner::getAuthor( $entry );
 					if ( $author ) {
 							$data['author'] = array();
@@ -199,7 +211,8 @@ class Link_Preview {
 		}
 		$data['featured'] = ifset( $meta['og:image'] ) ?: ifset( $meta['twitter:image'] );
 		$data['publication'] = ifset( $meta['og:site_name'] ) ?: ifset( $meta['og:music:album'] );
-		$data['published'] = ifset( $meta['og:article:published_time'] ) ?: ifset( $meta['pdate'] ) ?: ifset( $meta['og:article:published'] ) ?: ifset( $meta['og:music:release_date'] ) ?: ifset( $meta['og:video:release_date'] );
+		$data['published'] = ifset( $meta['article:published'] ) ?: ifset( $meta['og:article:published_time'] ) ?: ifset( $meta['og:article:published'] ) ?: ifset( $meta['og:music:release_date'] ) ?: ifset( $meta['og:video:release_date'] );
+		$data['updated'] = ifset( $meta['article:modified'] ) ?: ifset( $meta['article:modified_time'] );
 		$metatags = ifset( $meta['article:tag'] ) ?: ifset( $meta['og:video:tag'] );
 		$tags = array();
 		if ( is_array( $metatags ) ) {

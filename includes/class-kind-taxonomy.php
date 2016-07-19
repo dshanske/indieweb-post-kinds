@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Post Kind Taxonomy Class
  *
@@ -6,7 +7,6 @@
  *
  * @package Post Kinds
  */
-
 class Kind_Taxonomy {
 	public static function init() {
 
@@ -38,9 +38,8 @@ class Kind_Taxonomy {
 		// Override Post Type in Semantic Linkbacks.
 		add_filter( 'semantic_linkbacks_post_type', array( 'Kind_Taxonomy', 'semantic_post_type' ), 11, 2 );
 
-    // Add Links to Ping to the Webmention Sender.
+		// Add Links to Ping to the Webmention Sender.
     add_filter( 'webmention_links', array( 'Kind_Taxonomy', 'webmention_links' ), 11, 2 );
-
 
 		// Remove the Automatic Post Generation that the Micropub Plugin Offers
 		remove_filter( 'before_micropub', array( 'Micropub', 'generate_post_content' ) );
@@ -229,7 +228,8 @@ class Kind_Taxonomy {
 		'follow'   => _x( 'Follow', 'Post kind' ),
 		'jam'   => _x( 'Jam', 'Post kind' ),
 		'read' => _x( 'Read', 'Post kind' ),
-		'quote' => _x( 'Quote', 'Post kind' )
+		'quote' => _x( 'Quote', 'Post kind' ),
+		'mood' => _x( 'Mood', 'Post kind' )
 		);
 		return apply_filters( 'kind_strings', $strings );
 	}
@@ -264,7 +264,8 @@ class Kind_Taxonomy {
 			'follow'   => _x( 'Follows', 'Post kind' ),
 		'jam'   => _x( 'Jams', 'Post kind' ),
 		'read' => _x( 'Read', 'Post kind' ),
-		'quote' => _x( 'Quotes', 'Post kind' )
+		'quote' => _x( 'Quotes', 'Post kind' ),
+		'mood' => _x( 'Moods', 'Post kind' )
 		);
 		return apply_filters( 'kind_strings_plural', $strings );
 	}
@@ -299,7 +300,8 @@ class Kind_Taxonomy {
 		'follow'   => _x( 'Followed', 'Post kind' ),
 		'jam'   => _x( 'Listened to', 'Post kind' ),
 		'read' => _x( 'Is Reading', 'Post kind' ),
-		'quote' => _x( 'Quoted', 'Post kind' )
+		'quote' => _x( 'Quoted', 'Post kind' ),
+		'mood' => _x( 'Felt', 'Post kind' )
 
 		);
 		return apply_filters( 'kind_verbs', $strings );
@@ -335,7 +337,8 @@ class Kind_Taxonomy {
 		'follow'   => 'u-follow-of',
 		'jam'   => 'jam',
 		'read' => 'read',
-		'quote' => 'quote'
+		'quote' => 'quote',
+		'mood' => 'mood'
 		);
 		return apply_filters( 'kind_properties', $strings );
 	}

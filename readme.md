@@ -1,9 +1,9 @@
 # Indieweb Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like  
-**Stable tag:** 2.3.6  
+**Stable tag:** 2.4.0  
 **Requires at least:** 4.2  
-**Tested up to:** 4.5  
+**Tested up to:** 4.5.3  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -47,6 +47,13 @@ The Development version of the plugin is hosted at [Github](https://github.com/d
 The plugin requires the [webmention](https://wordpress.org/plugins/webmention/) plugin to support sending/receiving notice of a reply/like to another site which will appear as a comment. The [Semantic Linkbacks](https://wordpress.org/plugins/semantic-linkbacks/) plugin is available to more richly display the comment.
 
 ## Upgrade Notice ##
+
+### 2.4.0 ###
+
+I have changed the icons again, to go back to something closer to the original. If anyone wants to
+contribute alternate icon sets for the project, willing to consider adding them. Also, coming up is
+another change to how the plugin stores and works with data to continue to move toward something
+closer to Microformats. Looking at a JF2 representation.
 
 ### 2.0.0 ###
 
@@ -116,6 +123,7 @@ interface at this time.
  * **Drink** - Similar to Food
  * **Follow** - A post indicating you are now following someone's activities
  * **Quote** - Quoted Content
+ * **Mood** - Mood - Feeling
 
 ## SNAP ##
 
@@ -123,6 +131,15 @@ Indieweb Post Kinds had support for replying to Twitter posts using the Social N
 developer of this plugin.
 
 ## Changelog ##
+	= Version 2.4.0 =
+		* Refactor to initialize classes in new plugin loading class
+		* Remove additional global functions
+		* Switch from inline SVG to an SVG sprite
+		* Switch icons back to new Genericon svg icon set with supplements from FontAwesome
+		* Switch like to a heart to be in line with current thinking on this
+		* Views now use a function that looks for a directory called kind_views in the theme in the event any theme wants to customize display kinds
+		* Mood was added as a reserved kind per request @acegiak
+		* Made some adjustments to the meta parsing to improve results
 	= Version 2.3.7 =
 		* Remove auto-set function for kind if not post type post
 		* Move global functions to the class in which they were used

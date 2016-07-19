@@ -122,19 +122,19 @@ class Kind_View {
 		$name = (string) $name;
 		if ( '' !== $name ) {
 			$templates[] = "{$slug}-{$name}.php";
-		} 		    
+		}
 		$templates[] = "{$slug}.php";
 		foreach ( (array) $templates as $template_name ) {
-			if ( !$template_name ) {
+			if ( ! $template_name ) {
 					continue;
 			}
 			// If the Theme Has a kind_views directory look there first.
-			if ( file_exists( get_template_directory() . '/kind_views/' . $template_name) ) {
+			if ( file_exists( get_template_directory() . '/kind_views/' . $template_name ) ) {
 				$located = get_template_directory() . '/kind_views/' . $template_name;
 				break;
 			}
 			// Look in the views subdirectory.
-			if ( file_exists( plugin_dir_path( __FILE__ ) . 'views/' . $template_name) ) {
+			if ( file_exists( plugin_dir_path( __FILE__ ) . 'views/' . $template_name ) ) {
 				$located = plugin_dir_path( __FILE__ ) . 'views/' . $template_name;
 				break;
 			}
@@ -150,7 +150,7 @@ class Kind_View {
 			$cite = $meta->get_cite();
 			$hcard = 'Unknown Author';
 			$content = '';
-			include( self::get_view_part( 'kind', $kind ) );	
+			include( self::get_view_part( 'kind', $kind ) );
 			return apply_filters( 'kind-response-display', $content, $post_ID );
 		}
 	}
