@@ -127,9 +127,13 @@ interface at this time.
  * **Quote** - Quoted Content
  * **Mood** - Mood - Feeling
 
+## ARCHIVE DISPLAY ##
+
+Post Kinds automatically handles the display of archives of individual types. So to view all the posts marked as "note", for example, one could visit the URL http://www.YOURSITE.COM/kind/note/. Simply replace YOURSITE.COM with your particular site name and the particular post kind name to access the others.
+
 ## SNAP ##
 
-Indieweb Post Kinds had support for replying to Twitter posts using the Social Network Auto Poster plugin. The developers of that plugin have not contacted the
+Indieweb Post Kinds had support for replying to Twitter posts using the <a href="https://wordpress.org/plugins/social-networks-auto-poster-facebook-twitter-g/">Social Network Auto Poster plugin</a>. The developers of that plugin have not contacted the
 developer of this plugin.
 
 ## Changelog ##
