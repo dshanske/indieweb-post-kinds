@@ -229,7 +229,8 @@ class Kind_Taxonomy {
 		'jam'   => _x( 'Jam', 'Post kind' ),
 		'read' => _x( 'Read', 'Post kind' ),
 		'quote' => _x( 'Quote', 'Post kind' ),
-		'mood' => _x( 'Mood', 'Post kind' )
+		'mood' => _x( 'Mood', 'Post kind' ),
+		'recipe' => _x( 'Recipe', 'Post kind' )
 		);
 		return apply_filters( 'kind_strings', $strings );
 	}
@@ -265,7 +266,8 @@ class Kind_Taxonomy {
 		'jam'   => _x( 'Jams', 'Post kind' ),
 		'read' => _x( 'Read', 'Post kind' ),
 		'quote' => _x( 'Quotes', 'Post kind' ),
-		'mood' => _x( 'Moods', 'Post kind' )
+		'mood' => _x( 'Moods', 'Post kind' ),
+		'recipe' => _x( 'Recipes', 'Post kind' )
 		);
 		return apply_filters( 'kind_strings_plural', $strings );
 	}
@@ -301,7 +303,8 @@ class Kind_Taxonomy {
 		'jam'   => _x( 'Listened to', 'Post kind' ),
 		'read' => _x( 'Is Reading', 'Post kind' ),
 		'quote' => _x( 'Quoted', 'Post kind' ),
-		'mood' => _x( 'Felt', 'Post kind' )
+		'mood' => _x( 'Felt', 'Post kind' ),
+		'recipe' => _x( 'Cooked', 'Post kind' )
 
 		);
 		return apply_filters( 'kind_verbs', $strings );
@@ -338,7 +341,8 @@ class Kind_Taxonomy {
 		'jam'   => 'jam',
 		'read' => 'read',
 		'quote' => 'quote',
-		'mood' => 'mood'
+		'mood' => 'mood',
+		'recipe' => 'recipe'
 		);
 		return apply_filters( 'kind_properties', $strings );
 	}
