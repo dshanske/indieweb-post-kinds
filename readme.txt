@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like
-Stable tag: 2.4.0
+Stable tag: 2.4.1
 Requires at least: 4.2
 Tested up to: 4.5.3
 License: GPLv2 or later
@@ -112,7 +112,8 @@ interface at this time.
   a wishlist, such as a gift registry or similar. 
  * **Weather** - A weather post would be current weather conditions
  * **Exercise** - Representing some form of physical activity
- * **Travel** - Representing a trip
+ * **Trip** - Representing a trip...this represents a geographic journey and would require location awareness.
+ * **Itinerary** - Itinerary - this would refer to scheduled transit, plane, train, etc. and does not require location awareness
  * **Check-In** - Identifying you are at a place. This would use the extended WordPress Geodata. It will require the Simple Location plugin to add location awareness to posts.
  * **Tag** - Allows you to tag a post as being of a specific tag, or person tagging.
  * **RSVP** - A specific type of Reply regarding an event
@@ -122,6 +123,12 @@ interface at this time.
  * **Follow** - A post indicating you are now following someone's activities
  * **Quote** - Quoted Content
  * **Mood** - Mood - Feeling
+ * **Recipe** - Recipe
+
+== ARCHIVE DISPLAY ==
+
+Post Kinds automatically handles the display of archives of individual types. So to view all the posts marked as "note", for example, one could visit the URL http://www.YOURSITE.COM/kind/note/. 
+Simply replace YOURSITE.COM with your particular site name and the particular post kind name to access the others.
 
 == SNAP ==
 
@@ -129,6 +136,10 @@ Indieweb Post Kinds had support for replying to Twitter posts using the Social N
 developer of this plugin.
 
 == Changelog ==
+	= Version 2.4.1 = 
+		* Fix error where Twitter shim is not loaded if other version of MF2 Parser is loaded
+		* Reserve Recipe per Request
+		* Removed the word travel and replaced with trip and itinerary...(idea from @aaronpk). 
 	= Version 2.4.0 =
 		* Refactor to initialize classes in new plugin loading class
 		* Remove additional global functions
