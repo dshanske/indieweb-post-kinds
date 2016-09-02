@@ -23,7 +23,7 @@ class Link_Preview {
 	 *
 	 * @return boolean
 	 */
-	public static function is_url($url) {
+	public static function is_valid_url($url) {
 		return filter_var( $url, FILTER_VALIDATE_URL );
 	}
 

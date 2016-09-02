@@ -106,7 +106,7 @@ class Kind_Tabmeta {
 	public static function add_meta_boxes() {
 		add_meta_box(
 			'tabbox-meta',      // Unique ID
-			esc_html__( 'Post Properties', 'Post kind' ),    // Title
+			esc_html__( 'Post Properties', 'indieweb-post-kinds' ),    // Title
 			array( 'Kind_Tabmeta', 'display_metabox' ),   // Callback function
 			'post',         // Admin page (or post type)
 			'normal',         // Context

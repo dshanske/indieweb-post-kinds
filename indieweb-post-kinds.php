@@ -7,10 +7,12 @@
  * Plugin Name: Post Kinds
  * Plugin URI: https://wordpress.org/plugins/indieweb-post-kinds/
  * Description: Ever want to reply to someone else's post with a post on your own site? Or to "like" someone else's post, but with your own site?
- * Version: 2.4.0
+ * Version: 2.4.2
  * Author: David Shanske
  * Author URI: https://david.shanske.com
- * Text Domain: Post kinds
+ * Text Domain: indieweb-post-kinds
+ * Domain Path:  /languages
+
  */
 
 if ( ! defined( 'MULTIKIND' ) ) {
@@ -20,9 +22,9 @@ if ( ! defined( 'MULTIKIND' ) ) {
 add_action( 'plugins_loaded', array( 'Post_Kinds_Plugin', 'init' ) );
 
 class Post_Kinds_Plugin {
-	public static $version = '2.4.0';
+	public static $version = '2.4.2';
 	public static function init() {
-		load_plugin_textdomain( 'Post kind', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+		load_plugin_textdomain( 'indieweb-post-kinds', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 		// Add Kind Taxonomy.
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-taxonomy.php';
 		add_action( 'init' , array( 'Kind_Taxonomy', 'init' ) );
@@ -60,16 +62,14 @@ class Post_Kinds_Plugin {
 			if ( ! class_exists( 'Mf2\Parser' ) ) {
 				require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Parser.php';
 			}
-                        }
 		  if ( ! function_exists( 'Mf2\xpcs' ) ) {
 				require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/functions.php';
 			}
 			if ( ! class_exists( 'Mf2\Shim' ) ) {
 				require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Twitter.php';
 			}
+			require_once plugin_dir_path( __FILE__ ) . 'includes/class-mf2-cleaner.php';
 		}
-		require_once plugin_dir_path( __FILE__ ) . 'includes/class-mf2-cleaner.php';
-
 		// Add Link Preview Parsing
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-link-preview.php';
 		add_action( 'init' , array( 'Link_Preview', 'init' ) );

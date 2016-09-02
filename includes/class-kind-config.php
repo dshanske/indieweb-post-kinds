@@ -48,23 +48,23 @@ class Kind_Config {
 	public static function admin_init() {
 		$options = get_option( 'iwt_options', self::Defaults() );
 		register_setting( 'iwt_options', 'iwt_options' );
-		add_settings_section( 'iwt-content', __( 'Content Options', 'Post kind' ), array( 'Kind_Config', 'options_callback' ), 'iwt_options' );
-		add_settings_field( 'embeds', __( 'Add Rich Embed Support for Facebook, Google Plus, Instagram, etc', 'Post kind' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'embeds' ) );
+		add_settings_section( 'iwt-content', __( 'Content Options', 'indieweb-post-kinds' ), array( 'Kind_Config', 'options_callback' ), 'iwt_options' );
+		add_settings_field( 'embeds', __( 'Add Rich Embed Support for Facebook, Google Plus, Instagram, etc', 'indieweb-post-kinds' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'embeds' ) );
 		add_settings_field( 'themecompat', __( 'Extra Styling for Themes That May Not Support Post
-					Kinds. Includes hiding of titles on kinds that do not usually have an explicit title.', 'Post kind' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array(
+					Kinds. Includes hiding of titles on kinds that do not usually have an explicit title.', 'indieweb-post-kinds' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array(
 			'name'
 			=> 'themecompat',
 		) );
 
-		// add_settings_field( 'cacher', __( 'Store Cached Responses', 'Post kind' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'cacher' ) );
-		// add_settings_field( 'authorimages', __( 'Sideload Author Images', 'Post kind' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'authorimage' ) );
-		add_settings_field( 'disableformats', __( 'Disable Post Formats', 'Post kind' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'disableformats' ) );
-		add_settings_field( 'protection', __( 'Disable Content Protection on Responses', 'Post kind' ) , array( 'Kind_Config', 'checkbox_callback' ) , 'iwt_options', 'iwt-content' ,  array( 'name' => 'protection' ) );
+		// add_settings_field( 'cacher', __( 'Store Cached Responses', 'indieweb-post-kinds' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'cacher' ) );
+		// add_settings_field( 'authorimages', __( 'Sideload Author Images', 'indieweb-post-kinds' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'authorimage' ) );
+		add_settings_field( 'disableformats', __( 'Disable Post Formats', 'indieweb-post-kinds' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'disableformats' ) );
+		add_settings_field( 'protection', __( 'Disable Content Protection on Responses', 'indieweb-post-kinds' ) , array( 'Kind_Config', 'checkbox_callback' ) , 'iwt_options', 'iwt-content' ,  array( 'name' => 'protection' ) );
 		if ( array_key_exists( 'protection', $options ) && 1 === $options['protection'] ) {
-			add_settings_field( 'contentelements', __( 'Response Content Allowed Html Elements', 'Post kind' ) . ' <a href="http://codex.wordpress.org/Function_Reference/wp_kses">*</a>', array( 'Kind_Config', 'textbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'contentelements' ) );
+			add_settings_field( 'contentelements', __( 'Response Content Allowed Html Elements', 'indieweb-post-kinds' ) . ' <a href="http://codex.wordpress.org/Function_Reference/wp_kses">*</a>', array( 'Kind_Config', 'textbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'contentelements' ) );
 		}
-		add_settings_field( 'termslist', __( 'Select All Kinds You Wish to Use', 'Post kind' ), array( 'Kind_Config', 'termlist_callback' ), 'iwt_options', 'iwt-content' );
-		add_settings_field( 'defaultkind', __( 'Default Kind', 'Post kind' ), array( 'Kind_Config', 'defaultkind_callback' ), 'iwt_options', 'iwt-content' );
+		add_settings_field( 'termslist', __( 'Select All Kinds You Wish to Use', 'indieweb-post-kinds' ), array( 'Kind_Config', 'termlist_callback' ), 'iwt_options', 'iwt-content' );
+		add_settings_field( 'defaultkind', __( 'Default Kind', 'indieweb-post-kinds' ), array( 'Kind_Config', 'defaultkind_callback' ), 'iwt_options', 'iwt-content' );
 		// Add Query Var to Admin
 		add_filter( 'query_vars', array( 'Kind_Config', 'query_var' ) );
 
@@ -86,14 +86,14 @@ class Kind_Config {
 		if ( class_exists( 'IndieWeb_Plugin' ) ) {
 		    add_submenu_page(
 				'indieweb',
-				__( 'Post Kinds', 'Post kind' ), // page title
-				__( 'Post Kinds', 'Post kind' ), // menu title
+				__( 'Post Kinds', 'indieweb-post-kinds' ), // page title
+				__( 'Post Kinds', 'indieweb-post-kinds' ), // menu title
 				'manage_options', // access capability
 				'kind_options',
 				array( 'Kind_Config', 'options_form' )
 			);
 		} else {
-			add_options_page( '', __( 'Post Kinds', 'Post kind' ), 'manage_options', 'kind_options', array( 'Kind_Config', 'options_form' ) );
+			add_options_page( '', __( 'Post Kinds', 'indieweb-post-kinds' ), 'manage_options', 'kind_options', array( 'Kind_Config', 'options_form' ) );
 		}
 	}
 
@@ -103,7 +103,7 @@ class Kind_Config {
 	 * @access public
 	 */
 	public static function options_callback() {
-		esc_html_e( '', 'Post kind' );
+		esc_html_e( '', 'indieweb-post-kinds' );
 	}
 
 	/**
@@ -223,7 +223,7 @@ class Kind_Config {
 	public static function add_post_help_tab() {
 		get_current_screen()->add_help_tab( array(
 			'id'       => 'post_kind_help',
-			'title'    => __( 'Post Properties', 'Post kind' ),
+			'title'    => __( 'Post Properties', 'indieweb-post-kinds' ),
 			'content'  => __('
 						<p> The Post Properties tab represents the Microformats properties of a Post. For different kinds of posts, the different
 						fields mean something different. Example: Artist Name vs Author Name</p>
@@ -245,7 +245,7 @@ class Kind_Config {
             </ul>
 
 
-			', 'Post kind'),
+			', 'indieweb-post-kinds'),
 		) );
 	}
 

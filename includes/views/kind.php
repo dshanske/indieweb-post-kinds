@@ -50,7 +50,7 @@ $content .= Kind_Taxonomy::get_icon( $kind );
 $content .= self::get_cite_title( $meta->get_cite(), $meta->get_url() );
 $author = self::get_hcard( $meta->get_author() );
 if ( $author ) {
-	$content .= ' ' . __( 'by', 'Post kinds' ) . ' ' . $author;
+	$content .= ' ' . __( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
 }
 $site_name = self::get_site_name( $meta->get_cite(), $meta->get_url() );
 if ( $site_name ) {
@@ -59,7 +59,7 @@ if ( $site_name ) {
 if ( in_array( $kind, array( 'jam', 'listen', 'play', 'read', 'watch' ) ) ) {
 	$duration = $meta->get_duration();
 	if ( $duration ) {
-		$content .= '(' . __( 'Duration: ', 'Post kind' ) . '<span class="p-duration">' . $duration . '</span>)';
+		$content .= '(' . __( 'Duration: ', 'indieweb-post-kinds' ) . '<span class="p-duration">' . $duration . '</span>)';
 	}
 }
 if ( $cite ) {

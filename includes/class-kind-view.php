@@ -162,16 +162,16 @@ class Kind_View {
 	 */
 	public static function get_post_type_string($url) {
 		$strings = array(
-			'twitter.com' => _x( 'a tweet', 'Post kind' ),
-			'vimeo.com' => _x( 'a video', 'Post kind' ),
-			'youtube.com'   => _x( 'a video', 'Post kind' ),
-			'instagram.com' => _x( 'an image', 'Post kind' ),
+			'twitter.com' => _x( 'a tweet', 'indieweb-post-kinds' ),
+			'vimeo.com' => _x( 'a video', 'indieweb-post-kinds' ),
+			'youtube.com'   => _x( 'a video', 'indieweb-post-kinds' ),
+			'instagram.com' => _x( 'an image', 'indieweb-post-kinds' ),
 		);
 		$domain = self::extract_domain_name( $url );
 		if ( array_key_exists( $domain, $strings ) ) {
 			return apply_filters( 'kind_post_type_string', $strings[ $domain ] );
 		} else {
-			return _x( 'a post', 'Post kind' );
+			return _x( 'a post', 'indieweb-post-kinds' );
 		}
 	}
 
