@@ -1,9 +1,9 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like  
-**Stable tag:** 2.4.1  
-**Requires at least:** 4.2  
-**Tested up to:** 4.5.3  
+**Stable tag:** 2.4.2  
+**Requires at least:** 4.4  
+**Tested up to:** 4.6  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -140,6 +140,10 @@ Indieweb Post Kinds had support for replying to Twitter posts using the Social N
 developer of this plugin.
 
 ## Changelog ##
+	= Version 2.4.2 =
+		* Fix text domain
+		* Compatibility check for 4.6
+		* Change default to article from note, per commentary.
 	= Version 2.4.1 = 
 		* Fix error where Twitter shim is not loaded if other version of MF2 Parser is loaded
 		* Reserve Recipe per Request

@@ -552,16 +552,16 @@ class Kind_Taxonomy {
 	 * Assign a kind to a post
 	 *
 	 * @param int|object $post The post for which to assign a kind.
-	 * @param string     $kind A kind to assign. Using an empty string or array will default to note.
+	 * @param string     $kind A kind to assign. Using an empty string or array will default to article.
 	 * @return mixed WP_Error on error. Array of affected term IDs on success.
 	 */
-	public static function set_post_kind( $post, $kind = 'note' ) {
+	public static function set_post_kind( $post, $kind = 'article' ) {
 		$post = get_post( $post );
 		if ( empty( $post ) ) {
 			return new WP_Error( 'invalid_post', __( 'Invalid post' ) ); }
 		$kind = sanitize_key( $kind );
 		if ( ! array_key_exists( $kind, self::get_strings() ) ) {
-			$kind = 'note';
+			$kind = 'article';
 		}
 		return wp_set_post_terms( $post->ID, $kind, 'kind' );
 	}

@@ -20,7 +20,7 @@ class Kind_Config {
 			'disableformats' => '0',
 			'protection' => '0',
 			'contentelements' => '',
-			'defaultkind' => 'note',
+			'defaultkind' => 'article',
 			'termslist' => array( 'article', 'reply', 'bookmark' ),
 			'themecompat' => '0',
 		);
