@@ -256,6 +256,10 @@ class Kind_View {
 		if ( ! $cite ) {
 			return false;
 		}
+		// FIXME: Temporary Fix for array functionality
+		if ( is_array( $url ) ) {
+			$url = $url[0];
+		}
 		if ( ! array_key_exists( 'name', $cite ) && ! empty( $url ) ) {
 			$cite['name'] = self::get_post_type_string( $url );
 		}

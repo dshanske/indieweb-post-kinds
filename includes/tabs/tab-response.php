@@ -5,6 +5,10 @@
  *
  * @package    Indieweb_Post_Kinds
  */
+// FIXME: This is temporary
+if ( is_array( $url ) ) {
+	$url = $url[0];
+}
 ?>
 <div class="inside">
 	<p>Add the URL and/or the Name You Wish to Respond To</p>

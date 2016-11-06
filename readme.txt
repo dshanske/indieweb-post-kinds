@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like
-Stable tag: 2.4.2
+Stable tag: 2.4.3
 Requires at least: 4.4
 Tested up to: 4.6
 License: GPLv2 or later
@@ -45,6 +45,11 @@ The Development version of the plugin is hosted at [Github](https://github.com/d
 The plugin requires the [webmention](https://wordpress.org/plugins/webmention/) plugin to support sending/receiving notice of a reply/like to another site which will appear as a comment. The [Semantic Linkbacks](https://wordpress.org/plugins/semantic-linkbacks/) plugin is available to more richly display the comment.
 
 == Upgrade Notice ==
+
+= 2.4.2 =
+
+Due to changes in the Micropub plugin, multiple values for properties are now supported. 
+Until this feature is supported in this plugin it will only look at the first value and ignore the others.
 
 = 2.4.0 = 
 
@@ -136,6 +141,10 @@ Indieweb Post Kinds had support for replying to Twitter posts using the Social N
 developer of this plugin.
 
 == Changelog ==
+	= Version 2.4.3 =
+		* Setting of Kind from Micropub now fixed due changes in Micropub plugin
+		* Micropub sets all properties as arrays including single properties and to match this will require more extensive changes.
+		In interim plugin will ignore multiple values and only use the first.
 	= Version 2.4.2 =
 		* Fix text domain
 		* Compatibility check for 4.6

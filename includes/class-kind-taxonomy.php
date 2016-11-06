@@ -33,7 +33,7 @@ class Kind_Taxonomy {
 		add_action( 'add_meta_boxes', array( 'Kind_Taxonomy', 'add_meta_box' ) );
 
 		// Set Post Kind for Micropub Inputs.
-		add_action( 'after_micropub', array( 'Kind_Taxonomy', 'micropub_set_kind' ) );
+		add_action( 'after_micropub', array( 'Kind_Taxonomy', 'micropub_set_kind' ), 10, 2 );
 
 		// Override Post Type in Semantic Linkbacks.
 		add_filter( 'semantic_linkbacks_post_type', array( 'Kind_Taxonomy', 'semantic_post_type' ), 11, 2 );
@@ -575,38 +575,48 @@ class Kind_Taxonomy {
 	/**
 	 * Take mf2 properties and set a post kind
 	 *
-	 * @param int $post_id The post for which to assign a kind.
+	 * @param array $input Micropub Request in JSON
+	 * @param array $wp_args Arguments passed to insert or update posts
 	 */
 
-	public static function micropub_set_kind( $post_id ) {
-		if ( isset( $_POST['rsvp'] ) ) {
-			set_post_kind( $post_id, 'rsvp' );
+	public static function micropub_set_kind( $input, $wp_args ) {
+		// Only continue if create or update
+		if ( ! $wp_args ) {
 			return;
 		}
-		if ( isset( $_POST['in-reply-to'] ) ) {
-			set_post_kind( $post_id, 'reply' );
+		// If there are no properties in the request set it as note
+		if ( ! isset( $input['properties'] ) ) {
+			set_post_kind( $wp_args['ID'], 'note' );
+		}
+		if ( isset( $input['properties']['rsvp'] ) ) {
+			set_post_kind( $wp_args['ID'], 'rsvp' );
 			return;
 		}
-		if ( isset( $_POST['bookmark-of'] ) || isset( $_POST['bookmark'] ) ) {
-			set_post_kind( $post_id, 'bookmark' );
+		if ( isset( $input['properties']['in-reply-to'] ) ) {
+			set_post_kind( $wp_args['ID'], 'reply' );
 			return;
 		}
-		if ( isset( $_POST['in-reply-to'] ) ) {
-			set_post_kind( $post_id, 'reply' );
+		if ( isset( $input['properties']['bookmark-of'] ) || isset( $input['properties']['bookmark'] ) ) {
+			set_post_kind( $wp_args['ID'], 'bookmark' );
+			return;
+		}
+		if ( isset( $input['properties']['in-reply-to'] ) ) {
+			set_post_kind( $wp_args['ID'], 'reply' );
 			return;
 		}
 		// This basically adds Teacup support
-		if ( isset( $_POST['p3k-food'] ) ) {
-			if ( isset( $_POST['p3k-type'] ) ) {
-				if ( 'drink' === $_POST['p3k-type'] ) {
-					set_post_kind( $post_id, 'drink' );
+		if ( isset( $input['properties']['p3k-food'] ) ) {
+			if ( isset( $input['properties']['p3k-type'] ) ) {
+				if ( 'drink' === $input['properties']['p3k-type'] ) {
+					set_post_kind( $wp_args['ID'], 'drink' );
 					return;
 				}
 				set_post_kind( $post_id, 'eat' );
 				return;
 			}
 		}
-		set_post_kind( $post_id, 'note' );
+		// If it got all the way down here assume it is a note
+		set_post_kind( $wp_args['ID'], 'note' );
 	}
 
 } // End Class Kind_Taxonomy
