@@ -23,9 +23,6 @@ class Kind_Taxonomy {
 		// On Post Publish Invalidate any Stored Response.
 		add_action( 'publish_post', array( 'Kind_Taxonomy', 'invalidate_response' ), 10, 2 );
 
-		// Return Kind Meta as part of the JSON Rest API.
-		add_filter( 'json_prepare_post' , array( 'Kind_Taxonomy', 'json_rest_add_kindmeta' ) , 10 , 3 );
-
 		// Add the Correct Archive Title to Kind Archives.
 		add_filter( 'get_the_archive_title', array( 'Kind_Taxonomy', 'kind_archive_title' ) , 10 , 3 );
 		// Remove the built-in meta box selector in place of a custom one.
@@ -427,12 +424,6 @@ class Kind_Taxonomy {
 		if ( 'publish' === $new ) {
 			self::publish( $post->ID,$post );
 		}
-	}
-
-	public static function json_rest_add_kindmeta($_post,$post,$context) {
-		$response = new Kind_Meta( $post['ID'] );
-		if ( ! empty( $response ) ) { $_post['mf2'] = $response->get_all_meta(); }
-		return $_post;
 	}
 
 	public static function kinds_as_type($classes) {
