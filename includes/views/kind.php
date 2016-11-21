@@ -54,7 +54,7 @@ if ( $author ) {
 }
 $site_name = self::get_site_name( $meta->get_cite(), $meta->get_url() );
 if ( $site_name ) {
-	$content .= '<em>(<span class="p-publication">' . $site_name . '</span>)</em>';
+	$content .= ' <em>(<span class="p-publication">' . $site_name . '</span>)</em>';
 }
 if ( in_array( $kind, array( 'jam', 'listen', 'play', 'read', 'watch' ) ) ) {
 	$duration = $meta->get_duration();
