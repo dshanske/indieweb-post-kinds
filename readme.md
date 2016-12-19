@@ -134,6 +134,10 @@ interface at this time.
 Post Kinds automatically handles the display of archives of individual types. So to view all the posts marked as "note", for example, one could visit the URL http://www.YOURSITE.COM/kind/note/. 
 Simply replace YOURSITE.COM with your particular site name and the particular post kind name to access the others.
 
+## RSS Subscriptions ##
+
+Post Kinds also automatically handles RSS feeds which can be made available or subscribed to for any of the particular kinds. The RSS feed for all the posts marked as "note", for example could be found at the URL http://www.example.com/feed/?kind=note. Others can be obtained by replacing "note" with the other kinds including: article, bookmark, favorite, jam, like, listen, photo, read, recipe, reply, repost, watch, and wish.
+
 ## SNAP ##
 
 Indieweb Post Kinds had support for replying to Twitter posts using the Social Network Auto Poster plugin. The developers of that plugin have not contacted the
