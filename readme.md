@@ -136,7 +136,7 @@ Simply replace YOURSITE.COM with your particular site name and the particular po
 
 ## RSS Subscriptions ##
 
-Post Kinds also automatically handles RSS feeds which can be made available or subscribed to for any of the particular kinds. The RSS feed for all the posts marked as "note", for example could be found at the URL http://www.example.com/feed/?kind=note. Others can be obtained by replacing "note" with the other kinds including: article, bookmark, favorite, jam, like, listen, photo, read, recipe, reply, repost, watch, and wish.
+Post Kinds also automatically handles RSS feeds which can be made available or subscribed to for any of the particular kinds. The RSS feed for all the posts marked as "note", for example could be found at either the URL http://www.example.com/kind/note/feed or  http://www.example.com/feed/?kind=note (if one doesn't have pretty permalinks enabled). Others can be obtained by replacing "note" with the other kinds including: article, bookmark, favorite, jam, like, listen, photo, read, recipe, reply, repost, watch, and wish.
 
 ## SNAP ##
 
