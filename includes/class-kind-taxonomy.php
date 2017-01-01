@@ -25,9 +25,6 @@ class Kind_Taxonomy {
 
 		// Add the Correct Archive Title to Kind Archives.
 		add_filter( 'get_the_archive_title', array( 'Kind_Taxonomy', 'kind_archive_title' ) , 10 , 3 );
-		// Remove the built-in meta box selector in place of a custom one.
-		add_action( 'admin_menu', array( 'Kind_Taxonomy', 'remove_meta_box' ) );
-		add_action( 'add_meta_boxes', array( 'Kind_Taxonomy', 'add_meta_box' ) );
 
 		// Set Post Kind for Micropub Inputs.
 		add_action( 'after_micropub', array( 'Kind_Taxonomy', 'micropub_set_kind' ), 10, 2 );
@@ -77,23 +74,30 @@ class Kind_Taxonomy {
 			'parent_item' => _x( 'Parent Kind', 'indieweb-post-kinds' ),
 			'parent_item_colon' => _x( 'Parent Kind:', 'indieweb-post-kinds' ),
 			'edit_item' => _x( 'Edit Kind', 'indieweb-post-kinds' ),
+			'view_item' => _x( 'View Kind', 'indieweb-post-kinds' ),
 			'update_item' => _x( 'Update Kind', 'indieweb-post-kinds' ),
 			'add_new_item' => _x( 'Add New Kind', 'indieweb-post-kinds' ),
 			'new_item_name' => _x( 'New Kind', 'indieweb-post-kinds' ),
 			'separate_items_with_commas' => _x( 'Separate kinds with commas', 'indieweb-post-kinds' ),
 			'add_or_remove_items' => _x( 'Add or remove kinds', 'indieweb-post-kinds' ),
 			'choose_from_most_used' => _x( 'Choose from the most used kinds', 'indieweb-post-kinds' ),
-			'menu_name' => _x( 'Kinds', 'indieweb-post-kinds' ),
+			'not found' => _x ('No kinds found', 'indieweb-post-kinds' ),
+			'no_terms' => _x ('No kinds', 'indieweb-post-kinds' ),
 		);
 
 		$args = array(
 			'labels' => $labels,
 			'public' => true,
-			'show_in_nav_menus' => true,
-			'show_ui' => WP_DEBUG,
-			'show_tagcloud' => true,
-			'show_admin_column' => true,
+			'publicly_queryable' => true,
 			'hierarchical' => false,
+			'show_ui' => WP_DEBUG,
+			'show_in_menu' => WP_DEBUG,
+			'show_in_nav_menu' => true,
+			'show_in_rest' => false,
+			'show_tagcloud' => true,
+			'show_in_quick_edit' => false,
+			'show_admin_column' => true,
+			'meta_box_cb' => array( 'Kind_Taxonomy', 'select_metabox' ),
 			'rewrite' => true,
 			'query_var' => true,
 		);
@@ -139,19 +143,6 @@ class Kind_Taxonomy {
 			}
 		}
 		return $title;
-	}
-
-	public static function remove_meta_box() {
-		remove_meta_box( 'tagsdiv-kind', 'post', 'normal' );
-	}
-
-	public static function add_meta_box() {
-		if ( ! MULTIKIND ) {
-			add_meta_box( 'kind_select', 'Post Kinds', array( 'Kind_Taxonomy', 'select_metabox' ),'post' ,'side','core' );
-		} else {
-			// Add Multi-Select Box for MultiKind support
-			add_meta_box( 'tagsdiv-kind', 'Post Kinds', array( 'Kind_Taxonomy', 'multiselect_metabox' ),'post' ,'side','core' );
-		}
 	}
 
 	public static function select_metabox( $post ) {
