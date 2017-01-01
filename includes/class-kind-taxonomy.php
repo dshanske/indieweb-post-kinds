@@ -33,7 +33,7 @@ class Kind_Taxonomy {
 		add_filter( 'semantic_linkbacks_post_type', array( 'Kind_Taxonomy', 'semantic_post_type' ), 11, 2 );
 
 		// Add Links to Ping to the Webmention Sender.
-    add_filter( 'webmention_links', array( 'Kind_Taxonomy', 'webmention_links' ), 11, 2 );
+		add_filter( 'webmention_links', array( 'Kind_Taxonomy', 'webmention_links' ), 11, 2 );
 
 		// Remove the Automatic Post Generation that the Micropub Plugin Offers
 		remove_filter( 'before_micropub', array( 'Micropub', 'generate_post_content' ) );
@@ -81,8 +81,8 @@ class Kind_Taxonomy {
 			'separate_items_with_commas' => _x( 'Separate kinds with commas', 'indieweb-post-kinds' ),
 			'add_or_remove_items' => _x( 'Add or remove kinds', 'indieweb-post-kinds' ),
 			'choose_from_most_used' => _x( 'Choose from the most used kinds', 'indieweb-post-kinds' ),
-			'not found' => _x ('No kinds found', 'indieweb-post-kinds' ),
-			'no_terms' => _x ('No kinds', 'indieweb-post-kinds' ),
+			'not found' => _x( 'No kinds found', 'indieweb-post-kinds' ),
+			'no_terms' => _x( 'No kinds', 'indieweb-post-kinds' ),
 		);
 
 		$args = array(
@@ -115,7 +115,7 @@ class Kind_Taxonomy {
 					array(
 					'description' => $value,
 					'slug' => $key,
-					) );
+				) );
 			}
 		}
 	}
@@ -211,7 +211,7 @@ class Kind_Taxonomy {
 			'weather'   => _x( 'Weather', 'indieweb-post-kinds' ),
 			'exercise'   => _x( 'Exercise', 'indieweb-post-kinds' ),
 			'trip'   => _x( 'Travel', 'indieweb-post-kinds' ),
-			'itinerary' => _x( 'Itinerary', 'indieweb-post-kinds'),
+			'itinerary' => _x( 'Itinerary', 'indieweb-post-kinds' ),
 		'eat'   => _x( 'Eat', 'indieweb-post-kinds' ),
 		'drink'   => _x( 'Drink', 'indieweb-post-kinds' ),
 		'follow'   => _x( 'Follow', 'indieweb-post-kinds' ),
@@ -219,7 +219,7 @@ class Kind_Taxonomy {
 		'read' => _x( 'Read', 'indieweb-post-kinds' ),
 		'quote' => _x( 'Quote', 'indieweb-post-kinds' ),
 		'mood' => _x( 'Mood', 'indieweb-post-kinds' ),
-		'recipe' => _x( 'Recipe', 'indieweb-post-kinds' )
+		'recipe' => _x( 'Recipe', 'indieweb-post-kinds' ),
 		);
 		return apply_filters( 'kind_strings', $strings );
 	}
@@ -257,7 +257,7 @@ class Kind_Taxonomy {
 		'read' => _x( 'Read', 'indieweb-post-kinds' ),
 		'quote' => _x( 'Quotes', 'indieweb-post-kinds' ),
 		'mood' => _x( 'Moods', 'indieweb-post-kinds' ),
-		'recipe' => _x( 'Recipes', 'indieweb-post-kinds' )
+		'recipe' => _x( 'Recipes', 'indieweb-post-kinds' ),
 		);
 		return apply_filters( 'kind_strings_plural', $strings );
 	}
@@ -295,7 +295,7 @@ class Kind_Taxonomy {
 		'read' => _x( 'Is Reading', 'indieweb-post-kinds' ),
 		'quote' => _x( 'Quoted', 'indieweb-post-kinds' ),
 		'mood' => _x( 'Felt', 'indieweb-post-kinds' ),
-		'recipe' => _x( 'Cooked', 'indieweb-post-kinds' )
+		'recipe' => _x( 'Cooked', 'indieweb-post-kinds' ),
 
 		);
 		return apply_filters( 'kind_verbs', $strings );
@@ -334,7 +334,7 @@ class Kind_Taxonomy {
 		'read' => 'read',
 		'quote' => 'quote',
 		'mood' => 'mood',
-		'recipe' => 'recipe'
+		'recipe' => 'recipe',
 		);
 		return apply_filters( 'kind_properties', $strings );
 	}
@@ -391,7 +391,7 @@ class Kind_Taxonomy {
 	public static function webmention_links( $links, $post_ID ) {
 		$meta = new Kind_Meta( $post_ID );
 		$cites = $meta->get_url();
-    if ( is_string( $cites ) ) {
+		if ( is_string( $cites ) ) {
 			$links[] = $cites;
 		}
 		if ( is_array( $cites ) ) {
@@ -401,19 +401,19 @@ class Kind_Taxonomy {
 		return $links;
 	}
 
-	public static function publish ( $ID, $post=null) {
+	public static function publish ( $ID, $post = null ) {
 		if ( 'post' !== get_post_type( $ID ) ) {
 			return;
 		}
-    $option = get_option( 'iwt_options', Kind_Config::Defaults() );
-		if(count(wp_get_post_terms($ID,'kind'))<=0){
-			set_post_kind($ID, $option['defaultkind']);
+		$option = get_option( 'iwt_options', Kind_Config::Defaults() );
+		if ( count( wp_get_post_terms( $ID,'kind' ) ) <= 0 ) {
+			set_post_kind( $ID, $option['defaultkind'] );
 		}
 	}
 
-	public static function transition($new,$old,$post) {
+	public static function transition( $new, $old, $post ) {
 		if ( 'publish' === $new ) {
-			self::publish( $post->ID,$post );
+			self::publish( $post->ID, $post );
 		}
 	}
 
@@ -547,11 +547,11 @@ class Kind_Taxonomy {
 		}
 		return wp_set_post_terms( $post->ID, $kind, 'kind' );
 	}
-	
+
 	public static function get_icon( $kind ) {
 		// Substitute another svg sprite file
 		$sprite = apply_filters( 'kind_icon_sprite', plugin_dir_url( __FILE__ ) . 'kind-sprite.svg', $kind );
-		return '<svg class="svg-icon ' . 'svg-' . $kind . '" aria-hidden="true"><use xlink:href="' . $sprite . '#' . $kind . '"></use></svg>';
+		return '<svg class="svg-icon svg-' . $kind . '" aria-hidden="true"><use xlink:href="' . $sprite . '#' . $kind . '"></use></svg>';
 	}
 
 	/**
