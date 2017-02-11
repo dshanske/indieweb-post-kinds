@@ -127,6 +127,7 @@ function unicodeTrim($str) {
 function mfNamesFromClass($class, $prefix='h-') {
 	$class = str_replace(array(' ', '	', "\n"), ' ', $class);
 	$classes = explode(' ', $class);
+	$classes = preg_grep('#^[a-z\-]+$#', $classes);
 	$matches = array();
 
 	foreach ($classes as $classname) {
@@ -451,6 +452,35 @@ class Parser {
 		return ($out === '') ? NULL : $out;
 	}
 
+	/**
+	 * This method parses the language of an element
+	 * @param DOMElement $el 
+	 * @access public
+	 * @return string
+	 */
+	public function language(DOMElement $el)
+	{
+		// element has a lang attribute; use it
+		if ($el->hasAttribute('lang')) {
+			return unicodeTrim($el->getAttribute('lang'));
+		}
+		
+		if ($el->tagName == 'html') {
+			// we're at the <html> element and no lang; check <meta> http-equiv Content-Language
+			foreach ( $this->xpath->query('.//meta[@http-equiv]') as $node )
+			{
+				if ($node->hasAttribute('http-equiv') && $node->hasAttribute('content') && strtolower($node->getAttribute('http-equiv')) == 'content-language') {
+					return unicodeTrim($node->getAttribute('content'));
+				}
+			}
+		} else {
+			// check the parent node
+			return $this->language($el->parentNode);			
+		}
+
+		return '';
+	} # end method language()
+
 	// TODO: figure out if this has problems with sms: and geo: URLs
 	public function resolveUrl($url) {
 		// If the URL is seriously malformed it’s probably beyond the scope of this
@@ -739,10 +769,17 @@ class Parser {
 			$html .= $node->ownerDocument->saveHTML($node);
 		}
 
-		return array(
+		$return = array(
 			'html' => $html,
-			'value' => unicodeTrim($this->innerText($e))
+			'value' => unicodeTrim($this->innerText($e)),
 		);
+
+		// Language
+		if ( $html_lang = $this->language($e) ) {
+			$return['html-lang'] = $html_lang;
+		}
+
+		return $return;
 	}
 
 	private function removeTags(\DOMElement &$e, $tagName) {
@@ -951,25 +988,13 @@ class Parser {
 
 		// Check for u-photo
 		if (!array_key_exists('photo', $return)) {
-			// Look for img @src
-			try {
-				if ($e->tagName == 'img')
-					throw new Exception($e->getAttribute('src'));
 
-				// Look for nested img @src
-				foreach ($this->xpath->query('./img[count(preceding-sibling::*)+count(following-sibling::*)=0]', $e) as $em) {
-					if ($em->getAttribute('src') != '')
-						throw new Exception($em->getAttribute('src'));
-				}
+			$photo = $this->parseImpliedPhoto($e);
 
-				// Look for double nested img @src
-				foreach ($this->xpath->query('./*[count(preceding-sibling::*)+count(following-sibling::*)=0]/img[count(preceding-sibling::*)+count(following-sibling::*)=0]', $e) as $em) {
-					if ($em->getAttribute('src') != '')
-						throw new Exception($em->getAttribute('src'));
-				}
-			} catch (Exception $exc) {
-				$return['photo'][] = $this->resolveUrl($exc->getMessage());
+			if ($photo !== false) {
+				$return['photo'][] = $this->resolveUrl($photo);
 			}
+
 		}
 
 		// Check for u-url
@@ -1000,6 +1025,11 @@ class Parser {
 				$return['url'][] = $this->resolveUrl($url);
 		}
 
+		// Language
+		if ( $html_lang = $this->language($e) ) {
+			$return['html-lang'] = $html_lang;
+		}
+
 		// Make sure things are in alphabetical order
 		sort($mfTypes);
 
@@ -1021,6 +1051,50 @@ class Parser {
 			$parsed['children'] = array_values(array_filter($children));
 		}
 		return $parsed;
+	}
+
+	/**
+	 * @see http://microformats.org/wiki/microformats2-parsing#parsing_for_implied_properties
+	 */
+	public function parseImpliedPhoto(\DOMElement $e) {
+
+		if ($e->tagName == 'img') {
+			return $e->getAttribute('src');
+		}
+
+		if ($e->tagName == 'object' && $e->hasAttribute('data')) {
+			return $e->getAttribute('data');
+		}
+
+		$xpaths = array(
+			'./img',
+			'./object',
+			'./*[count(preceding-sibling::*)+count(following-sibling::*)=0]/img',
+			'./*[count(preceding-sibling::*)+count(following-sibling::*)=0]/object',
+		);
+
+		foreach ($xpaths as $path) {
+			$els = $this->xpath->query($path, $e);
+
+			if ($els->length == 1) {
+				$el = $els->item(0);
+				$hClasses = mfNamesFromElement($el, 'h-');
+
+				// no nested h-
+				if (empty($hClasses)) {
+
+					if ($el->tagName == 'img') {
+						return $el->getAttribute('src');
+					} else if ($el->tagName == 'object' && $el->getAttribute('data') != '') {
+						return $el->getAttribute('data');
+					}
+
+				} // no nested h-
+			}
+		}
+
+		// no implied photo
+		return false;
 	}
 
 	/**
