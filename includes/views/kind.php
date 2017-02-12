@@ -4,7 +4,7 @@
  *	The Goal of this Template is to be a general all-purpose model that will be replaced by customization in other templates
  */
 
-$content = '<div class="h-cite response ';
+$content = '<cite class="h-cite response ';
 // Add in the appropriate type
 switch ( $kind ) {
 	case 'like':
@@ -42,7 +42,7 @@ switch ( $kind ) {
 		$content .= 'p-read-of';
 				break;
 	case 'quote':
-		$content .= 'p-in-reply-to';
+		$content .= 'u-quotation-of';
 				break;
 }
 $content .= '">';
@@ -72,4 +72,4 @@ if ( $cite ) {
 }
 
 // Close Response
-$content .= '</div>';
+$content .= '</cite>';
