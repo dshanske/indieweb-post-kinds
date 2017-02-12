@@ -153,7 +153,7 @@ class Kind_Config {
 		$options = get_option( 'iwt_options', self::Defaults() );
 		$terms = Kind_Taxonomy::get_strings();
 		// Hide these terms until ready for use for now.
-		$hide = array( 'note', 'weather', 'exercise', 'travel', 'rsvp', 'tag', 'follow', 'drink', 'eat', 'quote' );
+		$hide = array( 'note', 'weather', 'exercise', 'travel', 'rsvp', 'tag', 'follow', 'drink', 'eat' );
 		// Hide checkin option unless Simple Location is active.
 		if ( ! class_exists( 'loc_config' ) ) {
 			$hide[] = 'checkin';
