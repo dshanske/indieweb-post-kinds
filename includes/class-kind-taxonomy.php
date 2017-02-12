@@ -147,7 +147,7 @@ class Kind_Taxonomy {
 
 	public static function select_metabox( $post ) {
 		$strings = self::get_strings();
-		$option = get_option( 'iwt_options', Kind_Config::Defaults() );
+		$option = get_option( 'iwt_options' );
 		$include = array();
 		if ( array_key_exists( 'termslist', $option ) ) {
 			$include = $option['termslist'];
@@ -405,7 +405,7 @@ class Kind_Taxonomy {
 		if ( 'post' !== get_post_type( $ID ) ) {
 			return;
 		}
-		$option = get_option( 'iwt_options', Kind_Config::Defaults() );
+		$option = get_option( 'iwt_options' );
 		if ( count( wp_get_post_terms( $ID,'kind' ) ) <= 0 ) {
 			set_post_kind( $ID, $option['defaultkind'] );
 		}
