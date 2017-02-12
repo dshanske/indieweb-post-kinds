@@ -52,20 +52,67 @@ class Kind_Config {
 		);
 		register_setting( 'iwt_options', 'iwt_options', $args );
 		$options = get_option( 'iwt_options' );
-		add_settings_section( 'iwt-content', __( 'Content Options', 'indieweb-post-kinds' ), array( 'Kind_Config', 'options_callback' ), 'iwt_options' );
-		add_settings_field( 'embeds', __( 'Add Rich Embed Support for Facebook, Google Plus, Instagram, etc', 'indieweb-post-kinds' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'embeds' ) );
-		add_settings_field( 'themecompat', __( 'Extra Styling for Themes That May Not Support Post
-					Kinds. Includes hiding of titles on kinds that do not usually have an explicit title.', 'indieweb-post-kinds' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array(
-			'name'
-			=> 'themecompat',
-		) );
-		add_settings_field( 'disableformats', __( 'Disable Post Formats', 'indieweb-post-kinds' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'disableformats' ) );
-		add_settings_field( 'protection', __( 'Disable Content Protection on Responses', 'indieweb-post-kinds' ) , array( 'Kind_Config', 'checkbox_callback' ) , 'iwt_options', 'iwt-content' ,  array( 'name' => 'protection' ) );
+		add_settings_section( 
+			'iwt-content', 
+			__( 'Content Options', 
+			'indieweb-post-kinds' ), 
+			array( 'Kind_Config', 'options_callback' ), 
+			'iwt_options' 
+		);
+		add_settings_field( 
+			'embeds', 
+			__( 'Add Rich Embed Support for Facebook, Google Plus, Instagram, etc', 'indieweb-post-kinds' ), 
+			array( 'Kind_Config', 'checkbox_callback' ), 
+			'iwt_options', 'iwt-content' ,  array( 'name' => 'embeds' ) 
+		);
+		add_settings_field( 'themecompat', 
+			__( 'Extra Styling for Themes That May Not Support Post Kinds. Includes hiding of titles on kinds that do not usually have an explicit title.', 'indieweb-post-kinds' ), 
+			array( 'Kind_Config', 'checkbox_callback' ), 
+			'iwt_options', 
+			'iwt-content' ,  
+			array( 'name' => 'themecompat' ) 
+		);
+		add_settings_field( 
+			'disableformats', 
+			__( 'Disable Post Formats', 
+			'indieweb-post-kinds' ), 
+			array( 'Kind_Config', 'checkbox_callback' ), 
+			'iwt_options', 
+			'iwt-content' ,  
+			array( 'name' => 'disableformats' ) 
+		);
+		add_settings_field( 
+			'protection', 
+			__( 'Disable Content Protection on Responses', 'indieweb-post-kinds' ), 
+			array( 'Kind_Config', 'checkbox_callback' ),
+			'iwt_options',
+			'iwt-content',
+			array( 'name' => 'protection' )
+		);
 		if ( array_key_exists( 'protection', $options ) && 1 === $options['protection'] ) {
-			add_settings_field( 'contentelements', __( 'Response Content Allowed Html Elements', 'indieweb-post-kinds' ) . ' <a href="http://codex.wordpress.org/Function_Reference/wp_kses">*</a>', array( 'Kind_Config', 'textbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'contentelements' ) );
+			add_settings_field( 
+				'contentelements', 
+				__( 'Response Content Allowed Html Elements', 'indieweb-post-kinds' ) . ' <a href="http://codex.wordpress.org/Function_Reference/wp_kses">*</a>', 
+				array( 'Kind_Config', 'textbox_callback' ),
+				'iwt_options', 
+				'iwt-content',
+				array( 'name' => 'contentelements' )
+			);
 		}
-		add_settings_field( 'termslist', __( 'Select All Kinds You Wish to Use', 'indieweb-post-kinds' ), array( 'Kind_Config', 'termlist_callback' ), 'iwt_options', 'iwt-content' );
-		add_settings_field( 'defaultkind', __( 'Default Kind', 'indieweb-post-kinds' ), array( 'Kind_Config', 'defaultkind_callback' ), 'iwt_options', 'iwt-content' );
+		add_settings_field( 
+			'termslist', 
+			__( 'Select All Kinds You Wish to Use', 'indieweb-post-kinds' ),
+			array( 'Kind_Config', 'termlist_callback' ),
+			'iwt_options',
+			'iwt-content' 
+		);
+		add_settings_field( 
+			'defaultkind', 
+			__( 'Default Kind', 'indieweb-post-kinds' ),
+			array( 'Kind_Config', 'defaultkind_callback' ),
+			'iwt_options',
+			'iwt-content'
+		);
 		// Add Query Var to Admin
 		add_filter( 'query_vars', array( 'Kind_Config', 'query_var' ) );
 
