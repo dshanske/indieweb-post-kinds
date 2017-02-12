@@ -15,8 +15,6 @@ class Kind_Config {
 	public static function Defaults() {
 		return array(
 			'embeds' => '0',
-			'cacher' => '0',
-			'authorimages' => '0',
 			'disableformats' => '0',
 			'protection' => '0',
 			'contentelements' => '',
@@ -46,8 +44,14 @@ class Kind_Config {
 	 * @access public
 	 */
 	public static function admin_init() {
-		$options = get_option( 'iwt_options', self::Defaults() );
-		register_setting( 'iwt_options', 'iwt_options' );
+		$args = array(
+			'type' => 'array',
+			'description' => 'Post Kind Options',
+			'show_in_rest' => true,
+			'default' => self::Defaults(),
+		);
+		register_setting( 'iwt_options', 'iwt_options', $args );
+		$options = get_option( 'iwt_options' );
 		add_settings_section( 'iwt-content', __( 'Content Options', 'indieweb-post-kinds' ), array( 'Kind_Config', 'options_callback' ), 'iwt_options' );
 		add_settings_field( 'embeds', __( 'Add Rich Embed Support for Facebook, Google Plus, Instagram, etc', 'indieweb-post-kinds' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'embeds' ) );
 		add_settings_field( 'themecompat', __( 'Extra Styling for Themes That May Not Support Post
@@ -55,9 +59,6 @@ class Kind_Config {
 			'name'
 			=> 'themecompat',
 		) );
-
-		// add_settings_field( 'cacher', __( 'Store Cached Responses', 'indieweb-post-kinds' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'cacher' ) );
-		// add_settings_field( 'authorimages', __( 'Sideload Author Images', 'indieweb-post-kinds' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'authorimage' ) );
 		add_settings_field( 'disableformats', __( 'Disable Post Formats', 'indieweb-post-kinds' ), array( 'Kind_Config', 'checkbox_callback' ), 'iwt_options', 'iwt-content' ,  array( 'name' => 'disableformats' ) );
 		add_settings_field( 'protection', __( 'Disable Content Protection on Responses', 'indieweb-post-kinds' ) , array( 'Kind_Config', 'checkbox_callback' ) , 'iwt_options', 'iwt-content' ,  array( 'name' => 'protection' ) );
 		if ( array_key_exists( 'protection', $options ) && 1 === $options['protection'] ) {
