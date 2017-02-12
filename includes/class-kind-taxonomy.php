@@ -332,7 +332,7 @@ class Kind_Taxonomy {
 		'follow'   => 'u-follow-of',
 		'jam'   => 'jam',
 		'read' => 'read',
-		'quote' => 'quote',
+		'quote' => 'u-quotation-of',
 		'mood' => 'mood',
 		'recipe' => 'recipe',
 		);
