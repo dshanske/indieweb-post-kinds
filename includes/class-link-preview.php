@@ -177,7 +177,7 @@ class Link_Preview {
 	private static function parse_hentry( $entry, $mf ) {
 		// Array Values
 		$properties = array( 'category', 'invitee', 'photo','video','audio','syndication','in-reply-to','like-of','repost-of','bookmark-of', 'tag-of' );
-		$arrays = Mf2_Cleaner::get_prop_array( $entry, $properties );
+		$data = Mf2_Cleaner::get_prop_array( $entry, $properties );
 		$data['type'] = 'entry';
 		$data['published'] = Mf2_Cleaner::get_published( $entry );
 		$data['updated'] = Mf2_Cleaner::get_updated( $entry );
