@@ -1,9 +1,9 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like
-Stable tag: 2.4.3
-Requires at least: 4.4
-Tested up to: 4.6
+Stable tag: 2.5.0
+Requires at least: 4.7
+Tested up to: 4.7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -130,10 +130,14 @@ interface at this time.
  * **Mood** - Mood - Feeling
  * **Recipe** - Recipe
 
-== ARCHIVE DISPLAY ==
+== Archive Display ==
 
 Post Kinds automatically handles the display of archives of individual types. So to view all the posts marked as "note", for example, one could visit the URL http://www.YOURSITE.COM/kind/note/. 
 Simply replace YOURSITE.COM with your particular site name and the particular post kind name to access the others.
+
+== RSS == 
+
+Post Kinds also automatically handles RSS feeds which can be made available or subscribed to for any of the particular kinds. The RSS feed for all the posts marked as "note", for example could be found at either the URL `http://www.example.com/kind/note/feed` or  `http://www.example.com/feed/?kind=note` (if one doesn't have pretty permalinks enabled). Others can be obtained by replacing "note" with the other kinds.
 
 == SNAP ==
 
@@ -141,6 +145,10 @@ Indieweb Post Kinds had support for replying to Twitter posts using the Social N
 developer of this plugin.
 
 == Changelog ==
+	= Version 2.5.0 =
+		* Simplify coding standards issues
+		* Update settings
+		* Add quote kind ( props @miklb )
 	= Version 2.4.3 =
 		* Setting of Kind from Micropub now fixed due changes in Micropub plugin
 		* Micropub sets all properties as arrays including single properties and to match this will require more extensive changes.
