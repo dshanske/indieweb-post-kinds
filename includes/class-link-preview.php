@@ -142,12 +142,74 @@ class Link_Preview {
 			default:
 				$parsed = Mf2\parse( $content, $url );
 		}
-		if ( mf2_cleaner::isMicroformatCollection( $parsed ) ) {
-			$entries = mf2_cleaner::findMicroformatsByType( $parsed, 'h-entry' );
-			if ( $entries ) {
-				$entry = $entries[0];
-				if ( mf2_cleaner::isMicroformat( $entry ) ) {
-					$data = self::parse_hentry( $entry );
+		if ( ! is_array( $parsed ) ) {
+			return array();
+		}
+		$count = count( $parsed['items'] );
+		if ( 0 == $count ) {
+			return array();
+		}
+		if ( 1 == $count ) {
+			$item = $parsed['items'][0];
+			if ( in_array( 'h-feed', $item['type'] ) ) {
+				return array( 'type' => 'feed' );
+			}
+			if ( in_array( 'h-card', $item['type'] ) ) {
+				return self::parse_hcard( $item, $parsed, $url );
+			} elseif ( in_array( 'h-entry', $item['type'] ) || in_array( 'h-cite', $item['type'] ) ) {
+				return self::parse_hentry( $item, $parsed );
+			}
+		}
+		foreach ( $parsed['items'] as $item ) {
+			if ( array_key_exists( 'url', $item['properties'] ) ) {
+				$urls = $item['properties']['url'];
+				if ( in_array( $url, $urls ) ) {
+					if ( in_array( 'h-card', $item['type'] ) ) {
+						return self::parse_hcard( $item, $parsed, $url );
+					} elseif ( in_array( 'h-entry', $item['type'] ) || in_array( 'h-cite', $item['type'] ) ) {
+						return self::parse_hentry( $item, $parsed );
+					}
+				}
+			}
+		}
+	}
+
+	private static function parse_hentry( $entry, $mf ) {
+		// Array Values
+		$properties = array( 'category', 'invitee', 'photo','video','audio','syndication','in-reply-to','like-of','repost-of','bookmark-of', 'tag-of' );
+		$arrays = Mf2_Cleaner::get_prop_array( $entry, $properties );
+		$data['type'] = 'entry';
+		$data['published'] = Mf2_Cleaner::get_published( $entry );
+		$data['updated'] = Mf2_Cleaner::get_updated( $entry );
+		$properties = array( 'url', 'rsvp', 'featured', 'name' );
+		foreach ( $properties as $property ) {
+			$data[ $property ] = Mf2_Cleaner::get_plaintext( $entry, $property );
+		}
+		$data['content'] = Mf2_Cleaner::parse_html_value( $entry, 'content' );
+		$data['summary'] = Mf2_Cleaner::get_summary( $entry, $data['content'] );
+		if ( isset( $data['name'] ) ) {
+			$data['name'] = trim( preg_replace( '/https?:\/\/([^ ]+|$)/', '', $data['name'] ) );
+		}
+		if ( isset( $mf['rels']['syndication'] ) ) {
+			if ( isset( $data['syndication'] ) ) {
+				$data['syndication'] = array_unique( array_merge( $data['syndication'], $mf['rels']['syndication'] ) );
+			} else {
+				$data['syndication'] = $mf['rels']['syndication'];
+			}
+		}
+		$author = Mf2_Cleaner::find_author( $entry, $mf );
+		if ( $author ) {
+			if ( is_array( $author['type'] ) ) {
+				$data['author'] = self::parse_hcard( $author, $mf );
+			} else {
+				$author = array_filter( $author );
+				if ( ! isset( $author['name'] ) && isset( $author['url'] ) ) {
+					$content = self::fetch( $author['url'] );
+					$parsed = Mf2\parse( $content, $author['url'] );
+					$hcard = self::find_microformat( $parsed, 'h-card' );
+					$data['author'] = self::parse_hcard( $hcard, $parsed, $author['url'] );
+				} else {
+					$data['author'] = $author;
 				}
 			}
 		}
@@ -160,45 +222,45 @@ class Link_Preview {
 		return $data;
 	}
 
-	private static function parse_hentry( $entry ) {
-		$data = array();
-		$data['published'] = mf2_cleaner::getPublished( $entry );
-		$data['updated'] = mf2_cleaner::getUpdated( $entry );			
-		// Determine if the name is distinct from the content
-		$name = mf2_cleaner::getPlaintext($entry, 'name');
-		$data['content'] = mf2_cleaner::parseHTMLValue( $entry, 'content' );
-		$data['summary'] = mf2_cleaner::getHtml( $entry, 'summary' );
-		// Single Values
-		$properties = array( 'url', 'rsvp', 'featured', 'name' );
-		foreach( $properties as $property ) {
-			$data[ $property ] = mf2_cleaner::getPlainText( $entry, $property );
-		}
-		$data['name'] = trim( preg_replace( '/https?:\/\/([^ ]+|$)/', '', $data['name'] ) );
-		// Array Values
-		$properties = array( 'category', 'invitee', 'photo','video','audio','syndication','in-reply-to','like-of','repost-of','bookmark-of', 'tag-of' );
-		$arrays = mf2_cleaner::getPropArray( $entry, $properties );
-		$data = array_merge( $data, $arrays );
-
-		$author = mf2_cleaner::getAuthor( $entry );
-		if ( $author ) {
-			$data['author'] = array();
-			if ( is_array( $author ) ) {
-				foreach ( $author['properties'] as $key => $value ) {
-					$data['author'][$key] = mf2_cleaner::getPlaintext( $author, $key );
+	private static function parse_hcard( $hcard, $mf, $authorurl = false ) {
+		// If there is a matching author URL, use that one
+		$data = array(
+			'type' => 'card',
+			'name' => null,
+			'url' => null,
+			'photo' => null,
+		);
+		$properties = [ 'url','name','photo' ];
+		foreach ( $properties as $p ) {
+			if ( 'url' == $p && $authorurl ) {
+				// If there is a matching author URL, use that one
+				$found = false;
+				foreach ( $hcard['properties']['url'] as $url ) {
+					if ( Mf2_Cleaner::is_url( $url ) ) {
+						if ( $url == $authorurl ) {
+							$data['url'] = $url;
+							$found = true;
+						}
+					}
 				}
-				$data['author'] = array_filter( $data['author'] );
-			}
-			else {
-				if ( mf2_cleaner::isUrl( $author ) ) {
-					$data['author']['url'] = $author;
+				if ( ! $found && Mf2_Cleaner::is_url( $hcard['properties']['url'][0] ) ) {
+					$data['url'] = $hcard['properties']['url'][0];
 				}
-				else { 
-					$data['author']['name'] = $author;
+			} else if ( ( $v = Mf2_Cleaner::get_plaintext( $hcard, $p ) ) !== null ) {
+				// Make sure the URL property is actually a URL
+				if ( 'url' == $p || 'photo' == $p ) {
+					if ( Mf2_Cleaner::is_url( $v ) ) {
+						$data[ $p ] = $v;
+					}
+				} else {
+					$data[ $p ] = $v;
 				}
 			}
 		}
-		return $data;
+		return array_filter( $data );
 	}
+
+
 
 	public static function get_meta_tags( $source_content ) {
 		if ( ! $source_content ) {
@@ -217,7 +279,7 @@ class Link_Preview {
 					if ( strlen( $meta_name ) > 100 ) {
 						continue;
 					}
-					$meta[$meta_name] = $meta_value;
+					$meta[ $meta_name ] = $meta_value;
 				}
 			}
 		}
@@ -257,7 +319,8 @@ class Link_Preview {
 		$data['video'] = ifset( $meta['og:video'] );
 		$data['duration'] = ifset( $meta['music:duration'] ) ?: ifset( $meta['video:duration'] );
 		$data['type'] = ifset( $meta['og:type'] );
-		$data['meta'] = $meta;
+		$data['icon'] = ifset( $meta['msapplication-TileImage'] );
+		$data['meta'] = array_filter( $meta );
 		return array_filter( $data );
 	}
 }

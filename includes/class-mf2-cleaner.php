@@ -1,55 +1,59 @@
 <?php
+/**
+ * Helpers for processing microformats2 array structures.
+ * Derived from https://github.com/barnabywalters/php-mf-cleaner
+ * and https://github.com/aaronpk/XRay/blob/master/lib/Formats/Mf2.php
+ * and https://github.com/pfefferle/wordpress-semantic-linkbacks/blob/master/includes/class-linkbacks-mf2-handler.php
+ **/
 
-/*
-  helpers for processing canonical microformats2 array structures.
- *	https://github.com/barnabywalters/php-mf-cleaner
- * Rewritten as a class for WordPress
-*/
+class Mf2_Cleaner {
 
-class mf2_cleaner {
-
-       /**
-         * Is string a URL.
-         *
-         * @param array $string
-         * @return bool
-         */
-	public static function isURL($string) {
-		    return preg_match('/^https?:\/\/.+\..+$/', $string);
+	/**
+	 * Is string a URL.
+	 *
+	 * @param array $string
+	 * @return bool
+	 */
+	public static function is_url( $string ) {
+		return preg_match( '/^https?:\/\/.+\..+$/', $string );
 	}
 
-       /**
-         * Is this an h-card.
-         *
-         * @param array $mf Parsed Microformats Array.
-         * @return bool
-         */
-	public static function isHCard($mf) {
-		return is_array($mf) and !empty($mf['type']) and is_array($mf['type']) and in_array('h-card', $mf['type']);
+	/**
+	 * Is this an h-card.
+	 *
+	 * @param array $mf Parsed Microformats Array.
+	 * @return bool
+	 */
+	public static function is_hcard( $mf ) {
+		return is_array( $mf ) and ! empty( $mf['type'] ) and is_array( $mf['type'] ) and in_array( 'h-card', $mf['type'] );
 	}
-	
-	public static function parseHTMLValue($item, $property) {
-		if(!array_key_exists($property, $item['properties'])) {
+
+	/**
+	 * Parse Content
+	 *
+	 * @param array $mf Parsed Microformats Array.
+	 * @return array $data Content array consisting of text and html properties.
+	 */
+	public static function parse_html_value( $mf, $property ) {
+		if ( ! array_key_exists( $property, $mf['properties'] ) ) {
 			return null;
 		}
-		$textContent = false;
-		$htmlContent = false;
-		$content = $item['properties'][$property][0];
-		if(is_string($content)) {
-			 $textContent = $content;
-		} elseif(!is_string($content) && is_array($content) && array_key_exists('value', $content)) {
-			if(array_key_exists('html', $content)) {
-				$htmlContent = trim(wp_kses_post($content['html']));
-				$textContent = trim(str_replace("&#xD;","\r",$content['value']));
+		$textcontent = false;
+		$htmlcontent = false;
+		$content = $mf['properties'][$property][0];
+		if ( is_string( $content ) ) {
+			 $textcontent = $content;
+		} elseif ( ! is_string( $content ) && is_array( $content ) && array_key_exists( 'value', $content ) ) {
+			if ( array_key_exists( 'html', $content ) ) {
+				$htmlcontent = trim( wp_kses_post( $content['html'] ) );
+				$textcontent = trim( str_replace( '&#xD;', "\r", $content['value'] ) );
 			} else {
-				$textContent = trim($content['value']);
+				$textcontent = trim( $content['value'] );
 			}
 		}
-		$data = array(
-			'text' => $textContent
-		);
-		if($htmlContent && $textContent != $htmlContent) {
-			$data['html'] = $htmlContent;
+		$data = array( 'text' => $textcontent );
+		if ( $htmlcontent && $textcontent != $htmlcontent ) {
+			$data['html'] = $htmlcontent;
 		}
 		return $data;
 	}
@@ -61,7 +65,7 @@ class mf2_cleaner {
 	 * @param array $arr
 	 * @return bool
 	 */
-	public static function hasNumericKeys(array $arr) {
+	public static function has_numeric_keys(array $arr) {
 		foreach ( $arr as $key => $val ) { if ( is_numeric( $key ) ) { return true; }
 		}
 		return false;
@@ -73,8 +77,8 @@ class mf2_cleaner {
 	 * @param $mf
 	 * @return bool
 	 */
-	public static function isMicroformat($mf) {
-		return (is_array( $mf ) and ! self::hasNumericKeys( $mf ) and ! empty( $mf['type'] ) and isset( $mf['properties'] ));
+	public static function is_microformat($mf) {
+		return (is_array( $mf ) and ! self::has_numeric_keys( $mf ) and ! empty( $mf['type'] ) and isset( $mf['properties'] ));
 	}
 
 
@@ -84,7 +88,7 @@ class mf2_cleaner {
 	 * @param $mf
 	 * @return bool
 	 */
-	public static function isMicroformatCollection($mf) {
+	public static function is_microformat_collection($mf) {
 		return (is_array( $mf ) and isset( $mf['items'] ) and is_array( $mf['items'] ));
 	}
 
@@ -94,20 +98,33 @@ class mf2_cleaner {
 	 * @param $p
 	 * @return bool
 	 */
-	public static function isEmbeddedHtml($p) {
+	public static function is_embedded_html($p) {
 		return is_array( $p ) and ! self::hasNumericKeys( $p ) and isset( $p['value'] ) and isset( $p['html'] );
 	}
 
 	/**
-	 * Verifies if property named $propName is in array $mf.
+	 * Verifies if property named $propname is in array $mf.
 	 *
 	 * @param array    $mf
-	 * @param $propName
+	 * @param $propname
 	 * @return bool
 	 */
-	public static function hasProp(array $mf, $propName) {
-		return ! empty( $mf['properties'][$propName] ) and is_array( $mf['properties'][$propName] );
+	public static function has_prop(array $mf, $propname) {
+		return ! empty( $mf['properties'][$propname] ) and is_array( $mf['properties'][$propname] );
 	}
+
+
+	/**
+	 * Verifies if rel named $relname is in array $mf.
+	 *
+	 * @param array    $mf
+	 * @param $relname
+	 * @return bool
+	 */
+	public static function has_rel(array $mf, $relname) {
+		return ! empty( $mf['rels'][$relname] ) and is_array( $mf['rels'][$relname] );
+	}
+
 
 	/**
 	 * shortcut for getPlaintext.
@@ -118,8 +135,8 @@ class mf2_cleaner {
 	 * @param null|string $fallback
 	 * @return mixed|null
 	 */
-	public static function getProp(array $mf, $propName, $fallback = null) {
-		return self::getPlaintext( $mf, $propName, $fallback );
+	public static function get_prop(array $mf, $propName, $fallback = null) {
+		return self::get_plaintext( $mf, $propName, $fallback );
 	}
 
 	/**
@@ -128,8 +145,8 @@ class mf2_cleaner {
 	 * @param $v
 	 * @return mixed
 	 */
-	public static function toPlaintext($v) {
-		if ( self::isMicroformat( $v ) or self::isEmbeddedHtml( $v ) ) {
+	public static function to_plaintext($v) {
+		if ( self::is_microformat( $v ) or self::is_embedded_html( $v ) ) {
 			return $v['value']; }
 		return $v;
 	}
@@ -143,9 +160,9 @@ class mf2_cleaner {
 	 * @return mixed|null
 	 * @link http://php.net/manual/en/function.current.php
 	 */
-	public static function getPlaintext(array $mf, $propName, $fallback = null) {
+	public static function get_plaintext(array $mf, $propName, $fallback = null) {
 		if ( ! empty( $mf['properties'][$propName] ) and is_array( $mf['properties'][$propName] ) ) {
-			return self::toPlaintext( current( $mf['properties'][$propName] ) );
+			return self::to_plaintext( current( $mf['properties'][$propName] ) );
 		}
 		return $fallback;
 	}
@@ -158,34 +175,34 @@ class mf2_cleaner {
 	 * @param null|string $fallback
 	 * @return null
 	 */
-	public static function getPlaintextArray(array $mf, $propName, $fallback = null) {
+	public static function get_plaintext_array(array $mf, $propName, $fallback = null) {
 		if ( ! empty( $mf['properties'][$propName] ) and is_array( $mf['properties'][$propName] ) ) {
-			return array_map( array( 'mf2_cleaner', 'toPlaintext' ), $mf['properties'][$propName] ); }
+			return array_map( array( 'Mf2_Cleaner', 'to_plaintext' ), $mf['properties'][$propName] ); }
 		return $fallback;
 	}
 
 	/**
-	 *  Always return arrays, and may contain plaintext content
+	 *  Return an array of properties, and may contain plaintext content
 	 *
 	 * @param array       $mf
 	 * @param array $properties
 	 * @param null|string $fallback
 	 * @return null|array
 	 */
-	public static function getPropArray(array $mf, $properties, $fallback = null) {
+	public static function get_prop_array(array $mf, $properties, $fallback = null) {
 		$data = array();
-		foreach($properties as $p) {
-			if(array_key_exists($p, $mf['properties'])) {
-				foreach($mf['properties'][$p] as $v) {
-					if(is_string($v)) {
-						if(!array_key_exists($p, $data)) { 
-							$data[$p] = [];
+		foreach ( $properties as $p ) {
+			if ( array_key_exists( $p, $mf['properties'] ) ) {
+				foreach ( $mf['properties'][$p] as $v ) {
+					if ( is_string( $v ) ) {
+						if ( ! array_key_exists( $p, $data ) ) {
+							$data[$p] = array();
 						}
 						$data[$p][] = $v;
-					} elseif(self::isMicroformat($v)) {
-						if(($u=self::getPlaintext($v, 'url')) && self::isURL($u)) {
-							if(!array_key_exists($p, $data)) {
-								$data[$p] = [];
+					} elseif ( self::is_microformat( $v ) ) {
+						if ( ($u = self::get_plaintext( $v, 'url' )) && self::is_URL( $u ) ) {
+							if ( ! array_key_exists( $p, $data ) ) {
+								$data[$p] = array();
 							}
 							$data[$p][] = $u;
 						}
@@ -196,16 +213,15 @@ class mf2_cleaner {
 		return $data;
 	}
 
-
 	/**
 	 * Returns ['html'] element of $v, or ['value'] or just $v, in order of availablility.
 	 *
 	 * @param $v
 	 * @return mixed
 	 */
-	public static function toHtml($v) {
-		if ( self::isEmbeddedHtml( $v ) ) {
-			return $v['html']; } elseif ( self::isMicroformat( $v ) ) {
+	public static function to_html($v) {
+		if ( self::is_embedded_html( $v ) ) {
+			return $v['html']; } elseif ( self::is_microformat( $v ) ) {
 			return htmlspecialchars( $v['value'] ); }
 			return htmlspecialchars( $v );
 	}
@@ -218,9 +234,9 @@ class mf2_cleaner {
 	 * @param null|string $fallback
 	 * @return mixed|null
 	 */
-	public static function getHtml(array $mf, $propName, $fallback = null) {
+	public static function get_html(array $mf, $propName, $fallback = null) {
 		if ( ! empty( $mf['properties'][$propName] ) and is_array( $mf['properties'][$propName] ) ) {
-			return self::toHtml( current( $mf['properties'][$propName] ) ); }
+			return self::to_html( current( $mf['properties'][$propName] ) ); }
 		return $fallback;
 	}
 
@@ -231,14 +247,23 @@ class mf2_cleaner {
 	 *
 	 * @deprecated as not often used
 	 * @param array $mf
+	 * @param array $content
 	 * @return mixed|null|string
 	 */
-	public static function getSummary(array $mf) {
-		if ( hasProp( $mf, 'summary' ) ) {
-			return getProp( $mf, 'summary' ); }
-		if ( ! empty( $mf['properties']['content'] ) ) {
-			return substr( strip_tags( getPlaintext( $mf, 'content' ) ), 0, 19 ) . '…'; }
+	public static function get_summary( array $mf, $content = null ) {
+		if ( self::has_prop( $mf, 'summary' ) ) {
+			return self::get_prop( $mf, 'summary' );
+		}
+		if ( ! $content ) {
+			$content = self::parse_html_value( $mf, 'content' );
+		}
+		$summary = substr( $content['text'], 0, 300 );
+		if ( 300 < strlen( $content['text'] ) ) {
+			$summary .= '...';
+		}
+		return $summary;
 	}
+
 
 	/**
 	 * Gets the date published of $mf array.
@@ -248,8 +273,8 @@ class mf2_cleaner {
 	 * @param null|string $fallback optional result if date not available
 	 * @return mixed|null
 	 */
-	public static function getPublished(array $mf, $ensureValid = false, $fallback = null) {
-		return self::getDateTimeProperty( 'published', $mf, $ensureValid, $fallback );
+	public static function get_published(array $mf, $ensureValid = false, $fallback = null) {
+		return self::get_datetime_property( 'published', $mf, $ensureValid, $fallback );
 	}
 
 	/**
@@ -260,8 +285,8 @@ class mf2_cleaner {
 	 * @param null  $fallback
 	 * @return mixed|null
 	 */
-	public static function getUpdated(array $mf, $ensureValid = false, $fallback = null) {
-		return self::getDateTimeProperty( 'updated', $mf, $ensureValid, $fallback );
+	public static function get_updated(array $mf, $ensureValid = false, $fallback = null) {
+		return self::get_datetime_property( 'updated', $mf, $ensureValid, $fallback );
 	}
 
 	/**
@@ -273,11 +298,11 @@ class mf2_cleaner {
 	 * @param null|string                      $fallback
 	 * @return mixed|null
 	 */
-	public static function getDateTimeProperty($name, array $mf, $ensureValid = false, $fallback = null) {
+	public static function get_datetime_property($name, array $mf, $ensureValid = false, $fallback = null) {
 		$compliment = 'published' === $name ? 'updated' : 'published';
-		if ( self::hasProp( $mf, $name ) ) {
-			$return = self::getProp( $mf, $name ); } elseif ( self::hasProp( $mf, $compliment ) ) {
-			$return = self::getProp( $mf, $compliment );
+		if ( self::has_prop( $mf, $name ) ) {
+			$return = self::get_prop( $mf, $name ); } elseif ( self::has_prop( $mf, $compliment ) ) {
+			$return = self::get_prop( $mf, $compliment );
 			} else { 		return $fallback; }
 			if ( ! $ensureValid ) {
 				return $return; } else {
@@ -298,7 +323,7 @@ class mf2_cleaner {
 	 * @return bool
 	 * @link http://php.net/manual/en/function.parse-url.php
 	 */
-	public static function sameHostname($u1, $u2) {
+	public static function same_hostname($u1, $u2) {
 		return wp_parse_url( $u1, PHP_URL_HOST ) === wp_parse_url( $u2, PHP_URL_HOST );
 	}
 
@@ -315,33 +340,33 @@ class mf2_cleaner {
 	 * @todo: this needs to be just part of an indiewebcamp.com/authorship algorithm, at the moment it tries to do too much
 	 * @todo: maybe split some bits of this out into separate functions
 	 */
-	public static function getAuthor(array $mf, array $context = null, $url = null, $matchName = true, $matchHostname = true) {
+	public static function get_author(array $mf, array $context = null, $url = null, $matchName = true, $matchHostname = true) {
 		$entryAuthor = null;
 
-		if ( null === $url and self::hasProp( $mf, 'url' ) ) {
-			$url = self::getProp( $mf, 'url' ); }
+		if ( null === $url and self::has_prop( $mf, 'url' ) ) {
+			$url = self::get_prop( $mf, 'url' ); }
 
-		if ( self::hasProp( $mf, 'author' ) and self::isMicroformat( current( $mf['properties']['author'] ) ) ) {
-			$entryAuthor = current( $mf['properties']['author'] ); } elseif ( self::hasProp( $mf, 'reviewer' ) and self::isMicroformat( current( $mf['properties']['author'] ) ) ) {
-			$entryAuthor = current( $mf['properties']['reviewer'] ); } elseif ( self::hasProp( $mf, 'author' ) ) {
-				$entryAuthor = self::getPlaintext( $mf, 'author' ); }
+		if ( self::has_prop( $mf, 'author' ) and self::is_microformat( current( $mf['properties']['author'] ) ) ) {
+			$entryAuthor = current( $mf['properties']['author'] ); } elseif ( self::has_prop( $mf, 'reviewer' ) and self::is_microformat( current( $mf['properties']['author'] ) ) ) {
+			$entryAuthor = current( $mf['properties']['reviewer'] ); } elseif ( self::has_prop( $mf, 'author' ) ) {
+				$entryAuthor = self::get_plaintext( $mf, 'author' ); }
 
 			// If we have no context that’s the best we can do
 			if ( null === $context ) {
 				return $entryAuthor; }
 
 			// Whatever happens after this we’ll need these
-			$flattenedMf = self::flattenMicroformats( $context );
-			$hCards = self::findMicroformatsByType( $flattenedMf, 'h-card', false );
+			$flattenedMf = self::flatten_microformats( $context );
+			$hCards = self::find_microformats_by_type( $flattenedMf, 'h-card', false );
 			if ( is_string( $entryAuthor ) ) {
 				// look through all page h-cards for one with this URL
-				$authorHCards = self::findMicroformatsByProperty( $hCards, 'url', $entryAuthor, false );
+				$authorHCards = self::find_microformats_by_property( $hCards, 'url', $entryAuthor, false );
 				if ( ! empty( $authorHCards ) ) {
 					$entryAuthor = current( $authorHCards ); }
 			}
 			if ( is_string( $entryAuthor ) and $matchName ) {
 				// look through all page h-cards for one with this name
-				$authorHCards = self::findMicroformatsByProperty( $hCards, 'name', $entryAuthor, false );
+				$authorHCards = self::find_microformats_by_property( $hCards, 'name', $entryAuthor, false );
 
 				if ( ! empty( $authorHCards ) ) {
 					$entryAuthor = current( $authorHCards ); }
@@ -355,18 +380,18 @@ class mf2_cleaner {
 				// Grab first href with rel=author
 				$relAuthorHref = current( $context['rels']['author'] );
 
-				$relAuthorHCards = self::findMicroformatsByProperty( $hCards, 'url', $relAuthorHref );
+				$relAuthorHCards = self::find_microformats_by_property( $hCards, 'url', $relAuthorHref );
 
 				if ( ! empty( $relAuthorHCards ) ) {
 					return current( $relAuthorHCards ); }
 			}
 			// look for h-card with same hostname as $url if given
 			if ( null !== $url and $matchHostname ) {
-				$sameHostnameHCards = self::findMicroformatsByCallable($hCards, function ($mf) use ($url) {
-					if ( ! hasProp( $mf, 'url' ) ) {
+				$sameHostnameHCards = self::find_microformats_by_callable($hCards, function ($mf) use ($url) {
+					if ( ! has_prop( $mf, 'url' ) ) {
 						return false; }
 					foreach ( $mf['properties']['url'] as $u ) {
-						if ( sameHostname( $url, $u ) ) {
+						if ( same_hostname( $url, $u ) ) {
 							return true; }
 					}
 				}, false);
@@ -379,6 +404,54 @@ class mf2_cleaner {
 			: $relAuthorHref;
 	}
 
+	public static function find_author($item, $mf2 ) {
+		$author = array(
+			'type' => 'card',
+			'name' => null,
+			'url' => null,
+			'photo' => null,
+		);
+		// Author Discovery
+		// http://indieweb,org/authorship
+		$authorpage = false;
+		if ( array_key_exists( 'author', $item['properties'] ) ) {
+			// Check if any of the values of the author property are an h-card
+			foreach ( $item['properties']['author'] as $a ) {
+				if ( self::is_hcard( $a ) ) {
+					// 5.1 "if it has an h-card, use it, exit."
+					return $a;
+				} elseif ( is_string( $a ) ) {
+					if ( self::is_url( $a ) ) {
+						// 5.2 "otherwise if author property is an http(s) URL, let the author-page have that URL"
+						$authorpage = $a;
+					} else {
+						// 5.3 "otherwise use the author property as the author name, exit"
+						// We can only set the name, no h-card or URL was found
+						$author['name'] = self::get_plaintext( $item, 'author' );
+						return $author;
+					}
+				} else {
+					// This case is only hit when the author property is an mf2 object that is not an h-card
+					$author['name'] = self::get_plaintext( $item, 'author' );
+					return $author;
+				}
+			}
+		}
+		// 6. "if no author page was found" ... check for rel-author link
+		if ( ! $authorpage ) {
+			if ( isset( $mf2['rels'] ) && isset( $mf2['rels']['author'] ) ) {
+				$authorpage = $mf2['rels']['author'][0];
+			}
+		}
+		// 7. "if there is an author-page URL" ...
+		if ( $authorpage ) {
+			$author['url'] = $authorpage;
+			return $author;
+		}
+	}
+
+
+
 	/**
 	 * Returns array per parse_url standard with pathname key added.
 	 *
@@ -386,7 +459,7 @@ class mf2_cleaner {
 	 * @return mixed
 	 * @link http://php.net/manual/en/function.parse-url.php
 	 */
-	public static function parseUrl($url) {
+	public static function parse_url($url) {
 		$r = wp_parse_url( $url );
 		$r['pathname'] = empty( $r['path'] ) ? '/' : $r['path'];
 		return $r;
@@ -401,9 +474,9 @@ class mf2_cleaner {
 	 * @return bool
 	 * @see parseUrl()
 	 */
-	public static function urlsMatch($url1, $url2) {
-		$u1 = parseUrl( $url1 );
-		$u2 = parseUrl( $url2 );
+	public static function urls_match($url1, $url2) {
+		$u1 = parse_url( $url1 );
+		$u2 = parse_url( $url2 );
 		foreach ( array_merge( array_keys( $u1 ), array_keys( $u2 ) ) as $component ) {
 			if ( ! array_key_exists( $component, $u1 ) or ! array_key_exists( $component, $u1 ) ) {
 				return false;
@@ -426,17 +499,17 @@ class mf2_cleaner {
 	 * @param string $url The URL the microformats were fetched from
 	 * @return array|null Either a single h-card array structure, or null if none was found
 	 */
-	public static function getRepresentativeHCard(array $mfs, $url) {
-		$hCardsMatchingUidUrlPageUrl = findMicroformatsByCallable($mfs, function ($hCard) use ($url) {
-			return hasProp( $hCard, 'uid' ) and hasProp( $hCard, 'url' )
-			and urlsMatch( getPlaintext( $hCard, 'uid' ), $url )
+	public static function get_representative_hcard(array $mfs, $url) {
+		$hCardsMatchingUidUrlPageUrl = find_microformats_by_callable($mfs, function ($hCard) use ($url) {
+			return has_prop( $hCard, 'uid' ) and has_prop( $hCard, 'url' )
+			and urls_match( get_plaintext( $hCard, 'uid' ), $url )
 			and count(array_filter($hCard['properties']['url'], function ($u) use ($url) {
-				return urlsMatch( $u, $url );
+				return urls_match( $u, $url );
 			})) > 0;
 		});
 		if ( ! empty( $hCardsMatchingUidUrlPageUrl ) ) { return $hCardsMatchingUidUrlPageUrl[0]; }
 		if ( ! empty( $mfs['rels']['me'] ) ) {
-			$hCardsMatchingUrlRelMe = self::findMicroformatsByCallable($mfs, function ($hCard) use ($mfs) {
+			$hCardsMatchingUrlRelMe = self::find_microformats_by_callable($mfs, function ($hCard) use ($mfs) {
 				if ( hasProp( $hCard, 'url' ) ) {
 					foreach ( $mfs['rels']['me'] as $relUrl ) {
 						foreach ( $hCard['properties']['url'] as $url ) {
@@ -450,10 +523,10 @@ class mf2_cleaner {
 			});
 			if ( ! empty( $hCardsMatchingUrlRelMe ) ) { return $hCardsMatchingUrlRelMe[0]; }
 		}
-		$hCardsMatchingUrlPageUrl = findMicroformatsByCallable($mfs, function ($hCard) use ($url) {
-			return hasProp( $hCard, 'url' )
+		$hCardsMatchingUrlPageUrl = find_microformats_by_callable($mfs, function ($hCard) use ($url) {
+			return has_prop( $hCard, 'url' )
 			and count(array_filter($hCard['properties']['url'], function ($u) use ($url) {
-				return urlsMatch( $u, $url );
+				return urls_match( $u, $url );
 			})) > 0;
 		});
 		if ( count( $hCardsMatchingUrlPageUrl ) === 1 ) { return $hCardsMatchingUrlPageUrl[0]; }
@@ -467,17 +540,17 @@ class mf2_cleaner {
 	 * @param array $mfs
 	 * @return array
 	 */
-	public static function flattenMicroformatProperties(array $mf) {
+	public static function flatten_microformat_properties(array $mf) {
 		$items = array();
 
-		if ( ! self::isMicroformat( $mf ) ) {
+		if ( ! self::is_microformat( $mf ) ) {
 			return $items; }
 
 		foreach ( $mf['properties'] as $propArray ) {
 			foreach ( $propArray as $prop ) {
-				if ( self::isMicroformat( $prop ) ) {
+				if ( self::is_microformat( $prop ) ) {
 					$items[] = $prop;
-					$items = array_merge( $items, self::flattenMicroformatProperties( $prop ) );
+					$items = array_merge( $items, self::flatten_microformat_properties( $prop ) );
 				}
 			}
 		}
@@ -491,9 +564,9 @@ class mf2_cleaner {
 	 * @param array $mfs
 	 * @return array
 	 */
-	public static function flattenMicroformats(array $mfs) {
-		if ( self::isMicroformatCollection( $mfs ) ) {
-			$mfs = $mfs['items']; } elseif ( self::isMicroformat( $mfs ) ) {
+	public static function flatten_microformats(array $mfs) {
+		if ( self::is_microformat_collection( $mfs ) ) {
+			$mfs = $mfs['items']; } elseif ( self::is_microformat( $mfs ) ) {
 			$mfs = array( $mfs ); }
 
 			$items = array();
@@ -501,14 +574,14 @@ class mf2_cleaner {
 			foreach ( $mfs as $mf ) {
 				$items[] = $mf;
 
-				$items = array_merge( $items, self::flattenMicroformatProperties( $mf ) );
+				$items = array_merge( $items, self::flatten_microformat_properties( $mf ) );
 
 				if ( empty( $mf['children'] ) ) {
 					continue; }
 
 				foreach ( $mf['children'] as $child ) {
 					$items[] = $child;
-					$items = array_merge( $items, self::flattenMicroformatProperties( $child ) );
+					$items = array_merge( $items, self::flatten_microformat_properties( $child ) );
 				}
 			}
 
@@ -522,8 +595,8 @@ class mf2_cleaner {
 	 * @param bool  $flatten
 	 * @return mixed
 	 */
-	public static function findMicroformatsByType(array $mfs, $name, $flatten = true) {
-		return self::findMicroformatsByCallable($mfs, function ($mf) use ($name) {
+	public static function find_microformats_by_type(array $mfs, $name, $flatten = true) {
+		return self::find_microformats_by_callable($mfs, function ($mf) use ($name) {
 			return in_array( $name, $mf['type'] );
 		}, $flatten);
 	}
@@ -539,8 +612,8 @@ class mf2_cleaner {
 	 * @return mixed
 	 * @see findMicroformatsByCallable()
 	 */
-	public static function findMicroformatsByProperty(array $mfs, $propName, $propValue, $flatten = true) {
-		return findMicroformatsByCallable($mfs, function ($mf) use ($propName, $propValue) {
+	public static function find_microformats_by_property(array $mfs, $propName, $propValue, $flatten = true) {
+		return find_microformats_by_callable($mfs, function ($mf) use ($propName, $propValue) {
 			if ( ! hasProp( $mf, $propName ) ) {
 				return false; }
 
@@ -562,12 +635,12 @@ class mf2_cleaner {
 	 * @link http://php.net/manual/en/function.is-callable.php
 	 * @see flattenMicroformats()
 	 */
-	public static function findMicroformatsByCallable(array $mfs, $callable, $flatten = true) {
+	public static function find_microformats_by_callable(array $mfs, $callable, $flatten = true) {
 		if ( ! is_callable( $callable ) ) {
 			throw new \InvalidArgumentException( '$callable must be callable' ); }
 
-		if ( $flatten and (self::isMicroformat( $mfs ) or self::isMicroformatCollection( $mfs )) ) {
-			$mfs = self::flattenMicroformats( $mfs ); }
+		if ( $flatten and (self::is_microformat( $mfs ) or self::is_microformat_collection( $mfs )) ) {
+			$mfs = self::flatten_microformats( $mfs ); }
 
 		return array_values( array_filter( $mfs, $callable ) );
 	}
