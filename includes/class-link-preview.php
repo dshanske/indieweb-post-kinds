@@ -11,8 +11,8 @@ class Link_Preview {
 	}
 
 	public static function extract_domain_name( $url ) {
-		$parse = wp_parse_url( $url );
-		return preg_replace( '/^www\./', '', $parse['host'] );
+		$parse = wp_parse_url( $url, PHP_URL_HOST );
+		return preg_replace( '/^www\./', '', $parse );
 	}
 
 
@@ -76,6 +76,13 @@ class Link_Preview {
 			preg_match( '/<title>(.+)<\/title>/i', $content, $match );
 			$data['name'] = trim( $match[1] );
 		}
+
+		if ( ! isset( $data['summary'] ) ) {
+			$data['summary'] = substr( $data['content']['text'], 0, 300 );
+			if ( 300 < strlen( $data['content']['text'] ) ) {
+				$data['summary'] .= '...';
+			}
+		}
 		if ( isset( $data['name'] ) ) {
 			if ( isset( $data['summary'] ) ) {
 				if ( false !== stripos( $data['summary'], $data['name'] ) ) {
@@ -83,6 +90,7 @@ class Link_Preview {
 				}
 			}
 		}
+
 		/**
 		 * Parse additionally by plugin.
 		 *
@@ -126,7 +134,6 @@ class Link_Preview {
 	* @param string $content HTML marked up content.
 	*/
 	private static function mf2parse($content, $url) {
-		$data = array();
 		$host = self::extract_domain_name( $url );
 		switch ( $host ) {
 			case 'twitter.com':
@@ -140,24 +147,7 @@ class Link_Preview {
 			if ( $entries ) {
 				$entry = $entries[0];
 				if ( mf2_cleaner::isMicroformat( $entry ) ) {
-					foreach ( $entry['properties'] as $key => $value ) {
-						$data[$key] = mf2_cleaner::getPlaintext( $entry, $key );
-					}
-					$data['published'] = mf2_cleaner::getPublished( $entry );
-					$data['updated'] = mf2_cleaner::getUpdated( $entry );
-						  $data['name'] = mf2_cleaner::getPlaintext( $entry, 'name' );
-					$data['content'] = mf2_cleaner::getHtml( $entry, 'content' );
-					$data['summary'] = mf2_cleaner::getHtml( $entry, 'summary' );
-					$data['name'] = trim( preg_replace( '/https?:\/\/([^ ]+|$)/', '', $data['name'] ) );
-					$data['featured'] = mf2_cleaner::getPlainText( $entry, 'featured' );
-					$author = mf2_cleaner::getAuthor( $entry );
-					if ( $author ) {
-							$data['author'] = array();
-						foreach ( $author['properties'] as $key => $value ) {
-							$data['author'][$key] = mf2_cleaner::getPlaintext( $author, $key );
-						}
-							$data['author'] = array_filter( $data['author'] );
-					}
+					$data = self::parse_hentry( $entry );
 				}
 			}
 		}
@@ -165,6 +155,46 @@ class Link_Preview {
 		if ( array_key_exists( 'name', $data ) ) {
 			if ( ! array_key_exists( 'summary', $data ) || ! array_key_exists( 'content', $data ) ) {
 				unset( $data['name'] );
+			}
+		}
+		return $data;
+	}
+
+	private static function parse_hentry( $entry ) {
+		$data = array();
+		$data['published'] = mf2_cleaner::getPublished( $entry );
+		$data['updated'] = mf2_cleaner::getUpdated( $entry );			
+		// Determine if the name is distinct from the content
+		$name = mf2_cleaner::getPlaintext($entry, 'name');
+		$data['content'] = mf2_cleaner::parseHTMLValue( $entry, 'content' );
+		$data['summary'] = mf2_cleaner::getHtml( $entry, 'summary' );
+		// Single Values
+		$properties = array( 'url', 'rsvp', 'featured', 'name' );
+		foreach( $properties as $property ) {
+			$data[ $property ] = mf2_cleaner::getPlainText( $entry, $property );
+		}
+		$data['name'] = trim( preg_replace( '/https?:\/\/([^ ]+|$)/', '', $data['name'] ) );
+		// Array Values
+		$properties = array( 'category', 'invitee', 'photo','video','audio','syndication','in-reply-to','like-of','repost-of','bookmark-of', 'tag-of' );
+		$arrays = mf2_cleaner::getPropArray( $entry, $properties );
+		$data = array_merge( $data, $arrays );
+
+		$author = mf2_cleaner::getAuthor( $entry );
+		if ( $author ) {
+			$data['author'] = array();
+			if ( is_array( $author ) ) {
+				foreach ( $author['properties'] as $key => $value ) {
+					$data['author'][$key] = mf2_cleaner::getPlaintext( $author, $key );
+				}
+				$data['author'] = array_filter( $data['author'] );
+			}
+			else {
+				if ( mf2_cleaner::isUrl( $author ) ) {
+					$data['author']['url'] = $author;
+				}
+				else { 
+					$data['author']['name'] = $author;
+				}
 			}
 		}
 		return $data;

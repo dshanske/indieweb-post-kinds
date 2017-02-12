@@ -8,6 +8,53 @@
 
 class mf2_cleaner {
 
+       /**
+         * Is string a URL.
+         *
+         * @param array $string
+         * @return bool
+         */
+	public static function isURL($string) {
+		    return preg_match('/^https?:\/\/.+\..+$/', $string);
+	}
+
+       /**
+         * Is this an h-card.
+         *
+         * @param array $mf Parsed Microformats Array.
+         * @return bool
+         */
+	public static function isHCard($mf) {
+		return is_array($mf) and !empty($mf['type']) and is_array($mf['type']) and in_array('h-card', $mf['type']);
+	}
+	
+	public static function parseHTMLValue($item, $property) {
+		if(!array_key_exists($property, $item['properties'])) {
+			return null;
+		}
+		$textContent = false;
+		$htmlContent = false;
+		$content = $item['properties'][$property][0];
+		if(is_string($content)) {
+			 $textContent = $content;
+		} elseif(!is_string($content) && is_array($content) && array_key_exists('value', $content)) {
+			if(array_key_exists('html', $content)) {
+				$htmlContent = trim(wp_kses_post($content['html']));
+				$textContent = trim(str_replace("&#xD;","\r",$content['value']));
+			} else {
+				$textContent = trim($content['value']);
+			}
+		}
+		$data = array(
+			'text' => $textContent
+		);
+		if($htmlContent && $textContent != $htmlContent) {
+			$data['html'] = $htmlContent;
+		}
+		return $data;
+	}
+
+
 	/**
 	 * Iterates over array keys, returns true if has numeric keys.
 	 *
@@ -113,8 +160,40 @@ class mf2_cleaner {
 	 */
 	public static function getPlaintextArray(array $mf, $propName, $fallback = null) {
 		if ( ! empty( $mf['properties'][$propName] ) and is_array( $mf['properties'][$propName] ) ) {
-			return array_map( __NAMESPACE__ . '\toPlaintext', $mf['properties'][$propName] ); }
+			return array_map( array( 'mf2_cleaner', 'toPlaintext' ), $mf['properties'][$propName] ); }
 		return $fallback;
+	}
+
+	/**
+	 *  Always return arrays, and may contain plaintext content
+	 *
+	 * @param array       $mf
+	 * @param array $properties
+	 * @param null|string $fallback
+	 * @return null|array
+	 */
+	public static function getPropArray(array $mf, $properties, $fallback = null) {
+		$data = array();
+		foreach($properties as $p) {
+			if(array_key_exists($p, $mf['properties'])) {
+				foreach($mf['properties'][$p] as $v) {
+					if(is_string($v)) {
+						if(!array_key_exists($p, $data)) { 
+							$data[$p] = [];
+						}
+						$data[$p][] = $v;
+					} elseif(self::isMicroformat($v)) {
+						if(($u=self::getPlaintext($v, 'url')) && self::isURL($u)) {
+							if(!array_key_exists($p, $data)) {
+								$data[$p] = [];
+							}
+							$data[$p][] = $u;
+						}
+					}
+				}
+			}
+		}
+		return $data;
 	}
 
 
@@ -220,7 +299,7 @@ class mf2_cleaner {
 	 * @link http://php.net/manual/en/function.parse-url.php
 	 */
 	public static function sameHostname($u1, $u2) {
-		return parse_url( $u1, PHP_URL_HOST ) === parse_url( $u2, PHP_URL_HOST );
+		return wp_parse_url( $u1, PHP_URL_HOST ) === wp_parse_url( $u2, PHP_URL_HOST );
 	}
 
 
