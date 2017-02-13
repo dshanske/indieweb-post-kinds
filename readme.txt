@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like
-Stable tag: 2.5.0
+Stable tag: 2.4.4
 Requires at least: 4.7
 Tested up to: 4.7.2
 License: GPLv2 or later
@@ -93,7 +93,7 @@ may make it a Passive Kind.
  * **Like** -  props/compliments to the original post/poster
  * **Favorite** - special to the favoriter
  * **Bookmark** - This is basically sharing/storing a link/bookmark. 
-
+ * **Quote** - Quoted Content
 = The Passive Kinds =
 
 To "Scrobble" a song is when listening to it, you would make it a post on
@@ -126,7 +126,6 @@ interface at this time.
  * **Food** - Representing recording what you eat, perhaps for a food diary
  * **Drink** - Similar to Food
  * **Follow** - A post indicating you are now following someone's activities
- * **Quote** - Quoted Content
  * **Mood** - Mood - Feeling
  * **Recipe** - Recipe
 
@@ -145,10 +144,11 @@ Indieweb Post Kinds had support for replying to Twitter posts using the Social N
 developer of this plugin.
 
 == Changelog ==
-	= Version 2.5.0 =
+	= Version 2.4.4 =
 		* Simplify coding standards issues
 		* Update settings
 		* Add quote kind ( props @miklb )
+		* Enhance parsing code in preparation for more enhancement
 	= Version 2.4.3 =
 		* Setting of Kind from Micropub now fixed due changes in Micropub plugin
 		* Micropub sets all properties as arrays including single properties and to match this will require more extensive changes.
