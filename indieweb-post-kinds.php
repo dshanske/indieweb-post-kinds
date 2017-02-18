@@ -71,6 +71,7 @@ class Post_Kinds_Plugin {
 			require_once plugin_dir_path( __FILE__ ) . 'includes/class-mf2-cleaner.php';
 		}
 		// Add Link Preview Parsing
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class-parse-this.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-link-preview.php';
 		add_action( 'init' , array( 'Link_Preview', 'init' ) );
 

@@ -10,12 +10,6 @@ class Link_Preview {
 		add_action( 'wp_ajax_kind_urlfetch', array( 'Link_Preview', 'urlfetch' ) );
 	}
 
-	public static function extract_domain_name( $url ) {
-		$parse = wp_parse_url( $url, PHP_URL_HOST );
-		return preg_replace( '/^www\./', '', $parse );
-	}
-
-
 	/**
 	 * Returns if valid URL
 	 *
@@ -34,7 +28,7 @@ class Link_Preview {
 	 */
 	private static function fetch($url) {
 		global $wp_version;
-		if ( ! isset( $url ) || filter_var( $url, FILTER_VALIDATE_URL ) === false ) {
+		if ( ! isset( $url ) || ! self::is_valid_url( $url ) ) {
 			return new WP_Error( 'invalid-url', __( 'A valid URL was not provided.' ) );
 		}
 		$args = array(
@@ -61,20 +55,15 @@ class Link_Preview {
 	 * @param string $content HTML marked up content.
 	 */
 	private static function parse ($content, $url) {
-		$metadata = self::metaparse( $content );
+		$parsethis = new Parse_This();
+		$parsethis->set_source( $content, $url );
+		$metadata = $parsethis->meta_to_microformats();
 		if ( version_compare( PHP_VERSION, '5.3', '>' ) ) {
 			$mf2data = self::mf2parse( $content, $url );
 			$data = array_merge( $metadata, $mf2data );
 			$data = array_filter( $data );
 		} else {
 			$data = $metadata;
-		}
-		// If Publication is Not Set, use the domain name instead
-		$data['publication'] = ifset( $data['publication'] ) ?: self::pretty_domain_name( $url );
-		// If Name is Not Set Use Title Tag
-		if ( ! isset( $data['name'] ) ) {
-			preg_match( '/<title>(.+)<\/title>/i', $content, $match );
-			$data['name'] = trim( $match[1] );
 		}
 
 		if ( ! isset( $data['summary'] ) ) {
@@ -101,17 +90,6 @@ class Link_Preview {
 		return apply_filters( 'kind_parse_data', $data, $content, $url );
 	}
 
-	// Give a Proper Name for Set Sites
-	public static function pretty_domain_name( $url ) {
-		switch ( $url ) {
-			case 'twitter.com':
-			return  _( 'Twitter', 'Post kinds' );
-			break;
-			default:
-			return self::extract_domain_name( $url );
-		}
-	}
-
 	public static function urlfetch() {
 		global $wpdb;
 		if ( empty( $_POST['kind_url'] ) ) {
@@ -134,9 +112,10 @@ class Link_Preview {
 	* @param string $content HTML marked up content.
 	*/
 	private static function mf2parse($content, $url) {
-		$host = self::extract_domain_name( $url );
+		$host = wp_parse_url( $url, PHP_URL_HOST );
 		switch ( $host ) {
 			case 'twitter.com':
+			case 'www.twitter.com':
 				$parsed = Mf2\Shim\parseTwitter( $content, $url );
 				break;
 			default:
@@ -206,7 +185,7 @@ class Link_Preview {
 				if ( ! isset( $author['name'] ) && isset( $author['url'] ) ) {
 					$content = self::fetch( $author['url'] );
 					$parsed = Mf2\parse( $content, $author['url'] );
-					$hcard = self::find_microformat( $parsed, 'h-card' );
+					$hcard = mf2_cleaner::find_microformat( $parsed, 'h-card' );
 					$data['author'] = self::parse_hcard( $hcard, $parsed, $author['url'] );
 				} else {
 					$data['author'] = $author;
@@ -257,70 +236,6 @@ class Link_Preview {
 				}
 			}
 		}
-		return array_filter( $data );
-	}
-
-
-
-	public static function get_meta_tags( $source_content ) {
-		if ( ! $source_content ) {
-			return null;
-		}
-		$meta = array();
-		if ( preg_match_all( '/<meta [^>]+>/', $source_content, $matches ) ) {
-			$items = $matches[0];
-
-			foreach ( $items as $value ) {
-				if ( preg_match( '/(property|name)="([^"]+)"[^>]+content="([^"]+)"/', $value, $new_matches ) ) {
-					$meta_name  = $new_matches[2];
-					$meta_value = $new_matches[3];
-
-					// Sanity check. $key is usually things like 'title', 'description', 'keywords', etc.
-					if ( strlen( $meta_name ) > 100 ) {
-						continue;
-					}
-					$meta[ $meta_name ] = $meta_value;
-				}
-			}
-		}
-		return $meta;
-	}
-
-	/**
-	 * Parses marked up HTML using OGP or other meta tags.
-	 *
-	 * @param string $content HTML marked up content.
-	 */
-	private static function metaparse($content) {
-		$meta = self::get_meta_tags( $content );
-		$data = array();
-		$data['name'] = ifset( $meta['og:title'] ) ?: ifset( $meta['twitter:title'] ) ?: ifset( $meta['og:music:song'] );
-		$data['summary'] = ifset( $meta['og:description'] ) ?: ifset( $meta['twitter:description'] ) ?: ifset( $meta['description'] );
-		$data['site'] = ifset( $meta['og:site'] ) ?: ifset( $meta['twitter:site'] );
-		if ( array_key_exists( 'author', $meta ) ) {
-			$data['author'] = array();
-			$data['author']['name'] = $meta['author'];
-		}
-		$data['featured'] = ifset( $meta['og:image'] ) ?: ifset( $meta['twitter:image'] );
-		$data['publication'] = ifset( $meta['og:site_name'] ) ?: ifset( $meta['og:music:album'] );
-		$data['published'] = ifset( $meta['article:published'] ) ?: ifset( $meta['og:article:published_time'] ) ?: ifset( $meta['og:article:published'] ) ?: ifset( $meta['og:music:release_date'] ) ?: ifset( $meta['og:video:release_date'] );
-		$data['updated'] = ifset( $meta['article:modified'] ) ?: ifset( $meta['article:modified_time'] );
-		$metatags = ifset( $meta['article:tag'] ) ?: ifset( $meta['og:video:tag'] );
-		$tags = array();
-		if ( is_array( $metatags ) ) {
-			foreach ( $metatags as $tag ) {
-				$tags[] = str_replace( ',', ' -', $tag );
-			}
-			$tags = array_filter( $tags );
-		}
-		$data['tags'] = ifset( $data['tags'] ) ?: implode( ',' ,$tags );
-		// Extended Parameters
-		$data['audio'] = ifset( $meta['og:audio'] );
-		$data['video'] = ifset( $meta['og:video'] );
-		$data['duration'] = ifset( $meta['music:duration'] ) ?: ifset( $meta['video:duration'] );
-		$data['type'] = ifset( $meta['og:type'] );
-		$data['icon'] = ifset( $meta['msapplication-TileImage'] );
-		$data['meta'] = array_filter( $meta );
 		return array_filter( $data );
 	}
 }
