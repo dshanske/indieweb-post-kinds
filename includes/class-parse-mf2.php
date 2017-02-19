@@ -6,7 +6,31 @@
  * and https://github.com/pfefferle/wordpress-semantic-linkbacks/blob/master/includes/class-linkbacks-mf2-handler.php
  **/
 
-class Mf2_Cleaner {
+class Parse_MF2 {
+
+	public static function fetch($url) {
+		global $wp_version;
+		if ( ! isset( $url ) || ! self::is_url( $url ) ) {
+			return new WP_Error( 'invalid-url', __( 'A valid URL was not provided.' ) );
+		}
+		$args = array(
+			'timeout' => 10,
+			'limit_response_size' => 1048576,
+			'redirection' => 20,
+			// Use an explicit user-agent for Post Kinds
+			'user-agent' => 'Post Kinds (WordPress/' . $wp_version . '); ' . get_bloginfo( 'url' ),
+		);
+		$response = wp_safe_remote_head( $url, $args );
+		if ( is_wp_error( $response ) ) {
+			return $response;
+		}
+		if ( preg_match( '#(image|audio|video|model)/#is', wp_remote_retrieve_header( $response, 'content-type' ) ) ) {
+			return new WP_Error( 'content-type', 'Content Type is Media' );
+		}
+		$response = wp_safe_remote_get( $url, $args );
+		$body = wp_remote_retrieve_body( $response );
+		return $body;
+	}
 
 	/**
 	 * Is string a URL.
@@ -177,7 +201,7 @@ class Mf2_Cleaner {
 	 */
 	public static function get_plaintext_array(array $mf, $propName, $fallback = null) {
 		if ( ! empty( $mf['properties'][$propName] ) and is_array( $mf['properties'][$propName] ) ) {
-			return array_map( array( 'Mf2_Cleaner', 'to_plaintext' ), $mf['properties'][$propName] ); }
+			return array_map( array( 'Parse_Mf2', 'to_plaintext' ), $mf['properties'][$propName] ); }
 		return $fallback;
 	}
 
@@ -644,5 +668,143 @@ class Mf2_Cleaner {
 
 		return array_values( array_filter( $mfs, $callable ) );
 	}
+
+	/* Parses marked up HTML using MF2.
+	*
+	* @param string $content HTML marked up content.
+	*/
+	public static function mf2parse($content, $url) {
+		$host = wp_parse_url( $url, PHP_URL_HOST );
+		switch ( $host ) {
+			case 'twitter.com':
+			case 'www.twitter.com':
+				$parsed = Mf2\Shim\parseTwitter( $content, $url );
+				break;
+			default:
+				$parsed = Mf2\parse( $content, $url );
+		}
+		if ( ! is_array( $parsed ) ) {
+			return array();
+		}
+		$count = count( $parsed['items'] );
+		if ( 0 == $count ) {
+			return array();
+		}
+		if ( 1 == $count ) {
+			$item = $parsed['items'][0];
+			if ( in_array( 'h-feed', $item['type'] ) ) {
+				return array( 'type' => 'feed' );
+			}
+			if ( in_array( 'h-card', $item['type'] ) ) {
+				return self::parse_hcard( $item, $parsed, $url );
+			} elseif ( in_array( 'h-entry', $item['type'] ) || in_array( 'h-cite', $item['type'] ) ) {
+				return self::parse_hentry( $item, $parsed );
+			}
+		}
+		foreach ( $parsed['items'] as $item ) {
+			if ( array_key_exists( 'url', $item['properties'] ) ) {
+				$urls = $item['properties']['url'];
+				if ( in_array( $url, $urls ) ) {
+					if ( in_array( 'h-card', $item['type'] ) ) {
+						return self::parse_hcard( $item, $parsed, $url );
+					} elseif ( in_array( 'h-entry', $item['type'] ) || in_array( 'h-cite', $item['type'] ) ) {
+						return self::parse_hentry( $item, $parsed );
+					}
+				}
+			}
+		}
+	}
+
+	private static function parse_hentry( $entry, $mf ) {
+		// Array Values
+		$properties = array( 'category', 'invitee', 'photo','video','audio','syndication','in-reply-to','like-of','repost-of','bookmark-of', 'tag-of' );
+		$data = self::get_prop_array( $entry, $properties );
+		$data['type'] = 'entry';
+		$data['published'] = self::get_published( $entry );
+		$data['updated'] = self::get_updated( $entry );
+		$properties = array( 'url', 'rsvp', 'featured', 'name' );
+		foreach ( $properties as $property ) {
+			$data[ $property ] = self::get_plaintext( $entry, $property );
+		}
+		$data['content'] = self::parse_html_value( $entry, 'content' );
+		$data['summary'] = self::get_summary( $entry, $data['content'] );
+		if ( isset( $data['name'] ) ) {
+			$data['name'] = trim( preg_replace( '/https?:\/\/([^ ]+|$)/', '', $data['name'] ) );
+		}
+		if ( isset( $mf['rels']['syndication'] ) ) {
+			if ( isset( $data['syndication'] ) ) {
+				$data['syndication'] = array_unique( array_merge( $data['syndication'], $mf['rels']['syndication'] ) );
+			} else {
+				$data['syndication'] = $mf['rels']['syndication'];
+			}
+		}
+		$author = self::find_author( $entry, $mf );
+		if ( $author ) {
+			if ( is_array( $author['type'] ) ) {
+				$data['author'] = self::parse_hcard( $author, $mf );
+			} else {
+				$author = array_filter( $author );
+				if ( ! isset( $author['name'] ) && isset( $author['url'] ) ) {
+					$content = self::fetch( $author['url'] );
+					$parsed = Mf2\parse( $content, $author['url'] );
+					$hcard = self::find_microformats_by_type( $parsed, 'h-card' );
+					if ( is_array( $hcard ) && ! empty( $hcard ) ) {
+						$hcard = $hcard[0];
+					}
+					$data['author'] = self::parse_hcard( $hcard, $parsed, $author['url'] );
+				} else {
+					$data['author'] = $author;
+				}
+			}
+		}
+		$data = array_filter( $data );
+		if ( array_key_exists( 'name', $data ) ) {
+			if ( ! array_key_exists( 'summary', $data ) || ! array_key_exists( 'content', $data ) ) {
+				unset( $data['name'] );
+			}
+		}
+		return $data;
+	}
+
+	private static function parse_hcard( $hcard, $mf, $authorurl = false ) {
+		// If there is a matching author URL, use that one
+		$data = array(
+			'type' => 'card',
+			'name' => null,
+			'url' => null,
+			'photo' => null,
+		);
+		$properties = [ 'url','name','photo' ];
+		foreach ( $properties as $p ) {
+			if ( 'url' == $p && $authorurl ) {
+				// If there is a matching author URL, use that one
+				$found = false;
+				foreach ( $hcard['properties']['url'] as $url ) {
+					if ( self::is_url( $url ) ) {
+						if ( $url == $authorurl ) {
+							$data['url'] = $url;
+							$found = true;
+						}
+					}
+				}
+				if ( ! $found && self::is_url( $hcard['properties']['url'][0] ) ) {
+					$data['url'] = $hcard['properties']['url'][0];
+				}
+			} else if ( ( $v = self::get_plaintext( $hcard, $p ) ) !== null ) {
+				// Make sure the URL property is actually a URL
+				if ( 'url' == $p || 'photo' == $p ) {
+					if ( self::is_url( $v ) ) {
+						$data[ $p ] = $v;
+					}
+				} else {
+					$data[ $p ] = $v;
+				}
+			}
+		}
+		return array_filter( $data );
+	}
+
+
+
 
 }

@@ -68,7 +68,7 @@ class Post_Kinds_Plugin {
 			if ( ! class_exists( 'Mf2\Shim' ) ) {
 				require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Twitter.php';
 			}
-			require_once plugin_dir_path( __FILE__ ) . 'includes/class-mf2-cleaner.php';
+			require_once plugin_dir_path( __FILE__ ) . 'includes/class-parse-mf2.php';
 		}
 		// Add Link Preview Parsing
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-parse-this.php';

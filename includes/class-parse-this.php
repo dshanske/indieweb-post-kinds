@@ -121,16 +121,22 @@ class Parse_This {
 			return new WP_Error( 'invalid-url', __( 'A valid URL was not provided.' ) );
 		}
 
-		$remote_url = wp_safe_remote_get( $url, array(
+		$args = array(
 			'timeout' => 30,
+			'limit_response_size' => 1048576,
+			'redirection' => 5,
 			// Use an explicit user-agent for Press This
 			'user-agent' => 'Parse This (WordPress/' . get_bloginfo( 'version' ) . '); ' . get_bloginfo( 'url' )
-		) );
-
+		);
+		$remote_url = wp_safe_remote_head( $url, $args );
 		if ( is_wp_error( $remote_url ) ) {
 			return $remote_url;
 		}
+		if ( preg_match( '#(image|audio|video|model)/#is', wp_remote_retrieve_header( $response, 'content-type' ) ) ) {
+			return new WP_Error( 'content-type', 'Content Type is Media' );
+		}
 
+		$remote_url = wp_safe_remote_get( $url, $args );
 		$this->domain = wp_parse_url( $url, PHP_URL_HOST );
 		$this->content = wp_remote_retrieve_body( $remote_url );
 		$this->source_data_parse();
@@ -632,7 +638,7 @@ class Parse_This {
 
 		// If Title is Not Set Use Title Tag
 		if ( ! isset( $this->meta['title'] ) ) {
-			preg_match( '/<title>(.+)<\/title>/i', $content, $match );
+			preg_match( '/<title>(.+)<\/title>/i', $this->content, $match );
 			$this->meta['title'] = trim( $match[1] );
 		}
 		// If Site Name is not set use domain name less www
