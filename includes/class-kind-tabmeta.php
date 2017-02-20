@@ -56,10 +56,10 @@ class Kind_Tabmeta {
 				self::$version
 			);
 
-			// Provide a global object to our JS file contaning our REST API endpoint, and API nonce
-			// Nonce must be 'wp_rest' !
-			    wp_localize_script( 'kindmeta-response', 'rest_object',
-				    array(
+			// Provide a global object to our JS file containing our REST API endpoint, and API nonce
+			// Nonce must be 'wp_rest'
+			wp_localize_script( 'kindmeta-response', 'rest_object',
+				array(
 					'api_nonce' => wp_create_nonce( 'wp_rest' ),
 					'api_url'   => site_url('/wp-json/link-preview/1.0/')
 				)
@@ -81,34 +81,80 @@ class Kind_Tabmeta {
 		foreach ( $t_zones as $a ) {
 			$t = '';
 			try {
-      	// this throws exception for 'US/Pacific-New'
-        $zone = new DateTimeZone( $a );
-
-        $seconds = $zone->getOffset( new DateTime( 'now' , $zone ) );
-        $o[] = self::tz_seconds_to_offset( $seconds );
-      } // exceptions must be catched, else a blank page
-      catch (Exception $e) {
-      	// die("Exception : " . $e->getMessage() . '<br />');
-        // what to do in catch ? , nothing just relax
-    	}
-    }
-    $o = array_unique( $o );
-    asort( $o );
-
-    return $o;
+      				// this throws exception for 'US/Pacific-New'
+        			$zone = new DateTimeZone( $a );
+				$seconds = $zone->getOffset( new DateTime( 'now' , $zone ) );
+        			$o[] = self::tz_seconds_to_offset( $seconds );
+      			} // exceptions must be catched, else a blank page
+      			catch (Exception $e) {
+      			// die("Exception : " . $e->getMessage() . '<br />');
+        		// what to do in catch ? , nothing just relax
+    			}
+    		}
+    		$o = array_unique( $o );
+    		asort( $o );
+		return $o;
 	}
 
+	public static function kind_the_time( $prefix, $label, $time ) {
+		$tz_seconds = get_option( 'gmt_offset' ) * 3600;
+		$offset = self::tz_seconds_to_offset( $tz_seconds );
+		if ( isset( $time['offset'] ) ) {
+			$offset = $time['offset'];
+		}
+		$string = '<label for="' . $prefix .  '">' . $label . '</label><br/>';
+		$string .= '<input type="date" name="' . $prefix . '_date]" id="' . $prefix . '_date" value="' . ifset( $time['date'] ) . '"/>';
+		$string .= '<input type="time" name="' . $prefix . '_time]" id="' . $prefix . '_time" step="1" value="' . ifset( $time['time'] ) . '"/>';
+		$string .= self::select_offset( $prefix, $offset );
+		return $string;
+	}
+
+	public static function select_offset( $prefix, $select ) {
+		$tzlist = self::kind_get_timezones();
+		$string = '<select name="time['  . $prefix . '_offset]" id="' . $prefix . '_offset">';
+		foreach ( $tzlist as $key => $value ) {
+			$string .= '<option value="' . $value . '"';
+			if ( $select == $value ) {
+				$string .= ' selected';
+			}
+			$string .= '>GMT' . $value . '</option>';
+		}
+		$string .= '</select>';
+		return $string;
+	}
+
+	public static function rsvp_select( $selected ) {
+		$rsvps = array( 
+			'yes' => __( 'Yes', 'indieweb-post-kinds' ),
+			'no' => __( 'No', 'indieweb-post-kinds' ),
+			'maybe' => __( 'Maybe', 'indieweb-post-kinds' ),
+			'interested' => __( 'Interested', 'indieweb-post-kinds' )
+		);
+		$string = '<label for="mf2_rsvp">' . __( 'RSVP', 'indieweb-post-kinds' ) .  '</label><br/>';
+		$string .= '<select name="mf2_rsvp" id="mf2_rsvp">';
+		foreach ( $rsvps as $key => $value ) {
+			$string .= '<option value="' . $key . '"';
+			if ( $selected == $key ) {
+				$string .= ' selected';
+			}
+			$string .= '>' . $value . '</option>';
+		}
+		$string .= '</select>';
+		return $string;
+	}
+
+
 	public static function tz_seconds_to_offset($seconds) {
-    return ($seconds < 0 ? '-' : '+') . sprintf( '%02d:%02d', abs( $seconds / 60 / 60 ), abs( $seconds / 60 ) % 60 );
+	    return ($seconds < 0 ? '-' : '+') . sprintf( '%02d:%02d', abs( $seconds / 60 / 60 ), abs( $seconds / 60 ) % 60 );
 	}
 
 	public static function tz_offset_to_seconds($offset) {
-    if ( preg_match( '/([+-])(\d{2}):?(\d{2})/', $offset, $match ) ) {
-      $sign = ($match[1] == '-' ? -1 : 1);
-      return (($match[2] * 60 * 60) + ($match[3] * 60)) * $sign;
-    } else {
-      return 0;
-    }
+	    if ( preg_match( '/([+-])(\d{2}):?(\d{2})/', $offset, $match ) ) {
+	      $sign = ($match[1] == '-' ? -1 : 1);
+	      return (($match[2] * 60 * 60) + ($match[3] * 60)) * $sign;
+	    } else {
+	      return 0;
+	    }
 	}
 
 	/* Create one or more meta boxes to be displayed on the post editor screen. */

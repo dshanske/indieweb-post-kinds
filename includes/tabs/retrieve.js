@@ -34,30 +34,32 @@ jQuery( document ).on( 'click', '.kind-retrieve-button', function($) {
       			}
 			if ( 'summary' in response ) {
         			jQuery("#cite_summary").val(response['summary']) ;
-      		}
-      		if ( 'featured' in response ) {
-        		jQuery("#cite_featured").val(response['featured']) ;
-      		}
-      		if ( 'duration' in response ) {
-        		jQuery("#duration").val(response['duration']) ;
-      		}
-
-      		if ( 'author' in response ) {
-	      		if ( 'name' in response['author'] ) {
-  	      		jQuery("#author_name").val(response['author']['name']) ;
-    	  		}
-        		if ( 'photo' in response['author'] ) {
-          		jQuery("#author_photo").val(response['author']['photo']) ;
-        		}
-        		if ( 'url' in response['author'] ) {
-          		jQuery("#author_url").val(response['author']['url']) ;
-        		}
-		}
-			console.log(response);
+      			}
+  	    		if ( 'featured' in response ) {
+  	 	     		jQuery("#cite_featured").val(response['featured']) ;
+      			}
+      			if ( 'duration' in response ) {
+       		 		jQuery("#duration").val(response['duration']) ;
+      			}
+      			if ( 'author' in response ) {
+	      			if ( 'name' in response['author'] ) {
+  	      				jQuery("#author_name").val(response['author']['name']) ;
+    		  		}
+        			if ( 'photo' in response['author'] ) {
+          			jQuery("#author_photo").val(response['author']['photo']) ;
+        			}
+        			if ( 'url' in response['author'] ) {
+          			jQuery("#author_url").val(response['author']['url']) ;
+        			}
+			}
+			if ( 'category' in response ) {
+				jQuery("#cite_tags").val( response['category'].join("\n") );
+			}
+		console.log( response );
 		},
-	  fail: function(request, status, error){
+	  fail: function( response ) {
 		  	console.log( response );
-			alert(request.message);
+			alert(response.message);
 		}
 	});
 })

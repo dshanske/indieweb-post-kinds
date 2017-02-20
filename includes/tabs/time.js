@@ -9,6 +9,12 @@
 				$('#end_date').datepicker({
 					dateFormat: "yy-mm-dd"
 				});
+    	  $('#published_date').datepicker({
+					dateFormat: "yy-mm-dd"
+				});
+				$('#updated_date').datepicker({
+					dateFormat: "yy-mm-dd"
+				});
   	}
 		elem.setAttribute('type', 'time');
 		if ( elem.type === 'text' ) {
@@ -20,6 +26,15 @@
 					timeFormat: "H:i:s",
 					step: 15
 				});
+				$('#published_time').timepicker({
+					timeFormat: "H:i:s",
+					step: 15
+				});
+				$('#updated_time').timepicker({
+					timeFormat: "H:i:s",
+					step: 15
+				});
+
 		}
 	});
 }(jQuery));
