@@ -11,7 +11,7 @@ if ( is_array( $url ) ) {
 }
 ?>
 <div class="inside">
-<p><?php _e( 'Add the URL and/or the Name/Summary You Wish to Respond To. The Retrieve button will retrieve the URL and attempt to set the values.', 'indieweb-post-kinds' ); ?></p>
+<h4><?php _e( 'Add the URL and/or the Name/Summary You Wish to Respond To. The Retrieve button will retrieve the URL and attempt to set the values.', 'indieweb-post-kinds' ); ?></h4>
 	<div id="kindmetatab-main">
 	<label for="url"><?php _e( 'URL', 'indieweb-post-kinds' ); ?></label><br/>
 			<input type="url" name="url" id="cite_url" size="70" value="<?php echo ifset( $url ); ?>" />
@@ -25,9 +25,9 @@ if ( is_array( $url ) ) {
  	   <label for="summary"><?php _e( 'Summary/Quote', 'indieweb-post-kinds' ); ?></label><br/>
 	   <textarea name="cite[summary]" id="cite_summary" cols="70"></textarea><br/>
 	  <label for="tags"><?php _e('Tags (one tag per line)', 'indieweb-post-kinds' ); ?></label><br />
-	   <textarea name="cite[tags]" id="cite_tags" cols="70"></textarea></br />
+	   <textarea name="cite[tags]" id="cite_tags" style="resize: none;" data-role="none" cols="40" rows"4"></textarea></br />
 	<br />
-		</div><!-- #kindmetatab-resources -->
+		</div><!-- #kindmetatab-main -->
 	
 
 </div>

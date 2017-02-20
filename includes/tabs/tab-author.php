@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Provides the 'Citation' view for the corresponding tab in the Post Meta Box.
+ * Provides the 'Author' view for the corresponding tab in the Post Meta Box.
  *
  * @package    Indieweb_Post_Kinds
  */
@@ -9,7 +9,7 @@
 	
 <div class="inside hidden">
 	<div id="kindmetatab-author">
-	<p> <?php _e( 'Information on the Author or Artist of the Piece', 'indieweb-post-kinds' ); ?></p>
+	<h4> <?php _e( 'Information on the Author or Artist of the Piece', 'indieweb-post-kinds' ); ?></h4>
 	  <label for="author_name"><?php _e( 'Author/Artist Name', 'indieweb-post-kinds' ); ?></label><br/>
 	  <input type="text" name="author[name]" id="author_name" size="70" value="<?php echo ifset( $author['name'] ); ?>" />
 	  <br />

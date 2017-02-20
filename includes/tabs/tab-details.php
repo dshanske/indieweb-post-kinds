@@ -1,16 +1,15 @@
 <?php
 
 /**
- * Provides the 'Citation' view for the corresponding tab in the Post Meta Box.
+ * Provides the 'Details' view for the corresponding tab in the Post Meta Box.
  *
  * @package    Indieweb_Post_Kinds
  */
 ?>
 	
 <div class="inside hidden">
-	<p><?php _e( 'Information on what you are responding to', 'indieweb-post-kinds' ); ?></p>
-		<div id="kindmetatab-citation">
-	 <br/>
+	<h4><?php _e( 'Information on what you are responding to', 'indieweb-post-kinds' ); ?></h4>
+		<div id="kindmetatab-details">
 	  <label for="publication"><?php _e( 'Site Name/Publication/Album', 'indieweb-post-kinds' ); ?></label><br/>
 	  <input type="text" name="cite[publication]" id="cite_publication" size="70" value="<?php echo ifset( $cite['publication'] ); ?>"/><br/>
 
@@ -23,5 +22,5 @@
 	<?php echo self::kind_the_time( 'updated', __( 'Updated', 'indieweb-post-kinds' ), $time ); ?>
 	  <br />
 
-		</div> <!-- #kindmetatab-citation -->
+		</div> <!-- #kindmetatab-details -->
 </div>
