@@ -7,7 +7,6 @@
 
 class Link_Preview {
 	public static function init() {
-		add_action( 'wp_ajax_kind_urlfetch', array( 'Link_Preview', 'urlfetch' ) );
 		add_action( 'rest_api_init', array( 'Link_Preview', 'register_routes' ) );
 	}
 
@@ -21,7 +20,9 @@ class Link_Preview {
 				'callback' => array( 'Link_Preview', 'parse' ),
 				'args'  => array(
 					'kindurl'  => array( 
-						'required' => true 
+						'required' => true,
+						'validate_callback' => array( 'Link_Preview', 'is_valid_url' ),
+						'sanitize_callback' => 'esc_url_raw'
 					),
 				),
 				'permission_callback' => function () {
@@ -32,13 +33,16 @@ class Link_Preview {
 	}
 
 	/**
-	 * Returns if valid URL
+	 * Returns if valid URL for REST validation
 	 *
 	 * @param string $url
 	 *
 	 * @return boolean
 	 */
-	public static function is_valid_url($url) {
+	public static function is_valid_url($url, $request, $key) {
+		if ( ! is_string( $url ) || empty( $url ) ) {
+			return false;
+		}
 		return filter_var( $url, FILTER_VALIDATE_URL );
 	}
 
@@ -48,6 +52,9 @@ class Link_Preview {
 	 * @param string $content HTML marked up content.
 	 */
 	private static function mergeparse ($content, $url) {
+		if ( empty( $content ) || empty( $url ) ) {
+			return array();
+		}
 		$parsethis = new Parse_This();
 		$parsethis->set_source( $content, $url );
 		$metadata = $parsethis->meta_to_microformats();
@@ -83,30 +90,15 @@ class Link_Preview {
 		return apply_filters( 'kind_parse_data', $data, $content, $url );
 	}
 
-	public static function urlfetch() {
-		global $wpdb;
-		if ( empty( $_POST['kind_url'] ) ) {
-				wp_send_json_error( new WP_Error( 'nourl', __( 'You must specify a URL' ) ) );
-		}
-		if ( filter_var( $_POST['kind_url'], FILTER_VALIDATE_URL ) === false ) {
-				wp_send_json_error( new WP_Error( 'badurl', __( 'Input is not a valid URL' ) ) );
-		}
-
-		$content = Parse_Mf2::fetch( $_POST['kind_url'] );
-		if ( is_wp_error( $content ) ) {
-			wp_send_json_error( $response );
-		}
-		wp_send_json_success( self::mergeparse( $content, $_POST['kind_url'] ) );
-	}
-
 	// Callback Handler
 	public static function parse( $request ) {
 		// We don't need to specifically check the nonce like with admin-ajax. It is handled by the API.
 		$params = $request->get_params();
-		if ( isset( $params['kindurl'] ) ) {
+		if ( isset( $params['kindurl'] ) && ! empty( $params['kindurl' ] ) ) {
 			$content = Parse_Mf2::fetch( $params['kindurl'] );
 			return self::mergeparse( $content, $params['kindurl'] );
 		}
+		return new WP_Error( 'invalid_url' , __( 'Missing or Invalid URL' , 'indieweb-post-kinds' ), array( 'status' => 400 ) );
 	}
 		        
 

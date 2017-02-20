@@ -56,6 +56,15 @@ class Kind_Tabmeta {
 				self::$version
 			);
 
+			// Provide a global object to our JS file contaning our REST API endpoint, and API nonce
+			// Nonce must be 'wp_rest' !
+			    wp_localize_script( 'kindmeta-response', 'rest_object',
+				    array(
+					'api_nonce' => wp_create_nonce( 'wp_rest' ),
+					'api_url'   => site_url('/wp-json/link-preview/1.0/')
+				)
+			);
+
 			wp_enqueue_script(
 				'moment',
 				'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js',
