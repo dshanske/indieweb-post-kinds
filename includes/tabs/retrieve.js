@@ -22,15 +22,15 @@ jQuery( document ).on( 'click', '.kind-retrieve-button', function($) {
    	  	 	}
 			if ( 'published' in response ) {
 				var published = moment.parseZone( response['published'] );
-				jQuery("#start_date").val( published.format('YYYY-MM-DD') ) ;
-				jQuery("#start_time").val(published.format('HH:mm:ss') ) ;
-				jQuery("#start_offset").val(published.format('Z') );
+				jQuery("#cite_published_date").val( published.format('YYYY-MM-DD') ) ;
+				jQuery("#cite_published_time").val(published.format('HH:mm:ss') ) ;
+				jQuery("#cite_published_offset").val(published.format('Z') );
  	 	    	}
    		   	if ( 'updated' in response ) {
 				var updated = moment.parseZone( response['updated'] );
-        			jQuery("#end_date").val( updated.format('YYYY-MM-DD') ) ;
-        			jQuery("#end_time").val(updated.format('HH:mm:ss') ) ;
-        			jQuery("#end_offset").val(updated.format('Z') );  
+        			jQuery("#cite_updated_date").val( updated.format('YYYY-MM-DD') ) ;
+        			jQuery("#cite_updated_time").val(updated.format('HH:mm:ss') ) ;
+        			jQuery("#cite_updated_offset").val(updated.format('Z') );  
       			}
 			if ( 'summary' in response ) {
         			jQuery("#cite_summary").val(response['summary']) ;
@@ -38,28 +38,29 @@ jQuery( document ).on( 'click', '.kind-retrieve-button', function($) {
   	    		if ( 'featured' in response ) {
   	 	     		jQuery("#cite_featured").val(response['featured']) ;
       			}
-      			if ( 'duration' in response ) {
-       		 		jQuery("#duration").val(response['duration']) ;
-      			}
       			if ( 'author' in response ) {
 	      			if ( 'name' in response['author'] ) {
-  	      				jQuery("#author_name").val(response['author']['name']) ;
+  	      				jQuery("#cite_author_name").val(response['author']['name']) ;
     		  		}
         			if ( 'photo' in response['author'] ) {
-          			jQuery("#author_photo").val(response['author']['photo']) ;
+          			jQuery("#cite_author_photo").val(response['author']['photo']) ;
         			}
         			if ( 'url' in response['author'] ) {
-          			jQuery("#author_url").val(response['author']['url']) ;
+          			jQuery("#cite_author_url").val(response['author']['url']) ;
         			}
 			}
 			if ( 'category' in response ) {
 				jQuery("#cite_tags").val( response['category'].join("\n") );
 			}
+		alert( rest_object.link_preview_success_message );
 		console.log( response );
 		},
 	  fail: function( response ) {
 		  	console.log( response );
 			alert(response.message);
+		},
+	  error: function() {
+		  alert( 'Error' );
 		}
 	});
 })

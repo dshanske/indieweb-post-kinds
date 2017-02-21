@@ -12,9 +12,9 @@
 	<div id="kindmetatab-other">
 
 	<p> <?php _e( 'Start Time and End Time will be Used to Calculate Duration', 'indieweb-post-kinds' ); ?> </p>
-	<?php echo self::kind_the_time( 'start', __('Start Time', 'indieweb-post-kinds' ), $time ); ?>
+	<?php echo self::kind_the_time( 'cite_start', __('Start Time', 'indieweb-post-kinds' ), $time ); ?>
 	<br />
-	<?php echo self::kind_the_time( 'end', __('End Time', 'indieweb-post-kinds' ), $time ); ?>
+	<?php echo self::kind_the_time( 'cite_end', __('End Time', 'indieweb-post-kinds' ), $time ); ?>
 	<br />
 	<?php echo self::rsvp_select( 'yes' ); ?>
 

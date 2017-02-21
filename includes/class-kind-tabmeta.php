@@ -61,7 +61,8 @@ class Kind_Tabmeta {
 			wp_localize_script( 'kindmeta-response', 'rest_object',
 				array(
 					'api_nonce' => wp_create_nonce( 'wp_rest' ),
-					'api_url'   => site_url('/wp-json/link-preview/1.0/')
+					'api_url'   => site_url('/wp-json/link-preview/1.0/'),
+					'link_preview_success_message' => __( 'Your URL has been successfully retrieved and parsed', 'indieweb-post-kinds' )
 				)
 			);
 
@@ -143,6 +144,19 @@ class Kind_Tabmeta {
 		return $string;
 	}
 
+	// Echos a Standard Formbox Box - Defaulting to Text
+	public static function metabox_text( $property, $label, $default = '', $type = 'text' ) {
+		$string = '<label for="' . $property .  '">' . $label . '</label><br/>';
+		if ( 'textarea' === $type ) {
+			$string .= '<textarea name="' . $property . '" id="' . $property . '" style="resize: none;" data-role="none" cols="60" rows"4">' . $default . '</textarea>';
+			return $string;
+		}
+		$string .= '<input type="url" name="' . $property . '" id="' . $property . '" size="70" value="' . $default . '" />';
+		return $string;
+
+	}
+
+
 
 	public static function tz_seconds_to_offset($seconds) {
 	    return ($seconds < 0 ? '-' : '+') . sprintf( '%02d:%02d', abs( $seconds / 60 / 60 ), abs( $seconds / 60 ) % 60 );
@@ -180,7 +194,7 @@ class Kind_Tabmeta {
 				$url = $_GET['kindurl'];
 			}
 		}
-		$time = $meta->get_time();
+		$time =  array(); // $meta->get_time();
 		include_once( 'tabs/tab-navigation.php' );
 	}
 
