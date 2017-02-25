@@ -233,7 +233,7 @@ class Kind_Meta {
 		if ( empty( $url ) ) {
 			return;
 		}
-		$url = self::esc_url_raw( $url );
+		$url = self::sanitize_text( $url );
 		$kind = get_post_kind_slug( $this->post );
 		$map = array_diff( Kind_Taxonomy::get_kind_properties(), array( '' ) );
 		if ( $kind ) {
@@ -395,6 +395,10 @@ class Kind_Meta {
 		if ( array_key_exists( 'duration', $this->meta ) ) {
 			return $this->meta['duration'];
 		}
+		if ( array_key_exists( 'dt-start', $this->meta ) && array_key_exists( 'dt-end', $this->meta ) ) {
+			return $this->calculate_duration( $this->meta['dt-start'], $this->meta['dt-end'] );
+		}
+		return false;
 	}
 
 	public function calculate_duration( $start_string, $end_string ) {

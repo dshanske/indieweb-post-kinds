@@ -98,6 +98,7 @@ may make it a Passive Kind.
  * **Favorite** - special to the favoriter
  * **Bookmark** - This is basically sharing/storing a link/bookmark. 
  * **Quote** - Quoted Content
+ * **RSVP** - A specific type of Reply regarding an event
 ### The Passive Kinds ###
 
 To "Scrobble" a song is when listening to it, you would make it a post on
@@ -125,10 +126,8 @@ interface at this time.
  * **Itinerary** - Itinerary - this would refer to scheduled transit, plane, train, etc. and does not require location awareness
  * **Check-In** - Identifying you are at a place. This would use the extended WordPress Geodata. It will require the Simple Location plugin to add location awareness to posts.
  * **Tag** - Allows you to tag a post as being of a specific tag, or person tagging.
- * **RSVP** - A specific type of Reply regarding an event
- * **Event** - An event post is one announcing an upcoming event
- * **Food** - Representing recording what you eat, perhaps for a food diary
- * **Drink** - Similar to Food
+ * **Eat** - Representing recording what you eat, perhaps for a food diary
+ * **Drink** - Similar to Eat
  * **Follow** - A post indicating you are now following someone's activities
  * **Mood** - Mood - Feeling
  * **Recipe** - Recipe
@@ -148,6 +147,14 @@ Indieweb Post Kinds had support for replying to Twitter posts using the Social N
 developer of this plugin.
 
 ## Changelog ##
+	= Version 2.5.0 =
+		* Parsing code now rewritten to add Parse This class based on Press This parsing code
+		* MF2 parsing code rewritten and consolidated - future improvements coming
+		* Link Preview class now supports AJAX over REST API instead of admin-ajax
+		* Start/End and Published/Updated Separated in UI
+		* Duration is calculated and saved when post is saved - If start and end date is set it would override a manually set duration
+		* RSVP property created and the RSVP kind now available as an option
+		* Tags now an option for a reply-context and will be displayed as hashtags in future.
 	= Version 2.4.4 =
 		* Simplify coding standards issues
 		* Update settings
