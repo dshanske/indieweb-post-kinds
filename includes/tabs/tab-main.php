@@ -13,7 +13,7 @@ if ( is_array( $url ) ) {
 <div class="inside">
 <h4><?php _e( 'Add the URL and/or the Name/Summary You Wish to Respond To. The Retrieve button will retrieve the URL and attempt to set the values.', 'indieweb-post-kinds' ); ?></h4>
 	<div id="kindmetatab-main">
- 		<?php echo self::metabox_text( 'cite_url', __( 'URL', 'indieweb-post-kinds' ), ifset( $url ), $type = 'url' ); ?>
+ 		<?php echo self::metabox_text( 'cite_url', __( 'URL', 'indieweb-post-kinds' ), ifset( $url ), $type = 'text' ); ?>
 		<?php if ( version_compare( PHP_VERSION, '5.3', '>' ) ) { ?>
 		<button type="button" class="kind-retrieve-button button-primary">Retrieve</button>
 		<?php } ?>

@@ -16,10 +16,10 @@
 			<?php echo self::metabox_text( 'cite_featured', __( 'Featured Image/Site Icon', 'indieweb-post-kinds' ), ifset( $cite['featured'] ), $type = 'url' ); ?>
 			<br />
 
-			 <?php echo self::kind_the_time( 'cite_published', __( 'Published/Released', 'indieweb-post-kinds' ), $time ); ?>
+			 <?php echo self::kind_the_time( 'cite_published', __( 'Published/Released', 'indieweb-post-kinds' ), $meta->divide_time( ifset( $cite['published'] ) ) ); ?>
 		         <br />
 
-			<?php echo self::kind_the_time( 'cite_updated', __( 'Updated', 'indieweb-post-kinds' ), $time ); ?>
+			<?php echo self::kind_the_time( 'cite_updated', __( 'Updated', 'indieweb-post-kinds' ), $meta->divide_time( ifset( $cite['updated'] ) ) ); ?>
 			<br />
 		</div> <!-- #kindmetatab-details -->
 </div>

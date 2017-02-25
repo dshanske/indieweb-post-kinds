@@ -104,15 +104,15 @@ class Kind_Tabmeta {
 			$offset = $time['offset'];
 		}
 		$string = '<label for="' . $prefix .  '">' . $label . '</label><br/>';
-		$string .= '<input type="date" name="' . $prefix . '_date]" id="' . $prefix . '_date" value="' . ifset( $time['date'] ) . '"/>';
-		$string .= '<input type="time" name="' . $prefix . '_time]" id="' . $prefix . '_time" step="1" value="' . ifset( $time['time'] ) . '"/>';
+		$string .= '<input type="date" name="' . $prefix . '_date" id="' . $prefix . '_date" value="' . ifset( $time['date'] ) . '"/>';
+		$string .= '<input type="time" name="' . $prefix . '_time" id="' . $prefix . '_time" step="1" value="' . ifset( $time['time'] ) . '"/>';
 		$string .= self::select_offset( $prefix, $offset );
 		return $string;
 	}
 
 	public static function select_offset( $prefix, $select ) {
 		$tzlist = self::kind_get_timezones();
-		$string = '<select name="time['  . $prefix . '_offset]" id="' . $prefix . '_offset">';
+		$string = '<select name="'  . $prefix . '_offset" id="' . $prefix . '_offset">';
 		foreach ( $tzlist as $key => $value ) {
 			$string .= '<option value="' . $value . '"';
 			if ( $select == $value ) {
@@ -151,7 +151,7 @@ class Kind_Tabmeta {
 			$string .= '<textarea name="' . $property . '" id="' . $property . '" style="resize: none;" data-role="none" cols="60" rows"4">' . $default . '</textarea>';
 			return $string;
 		}
-		$string .= '<input type="url" name="' . $property . '" id="' . $property . '" size="70" value="' . $default . '" />';
+		$string .= '<input type="' . $type . '" name="' . $property . '" id="' . $property . '" size="70" value="' . $default . '" />';
 		return $string;
 
 	}
@@ -250,36 +250,38 @@ class Kind_Tabmeta {
 		}
 		$kind = get_post_kind_slug( $post );
 		$meta = new Kind_Meta( $post );
-		if ( isset( $_POST['time'] ) ) {
-			if ( isset( $_POST['time']['start_date'] ) || isset( $_POST['time']['start_time'] ) ) {
-				$start = $meta->build_time( $_POST['time']['start_date'], $_POST['time']['start_time'], $_POST['time']['start_offset'] );
-			}
-			if ( isset( $_POST['time']['end_date'] ) || isset( $_POST['time']['end_time'] ) ) {
-				$end = $meta->build_time( $_POST['time']['end_date'], $_POST['time']['end_time'], $_POST['time']['end_offset'] );
-			}
+		$cite = array();
+
+		if ( isset( $_POST['cite_start_date'] ) || isset( $_POST['cite_start_time'] ) ) {
+				$meta->set( 'dt-start', $meta->build_time( $_POST['cite_start_date'], $_POST['cite_start_time'], $_POST['cite_start_offset'] ) );
 		}
-		if ( isset( $_POST['cite'] ) ) {
-			if ( in_array( $kind, array( 'like', 'reply', 'repost', 'favorite', 'bookmark' ) ) ) {
-				if ( ! empty( $start ) ) {
-					$_POST['cite']['published'] = $start;
-				}
-				if ( ! empty( $end )  ) {
-					$_POST['cite']['updated'] = $end;
-				}
-			} else {
-				$meta->set_time( $start, $end );
-			}
-			$meta->set_cite( $_POST['cite'] );
+		if ( isset( $_POST['cite_end_date'] ) || isset( $_POST['cite_end_time'] ) ) {
+				$meta->set( 'dt-end', $meta->build_time( $_POST['cite_end_date'], $_POST['cite_end_time'], $_POST['cite_end_offset'] ) );
 		}
+
+		$duration = $meta->calculate_duration( $meta->get( 'dt-start' ), $meta->get( 'dt-end ' ) );
+		if ( $duration && ! isset( $_POST['cite_duration'] ) {
+			$meta->set( 'duration', $duration );
+		}
+
+		if ( isset( $_POST['cite_published_date'] ) || isset( $_POST['published_time'] ) ) {
+			$cite['published'] = $meta->build_time( $_POST['cite_published_date'], $_POST['cite_published_time'], $_POST['cite_published_offset'] );
+		}
+		if ( isset( $_POST['cite_updated_date'] ) || isset( $_POST['cite_updated_time'] ) ) {
+			$cite['updated'] = $meta->build_time( $_POST['cite_updated_date'], $_POST['cite_updated_time'], $_POST['cite_updated_offset'] );
+		}
+		$cite['summary'] = ifset( $_POST['cite_summary'] );
+		$cite['name'] = ifset( $_POST['cite_name'] );
+		$cite['tags'] = ifset( $_POST['cite_tags'] );
+		$cite['publication'] = ifset ( $_POST['cite_publication'] );
+		$cite['featured'] = ifset( $_POST['cite_featured'] );
+
+		$meta->set_cite( array_filter( $cite ) );
 		if ( isset( $_POST['author'] ) ) {
 			$meta->set_author( $_POST['author'] );
 		}
-		if ( isset( $_POST['url'] ) ) {
-			$meta->set_url( $_POST['url'] );
-		}
-		// This is temporary - planning on improving this later
-		if ( isset( $_POST['duration'] ) ) {
-			$meta->set( 'duration', $_POST['duration'] );
+		if ( isset( $_POST['cite_url'] ) ) {
+			$meta->set_url( $_POST['cite_url'] );
 		}
 		$meta->save_meta( $post );
 	}

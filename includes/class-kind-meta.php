@@ -348,7 +348,7 @@ class Kind_Meta {
 
 	public function build_time($date, $time, $offset) {
 		if ( empty( $date ) ) {
-			return false;
+			$date = '0000-01-01';
 		}
 		if ( empty( $time ) ) {
 			$time = '00:00:00';
@@ -390,18 +390,16 @@ class Kind_Meta {
 		if ( array_key_exists( 'duration', $this->meta ) ) {
 			return $this->meta['duration'];
 		}
+	}
+
+	public function calculate_duration( $start_string, $end_string ) {
 		$start = array();
 		$end = array();
-		if ( array_key_exists( 'dt-start', $this->meta ) ) {
-			$start = date_create_from_format( 'Y-m-d\TH:i:sP', $this->meta['dt-start'] );
-		} else if ( ! empty( $this->meta['cite']['published'] ) ) {
-			$start = date_create_from_format( 'Y-m-d\TH:i:sP',$this->meta['cite']['published'] );
+		if ( ! is_string( $start_string ) || ! is_string( $end_string ) ) {
+			return false;
 		}
-		if ( ! empty( $this->meta['dt-end'] ) ) {
-			$end = date_create_from_format( 'Y-m-d\TH:i:sP', $this->meta['dt-end'] );
-		} else if ( ! empty( $this->meta['cite']['updated'] ) ) {
-			$end = date_create_from_format( 'Y-m-d\TH:i:sP',$this->meta['cite']['updated'] );
-		}
+		$start = date_create_from_format( 'Y-m-d\TH:i:sP', $start_string );
+		$end = date_create_from_format( 'Y-m-d\TH:i:sP', $end_string );
 		if ( ($start instanceof DateTime) && ($end instanceof DateTime)  ) {
 			$duration = $start->diff( $end );
 			return self::dateIntervalToString( $duration );
@@ -409,38 +407,18 @@ class Kind_Meta {
 		return false;
 	}
 
-	public function set_time($dt_start, $dt_end) {
-		if ( ! empty( $dt_start ) || $dt_start ) {
-			$this->meta['dt-start'] = $dt_start;
-		}
-		if ( ! empty( $dt_end ) || $dt_end ) {
-			$this->meta['dt-end'] = $dt_end;
-		}
-	}
-
-	public function get_time() {
+	public function divide_time( $time_string ) {
 		$time = array();
-		if ( ! empty( $this->meta['dt-start'] ) ) {
-				$start = date_create_from_format( 'Y-m-d\TH:i:sP', $this->meta['dt-start'] );
-		} else if ( ! empty( $this->meta['cite']['published'] ) ) {
-				$start = date_create_from_format( 'Y-m-d\TH:i:sP',$this->meta['cite']['published'] );
+		$datetime = date_create_from_format( 'Y-m-d\TH:i:sP', $time_string );
+		if ( ! $datetime ) {
+			return;
 		}
-		if ( isset( $start ) && $start ) {
-			$time['start_date'] = $start->format( 'Y-m-d' );
-			$time['start_time'] = $start->format( 'H:i:s' );
-			$time['start_offset'] = $start->format( 'P' );
+		$time['date'] = $datetime->format( 'Y-m-d' );
+		if ( '0000-01-01' == $time['date'] ) {
+			$time['date'] = '';
 		}
-
-		if ( ! empty( $this->meta['dt-end'] ) ) {
-			$end = date_create_from_format( 'Y-m-d\TH:i:sP', $this->meta['dt-end'] );
-		} else if ( ! empty( $this->meta['cite']['updated'] ) ) {
-			$end = date_create_from_format( 'Y-m-d\TH:i:sP',$this->meta['cite']['updated'] );
-		}
-		if ( isset( $end ) && $end ) {
-			$time['end_date'] = $end->format( 'Y-m-d' );
-			$time['end_time'] = $end->format( 'H:i:s' );
-			$time['end_offset'] = $end->format( 'P' );
-		}
+		$time['time'] = $datetime->format( 'H:i:s' );
+		$time['offset'] = $datetime->format( 'P' );
 		return $time;
 	}
 

@@ -3,34 +3,34 @@
 	  var elem = document.createElement('input');
  	 	elem.setAttribute('type', 'date');
  	 	if ( elem.type === 'text' ) {
-    	  $('#start_date').datepicker({
+    	  $('#cite_start_date').datepicker({
 					dateFormat: "yy-mm-dd"
 				});
-				$('#end_date').datepicker({
+				$('#cite_end_date').datepicker({
 					dateFormat: "yy-mm-dd"
 				});
-    	  $('#published_date').datepicker({
+    	  $('#cite_published_date').datepicker({
 					dateFormat: "yy-mm-dd"
 				});
-				$('#updated_date').datepicker({
+				$('#cite_updated_date').datepicker({
 					dateFormat: "yy-mm-dd"
 				});
   	}
 		elem.setAttribute('type', 'time');
 		if ( elem.type === 'text' ) {
-				$('#start_time').timepicker({
+				$('#cite_start_time').timepicker({
 					timeFormat: "H:i:s",
 					step: 15
 				});
-				$('#end_time').timepicker({
+				$('#cite_end_time').timepicker({
 					timeFormat: "H:i:s",
 					step: 15
 				});
-				$('#published_time').timepicker({
+				$('#cite_published_time').timepicker({
 					timeFormat: "H:i:s",
 					step: 15
 				});
-				$('#updated_time').timepicker({
+				$('#cite_updated_time').timepicker({
 					timeFormat: "H:i:s",
 					step: 15
 				});
