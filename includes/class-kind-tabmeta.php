@@ -251,18 +251,23 @@ class Kind_Tabmeta {
 		$kind = get_post_kind_slug( $post );
 		$meta = new Kind_Meta( $post );
 		$cite = array();
+		$start = '';
+		$end = '';
 
-		if ( isset( $_POST['cite_start_date'] ) || isset( $_POST['cite_start_time'] ) ) {
-				$meta->set( 'dt-start', $meta->build_time( $_POST['cite_start_date'], $_POST['cite_start_time'], $_POST['cite_start_offset'] ) );
+		if ( isset( $_POST['mf2_start_date'] ) || isset( $_POST['mf2_start_time'] ) ) {
+			$start = $meta->build_time( $_POST['mf2_start_date'], $_POST['mf2_start_time'], $_POST['mf2_start_offset'] );
+			$meta->set( 'dt-start', $start );
 		}
-		if ( isset( $_POST['cite_end_date'] ) || isset( $_POST['cite_end_time'] ) ) {
-				$meta->set( 'dt-end', $meta->build_time( $_POST['cite_end_date'], $_POST['cite_end_time'], $_POST['cite_end_offset'] ) );
+		if ( isset( $_POST['mf2_end_date'] ) || isset( $_POST['mf2_end_time'] ) ) {
+			$end = $meta->build_time( $_POST['mf2_end_date'], $_POST['mf2_end_time'], $_POST['mf2_end_offset'] );
+			$meta->set( 'dt-end', $end );
 		}
 
-		$duration = $meta->calculate_duration( $meta->get( 'dt-start' ), $meta->get( 'dt-end ' ) );
+		$duration = $meta->calculate_duration( $start, $end );
 		if ( $duration && ! isset( $_POST['cite_duration'] ) ) {
 			$meta->set( 'duration', $duration );
 		}
+		$meta->set( 'rsvp' , $_POST['mf2_rsvp' ] );
 
 		if ( isset( $_POST['cite_published_date'] ) || isset( $_POST['published_time'] ) ) {
 			$cite['published'] = $meta->build_time( $_POST['cite_published_date'], $_POST['cite_published_time'], $_POST['cite_published_offset'] );
