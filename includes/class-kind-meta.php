@@ -213,7 +213,12 @@ class Kind_Meta {
 		}
 		if ( array_key_exists( $kind, $map ) ) {
 			if ( array_key_exists( $map[ $kind ], $this->meta ) ) {
-				return $this->meta[ $map[ $kind ] ];
+				if ( is_string( $this->meta[ $map[ $kind ] ] ) ) {
+					return $this->meta[ $map[ $kind ] ];
+				}
+				if ( is_array( $this->meta[ $map[ $kind ] ] ) ) {
+					return $this->meta[ $map [ $kind ] ][0];
+				}	
 			}
 		}
 		return false;
@@ -228,12 +233,12 @@ class Kind_Meta {
 		if ( empty( $url ) ) {
 			return;
 		}
-		$url = self::sanitize_text( $url );
+		$url = self::esc_url_raw( $url );
 		$kind = get_post_kind_slug( $this->post );
 		$map = array_diff( Kind_Taxonomy::get_kind_properties(), array( '' ) );
 		if ( $kind ) {
 			if ( array_key_exists( $kind, $map ) ) {
-				$this->meta[ $map[ $kind ] ] = $url;
+				$this->meta[ $map[ $kind ] ] = array( $url );
 			}
 		}
 		if ( ! array_key_exists( 'cite', $this->meta ) ) {

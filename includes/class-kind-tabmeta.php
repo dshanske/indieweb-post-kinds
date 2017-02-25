@@ -260,7 +260,7 @@ class Kind_Tabmeta {
 		}
 
 		$duration = $meta->calculate_duration( $meta->get( 'dt-start' ), $meta->get( 'dt-end ' ) );
-		if ( $duration && ! isset( $_POST['cite_duration'] ) {
+		if ( $duration && ! isset( $_POST['cite_duration'] ) ) {
 			$meta->set( 'duration', $duration );
 		}
 
