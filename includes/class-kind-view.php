@@ -70,15 +70,18 @@ class Kind_View {
 		if ( $options['embeds'] == 0 ) {
 				return '';
 		}
+		$host = self::extract_domain_name( $url );
+		$whitelist = array( 
+			'animoto.com', 'blip.tv', 'cloudup.com', 'collegehumor.com', 'dailymotion.com', 'facebook.com', 'flickr.com', 'funnyordie.com', 'hulu.com', 'imgur.com', 'instagram.com', 
+			'issuu.com', 'kickstarter.com', 'meetup.com', 'mixcloud.com', 'photobucket.com', 'polldaddy.com', 'reddit.com', 'reverbnation.com', 'scribd.com', 'slideshare.net', 'smugmug.com',
+			'soundcloud.com', 'speakerdeck.com', 'spotify.com', 'ted.com', 'tumblr.com', 'twitter.com', 'videopress.com', 'vimeo.com', 'wordpress.tv', 'youtube.com'
+		);
+		$whitelist = apply_filters( 'post_kind_embed_whitelist', $whitelist );
+		if ( ! in_array( $host, $whitelist ) ) {
+			return '';
+		}
 		if ( isset( $GLOBALS['wp_embed'] ) ) {
 			$embed = $GLOBALS['wp_embed']->autoembed( $url );
-		}
-			// Passes through the oembed handler in WordPress
-			$host = self::extract_domain_name( $url );
-		switch ( $host ) {
-			case 'plus.google.com':
-				$embed = self::get_embed_gplus( $url );
-				break;
 		}
 		if ( strcmp( $embed, $url ) == 0 ) {
 			$embed = '';
@@ -86,12 +89,6 @@ class Kind_View {
 			$embed = '<div class="embed">' . $embed . '</div>';
 		}
 			return $embed;
-	}
-
-	public static function get_embed_gplus ( $url ) {
-		$embed = '<script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>';
-		$embed .= '<div class="g-post" data-href="' . esc_url( $url ) . '"></div>';
-		return $embed;
 	}
 
 	public static function content_response ( $content ) {
