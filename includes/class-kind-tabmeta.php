@@ -125,7 +125,8 @@ class Kind_Tabmeta {
 	}
 
 	public static function rsvp_select( $selected ) {
-		$rsvps = array( 
+		$rsvps = array(
+			'' => false,
 			'yes' => __( 'Yes', 'indieweb-post-kinds' ),
 			'no' => __( 'No', 'indieweb-post-kinds' ),
 			'maybe' => __( 'Maybe', 'indieweb-post-kinds' ),
@@ -282,8 +283,12 @@ class Kind_Tabmeta {
 		$cite['featured'] = ifset( $_POST['cite_featured'] );
 
 		$meta->set_cite( array_filter( $cite ) );
-		if ( isset( $_POST['author'] ) ) {
-			$meta->set_author( $_POST['author'] );
+		$author = array();
+		$author['name'] = ifset( $_POST['cite_author_name'] );
+		$author['url'] = ifset( $_POST['cite_author_url'] );
+		$author['photo'] = ifset( $_POST['cite_author_photo'] );
+		if ( ! empty( $author ) ) {
+			$meta->set_author( $author );
 		}
 		if ( isset( $_POST['cite_url'] ) ) {
 			$meta->set_url( $_POST['cite_url'] );

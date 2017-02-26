@@ -139,7 +139,11 @@ class Kind_View {
 				break;
 			}
 		}
-		return $located;
+		ob_start();
+		include ( $located );
+		$return  = ob_get_contents();
+		ob_end_clean();
+		return $return;
 	}
 
 	// Return the Display
@@ -149,8 +153,7 @@ class Kind_View {
 			$kind = get_post_kind_slug( $post_ID );
 			$cite = $meta->get_cite();
 			$hcard = 'Unknown Author';
-			$content = '';
-			include( self::get_view_part( 'kind', $kind ) );
+			$content = self::get_view_part( 'kind', $kind );
 			return apply_filters( 'kind-response-display', $content, $post_ID );
 		}
 	}
@@ -190,19 +193,19 @@ class Kind_View {
 	 */
 	public static function get_hcard($author, $args = null) {
 		$default = array(
-										'height' => 32,
-										'width' => 32,
-										'display' => 'both',
-					 );
+			'height' => 32,
+			'width' => 32,
+			'display' => 'both'
+		);
 		$args = wp_parse_args( $args, $default );
 		/**
-	 * Filter for alternate retrieval types
-	 *
-	 * This could be using WordPress's gravatar system, retrieval by pure URL, etc.
-	 *
+		 * Filter for alternate retrieval types
+		 *
+		 * This could be using WordPress's gravatar system, retrieval by pure URL, etc.
+		 *
 		 * @param string|boolean $author Defaults to false, but may return string.
 		 * @param mixed  $author Data on the author, type optional. Defaults to array.
-	 * @param array  $args        Arguments passed to get_hcard.
+		 * @param array  $args        Arguments passed to get_hcard.
 		 */
 		$author = apply_filters( 'get_hcard_data', $author, $args );
 		// If it didn't return an array as expected, then there is no valid author data.
@@ -210,12 +213,12 @@ class Kind_View {
 			return false;
 		}
 		/**
-	 * Filter for alternate presentation
-	 *
-	 * @param string|boolean $card Defaults to false, but may return string.
-	 * @param mixed  $author Data on the author, type optional. Defaults to array.
-	 * @param array  $args        Arguments passed to get_hcard.
-	 */
+		 * Filter for alternate presentation
+		 *
+		 * @param string|boolean $card Defaults to false, but may return string.
+		 * @param mixed  $author Data on the author, type optional. Defaults to array.
+		 * @param array  $args        Arguments passed to get_hcard.
+		 */
 		$card = apply_filters( 'get_hcard', '', $author, $args );
 		if ( ! empty( $card ) ) {
 			return $card;
@@ -224,12 +227,12 @@ class Kind_View {
 		switch ( $args['display'] ) {
 			case 'photo':
 				if ( ! array_key_exists( 'photo', $author ) ) {
-						return false;
+					return false;
 				}
 				if ( ! array_key_exists( 'url', $author ) ) {
-						return sprintf( '<img src="%1s" class="h-card u-photo p-author" alt="%2s" width=%3s height=%4s />', $author['photo'], $author['name'], $args['width'], $args['height'] );
+					return sprintf( '<img src="%1s" class="h-card u-photo p-author" alt="%2s" width=%3s height=%4s />', $author['photo'], $author['name'], $args['width'], $args['height'] );
 				} else {
-						return sprintf( '<a class="h-card p-author" href="%1s"><img class="u-photo" src="%2s" alt="%3s" width=%4s height=%5s /></a>', $author['url'], $author['photo'], $author['name'], $args['width'], $args['height'] );
+					return sprintf( '<a class="h-card p-author" href="%1s"><img class="u-photo" src="%2s" alt="%3s" width=%4s height=%5s /></a>', $author['url'], $author['photo'], $author['name'], $args['width'], $args['height'] );
 				}
 				break;
 			case 'name':
@@ -274,14 +277,8 @@ class Kind_View {
 		if ( ! $cite ) {
 			return false;
 		}
-		if ( ! empty( $url ) ) {
-			if ( ! array_key_exists( 'publication', $cite ) ) {
-				$cite['publication'] = Link_Preview::pretty_domain_name( $cite['url'] );
-			}
-		} else {
-			if ( ! array_key_exists( 'publication', $cite ) ) {
-				   return false;
-			}
+		if ( ! array_key_exists( 'publication', $cite ) ) {
+			return false;
 		}
 		return sprintf( '<span class="p-publication">%1s</span>', $cite['publication'] );
 	}
