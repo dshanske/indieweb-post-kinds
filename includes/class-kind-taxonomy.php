@@ -10,6 +10,11 @@
 class Kind_Taxonomy {
 	public static function init() {
 
+                // Add Kind filter to posts
+                add_action('pre_get_posts', array('Kind_Taxonomy', 'add_post_kinds_filter_to_posts'));
+                add_action('restrict_manage_posts',array('Kind_Taxonomy', 'add_post_kinds_filter_to_post_administration'));		
+		
+		
 		// Add Kind Permalinks.
 		add_filter( 'post_link', array( 'Kind_Taxonomy', 'kind_permalink' ) , 10, 3 );
 		add_filter( 'post_type_link', array( 'Kind_Taxonomy', 'kind_permalink' ) , 10 , 3 );
@@ -38,7 +43,57 @@ class Kind_Taxonomy {
 		// Remove the Automatic Post Generation that the Micropub Plugin Offers
 		remove_filter( 'before_micropub', array( 'Micropub', 'generate_post_content' ) );
 	}
+	
+	/**
+	 * Add UI to Posts table to filter by kind
+	 */
+	public static function add_post_kinds_filter_to_post_administration() {
+		//execute only on the 'post' content type
+		global $post_type;
+		if($post_type == 'post'){
+			$post_kinds_args = array(
+				'show_option_all'   => 'All Post kinds',
+				'orderby'           => 'NAME',
+				'order'             => 'ASC',
+				'name'              => 'indieweb-post-kinds_admin_filter',
+				'taxonomy'          => 'kind'
+			);
 
+			//if we have a post format already selected, ensure that its value is set to be selected
+			if(isset($_GET['post_format_admin_filter'])){
+				$post_kinds_args['selected'] = sanitize_text_field($_GET['indieweb-post-kinds_admin_filter']);
+			}
+			wp_dropdown_categories($post_kinds_args);
+		}
+ 	}	
+	
+	/**
+	 * Filters posts by post kind
+	 *
+	 * @param string $query The current post query
+	 */
+	public static function add_post_kinds_filter_to_posts($query){
+		global $post_type, $pagenow;
+
+		//if we are currently on the edit screen of the post type listings
+		if($pagenow == 'edit.php' && $post_type == 'post'){
+			if(isset($_GET['indieweb-post-kinds_admin_filter'])){
+				//get the desired post format
+				$post_kind = sanitize_text_field($_GET['indieweb-post-kinds_admin_filter']);
+				//if the post format is not 0 (which means all)
+				if($post_kind != 0){
+					$query->query_vars['tax_query'] = array(
+						array(
+							'taxonomy'  => 'kind',
+							'field'     => 'ID',
+							'terms'     => array($post_kind)
+              					)
+          				);
+        			}
+      			}
+    		}
+  	}	
+	
 
 	/**
 	 * Deletes cached response.
