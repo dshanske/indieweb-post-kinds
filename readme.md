@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like  
-**Stable tag:** 2.4.4  
+**Stable tag:** 2.5.0  
 **Requires at least:** 4.7  
 **Tested up to:** 4.7.2  
 **License:** GPLv2 or later  
@@ -155,6 +155,10 @@ developer of this plugin.
 		* Duration is calculated and saved when post is saved - If start and end date is set it would override a manually set duration
 		* RSVP property created and the RSVP kind now available as an option
 		* Tags now an option for a reply-context and will be displayed as hashtags in future.
+		* Facebook manual embed code removed as Facebook is now supported by WordPress as of 4.7 for embeds
+		* Google Plus manual embed code removed even though Google Plus is not supported mostly because did not wish to maintain as sole exception
+		* Add whitelist - oembed will only be used if one of the officially whitelisted sites is there. Otherwise it will use the link-preview generation. Global shutoff still an option.
+		* Set default post format based on post kind.
 	= Version 2.4.4 =
 		* Simplify coding standards issues
 		* Update settings

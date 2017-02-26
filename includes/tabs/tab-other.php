@@ -16,7 +16,7 @@
 	<br />
 	<?php echo self::kind_the_time( 'mf2_end', __('End Time', 'indieweb-post-kinds' ), $meta->divide_time( $meta->get( 'dt-end' ) ) ); ?>
 	<br />
-	<?php echo self::rsvp_select( 'yes' ); ?>
+	<?php echo self::rsvp_select( $meta->get( 'rsvp' ) ); ?>
 
 	</div><!-- #kindmetatab-other -->
 

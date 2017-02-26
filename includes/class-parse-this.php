@@ -705,6 +705,7 @@ class Parse_This {
 		$data['duration'] = $this->get_meta( 'duration' );
 		$type = $this->get_meta( 'type' );
 		$data['photo'] = $this->images;
+		$data['media'] = $this->embeds;
 		$data['raw'] = $this->get_meta();
 		// $data['icon'] = ifset( $meta['msapplication-TileImage'] );
                 // $data['icon'] = ifset( $meta['msapplication-TileImage'] );

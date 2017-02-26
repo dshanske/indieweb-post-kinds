@@ -6,7 +6,12 @@
 
 $kind = get_post_kind_slug( get_the_ID() );
 $meta = new Kind_Meta( get_the_ID() );
+$author = Kind_View::get_hcard( $meta->get_author() );
 $cite = $meta->get_cite();
+$site_name = Kind_View::get_site_name( $meta->get_cite(), $meta->get_url() );
+$title = Kind_View::get_cite_title( $meta->get_cite(), $meta->get_url() );
+$embed = self::get_embed( $meta->get_url() );
+
 // Add in the appropriate type
 switch ( $kind ) {
 	case 'like':
@@ -46,29 +51,36 @@ switch ( $kind ) {
 	case 'quote':
 		$type = 'u-quotation-of';
 		break;
+	default:
+		$type = '';
+		break;
 }
 ?>
 
-<cite class="h-cite response <?php echo $type; ?> ">
-<?php echo Kind_Taxonomy::get_icon( $kind ); ?>
-<?php Kind_View::get_cite_title( $meta->get_cite(), $meta->get_url() ); ?>
-<?php 
-$author = Kind_View::get_hcard( $meta->get_author() );
-if ( $author ) {
-	echo ' ' . __( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
-}
-$site_name = Kind_View::get_site_name( $meta->get_cite(), $meta->get_url() );
-if ( $site_name ) {
-	echo '<em>(<span class="p-publication">' . $site_name . '</span>)</em>';
-}
-if ( in_array( $kind, array( 'jam', 'listen', 'play', 'read', 'watch' ) ) ) {
-	$duration = $meta->get_duration();
-	if ( $duration ) {
-		echo '(' . __( 'Duration: ', 'indieweb-post-kinds' ) . '<span class="p-duration">' . $duration . '</span>)';
+<section class="h-cite response <?php echo $type; ?> ">
+<header>
+<?php echo Kind_Taxonomy::get_icon( $kind );
+if( ! $embed ) {
+	if ( $title ) {
+		echo $title;
+	}
+	if ( $author ) {
+		echo ' ' . __( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
+	}
+	if ( $site_name ) {
+		echo '<em>(<span class="p-publication">' . $site_name . '</span>)</em>';
+	}
+	if ( in_array( $kind, array( 'jam', 'listen', 'play', 'read', 'watch' ) ) ) {
+		$duration = $meta->get_duration();
+		if ( $duration ) {
+			echo '(' . __( 'Duration: ', 'indieweb-post-kinds' ) . '<span class="p-duration">' . $duration . '</span>)';
+		}
 	}
 }
+?>
+</header>
+<?php
 if ( $cite ) {
-	$embed = self::get_embed( $meta->get_url() );
 	if ( $embed ) {
 		echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
 	} else if ( array_key_exists( 'summary', $cite ) ) {
@@ -78,5 +90,5 @@ if ( $cite ) {
 
 // Close Response
 ?>
-</cite>
+</section>
 <?php
