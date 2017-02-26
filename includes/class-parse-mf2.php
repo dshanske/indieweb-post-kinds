@@ -763,6 +763,11 @@ class Parse_MF2 {
 				unset( $data['name'] );
 			}
 		}
+		if ( isset( $data['name'] ) && isset( $data['summary'] ) ) {
+			if ( $data['name'] == $data[ 'summary' ] ) {
+				unset( $data['name'] );
+			}
+		}
 		return $data;
 	}
 
