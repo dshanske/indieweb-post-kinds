@@ -13,8 +13,8 @@ class Kind_View {
 	}
 
 	public static function extract_domain_name( $url ) {
-		$parse = wp_parse_url( $url );
-		return preg_replace( '/^www\./', '', $parse['host'] );
+		$parse = wp_parse_url( $url, PHP_URL_HOST );
+		return preg_replace( '/^www\./', '', $parse );
 	}
 
 
@@ -55,11 +55,11 @@ class Kind_View {
 		return $return;
 	}
 
-	public static function get_formatted( $field, $attr ) {
+	public static function get_formatted( $field, $attr, $type = 'span' ) {
 		if ( ! isset( $field ) ) {
 			return $string;
 		}
-		$string = '<span ' . $attr . '>' . $field . '</span>';
+		$string = '<' . $type . $attr . '>' . $field . '</' . $type . '>';
 		return $string;
 	}
 
@@ -76,9 +76,6 @@ class Kind_View {
 			// Passes through the oembed handler in WordPress
 			$host = self::extract_domain_name( $url );
 		switch ( $host ) {
-			case 'facebook.com':
-				$embed = self::get_embed_facebook( $url );
-				break;
 			case 'plus.google.com':
 				$embed = self::get_embed_gplus( $url );
 				break;
@@ -91,12 +88,6 @@ class Kind_View {
 			return $embed;
 	}
 
-	public static function get_embed_facebook ( $url ) {
-		$embed = '<div id="fb-root"></div>';
-		$embed .= '<script>(function(d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return; js = d.createElement(s); js.id = id; js.src = "//connect.facebook.net/en_US/all.js#xfbml=1"; fjs.parentNode.insertBefore(js, fjs); }(document, \'script\', \'facebook-jssdk\'));</script>';
-		$embed .= '<div class="fb-post" data-href="' . esc_url( $url ) . '" data-width="466"><div class="fb-xfbml-parse-ignore"><a href="' . esc_url( $url ) .  '">Post</a></div></div>';
-		return $embed;
-	}
 	public static function get_embed_gplus ( $url ) {
 		$embed = '<script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>';
 		$embed .= '<div class="g-post" data-href="' . esc_url( $url ) . '"></div>';
