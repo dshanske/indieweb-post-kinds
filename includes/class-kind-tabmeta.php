@@ -257,13 +257,14 @@ class Kind_Tabmeta {
 
 		if ( isset( $_POST['mf2_start_date'] ) || isset( $_POST['mf2_start_time'] ) ) {
 			$start = $meta->build_time( $_POST['mf2_start_date'], $_POST['mf2_start_time'], $_POST['mf2_start_offset'] );
-			$meta->set( 'dt-start', $start );
 		}
 		if ( isset( $_POST['mf2_end_date'] ) || isset( $_POST['mf2_end_time'] ) ) {
 			$end = $meta->build_time( $_POST['mf2_end_date'], $_POST['mf2_end_time'], $_POST['mf2_end_offset'] );
+		}
+		if ( $start !== $end ) {
+			$meta->set( 'dt-start', $start );
 			$meta->set( 'dt-end', $end );
 		}
-
 		$duration = $meta->calculate_duration( $start, $end );
 		if ( $duration && ! isset( $_POST['cite_duration'] ) ) {
 			$meta->set( 'duration', $duration );
@@ -278,7 +279,10 @@ class Kind_Tabmeta {
 		}
 		$cite['summary'] = ifset( $_POST['cite_summary'] );
 		$cite['name'] = ifset( $_POST['cite_name'] );
-		$cite['tags'] = ifset( $_POST['cite_tags'] );
+		if ( isset( $_POST['cite_tags'] ) ) {
+			$cite['category'] = explode( ';', $_POST['cite_tags'] );
+			error_log( 'Tags: ' . serialize( $cite['category'] ) );
+		}
 		$cite['publication'] = ifset ( $_POST['cite_publication'] );
 		$cite['featured'] = ifset( $_POST['cite_featured'] );
 

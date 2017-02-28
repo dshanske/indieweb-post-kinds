@@ -156,7 +156,7 @@ class Kind_Meta {
 
 	public static function sanitize_text( $value ) {
 		if ( is_array( $value ) ) {
-			return array_map( $value, array( 'Kind_Meta', 'sanitize_text' ) );
+			return array_map( array( 'Kind_Meta', 'sanitize_text' ), $value );
 		}
 		if ( self::is_url( $value ) ) {
 			$value = esc_url_raw( $value );
@@ -405,6 +405,9 @@ class Kind_Meta {
 		$start = array();
 		$end = array();
 		if ( ! is_string( $start_string ) || ! is_string( $end_string ) ) {
+			return false;
+		}
+		if ( $start_string == $end_string ) {
 			return false;
 		}
 		$start = date_create_from_format( 'Y-m-d\TH:i:sP', $start_string );

@@ -38,7 +38,7 @@ jQuery( document ).on( 'click', '.kind-retrieve-button', function($) {
   	    		if ( 'featured' in response ) {
   	 	     		jQuery("#cite_featured").val(response['featured']) ;
       			}
-      			if ( 'author' in response ) {
+      			if ( ( 'author' in response ) && ( typeof response['author'] != 'string' ) ) {
 	      			if ( 'name' in response['author'] ) {
   	      				jQuery("#cite_author_name").val(response['author']['name']) ;
     		  		}
@@ -50,7 +50,7 @@ jQuery( document ).on( 'click', '.kind-retrieve-button', function($) {
         			}
 			}
 			if ( 'category' in response ) {
-				jQuery("#cite_tags").val( response['category'].join("\n") );
+				jQuery("#cite_tags").val( response['category'].join(";") );
 			}
 		alert( rest_object.link_preview_success_message );
 		console.log( response );
