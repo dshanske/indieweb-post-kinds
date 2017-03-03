@@ -97,12 +97,7 @@ class Post_Kinds_Plugin {
 	 * Loads the Stylesheet for the Plugin.
 	 */
 	public static function style_load() {
-		$option = get_option( 'iwt_options', Kind_Config::Defaults() );
-		if ( ! isset( $option['themecompat'] ) ) {
-			wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'css/kind.min.css', array(), self::$version );
-		} else {
-			wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'css/kind.themecompat.min.css', array(), self::$version );
-		}
+		wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'css/kind.min.css', array(), self::$version );
 	}
 
 	/**

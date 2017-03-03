@@ -698,7 +698,7 @@ class Parse_This {
 		$data['publication'] =  $this->get_meta( 'site_name' ); // ifset( $meta['og:site_name'] ) ?: ifset( $meta['og:music:album'] );
 		$data['published'] = $this->get_meta( 'published' ) ?: $this->get_meta( 'release_date' );
 		$data['updated'] = $this->get_meta( 'modified' );
-		$data['category'] = $this->get_meta( 'tag' );
+		$data['category'] = array_values( $this->get_meta( 'tag' ) );
 		// Extended Parameters
 		// $data['audio'] = ifset( $meta['og:audio'] );
 		// $data['video'] = ifset( $meta['og:video'] );

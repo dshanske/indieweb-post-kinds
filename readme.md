@@ -50,6 +50,10 @@ The plugin requires the [webmention](https://wordpress.org/plugins/webmention/) 
 
 ## Upgrade Notice ##
 
+### 2.5.0 ###
+
+Settings have been completely changed and you will have to reset.
+
 ### 2.4.2 ###
 
 Due to changes in the Micropub plugin, multiple values for properties are now supported. 
@@ -159,6 +163,7 @@ developer of this plugin.
 		* Google Plus manual embed code removed even though Google Plus is not supported mostly because did not wish to maintain as sole exception
 		* Add whitelist - oembed will only be used if one of the officially whitelisted sites is there. Otherwise it will use the link-preview generation. Global shutoff still an option.
 		* Set default post format based on post kind.
+		* Redoing of options and removal of option to remove post formats support and theme compat
 	= Version 2.4.4 =
 		* Simplify coding standards issues
 		* Update settings

@@ -181,11 +181,7 @@ class Kind_Taxonomy {
 
 	public static function select_metabox( $post ) {
 		$strings = self::get_strings();
-		$option = get_option( 'iwt_options' );
-		$include = array();
-		if ( array_key_exists( 'termslist', $option ) ) {
-			$include = $option['termslist'];
-		}
+		$include = get_option( 'kind_termslist' );
 		$include = array_merge( $include, array( 'note', 'reply', 'article' ) );
 		// If Simple Location is Enabled, include the check-in type
 		// Filter Kinds
@@ -197,7 +193,7 @@ class Kind_Taxonomy {
 		if ( isset( $_GET['kind'] ) ) {
 			$default = get_term_by( 'slug', $_GET['kind'], 'kind' );
 		} else {
-			$default = get_term_by( 'slug', $option['defaultkind'], 'kind' );
+			$default = get_term_by( 'slug', get_option('kind_default'), 'kind' );
 		}
 		$terms = get_terms( 'kind', array( 'hide_empty' => 0 ) );
 		$postterms = get_the_terms( $post->ID, 'kind' );
@@ -439,9 +435,8 @@ class Kind_Taxonomy {
 		if ( 'post' !== get_post_type( $ID ) ) {
 			return;
 		}
-		$option = get_option( 'iwt_options' );
 		if ( count( wp_get_post_terms( $ID,'kind' ) ) <= 0 ) {
-			set_post_kind( $ID, $option['defaultkind'] );
+			set_post_kind( $ID, get_option('kind_default') );
 		}
 	}
 

@@ -140,14 +140,9 @@ class Kind_Meta {
 		if ( ! is_string( $value ) ) {
 			return $value;
 		}
-		$options = get_option( 'iwt_options', Kind_Config::Defaults() );
 		$allowed = wp_kses_allowed_html( 'post' );
-		if ( array_key_exists( 'contentelements', $options ) && json_decode( $options['contentelements'] ) != null ) {
-			$allowed = json_decode( $options['contentelements'], true );
-		}
-
-		if ( ifset( $options[ 'protection' ] ) ) {
-			return $value;
+		if ( 1 == get_option( 'kind_protection' ) ) {
+			$allowed = json_decode( get_option( 'kind_kses' ), true );
 		}
 		return wp_kses( ( string ) $value , $allowed );
 	}

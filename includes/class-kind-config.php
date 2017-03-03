@@ -46,12 +46,39 @@ class Kind_Config {
 	public static function admin_init() {
 		$args = array(
 			'type' => 'array',
-			'description' => 'Post Kind Options',
+			'description' => 'Kinds Enabled on This Site',
 			'show_in_rest' => true,
-			'default' => self::Defaults(),
+			'default' => array( 'article', 'reply', 'bookmark' )
 		);
-		register_setting( 'iwt_options', 'iwt_options', $args );
-		$options = get_option( 'iwt_options' );
+		register_setting( 'iwt_options', 'kind_termslist', $args );
+		$args = array(
+			'type' => 'string',
+			'description' => 'Default Kind',
+			'show_in_rest' => true,
+			'default' => 'note'
+		);
+		register_setting( 'iwt_options', 'kind_default', $args );
+		$args = array(
+			'type' => 'boolean',
+			'description' => 'Rich Embed Support for Whitelisted Sites',
+			'show_in_rest' => true,
+			'default' => 1
+		);
+		register_setting( 'iwt_options', 'kind_embeds', $args );
+		$args = array(
+			'type' => 'boolean',
+			'description' => 'Disable Content Protection on Responses',
+			'show_in_rest' => true,
+			'default' => 0
+		);
+		register_setting( 'iwt_options', 'kind_protection', $args );
+		$args = array(
+			'type' => 'string',
+			'description' => 'KSES Content Protection on Responses',
+			'show_in_rest' => true,
+			'default' => str_replace( '},"',"},\r\n\"", wp_json_encode( wp_kses_allowed_html( 'post' ), JSON_PRETTY_PRINT ) )
+		);
+		register_setting( 'iwt_options', 'kind_kses', $args );
 		add_settings_section( 
 			'iwt-content', 
 			__( 'Content Options', 
@@ -61,25 +88,9 @@ class Kind_Config {
 		);
 		add_settings_field( 
 			'embeds', 
-			__( 'Add Rich Embed Support for Facebook, Google Plus, Instagram, etc', 'indieweb-post-kinds' ), 
+			__( 'Add Rich Embed Support for Whitelisted Sites', 'indieweb-post-kinds' ), 
 			array( 'Kind_Config', 'checkbox_callback' ), 
-			'iwt_options', 'iwt-content' ,  array( 'name' => 'embeds' ) 
-		);
-		add_settings_field( 'themecompat', 
-			__( 'Extra Styling for Themes That May Not Support Post Kinds. Includes hiding of titles on kinds that do not usually have an explicit title.', 'indieweb-post-kinds' ), 
-			array( 'Kind_Config', 'checkbox_callback' ), 
-			'iwt_options', 
-			'iwt-content' ,  
-			array( 'name' => 'themecompat' ) 
-		);
-		add_settings_field( 
-			'disableformats', 
-			__( 'Disable Post Formats', 
-			'indieweb-post-kinds' ), 
-			array( 'Kind_Config', 'checkbox_callback' ), 
-			'iwt_options', 
-			'iwt-content' ,  
-			array( 'name' => 'disableformats' ) 
+			'iwt_options', 'iwt-content' ,  array( 'name' => 'kind_embeds' ) 
 		);
 		add_settings_field( 
 			'protection', 
@@ -87,22 +98,22 @@ class Kind_Config {
 			array( 'Kind_Config', 'checkbox_callback' ),
 			'iwt_options',
 			'iwt-content',
-			array( 'name' => 'protection' )
+			array( 'name' => 'kind_protection' )
 		);
-		if ( array_key_exists( 'protection', $options ) && 1 === $options['protection'] ) {
+		if ( 1 == get_option( 'kind_protection' ) ) {
 			add_settings_field( 
 				'contentelements', 
 				__( 'Response Content Allowed Html Elements', 'indieweb-post-kinds' ) . ' <a href="http://codex.wordpress.org/Function_Reference/wp_kses">*</a>', 
 				array( 'Kind_Config', 'textbox_callback' ),
 				'iwt_options', 
 				'iwt-content',
-				array( 'name' => 'contentelements' )
+				array( 'name' => 'kind_kses' )
 			);
 		}
 		add_settings_field( 
 			'termslist', 
 			__( 'Select All Kinds You Wish to Use', 'indieweb-post-kinds' ),
-			array( 'Kind_Config', 'termlist_callback' ),
+			array( 'Kind_Config', 'termcheck_callback' ),
 			'iwt_options',
 			'iwt-content' 
 		);
@@ -164,11 +175,10 @@ class Kind_Config {
 	 *		@type string $name Checkbox Name.
 	 */
 	public static function checkbox_callback( array $args ) {
-		$options = get_option( 'iwt_options', self::Defaults() );
-		$name = $args['name'];
-		$checked = ifset( $options[ $name ] );
-		echo "<input name='iwt_options[" . esc_html( $name ) . "]' type='hidden' value='0' />";
-		echo "<input name='iwt_options[" . esc_html( $name ) . "]' type='checkbox' value='1' " . checked( 1, $checked, false ) . ' /> ';
+		$option = get_option( $args['name'] );
+		$checked = ifset( $option );
+		echo "<input name='" . $args['name'] . "' type='hidden' value='0' />";
+		echo "<input name='" . $args['name'] . "' type='checkbox' value='1' " . checked( 1, $checked, false ) . ' /> ';
 	}
 
 	/**
@@ -181,15 +191,11 @@ class Kind_Config {
 	 *    @type string $name Textbox Name.
 	 */
 	public static function textbox_callback( array $args ) {
-		$options = get_option( 'iwt_options', self::Defaults() );
-		$name = $args['name'];
-		$val = '';
-		if ( 'contentelements' === $name && ! array_key_exists( 'contentelements', $options ) ) {
-			$val = str_replace( '},"',"},\r\n\"", wp_json_encode( wp_kses_allowed_html( 'post' ), JSON_PRETTY_PRINT ) );
-		} else {
-			$val = $options[ $name ];
+		$option = get_option( $args['name'] );
+		if ( is_array( $option ) ) {
+			$option = print_r( $option, true );
 		}
-		echo "<textarea rows='10' cols='50' class='large-text code' name='iwt_options[" . esc_html( $name ) . "]'>". esc_textarea( print_r( $val,true ) ) . '</textarea> ';
+		echo "<textarea rows='10' cols='50' class='large-text code' name='" . $args['name'] . "'>". $option . '</textarea> ';
 	}
 
 	/**
@@ -197,21 +203,19 @@ class Kind_Config {
 	 *
 	 * @access public
 	 */
-	public static function termlist_callback() {
-		$options = get_option( 'iwt_options', self::Defaults() );
+	public static function termcheck_callback() {
 		$terms = Kind_Taxonomy::get_strings();
 		// Hide these terms until ready for use for now.
 		$hide = array( 'note', 'weather', 'exercise', 'travel', 'itinerary', 'tag', 'follow', 'drink', 'eat', 'trip', 'checkin', 'mood', 'recipe' );
 		foreach ( $hide as $hid ) {
 			unset( $terms[ $hid ] );
 		}
-		$termslist = $options['termslist'];
-		echo '<select id="termslist" name="iwt_options[termslist][]" multiple>';
+		$termslist = get_option('kind_termslist');
 		foreach ( $terms as $key => $value ) {
-			echo '<option value="' . $key . '" '. selected( in_array( $key, $termslist ) ) . '>' . $value . '</option>';
+			echo "<input name='kind_termslist[]' type='checkbox' value='" . $key . "' " . checked( in_array( $key, $termslist ), true, false ) . ' />' . $value . '<br />';
 		}
-		echo '</select>';
 	}
+
 
 	/**
 	 * Generate a Term List.
@@ -219,18 +223,15 @@ class Kind_Config {
 	 * @access public
 	 */
 	public static function defaultkind_callback() {
-		$options = get_option( 'iwt_options', self::Defaults() );
-		$terms = $options['termslist'];
+		$terms = get_option('kind_termslist');
 		$terms[] = 'note';
 		$strings = Kind_Taxonomy::get_strings();
 
-		$defaultkind = $options['defaultkind'];
+		$defaultkind = get_option('kind_default');
 
-		echo '<select id="defaultkind" name="iwt_options[defaultkind]">';
 		foreach ( $terms as $term ) {
-			echo '<option value="' . $term . '" '. selected( $term, $defaultkind ) . '>' . $strings[$term] . '</option>';
+			echo '<input id="kind_default" name="kind_default" type="radio" value="' . $term . '" '. checked( $term, $defaultkind, false ) . ' />' . $strings[$term] . '<br />';
 		}
-		echo '</select>';
 	}
 
 
@@ -252,16 +253,6 @@ class Kind_Config {
 		do_settings_sections( 'iwt_options' );
 		submit_button();
 		echo '</form></div>';
-	}
-
-	/**
-	 * Disable Post Formats.
-	 *
-	 * @access public
-	 */
-	public static function remove_post_formats() {
-		$options = get_option( 'iwt_option', self::Defaults() );
-		if ( 1 === ifset( $options['disableformats'] ) ) { remove_theme_support( 'post-formats' ); }
 	}
 
 	public static function add_post_help_tab() {

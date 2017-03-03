@@ -64,8 +64,8 @@ class Kind_View {
 	}
 
 	public static function get_embed( $url ) {
-			$options = get_option( 'iwt_options', Kind_Config::Defaults() );
-		if ( $options['embeds'] == 0 ) {
+		$option = get_option( 'kind_embeds' );
+		if ( 0 == $option ) {
 				return '';
 		}
 		$host = self::extract_domain_name( $url );
