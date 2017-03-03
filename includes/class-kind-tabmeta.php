@@ -149,10 +149,10 @@ class Kind_Tabmeta {
 	public static function metabox_text( $property, $label, $default = '', $type = 'text' ) {
 		$string = '<label for="' . $property .  '">' . $label . '</label><br/>';
 		if ( 'textarea' === $type ) {
-			$string .= '<textarea name="' . $property . '" id="' . $property . '" style="resize: none;" data-role="none" cols="60" rows"4">' . $default . '</textarea>';
+			$string .= '<textarea name="' . $property . '" id="' . $property . '" data-role="none" class="widefat">' . $default . '</textarea>';
 			return $string;
 		}
-		$string .= '<input type="' . $type . '" name="' . $property . '" id="' . $property . '" size="70" value="' . $default . '" />';
+		$string .= '<input type="' . $type . '" name="' . $property . '" id="' . $property . '" class="widefat" value="' . $default . '" />';
 		return $string;
 
 	}
@@ -269,6 +269,9 @@ class Kind_Tabmeta {
 		if ( $duration && ! isset( $_POST['cite_duration'] ) ) {
 			$meta->set( 'duration', $duration );
 		}
+		else { 
+			$meta->del( 'duration' );
+		}
 		$meta->set( 'rsvp' , $_POST['mf2_rsvp' ] );
 
 		if ( isset( $_POST['cite_published_date'] ) || isset( $_POST['published_time'] ) ) {
@@ -281,7 +284,6 @@ class Kind_Tabmeta {
 		$cite['name'] = ifset( $_POST['cite_name'] );
 		if ( isset( $_POST['cite_tags'] ) ) {
 			$cite['category'] = explode( ';', $_POST['cite_tags'] );
-			error_log( 'Tags: ' . serialize( $cite['category'] ) );
 		}
 		$cite['publication'] = ifset ( $_POST['cite_publication'] );
 		$cite['featured'] = ifset( $_POST['cite_featured'] );

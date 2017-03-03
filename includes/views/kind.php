@@ -11,6 +11,7 @@ $cite = $meta->get_cite();
 $site_name = Kind_View::get_site_name( $meta->get_cite(), $meta->get_url() );
 $title = Kind_View::get_cite_title( $meta->get_cite(), $meta->get_url() );
 $embed = self::get_embed( $meta->get_url() );
+$rsvp = $meta->get( 'rsvp' );
 
 // Add in the appropriate type
 switch ( $kind ) {
@@ -88,7 +89,12 @@ if ( $cite ) {
 	}
 }
 
+if ( $rsvp ) {
+	echo 'RSVP <span class="p-rsvp">' . $rsvp . '</span>';
+}
+
 // Close Response
 ?>
 </section>
+
 <?php

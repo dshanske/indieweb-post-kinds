@@ -137,15 +137,13 @@ class Kind_Meta {
 	}
 
 	public static function sanitize_content( $value ) {
-		global $wpdb;
+		if ( ! is_string( $value ) ) {
+			return $value;
+		}
 		$options = get_option( 'iwt_options', Kind_Config::Defaults() );
 		$allowed = wp_kses_allowed_html( 'post' );
 		if ( array_key_exists( 'contentelements', $options ) && json_decode( $options['contentelements'] ) != null ) {
 			$allowed = json_decode( $options['contentelements'], true );
-		}
-		$charset = $wpdb->get_col_charset( $wpdb->posts, $value );
-		if ( 'utf8' === $charset ) {
-			$value = wp_encode_emoji( $value );
 		}
 
 		if ( ifset( $options[ 'protection' ] ) ) {
@@ -337,17 +335,15 @@ class Kind_Meta {
 		if ( ! $cite ) {
 			return false;
 		}
-		$summary = ifset( $cite['summary'] );
-		$content = ifset( $cite['content'] );
 		$cite = array_map( array( 'Kind_Meta', 'sanitize_text' ), $cite );
 
 		if ( isset( $cite['summary'] ) ) {
-				$cite['summary'] = self::sanitize_content( $summary );
+				$cite['summary'] = self::sanitize_content( $cite['summary'] );
 		}
 		if ( isset( $cite['content'] ) ) {
-				$cite['content'] = self::sanitize_content( $content );
+				$cite['content'] = self::sanitize_content( $cite['content'] );
 		}
-		$cite = array_filter( array_diff( $cite, array( '' ) ) );
+		$cite = array_filter( $cite );
 		$this->meta['cite'] = $cite;
 	}
 
