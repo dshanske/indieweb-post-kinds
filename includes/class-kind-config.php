@@ -12,18 +12,6 @@
  * @package Post Kinds
  */
 class Kind_Config {
-	public static function Defaults() {
-		return array(
-			'embeds' => '0',
-			'disableformats' => '0',
-			'protection' => '0',
-			'contentelements' => '',
-			'defaultkind' => 'article',
-			'termslist' => array( 'article', 'reply', 'bookmark' ),
-			'themecompat' => '0',
-		);
-
-	}
 
 	/**
 	 * Function to Initialize the Configuration.
@@ -87,11 +75,27 @@ class Kind_Config {
 			'iwt_options' 
 		);
 		add_settings_field( 
+			'termslist', 
+			__( 'Select All Kinds You Wish to Use', 'indieweb-post-kinds' ),
+			array( 'Kind_Config', 'termcheck_callback' ),
+			'iwt_options',
+			'iwt-content' 
+		);
+		add_settings_field( 
+			'defaultkind', 
+			__( 'Default Kind', 'indieweb-post-kinds' ),
+			array( 'Kind_Config', 'defaultkind_callback' ),
+			'iwt_options',
+			'iwt-content'
+		);
+
+		add_settings_field( 
 			'embeds', 
 			__( 'Add Rich Embed Support for Whitelisted Sites', 'indieweb-post-kinds' ), 
 			array( 'Kind_Config', 'checkbox_callback' ), 
 			'iwt_options', 'iwt-content' ,  array( 'name' => 'kind_embeds' ) 
 		);
+
 		add_settings_field( 
 			'protection', 
 			__( 'Disable Content Protection on Responses', 'indieweb-post-kinds' ), 
@@ -110,20 +114,6 @@ class Kind_Config {
 				array( 'name' => 'kind_kses' )
 			);
 		}
-		add_settings_field( 
-			'termslist', 
-			__( 'Select All Kinds You Wish to Use', 'indieweb-post-kinds' ),
-			array( 'Kind_Config', 'termcheck_callback' ),
-			'iwt_options',
-			'iwt-content' 
-		);
-		add_settings_field( 
-			'defaultkind', 
-			__( 'Default Kind', 'indieweb-post-kinds' ),
-			array( 'Kind_Config', 'defaultkind_callback' ),
-			'iwt_options',
-			'iwt-content'
-		);
 		// Add Query Var to Admin
 		add_filter( 'query_vars', array( 'Kind_Config', 'query_var' ) );
 
@@ -260,26 +250,32 @@ class Kind_Config {
 			'id'       => 'post_kind_help',
 			'title'    => __( 'Post Properties', 'indieweb-post-kinds' ),
 			'content'  => __('
-						<p> The Post Properties tab represents the Microformats properties of a Post. For different kinds of posts, the different
-						fields mean something different. Example: Artist Name vs Author Name</p>
-						<ul><strong>Response</strong>
-							<li><strong>URL</strong> - The URL the post is responding to</li>
-							<li><strong>Name/Title</strong> - The name of what is being responded to</li>
-						</ul>
-						<ul><strong>Citation</strong>
-							<li><strong>Summary</strong> - Summary of what the post is responding to</li>
-							<li><strong>Site Name/Publication/Album</strong></li>
-							<li><strong>Featured Image</strong> - The URL of a featured image of what is being responded to </li>
-							<li><strong>Author/Artist Name</strong> </li>
-							<li><strong>Author/Artist URL</strong></li>
-							<li><strong>Author Photo URL</strong></li>
-						</ul>
-            <ul><strong>Time</strong>
-              <li><strong>Start/Published Time</strong></li>
-              <li><strong>End/Updated Time</strong></li>
-            </ul>
-
-
+				<p> The Post Properties tab represents the Microformats properties of a Post. For different kinds of posts, the different
+				fields mean something different. Example: Artist Name vs Author Name</p>
+				<ul><strong>Main</strong>
+					<li><strong>URL</strong> - The URL the post is responding to</li>
+					<li><strong>Name/Title</strong> - The name of what is being responded to</li>
+					<li><strong>Summary/Quote</strong> - Summary of what the post is responding to or quote</li>
+					<li><strong>Tags</strong> - Tags or categories for the piece to be displayed as hashtags</li>
+				</ul>
+				<ul><strong>Details</strong>
+					<li><strong>Site Name/Publication/Album</strong></li>
+					<li><strong>Featured Image/Site Icon</strong> - The URL of a featured image of what is being responded to or a site icon</li>
+              				<li><strong>Published Time</strong></li>
+              				<li><strong>Updated Time</strong></li>
+				</ul>
+				<ul><strong>Author</strong>
+					<li><strong>Author/Artist Name</strong> </li>
+					<li><strong>Author/Artist URL</strong></li>
+					<li><strong>Author/Artist Photo URL</strong></li>
+				</ul>
+				<ul><strong>Other</strong>
+              				<li><strong>Start Time</strong></li>
+              				<li><strong>End Time</strong></li>
+					<li><strong>Duration</strong> - Duration is calculated based on the difference between start and end time. You may just use the time field, 
+					omitting date and timezone and setting start time to 0:00:00 to set a simple duration.</li> 
+					<li><strong>RSVP</strong> - For RSVP posts, you can specify whether you are attending, not attending, unsure, or simply interested.</li>
+            			</ul>
 			', 'indieweb-post-kinds'),
 		) );
 	}
