@@ -141,6 +141,13 @@ Simply replace YOURSITE.COM with your particular site name and the particular po
 
 Post Kinds also automatically handles RSS feeds which can be made available or subscribed to for any of the particular kinds. The RSS feed for all the posts marked as "note", for example could be found at either the URL `http://www.example.com/kind/note/feed` or  `http://www.example.com/feed/?kind=note` (if one doesn't have pretty permalinks enabled). Others can be obtained by replacing "note" with the other kinds.
 
+== Bookmarklet Configuration ==
+
+* If you add `?kindurl=URL` to the post editor URL, it will automatically fill this into the URL box in post properties
+* If you add `?kind=like` to the post editor URL, it will automatically set the kind.
+
+So - `https://www.example.com/wp-admin/post-new.php?kindurl=URL&kind=like` will automatically set a like with the URL URL
+
 == SNAP ==
 
 Indieweb Post Kinds had support for replying to Twitter posts using the Social Network Auto Poster plugin. The developers of that plugin have not contacted the
@@ -152,14 +159,17 @@ developer of this plugin.
 		* MF2 parsing code rewritten and consolidated - future improvements coming
 		* Link Preview class now supports AJAX over REST API instead of admin-ajax
 		* Start/End and Published/Updated Separated in UI
-		* Duration is calculated and saved when post is saved - If start and end date is set it would override a manually set duration
+		* Duration is calculated and saved when post is saved based on start and end dates
 		* RSVP property created and the RSVP kind now available as an option
 		* Tags now an option for a reply-context and will be displayed as hashtags in future.
 		* Facebook manual embed code removed as Facebook is now supported by WordPress as of 4.7 for embeds
 		* Google Plus manual embed code removed even though Google Plus is not supported mostly because did not wish to maintain as sole exception
-		* Add whitelist - oembed will only be used if one of the officially whitelisted sites is there. Otherwise it will use the link-preview generation. Global shutoff still an option.
+		* Add whitelist - oembed will only be used if one of the officially whitelisted sites is there(Filter Available). Otherwise it will use the link-preview generation. Option to disable.
 		* Set default post format based on post kind.
 		* Redoing of options and removal of option to remove post formats support and theme compat
+		* Update help description
+		* Fix Mood SVG
+		* Cleanup and removal of older code
 	= Version 2.4.4 =
 		* Simplify coding standards issues
 		* Update settings

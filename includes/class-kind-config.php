@@ -196,7 +196,7 @@ class Kind_Config {
 	public static function termcheck_callback() {
 		$terms = Kind_Taxonomy::get_strings();
 		// Hide these terms until ready for use for now.
-		$hide = array( 'note', 'weather', 'exercise', 'travel', 'itinerary', 'tag', 'follow', 'drink', 'eat', 'trip', 'checkin', 'mood', 'recipe' );
+		$hide = array( 'note', 'weather', 'exercise', 'travel', 'itinerary', 'tag', 'follow', 'drink', 'eat', 'trip', 'checkin', 'recipe', 'mood' );
 		foreach ( $hide as $hid ) {
 			unset( $terms[ $hid ] );
 		}

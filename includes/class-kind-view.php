@@ -2,7 +2,7 @@
 /**
  * Post Kind View Class
  *
- * Handles the logic of adding the kind displays to the post content.
+ * Includes Helper Functions to Set Up Display Behavior and Allows Calling of View Templates
  */
 
 // The Kind_View class sets up the kind display behavior for kinds
@@ -12,24 +12,69 @@ class Kind_View {
 			add_filter( 'the_excerpt', array( 'Kind_View', 'excerpt_response' ), 20 );
 	}
 
+	// This mirrors get_template_part but for views and locates the correct file and returns the output
+	public static function get_view_part($slug, $name = null) {
+		$name = (string) $name;
+		if ( '' !== $name ) {
+			$templates[] = "{$slug}-{$name}.php";
+		}
+		$templates[] = "{$slug}.php";
+		foreach ( (array) $templates as $template_name ) {
+			if ( ! $template_name ) {
+					continue;
+			}
+			// If the Theme Has a kind_views directory look there first.
+			if ( file_exists( get_template_directory() . '/kind_views/' . $template_name ) ) {
+				$located = get_template_directory() . '/kind_views/' . $template_name;
+				break;
+			}
+			// Look in the views subdirectory.
+			if ( file_exists( plugin_dir_path( __FILE__ ) . 'views/' . $template_name ) ) {
+				$located = plugin_dir_path( __FILE__ ) . 'views/' . $template_name;
+				break;
+			}
+		}
+		ob_start();
+		include ( $located );
+		$return  = ob_get_contents();
+		ob_end_clean();
+		return $return;
+	}
+
+
+	// Return the Display
+	public static function get_display( $post_ID ) {
+		if ( 'post' === get_post_type( $post_ID ) ) {
+			$kind = get_post_kind_slug( $post_ID );
+			$content = self::get_view_part( 'kind', $kind );
+			return apply_filters( 'kind-response-display', $content, $post_ID );
+		}
+	}
+
+	// Echo the output of get_display
+	public static function display( ) {
+		echo self::get_display( );
+	}
+
+	public static function content_response ( $content ) {
+		return self::get_display( get_the_ID() ) . $content;
+	}
+
+
+	public static function excerpt_response ( $content ) {
+		global $post;
+		if ( has_excerpt( get_the_ID() ) ) {
+			return self::get_display( get_the_ID() ) . get_the_excerpt();
+		} else {
+			return self::get_display( get_the_ID() ) . wp_trim_words( $post->post_content );
+		}
+	}
+
 	public static function extract_domain_name( $url ) {
 		$parse = wp_parse_url( $url, PHP_URL_HOST );
 		return preg_replace( '/^www\./', '', $parse );
 	}
 
-
-	public static function sanitize_output( $content ) {
-		$allowed = wp_kses_allowed_html( 'post' );
-		$options = get_option( 'iwt_options', Kind_Config::Defaults() );
-		if ( array_key_exists( 'contentelements',$options ) && json_decode( $options['contentelements'] ) != null ) {
-			$allowed = json_decode( $options['contentelements'], true );
-		}
-
-		if ( ifset( $options[ 'protection' ] ) ) {
-			return $content;
-		}
-		return wp_kses( ( string ) $content ,$allowed );
-	}
 
 	// Take an array of attributes and output them as a string
 	public static function get_attributes( $classes = null ) {
@@ -87,61 +132,6 @@ class Kind_View {
 			$embed = '<div class="embed">' . $embed . '</div>';
 		}
 			return $embed;
-	}
-
-	public static function content_response ( $content ) {
-		return self::get_display( get_the_ID(), is_single() ) . $content;
-	}
-
-
-	public static function excerpt_response ( $content ) {
-		global $post;
-		if ( has_excerpt( get_the_ID() ) ) {
-			return self::get_display( get_the_ID(), is_single() ) . get_the_excerpt();
-		} else {
-			return self::get_display( get_the_ID(), is_single() ) . wp_trim_words( $post->post_content );
-		}
-	}
-
-	// This mirrors get_template_part but for views and locates the correct file
-	public static function get_view_part($slug, $name = null) {
-		$name = (string) $name;
-		if ( '' !== $name ) {
-			$templates[] = "{$slug}-{$name}.php";
-		}
-		$templates[] = "{$slug}.php";
-		foreach ( (array) $templates as $template_name ) {
-			if ( ! $template_name ) {
-					continue;
-			}
-			// If the Theme Has a kind_views directory look there first.
-			if ( file_exists( get_template_directory() . '/kind_views/' . $template_name ) ) {
-				$located = get_template_directory() . '/kind_views/' . $template_name;
-				break;
-			}
-			// Look in the views subdirectory.
-			if ( file_exists( plugin_dir_path( __FILE__ ) . 'views/' . $template_name ) ) {
-				$located = plugin_dir_path( __FILE__ ) . 'views/' . $template_name;
-				break;
-			}
-		}
-		ob_start();
-		include ( $located );
-		$return  = ob_get_contents();
-		ob_end_clean();
-		return $return;
-	}
-
-	// Return the Display
-	public static function get_display( $post_ID, $single = false ) {
-		if ( 'post' === get_post_type( $post_ID ) ) {
-			$meta = new Kind_Meta( $post_ID );
-			$kind = get_post_kind_slug( $post_ID );
-			$cite = $meta->get_cite();
-			$hcard = 'Unknown Author';
-			$content = self::get_view_part( 'kind', $kind );
-			return apply_filters( 'kind-response-display', $content, $post_ID );
-		}
 	}
 
 	/**
@@ -270,14 +260,4 @@ class Kind_View {
 	}
 
 
-	// Echo the output of get_display
-	public static function display( ) {
-		echo self::get_display( );
-	}
-
 }  // End Class
-
-
-function kind_response_display() {
-	echo apply_filters( 'kind_response_display', '' );
-}
