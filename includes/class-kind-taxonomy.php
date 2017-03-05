@@ -21,7 +21,7 @@ class Kind_Taxonomy {
 		// Trigger Webmention on Change in Post Status.
 		add_filter( 'transition_post_status', array( 'Kind_Taxonomy', 'transition' ), 10, 3 );
 		// On Post Publish Invalidate any Stored Response.
-		add_action( 'publish_post', array( 'Kind_Taxonomy', 'invalidate_response' ), 10, 2 );
+		add_action( 'save_post', array( 'Kind_Taxonomy', 'post_formats' ), 99, 3 );
 
 		// Add the Correct Archive Title to Kind Archives.
 		add_filter( 'get_the_archive_title', array( 'Kind_Taxonomy', 'kind_archive_title' ) , 10 , 3 );
@@ -41,12 +41,46 @@ class Kind_Taxonomy {
 
 
 	/**
-	 * Deletes cached response.
+	 * Sets Post Format for Post Kind.
 	 *
-	 * @param int $post_id Post to Delete Cache of
+	 * @param int $post_ID Post ID
+	 * @param WP_Post $post Post Object
+	 * @param boolean $update, 
 	 */
-	public static function invalidate_response( $post_id ) {
-		delete_post_meta( $post_id, '_resp_full' );
+	public static function post_formats( $post_ID, $post, $update ) {
+		$kind = get_post_kind_slug( $post_ID );
+		switch ( $kind ) {
+			case 'note':
+				set_post_format( $post_ID, 'aside' );
+				break;
+			case 'article':
+				set_post_format( $post_ID, '' );
+				break;
+			case 'favorite':
+			case 'bookmark':
+			case 'like':
+			case 'reply':
+				set_post_format( $post_ID, 'link' );
+				break;
+			case 'quote':
+				set_post_format( $post_ID, 'quote' );
+				break;
+			case 'listen':
+			case 'jam':
+				set_post_format( $post_ID, 'audio');
+				break;
+			case 'watch':
+				set_post_format( $post_ID, 'video');
+				break;
+			case 'photo':
+				set_post_format( $post_ID, 'image' );
+				break;
+			case 'play':
+			case 'read':
+			case 'rsvp':
+				set_post_format( $post_ID, 'status');
+				break;
+		}
 	}
 
 	/**
@@ -147,11 +181,7 @@ class Kind_Taxonomy {
 
 	public static function select_metabox( $post ) {
 		$strings = self::get_strings();
-		$option = get_option( 'iwt_options' );
-		$include = array();
-		if ( array_key_exists( 'termslist', $option ) ) {
-			$include = $option['termslist'];
-		}
+		$include = get_option( 'kind_termslist' );
 		$include = array_merge( $include, array( 'note', 'reply', 'article' ) );
 		// If Simple Location is Enabled, include the check-in type
 		// Filter Kinds
@@ -163,7 +193,7 @@ class Kind_Taxonomy {
 		if ( isset( $_GET['kind'] ) ) {
 			$default = get_term_by( 'slug', $_GET['kind'], 'kind' );
 		} else {
-			$default = get_term_by( 'slug', $option['defaultkind'], 'kind' );
+			$default = get_term_by( 'slug', get_option('kind_default'), 'kind' );
 		}
 		$terms = get_terms( 'kind', array( 'hide_empty' => 0 ) );
 		$postterms = get_the_terms( $post->ID, 'kind' );
@@ -405,9 +435,8 @@ class Kind_Taxonomy {
 		if ( 'post' !== get_post_type( $ID ) ) {
 			return;
 		}
-		$option = get_option( 'iwt_options' );
 		if ( count( wp_get_post_terms( $ID,'kind' ) ) <= 0 ) {
-			set_post_kind( $ID, $option['defaultkind'] );
+			set_post_kind( $ID, get_option('kind_default') );
 		}
 	}
 

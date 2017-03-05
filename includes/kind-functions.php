@@ -95,4 +95,20 @@ function set_post_kind( $post, $kind ) {
 	return Kind_Taxonomy::set_post_kind( $post, $kind );
 }
 
+/**
+ * Return the Displayed Response for a Specific Kind
+ * @param $slug
+ * @param $name
+ * @return string
+ */
+
+function get_kind_view_part($slug, $name = null) {
+	Kind_View::get_view_part( $slug, $name );
+}
+
+function kind_response_display() {
+        echo apply_filters( 'kind_response_display', '' );
+}
+
+
 ?>

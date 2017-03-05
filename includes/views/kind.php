@@ -4,72 +4,97 @@
  *	The Goal of this Template is to be a general all-purpose model that will be replaced by customization in other templates
  */
 
-$content = '<cite class="h-cite response ';
+$kind = get_post_kind_slug( get_the_ID() );
+$meta = new Kind_Meta( get_the_ID() );
+$author = Kind_View::get_hcard( $meta->get_author() );
+$cite = $meta->get_cite();
+$site_name = Kind_View::get_site_name( $meta->get_cite(), $meta->get_url() );
+$title = Kind_View::get_cite_title( $meta->get_cite(), $meta->get_url() );
+$embed = self::get_embed( $meta->get_url() );
+$rsvp = $meta->get( 'rsvp' );
+
 // Add in the appropriate type
 switch ( $kind ) {
 	case 'like':
-		  $content .= 'p-like-of';
+		$type = 'p-like-of';
 		break;
 	case 'favorite':
-		$content .= 'p-favorite-of';
+		$type = 'p-favorite-of';
 		break;
 	case 'repost':
-		$content .= 'p-repost-of';
+		$type = 'p-repost-of';
 		break;
 	case 'reply':
 	case 'rsvp':
-		$content .= 'p-in-reply-to';
+		$type = 'p-in-reply-to';
 		break;
 	case 'tag':
-		$content .= 'p-tag-of';
+		$type = 'p-tag-of';
 		break;
 	case 'bookmark':
-		$content .= 'p-bookmark-of';
+		$type = 'p-bookmark-of';
 		break;
 	case 'listen':
-		$content .= 'p-listen';
+		$type = 'p-listen';
 		break;
 	case 'watch':
-		$content .= 'p-watch';
+		$type = 'p-watch';
 		break;
 	case 'game':
-		$content .= 'p-play';
+		$type = 'p-play';
 		break;
 	case 'wish':
-		$content .= 'p-wish';
+		$type = 'p-wish';
 		break;
 	case 'read':
-		$content .= 'p-read-of';
-				break;
+		$type = 'p-read-of';
+		break;
 	case 'quote':
-		$content .= 'u-quotation-of';
-				break;
+		$type = 'u-quotation-of';
+		break;
+	default:
+		$type = '';
+		break;
 }
-$content .= '">';
-$content .= Kind_Taxonomy::get_icon( $kind );
-$content .= self::get_cite_title( $meta->get_cite(), $meta->get_url() );
-$author = self::get_hcard( $meta->get_author() );
-if ( $author ) {
-	$content .= ' ' . __( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
-}
-$site_name = self::get_site_name( $meta->get_cite(), $meta->get_url() );
-if ( $site_name ) {
-	$content .= '<em>(<span class="p-publication">' . $site_name . '</span>)</em>';
-}
-if ( in_array( $kind, array( 'jam', 'listen', 'play', 'read', 'watch' ) ) ) {
-	$duration = $meta->get_duration();
-	if ( $duration ) {
-		$content .= '(' . __( 'Duration: ', 'indieweb-post-kinds' ) . '<span class="p-duration">' . $duration . '</span>)';
+?>
+
+<section class="h-cite response <?php echo $type; ?> ">
+<header>
+<?php echo Kind_Taxonomy::get_icon( $kind );
+if( ! $embed ) {
+	if ( $title ) {
+		echo $title;
+	}
+	if ( $author ) {
+		echo ' ' . __( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
+	}
+	if ( $site_name ) {
+		echo '<em>(<span class="p-publication">' . $site_name . '</span>)</em>';
+	}
+	if ( in_array( $kind, array( 'jam', 'listen', 'play', 'read', 'watch' ) ) ) {
+		$duration = $meta->get_duration();
+		if ( $duration ) {
+			echo '(' . __( 'Duration: ', 'indieweb-post-kinds' ) . '<span class="p-duration">' . $duration . '</span>)';
+		}
 	}
 }
+?>
+</header>
+<?php
 if ( $cite ) {
-	$embed = self::get_embed( $meta->get_url() );
 	if ( $embed ) {
-		$content .= sprintf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
+		echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
 	} else if ( array_key_exists( 'summary', $cite ) ) {
-		$content .= sprintf( '<blockquote class="e-summary">%1s</blockquote>', $cite['summary'] );
+		echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $cite['summary'] );
 	}
 }
 
+if ( $rsvp ) {
+	echo 'RSVP <span class="p-rsvp">' . $rsvp . '</span>';
+}
+
 // Close Response
-$content .= '</cite>';
+?>
+</section>
+
+<?php
