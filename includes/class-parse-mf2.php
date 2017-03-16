@@ -779,7 +779,7 @@ class Parse_MF2 {
 			'url' => null,
 			'photo' => null,
 		);
-		$properties = [ 'url','name','photo' ];
+		$properties = array( 'url','name','photo' );
 		foreach ( $properties as $p ) {
 			if ( 'url' == $p && $authorurl ) {
 				// If there is a matching author URL, use that one
