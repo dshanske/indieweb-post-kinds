@@ -20,17 +20,18 @@ if ( ! defined( 'MULTIKIND' ) ) {
 }
 
 add_action( 'plugins_loaded', array( 'Post_Kinds_Plugin', 'init' ) );
+add_action( 'init', array( 'Post_Kinds_Plugin', 'early' ) );
 
 class Post_Kinds_Plugin {
 	public static $version = '2.5.0';
-	public static function init() {
+	public static function early() {
 		load_plugin_textdomain( 'indieweb-post-kinds', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 		// Add Kind Taxonomy.
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-taxonomy.php';
 		add_action( 'init' , array( 'Kind_Taxonomy', 'init' ) );
-		// Register Kind Taxonomy.
-		add_action( 'init', array( 'Kind_Taxonomy', 'register' ), 1 );
-
+		Kind_Taxonomy::register();
+	}
+	public static function init() {
 		// On Activation, add terms.
 		register_activation_hook( __FILE__, array( 'Kind_Taxonomy', 'activate_kinds' ) );
 
