@@ -37,6 +37,9 @@ class Kind_Taxonomy {
 
 		// Remove the Automatic Post Generation that the Micropub Plugin Offers
 		remove_filter( 'before_micropub', array( 'Micropub', 'generate_post_content' ) );
+
+		// Add Dropdown
+		add_action( 'restrict_manage_posts', array( 'Kind_Taxonomy', 'kind_dropdown' ), 10, 2 );
 	}
 
 
@@ -429,6 +432,25 @@ class Kind_Taxonomy {
 			$links = array_unique( $links );
 		}
 		return $links;
+	}
+
+	public static function kind_dropdown( $post_type, $which ) {
+		if ( 'post' === $post_type ) {
+			$taxonomy = 'kind';
+			$selected      = isset($_GET[$taxonomy]) ? $_GET[$taxonomy] : '';
+			$kind_taxonomy = get_taxonomy($taxonomy);
+			wp_dropdown_categories( array(
+				'show_option_all' =>  __("All {$kind_taxonomy->label}", 'indieweb-post-kinds' ),
+				'taxonomy'        =>  $taxonomy,
+				'name'            =>  $taxonomy,
+				'orderby'         =>  'name',
+				'selected'        =>  $selected,
+				'hierarchical'    =>  false,
+				'show_count'      =>  true, 
+				'hide_empty'      =>  true,
+				'value_field'     => 'slug' 
+			) );
+		}
 	}
 
 	public static function publish ( $ID, $post = null ) {
