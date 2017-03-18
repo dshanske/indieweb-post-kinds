@@ -124,7 +124,7 @@ class Kind_Taxonomy {
 			'public' => true,
 			'publicly_queryable' => true,
 			'hierarchical' => false,
-			'show_ui' => WP_DEBUG,
+			'show_ui' => true,
 			'show_in_menu' => WP_DEBUG,
 			'show_in_nav_menu' => true,
 			'show_in_rest' => false,
