@@ -91,14 +91,14 @@ class Kind_Config {
 
 		add_settings_field( 
 			'embeds', 
-			__( 'Add Rich Embed Support for Whitelisted Sites', 'indieweb-post-kinds' ), 
+			__( 'Use Rich Embed Support for Responses to Whitelisted Sites', 'indieweb-post-kinds' ), 
 			array( 'Kind_Config', 'checkbox_callback' ), 
 			'iwt_options', 'iwt-content' ,  array( 'name' => 'kind_embeds' ) 
 		);
 
 		add_settings_field( 
 			'protection', 
-			__( 'Disable Content Protection on Responses', 'indieweb-post-kinds' ), 
+			__( 'Disable KSES Content Protection on Responses(Advanced Feature)', 'indieweb-post-kinds' ), 
 			array( 'Kind_Config', 'checkbox_callback' ),
 			'iwt_options',
 			'iwt-content',
