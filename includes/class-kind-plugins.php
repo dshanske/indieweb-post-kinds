@@ -81,10 +81,6 @@ class Kind_Plugins {
 		if ( ! $wp_args ) {
 			return;
 		}
-		// If there are no properties in the request set it as note
-		if ( ! isset( $input['properties'] ) ) {
-			set_post_kind( $wp_args['ID'], 'note' );
-		}
 		if ( isset( $input['properties']['rsvp'] ) ) {
 			set_post_kind( $wp_args['ID'], 'rsvp' );
 			return;
@@ -93,14 +89,26 @@ class Kind_Plugins {
 			set_post_kind( $wp_args['ID'], 'reply' );
 			return;
 		}
+
+		if ( isset( $input['properties']['repost-of'] ) ) {
+			set_post_kind( $wp_args['ID'], 'repost' ); 
+			return;
+		}   
+		
+		if ( isset( $input['properties']['like-of'] ) ) {
+			set_post_kind( $wp_args['ID'], 'like' ); 
+			return;
+		}	
+		if ( isset( $input['properties']['photo'] ) ) {
+			set_post_kind( $wp_args['ID'], 'photo' ); 
+			return;
+		}
+
 		if ( isset( $input['properties']['bookmark-of'] ) || isset( $input['properties']['bookmark'] ) ) {
 			set_post_kind( $wp_args['ID'], 'bookmark' );
 			return;
 		}
-		if ( isset( $input['properties']['in-reply-to'] ) ) {
-			set_post_kind( $wp_args['ID'], 'reply' );
-			return;
-		}
+
 		// This basically adds Teacup support
 		if ( isset( $input['properties']['p3k-food'] ) ) {
 			if ( isset( $input['properties']['p3k-type'] ) ) {
@@ -108,12 +116,20 @@ class Kind_Plugins {
 					set_post_kind( $wp_args['ID'], 'drink' );
 					return;
 				}
-				set_post_kind( $post_id, 'eat' );
+				set_post_kind( $wp_args['ID'], 'eat' );
 				return;
 			}
 		}
-		// If it got all the way down here assume it is a note
-		set_post_kind( $wp_args['ID'], 'note' );
+		if ( ! isset( $input['properties']['name'] ) || empty( $input['properties']['name'] ) ) {
+			$name = trim(preg_replace('/\s+/',' ', $input['properties']['name']));
+			$content = trim(preg_replace('/\s+/',' ', $input['properties']['content']));
+			if ( 0 == ! strpos( $content, $name ) ) {
+				set_post_kind( $wp_args['ID'], 'article' ); 
+				return;
+			}
+			set_post_kind( $wp_args['ID'], 'note' );
+		}
+
 	}
 
 } // End Class Kind_Plugins
