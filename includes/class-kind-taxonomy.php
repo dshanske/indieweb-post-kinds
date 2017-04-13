@@ -144,42 +144,10 @@ class Kind_Taxonomy {
 	 */
 	public static function post_formats( $post_ID, $post, $update ) {
 		$kind = get_post_kind_slug( $post_ID );
-		switch ( $kind ) {
-			case 'note':
-				set_post_format( $post_ID, 'aside' );
-				break;
-			case 'article':
-				set_post_format( $post_ID, '' );
-				break;
-			case 'favorite':
-			case 'bookmark':
-			case 'like':
-			case 'reply':
-				set_post_format( $post_ID, 'link' );
-				break;
-			case 'quote':
-				set_post_format( $post_ID, 'quote' );
-				break;
-			case 'listen':
-			case 'jam':
-				set_post_format( $post_ID, 'audio');
-				break;
-			case 'watch':
-				set_post_format( $post_ID, 'video');
-				break;
-			case 'photo':
-				set_post_format( $post_ID, 'image' );
-				break;
-			case 'play':
-			case 'read':
-			case 'rsvp':
-				set_post_format( $post_ID, 'status');
-				break;
-		}
+		set_post_format( $post_ID, self::get_kind_info( $kind, 'property' ) );
 	}
 
 	public static function select_metabox( $post ) {
-		$strings = self::get_strings();
 		$include = get_option( 'kind_termslist' );
 		$include = array_merge( $include, array( 'note', 'reply', 'article' ) );
 		// If Simple Location is Enabled, include the check-in type
@@ -591,6 +559,9 @@ class Kind_Taxonomy {
 	}
 
 	public static function post_class($classes) {
+		if ( 'post' !== get_post_type() ) {
+			return $classes;
+		} 
 		// Adds kind classes to post
 		if ( ! is_singular() ) {
 			$classes = self::kinds_as_type( $classes );
@@ -600,24 +571,14 @@ class Kind_Taxonomy {
 	}
 
 	public static function body_class($classes) {
+		if ( 'post' !== get_post_type() ) {
+			return $classes;
+		} 
 		// Adds kind classes to body
 		if ( is_singular() ) {
 			$classes = self::kinds_as_type( $classes );
 		}
 		return $classes;
-	}
-
-	/**
-	 * Returns true if kind is a response type kind.
-	 * This means dynamically generated content is added
-	 *
-	 * @param string $kind The post kind slug.
-	 * @return true/false.
-	 */
-	public static function response_kind( $kind ) {
-		$not_responses = array( 'article', 'note' , 'photo' );
-		if ( in_array( $kind, $not_responses ) ) { return false;
-		} else { return true; }
 	}
 
 	/**
