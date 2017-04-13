@@ -194,7 +194,7 @@ class Kind_Config {
 	 * @access public
 	 */
 	public static function termcheck_callback() {
-		$terms = Kind_Taxonomy::get_strings();
+		$terms = Kind_Taxonomy::get_kind_info( 'all', 'all' );
 		// Hide these terms until ready for use for now.
 		$hide = array( 'note', 'weather', 'exercise', 'travel', 'itinerary', 'tag', 'follow', 'drink', 'eat', 'trip', 'checkin', 'recipe', 'mood' );
 		foreach ( $hide as $hid ) {
@@ -202,7 +202,7 @@ class Kind_Config {
 		}
 		$termslist = get_option('kind_termslist');
 		foreach ( $terms as $key => $value ) {
-			echo "<input name='kind_termslist[]' type='checkbox' value='" . $key . "' " . checked( in_array( $key, $termslist ), true, false ) . ' />' . $value . '<br />';
+			echo "<input name='kind_termslist[]' type='checkbox' value='" . $key . "' " . checked( in_array( $key, $termslist ), true, false ) . ' /><strong>' . $value['singular_name'] . '</strong> - ' . $value['description'] . '<br />';
 		}
 	}
 
@@ -215,12 +215,11 @@ class Kind_Config {
 	public static function defaultkind_callback() {
 		$terms = get_option('kind_termslist');
 		$terms[] = 'note';
-		$strings = Kind_Taxonomy::get_strings();
 
 		$defaultkind = get_option('kind_default');
 
 		foreach ( $terms as $term ) {
-			echo '<input id="kind_default" name="kind_default" type="radio" value="' . $term . '" '. checked( $term, $defaultkind, false ) . ' />' . $strings[$term] . '<br />';
+			echo '<input id="kind_default" name="kind_default" type="radio" value="' . $term . '" '. checked( $term, $defaultkind, false ) . ' />' . Kind_Taxonomy::get_kind_info( $term, 'singular_name' ) . '<br />';
 		}
 	}
 

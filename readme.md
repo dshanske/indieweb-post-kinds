@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like  
-**Stable tag:** 2.5.1  
+**Stable tag:** 2.5.2  
 **Requires at least:** 4.7  
 **Tested up to:** 4.7.2  
 **License:** GPLv2 or later  
@@ -158,6 +158,10 @@ Indieweb Post Kinds had support for replying to Twitter posts using the Social N
 developer of this plugin.
 
 ## Changelog ##
+	= Version 2.5.2 =
+		* Generation of strings being moved from individual functions to one unified function to make management easier
+		* Description now appears on Archives
+		* Description now appears on settings page
 	= Version 2.5.1 =
 		* Fix bug hiding metabox
 		* Add drop down filter for Kinds to View Posts
