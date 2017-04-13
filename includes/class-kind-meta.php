@@ -144,7 +144,7 @@ class Kind_Meta {
 		if ( 1 == get_option( 'kind_protection' ) ) {
 			$allowed = json_decode( get_option( 'kind_kses' ), true );
 		}
-		return wp_kses( ( string ) $value , $allowed );
+		return wp_kses( $value , $allowed );
 	}
 
 	public static function sanitize_text( $value ) {
@@ -168,17 +168,17 @@ class Kind_Meta {
 	public function build_meta( $raw ) {
 		$raw = apply_filters( 'kind_build_meta', $raw );
 		$kind = get_post_kind_slug( $this->post );
+		$property = Kind_Taxonomy::get_kind_info( $kind, 'property' );
 		if ( isset( $raw['url'] ) ) {
 			/**
 			 * Allows additional changes to the kind data after parsing.
 			 *
 			 * @param array $raw An array of properties.
 			 */
-			$map = array_filter( Kind_Taxonomy::get_kind_properties() );
 			if ( isset( $kind ) ) {
-				if ( array_key_exists( $kind, $map ) ) {
-						$this->meta[ $map[ $kind ] ] = $raw['url'];
-						unset( $raw['url'] );
+				if ( ! empty( $property ) ) {
+					$this->meta[ $property ] = $raw['url'];
+					unset( $raw['url'] );
 				}
 			}
 		}
@@ -195,7 +195,7 @@ class Kind_Meta {
 			return false;
 		}
 		$kind = get_post_kind_slug( $this->post );
-		$map = Kind_Taxonomy::get_kind_properties();
+		$property = Kind_Taxonomy::get_kind_info( $kind, 'property' );
 		if ( array_key_exists( 'cite', $this->meta ) ) {
 			if ( array_key_exists( 'url', $this->meta['cite'] ) ) {
 				return $this->meta['cite']['url'];
@@ -204,14 +204,14 @@ class Kind_Meta {
 		if ( ! $kind ) {
 			return false;
 		}
-		if ( array_key_exists( $kind, $map ) ) {
-			if ( array_key_exists( $map[ $kind ], $this->meta ) ) {
-				if ( is_string( $this->meta[ $map[ $kind ] ] ) ) {
-					return $this->meta[ $map[ $kind ] ];
+		if ( ! empty( $property ) ) {
+			if ( array_key_exists( $property, $this->meta ) ) {
+				if ( is_string( $this->meta[ $property ] ) ) {
+					return $this->meta[ $property ];
 				}
-				if ( is_array( $this->meta[ $map[ $kind ] ] ) ) {
-					return $this->meta[ $map [ $kind ] ][0];
-				}	
+				if ( is_array( $this->meta[ $property ] ) ) {
+					return $this->meta[ $property ][0];
+				}
 			}
 		}
 		return false;
@@ -436,7 +436,7 @@ class Kind_Meta {
 	}
 
 	public function set( $key, $value) {
-		$this->meta[$key] = self::sanitize_text( $value );
+		$this->meta[ $key ] = self::sanitize_text( $value );
 	}
 
 	public function del( $key ) {

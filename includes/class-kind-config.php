@@ -36,80 +36,80 @@ class Kind_Config {
 			'type' => 'array',
 			'description' => 'Kinds Enabled on This Site',
 			'show_in_rest' => true,
-			'default' => array( 'article', 'reply', 'bookmark' )
+			'default' => array( 'article', 'reply', 'bookmark' ),
 		);
 		register_setting( 'iwt_options', 'kind_termslist', $args );
 		$args = array(
 			'type' => 'string',
 			'description' => 'Default Kind',
 			'show_in_rest' => true,
-			'default' => 'note'
+			'default' => 'note',
 		);
 		register_setting( 'iwt_options', 'kind_default', $args );
 		$args = array(
 			'type' => 'boolean',
 			'description' => 'Rich Embed Support for Whitelisted Sites',
 			'show_in_rest' => true,
-			'default' => 1
+			'default' => 1,
 		);
 		register_setting( 'iwt_options', 'kind_embeds', $args );
 		$args = array(
 			'type' => 'boolean',
 			'description' => 'Disable Content Protection on Responses',
 			'show_in_rest' => true,
-			'default' => 0
+			'default' => 0,
 		);
 		register_setting( 'iwt_options', 'kind_protection', $args );
 		$args = array(
 			'type' => 'string',
 			'description' => 'KSES Content Protection on Responses',
 			'show_in_rest' => true,
-			'default' => str_replace( '},"',"},\r\n\"", wp_json_encode( wp_kses_allowed_html( 'post' ), JSON_PRETTY_PRINT ) )
+			'default' => str_replace( '},"',"},\r\n\"", wp_json_encode( wp_kses_allowed_html( 'post' ), JSON_PRETTY_PRINT ) ),
 		);
 		register_setting( 'iwt_options', 'kind_kses', $args );
-		add_settings_section( 
-			'iwt-content', 
-			__( 'Content Options', 
-			'indieweb-post-kinds' ), 
-			array( 'Kind_Config', 'options_callback' ), 
-			'iwt_options' 
+		add_settings_section(
+			'iwt-content',
+			__( 'Content Options',
+			'indieweb-post-kinds' ),
+			array( 'Kind_Config', 'options_callback' ),
+			'iwt_options'
 		);
-		add_settings_field( 
-			'termslist', 
+		add_settings_field(
+			'termslist',
 			__( 'Select All Kinds You Wish to Use', 'indieweb-post-kinds' ),
 			array( 'Kind_Config', 'termcheck_callback' ),
 			'iwt_options',
-			'iwt-content' 
+			'iwt-content'
 		);
-		add_settings_field( 
-			'defaultkind', 
+		add_settings_field(
+			'defaultkind',
 			__( 'Default Kind', 'indieweb-post-kinds' ),
 			array( 'Kind_Config', 'defaultkind_callback' ),
 			'iwt_options',
 			'iwt-content'
 		);
 
-		add_settings_field( 
-			'embeds', 
-			__( 'Use Rich Embed Support for Responses to Whitelisted Sites', 'indieweb-post-kinds' ), 
-			array( 'Kind_Config', 'checkbox_callback' ), 
-			'iwt_options', 'iwt-content' ,  array( 'name' => 'kind_embeds' ) 
+		add_settings_field(
+			'embeds',
+			__( 'Use Rich Embed Support for Responses to Whitelisted Sites', 'indieweb-post-kinds' ),
+			array( 'Kind_Config', 'checkbox_callback' ),
+			'iwt_options', 'iwt-content' ,  array( 'name' => 'kind_embeds' )
 		);
 
-		add_settings_field( 
-			'protection', 
-			__( 'Disable KSES Content Protection on Responses(Advanced Feature)', 'indieweb-post-kinds' ), 
+		add_settings_field(
+			'protection',
+			__( 'Disable KSES Content Protection on Responses(Advanced Feature)', 'indieweb-post-kinds' ),
 			array( 'Kind_Config', 'checkbox_callback' ),
 			'iwt_options',
 			'iwt-content',
 			array( 'name' => 'kind_protection' )
 		);
 		if ( 1 == get_option( 'kind_protection' ) ) {
-			add_settings_field( 
-				'contentelements', 
-				__( 'Response Content Allowed Html Elements', 'indieweb-post-kinds' ) . ' <a href="http://codex.wordpress.org/Function_Reference/wp_kses">*</a>', 
+			add_settings_field(
+				'contentelements',
+				__( 'Response Content Allowed Html Elements', 'indieweb-post-kinds' ) . ' <a href="http://codex.wordpress.org/Function_Reference/wp_kses">*</a>',
 				array( 'Kind_Config', 'textbox_callback' ),
-				'iwt_options', 
+				'iwt_options',
 				'iwt-content',
 				array( 'name' => 'kind_kses' )
 			);
@@ -200,7 +200,7 @@ class Kind_Config {
 		foreach ( $hide as $hid ) {
 			unset( $terms[ $hid ] );
 		}
-		$termslist = get_option('kind_termslist');
+		$termslist = get_option( 'kind_termslist' );
 		foreach ( $terms as $key => $value ) {
 			echo "<input name='kind_termslist[]' type='checkbox' value='" . $key . "' " . checked( in_array( $key, $termslist ), true, false ) . ' /><strong>' . $value['singular_name'] . '</strong> - ' . $value['description'] . '<br />';
 		}
@@ -213,10 +213,10 @@ class Kind_Config {
 	 * @access public
 	 */
 	public static function defaultkind_callback() {
-		$terms = get_option('kind_termslist');
+		$terms = get_option( 'kind_termslist' );
 		$terms[] = 'note';
 
-		$defaultkind = get_option('kind_default');
+		$defaultkind = get_option( 'kind_default' );
 
 		foreach ( $terms as $term ) {
 			echo '<input id="kind_default" name="kind_default" type="radio" value="' . $term . '" '. checked( $term, $defaultkind, false ) . ' />' . Kind_Taxonomy::get_kind_info( $term, 'singular_name' ) . '<br />';
