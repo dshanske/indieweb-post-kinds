@@ -30,7 +30,7 @@ class Kind_Taxonomy {
 
 		// Trigger Webmention on Change in Post Status.
 		add_filter( 'transition_post_status', array( 'Kind_Taxonomy', 'transition' ), 10, 3 );
-		// On Post Publish Invalidate any Stored Response.
+		// On Post Save Set Post Format
 		add_action( 'save_post', array( 'Kind_Taxonomy', 'post_formats' ), 99, 3 );
 	}
 
@@ -144,7 +144,9 @@ class Kind_Taxonomy {
 	 */
 	public static function post_formats( $post_ID, $post, $update ) {
 		$kind = get_post_kind_slug( $post_ID );
-		set_post_format( $post_ID, self::get_kind_info( $kind, 'property' ) );
+		if ( ! $update ) {
+			set_post_format( $post_ID, self::get_kind_info( $kind, 'property' ) );
+		}
 	}
 
 	public static function select_metabox( $post ) {
