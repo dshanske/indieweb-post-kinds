@@ -10,9 +10,19 @@
 class Kind_Taxonomy {
 	public static function init() {
 
+		// Add the Correct Archive Title to Kind Archives.
+		add_filter( 'get_the_archive_title', array( 'Kind_Taxonomy', 'kind_archive_title' ), 10 );
+		add_filter( 'get_the_archive_description', array( 'Kind_Taxonomy', 'kind_archive_description' ), 10 );
+
 		// Add Kind Permalinks.
 		add_filter( 'post_link', array( 'Kind_Taxonomy', 'kind_permalink' ) , 10, 3 );
 		add_filter( 'post_type_link', array( 'Kind_Taxonomy', 'kind_permalink' ) , 10 , 3 );
+
+		// Add Dropdown
+		add_action( 'restrict_manage_posts', array( 'Kind_Taxonomy', 'kind_dropdown' ), 10, 2 );
+
+		// Add Links to Ping to the Webmention Sender.
+		add_filter( 'webmention_links', array( 'Kind_Taxonomy', 'webmention_links' ), 11, 2 );
 
 		// Add Classes to Post and Body.
 		add_filter( 'post_class', array( 'Kind_Taxonomy', 'post_class' ) );
@@ -20,71 +30,10 @@ class Kind_Taxonomy {
 
 		// Trigger Webmention on Change in Post Status.
 		add_filter( 'transition_post_status', array( 'Kind_Taxonomy', 'transition' ), 10, 3 );
-		// On Post Publish Invalidate any Stored Response.
+		// On Post Save Set Post Format
 		add_action( 'save_post', array( 'Kind_Taxonomy', 'post_formats' ), 99, 3 );
-
-		// Add the Correct Archive Title to Kind Archives.
-		add_filter( 'get_the_archive_title', array( 'Kind_Taxonomy', 'kind_archive_title' ) , 10 , 3 );
-
-		// Set Post Kind for Micropub Inputs.
-		add_action( 'after_micropub', array( 'Kind_Taxonomy', 'micropub_set_kind' ), 10, 2 );
-
-		// Override Post Type in Semantic Linkbacks.
-		add_filter( 'semantic_linkbacks_post_type', array( 'Kind_Taxonomy', 'semantic_post_type' ), 11, 2 );
-
-		// Add Links to Ping to the Webmention Sender.
-		add_filter( 'webmention_links', array( 'Kind_Taxonomy', 'webmention_links' ), 11, 2 );
-
-		// Remove the Automatic Post Generation that the Micropub Plugin Offers
-		remove_filter( 'before_micropub', array( 'Micropub', 'generate_post_content' ) );
-
-		// Add Dropdown
-		add_action( 'restrict_manage_posts', array( 'Kind_Taxonomy', 'kind_dropdown' ), 10, 2 );
 	}
 
-
-	/**
-	 * Sets Post Format for Post Kind.
-	 *
-	 * @param int $post_ID Post ID
-	 * @param WP_Post $post Post Object
-	 * @param boolean $update, 
-	 */
-	public static function post_formats( $post_ID, $post, $update ) {
-		$kind = get_post_kind_slug( $post_ID );
-		switch ( $kind ) {
-			case 'note':
-				set_post_format( $post_ID, 'aside' );
-				break;
-			case 'article':
-				set_post_format( $post_ID, '' );
-				break;
-			case 'favorite':
-			case 'bookmark':
-			case 'like':
-			case 'reply':
-				set_post_format( $post_ID, 'link' );
-				break;
-			case 'quote':
-				set_post_format( $post_ID, 'quote' );
-				break;
-			case 'listen':
-			case 'jam':
-				set_post_format( $post_ID, 'audio');
-				break;
-			case 'watch':
-				set_post_format( $post_ID, 'video');
-				break;
-			case 'photo':
-				set_post_format( $post_ID, 'image' );
-				break;
-			case 'play':
-			case 'read':
-			case 'rsvp':
-				set_post_format( $post_ID, 'status');
-				break;
-		}
-	}
 
 	/**
 	 * To Be Run on Plugin Activation.
@@ -145,12 +94,12 @@ class Kind_Taxonomy {
 	 * Sets up Default Terms for Kind Taxonomy.
 	 */
 	public static function kind_defaultterms () {
-		$terms = self::get_strings();
+		$terms = self::get_kind_info( 'all', 'all' );
 		foreach ( $terms as $key => $value ) {
 			if ( ! term_exists( $key, 'kind' ) ) {
 				wp_insert_term( $key, 'kind',
 					array(
-					'description' => $value,
+					'description' => $value['description'],
 					'slug' => $key,
 				) );
 			}
@@ -169,21 +118,38 @@ class Kind_Taxonomy {
 		} else { $taxonomy_slug = 'note'; }
 		return str_replace( '%kind%', $taxonomy_slug, $permalink );
 	}
-	public static function kind_archive_title($title) {
-		$strings = self::get_strings_plural();
+
+	public static function kind_archive_title( $title ) {
 		if ( is_tax( 'kind' ) ) {
-			foreach ( $strings as $key => $string ) {
-				if ( is_tax( 'kind', $key ) ) {
-					$title = $string;
-					return $title;
-				}
-			}
+			$term = get_queried_object();
+			return self::get_kind_info( $term->slug, 'name' );
 		}
 		return $title;
 	}
 
+	public static function kind_archive_description( $title ) {
+		if ( is_tax( 'kind' ) ) {
+			$term = get_queried_object();
+			return self::get_kind_info( $term->slug, 'description' );
+		}
+		return $title;
+	}
+
+	/**
+	 * Sets Post Format for Post Kind.
+	 *
+	 * @param int $post_ID Post ID
+	 * @param WP_Post $post Post Object
+	 * @param boolean $update,
+	 */
+	public static function post_formats( $post_ID, $post, $update ) {
+		$kind = get_post_kind_slug( $post_ID );
+		if ( ! $update ) {
+			set_post_format( $post_ID, self::get_kind_info( $kind, 'property' ) );
+		}
+	}
+
 	public static function select_metabox( $post ) {
-		$strings = self::get_strings();
 		$include = get_option( 'kind_termslist' );
 		$include = array_merge( $include, array( 'note', 'reply', 'article' ) );
 		// If Simple Location is Enabled, include the check-in type
@@ -196,7 +162,7 @@ class Kind_Taxonomy {
 		if ( isset( $_GET['kind'] ) ) {
 			$default = get_term_by( 'slug', $_GET['kind'], 'kind' );
 		} else {
-			$default = get_term_by( 'slug', get_option('kind_default'), 'kind' );
+			$default = get_term_by( 'slug', get_option( 'kind_default' ), 'kind' );
 		}
 		$terms = get_terms( 'kind', array( 'hide_empty' => 0 ) );
 		$postterms = get_the_terms( $post->ID, 'kind' );
@@ -211,7 +177,8 @@ class Kind_Taxonomy {
 				echo "<li id='$id' class='kind-$slug'><label class='selectit'>";
 				echo "<input type='radio' id='in-$id' name='tax_input[kind]'".checked( $current,$term->term_id,false )."value='$slug' />";
 				echo self::get_icon( $slug );
-				echo "$strings[$slug]<br />";
+				echo self::get_kind_info( $slug, 'singular_name' );
+				echo '<br />';
 				echo '</label></li>';
 
 			}
@@ -220,205 +187,276 @@ class Kind_Taxonomy {
 	}
 
 	/**
-	 * Returns an array of post kind slugs to their translated and pretty display versions
+	 * Returns all translated strings.
 	 *
-	 * @return array The array of translated post kind names.
+	 * @param $kind Post Kind to return.
+	 * @param $property The individual property
+	 * @return string|array Return kind-property. If either is set to all, return all.
 	 */
-	public static function get_strings() {
-		$strings = array(
-			'article' => _x( 'Article', 'indieweb-post-kinds' ),
-			'note'    => _x( 'Note',    'indieweb-post-kinds' ),
-			'reply'     => _x( 'Reply',     'indieweb-post-kinds' ),
-			'repost'  => _x( 'Repost',  'indieweb-post-kinds' ),
-			'like'     => _x( 'Like',     'indieweb-post-kinds' ),
-			'favorite'    => _x( 'Favorite',    'indieweb-post-kinds' ),
-			'bookmark'    => _x( 'Bookmark',    'indieweb-post-kinds' ),
-			'photo'   => _x( 'Photo',   'indieweb-post-kinds' ),
-			'tag'    => _x( 'Tag',    'indieweb-post-kinds' ),
-			'rsvp'    => _x( 'RSVP',    'indieweb-post-kinds' ),
-			'listen'   => _x( 'Listen', 'indieweb-post-kinds' ),
-			'watch'   => _x( 'Watch', 'indieweb-post-kinds' ),
-			'checkin'   => _x( 'Checkin', 'indieweb-post-kinds' ),
-			'wish'   => _x( 'Wish', 'indieweb-post-kinds' ),
-			'play'   => _x( 'Play', 'indieweb-post-kinds' ),
-			'weather'   => _x( 'Weather', 'indieweb-post-kinds' ),
-			'exercise'   => _x( 'Exercise', 'indieweb-post-kinds' ),
-			'trip'   => _x( 'Travel', 'indieweb-post-kinds' ),
-			'itinerary' => _x( 'Itinerary', 'indieweb-post-kinds' ),
-		'eat'   => _x( 'Eat', 'indieweb-post-kinds' ),
-		'drink'   => _x( 'Drink', 'indieweb-post-kinds' ),
-		'follow'   => _x( 'Follow', 'indieweb-post-kinds' ),
-		'jam'   => _x( 'Jam', 'indieweb-post-kinds' ),
-		'read' => _x( 'Read', 'indieweb-post-kinds' ),
-		'quote' => _x( 'Quote', 'indieweb-post-kinds' ),
-		'mood' => _x( 'Mood', 'indieweb-post-kinds' ),
-		'recipe' => _x( 'Recipe', 'indieweb-post-kinds' ),
-		);
-		return apply_filters( 'kind_strings', $strings );
-	}
-
-	/**
-	 * Returns an array of post kind slugs to their pluralized translated and pretty display versions
-	 *
-	 * @return array The array of translated post kind names.
-	 */
-	public static function get_strings_plural() {
-		$strings = array(
-			'article' => _x( 'Articles', 'indieweb-post-kinds' ),
-			'note'    => _x( 'Notes',    'indieweb-post-kinds' ),
-			'reply'     => _x( 'Replies',     'indieweb-post-kinds' ),
-			'repost'  => _x( 'Reposts',  'indieweb-post-kinds' ),
-			'like'     => _x( 'Likes',     'indieweb-post-kinds' ),
-			'favorite'    => _x( 'Favorites',    'indieweb-post-kinds' ),
-			'bookmark'    => _x( 'Bookmarks',    'indieweb-post-kinds' ),
-			'photo'   => _x( 'Photos',   'indieweb-post-kinds' ),
-			'tag'    => _x( 'Tags',    'indieweb-post-kinds' ),
-			'rsvp'    => _x( 'RSVPs',    'indieweb-post-kinds' ),
-			'listen'   => _x( 'Listens', 'indieweb-post-kinds' ),
-			'watch'   => _x( 'Watches', 'indieweb-post-kinds' ),
-			'checkin'   => _x( 'Checkins', 'indieweb-post-kinds' ),
-			'wish'   => _x( 'Wishlist', 'indieweb-post-kinds' ),
-			'play'   => _x( 'Plays', 'indieweb-post-kinds' ),
-			'weather'   => _x( 'Weather', 'indieweb-post-kinds' ),
-			'exercise'   => _x( 'Exercises', 'indieweb-post-kinds' ),
-			'trip'   => _x( 'Travels', 'indieweb-post-kinds' ),
-			'itinerary' => _x( 'Itineraries', 'indieweb-post-kinds' ),
-		'eat'   => _x( 'Eat', 'indieweb-post-kinds' ),
-		'drink'   => _x( 'Drinks', 'indieweb-post-kinds' ),
-			'follow'   => _x( 'Follows', 'indieweb-post-kinds' ),
-		'jam'   => _x( 'Jams', 'indieweb-post-kinds' ),
-		'read' => _x( 'Read', 'indieweb-post-kinds' ),
-		'quote' => _x( 'Quotes', 'indieweb-post-kinds' ),
-		'mood' => _x( 'Moods', 'indieweb-post-kinds' ),
-		'recipe' => _x( 'Recipes', 'indieweb-post-kinds' ),
-		);
-		return apply_filters( 'kind_strings_plural', $strings );
-	}
-
-	/**
-	 * Returns an array of post kind slugs to their translated verbs
-	 *
-	 * @return array The array of translated post kind verbs.
-	 */
-	public static function get_verb_strings() {
-		$strings = array(
-			'article' => _x( ' ', 'indieweb-post-kinds' ),
-			'note'    => _x( ' ',    'indieweb-post-kinds' ),
-			'reply'     => _x( 'In Reply To',     'indieweb-post-kinds' ),
-			'repost'  => _x( 'Reposted',  'indieweb-post-kinds' ),
-			'like'     => _x( 'Liked',     'indieweb-post-kinds' ),
-			'favorite'    => _x( 'Favorited',    'indieweb-post-kinds' ),
-			'bookmark'    => _x( 'Bookmarked',    'indieweb-post-kinds' ),
-			'photo'   => _x( ' ',   'indieweb-post-kinds' ),
-			'tag'    => _x( 'Tagged',    'indieweb-post-kinds' ),
-			'rsvp'    => _x( 'RSVPed',    'indieweb-post-kinds' ),
-			'listen'    => _x( 'Listened to ',    'indieweb-post-kinds' ),
-			'watch'   => _x( 'Watched', 'indieweb-post-kinds' ),
-			'checkin'   => _x( 'Checked In At', 'indieweb-post-kinds' ),
-			'wish'   => _x( 'Desires', 'indieweb-post-kinds' ),
-			'play'   => _x( 'Played', 'indieweb-post-kinds' ),
-			'weather'   => _x( 'Weathered', 'indieweb-post-kinds' ),
-			'exercise'   => _x( 'Exercised', 'indieweb-post-kinds' ),
-			'trip'   => _x( 'Traveled', 'indieweb-post-kinds' ),
-			'itinerary' => _x( 'Traveled', 'indieweb-post-kinds' ),
-		'eat'   => _x( 'Ate', 'indieweb-post-kinds' ),
-		'drink'   => _x( 'Drank', 'indieweb-post-kinds' ),
-		'follow'   => _x( 'Followed', 'indieweb-post-kinds' ),
-		'jam'   => _x( 'Listened to', 'indieweb-post-kinds' ),
-		'read' => _x( 'Is Reading', 'indieweb-post-kinds' ),
-		'quote' => _x( 'Quoted', 'indieweb-post-kinds' ),
-		'mood' => _x( 'Felt', 'indieweb-post-kinds' ),
-		'recipe' => _x( 'Cooked', 'indieweb-post-kinds' ),
-
-		);
-		return apply_filters( 'kind_verbs', $strings );
-	}
-
-	/**
-	 * Returns an array of properties associated with kinds.
-	 *
-	 * @return array The array of properties.
-	 */
-	public static function get_kind_properties() {
-		$strings = array(
-		'article' => '',
-		'note'    => '',
-		'reply'     => 'in-reply-to',
-		'repost'  => 'repost-of',
-		'like'     => 'like-of',
-		'favorite'    => 'favorite-of',
-		'bookmark'    => 'bookmark-of',
-		'photo'   => 'photo',
-		'tag'    => 'tag',
-		'rsvp'    => 'rsvp',
-		'listen'    => 'listen',
-		'watch'   => 'watch',
-		'checkin'   => 'checkin',
-		'wish'   => 'wish',
-		'play'   => 'play',
-		'weather'   => 'weather',
-		'exercise'   => 'exercise',
-		'trip'   => 'trip',
-		'itinerary' => 'itinerary',
-		'eat'   => 'p3k-food',
-		'drink'   => 'p3k-food',
-		'follow'   => 'u-follow-of',
-		'jam'   => 'jam',
-		'read' => 'read',
-		'quote' => 'u-quotation-of',
-		'mood' => 'mood',
-		'recipe' => 'recipe',
-		);
-		return apply_filters( 'kind_properties', $strings );
-	}
-
-	// Replaces need for Replacing the Entire Excerpt
-	public static function semantic_post_type($post_type, $post_id) {
-		return _x( 'this', 'indieweb-post-kinds' ) . ' ' . strtolower( get_post_kind( $post_id ) );
-	}
-
-	// Replacement for the Semantic Linkbacks Comment Excerpt
-	public static function comment_text_excerpt($text, $comment = null, $args = array()) {
-		// only change text for pingbacks/trackbacks/webmentions
-		if ( ! $comment || '' === $comment->comment_type || ! get_comment_meta( $comment->comment_ID, 'semantic_linkbacks_canonical', true ) ) {
-			return $text;
+	public static function get_kind_info( $kind, $property ) {
+		if ( ! $kind || ! $property ) {
+			return false;
 		}
-		// check comment type
-		$comment_type = get_comment_meta( $comment->comment_ID, 'semantic_linkbacks_type', true );
-		if ( ! $comment_type || ! in_array( $comment_type, array_keys( SemanticLinkbacksPlugin::get_comment_type_strings() ) ) ) {
-			$comment_type = 'mention';
+		$kinds = array(
+			'article' => array(
+				'singular_name' => _x( 'Article', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Articles', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( ' ', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => '', // microformats 2 property
+				'format' => '', // Post Format that maps to this
+				'description' => __( 'traditional long form content: a post with an explicit title and body', 'indieweb-post-kinds' ),
+				'description-url' => 'http://indieweb.org/article',
+			),
+			'note' => array(
+				'singular_name' => _x( 'Note', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Notes', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( ' ', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => '', // microformats 2 property
+				'format' => 'aside', // Post Format that maps to this
+				'description' => __( 'short content: a post or status update with just plain content and typically without a title', 'indieweb-post-kinds' ),
+				'description-url' => 'http://indieweb.org/note',
+			),
+			'reply' => array(
+				'singular_name' => _x( 'Reply', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Replies', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'Replied', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'in-reply-to', // microformats 2 property
+				'format' => 'link', // Post Format that maps to this
+				'description' => __( 'a reply to content typically on another site', 'indieweb-post-kinds' ),
+				'description-url' => 'http://indieweb.org/reply',
+			),
+			'repost' => array(
+				'singular_name' => _x( 'Repost', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Reposts', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'Reposted', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'repost-of', // microformats 2 property
+				'format' => '', // Post Format that maps to this
+				'description' => __( 'a complete reposting of content from another site', 'indieweb-post-kinds' ),
+				'description-url' => 'http://indieweb.org/repost',
+			),
+			'like' => array(
+				'singular_name' => _x( 'Like', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Likes', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'Liked', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'like-of', // microformats 2 property
+				'format' => 'link', // Post Format that maps to this
+				'description' => __( 'a way to pay compliments to the original post/poster of external content', 'indieweb-post-kinds' ),
+				'description-url' => 'http://indieweb.org/like',
+			),
+			'favorite' => array(
+				'singular_name' => _x( 'Favorite', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Favorites', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'Favorited', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'favorite-of', // microformats 2 property
+				'format' => 'link', // Post Format that maps to this
+				'description' => __( 'special to the author', 'indieweb-post-kinds' ),
+				'description-url' => 'http://indieweb.org/favorite',
+			),
+			'bookmark' => array(
+				'singular_name' => _x( 'Bookmark', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Bookmarks', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'Bookmarked', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'bookmark-of', // microformats 2 property
+				'format' => 'link', // Post Format that maps to this
+				'description' => __( 'storing a link/bookmark for personal use or sharing with others', 'indieweb-post-kinds' ),
+				'description-url' => 'http://indieweb.org/bookmark',
+			),
+			'photo' => array(
+				'singular_name' => _x( 'Photo', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Photos', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( ' ', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'photo', // microformats 2 property
+				'format' => 'image', // Post Format that maps to this
+				'description' => __( 'a post with an embedded image/photo as its primary focus', 'indieweb-post-kinds' ),
+				'description-url' => 'http://indieweb.org/photo',
+			),
+			'tag' => array(
+				'singular_name' => _x( 'Tag', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Tags', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'Tagged', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'tag', // microformats 2 property
+				'format' => '', // Post Format that maps to this
+				'description' => __( 'allows you to tag a post as being of a specific category or tag, or for person tagging', 'indieweb-post-kinds' ),
+				'description-url' => 'http://indieweb.org/tag',
+			),
+			'rsvp' => array(
+				'singular_name' => _x( 'RSVP', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'RSVPs', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'RSVPed', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'in-reply-to', // microformats 2 property
+				'format' => '', // Post Format that maps to this
+				'description' => __( 'a specific type of reply regarding attendance of an event', 'indieweb-post-kinds' ),
+				'description-url' => 'http://indieweb.org/rsvp',
+			),
+			'listen' => array(
+				'singular_name' => _x( 'Listen', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Listens', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'Listened', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'listen-of', // microformats 2 property
+				'format' => 'audio', // Post Format that maps to this
+				'description' => __( 'listening to audio; sometimes called a scrobble', 'indieweb-post-kinds' ),
+				'description-url' => 'http://indieweb.org/listen',
+			),
+			'watch' => array(
+				'singular_name' => _x( 'Watch', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Watches', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'Watched', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'watch', // microformats 2 property
+				'format' => 'video-of', // Post Format that maps to this
+				'description' => __( 'watching a movie, television show, online video, play or other visual-based event', 'indieweb-post-kinds' ),
+				'description-url' => 'http://indieweb.org/watch',
+			),
+			'checkin' => array(
+				'singular_name' => _x( 'Checkin', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Checkins', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'Checked into', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'checkin', // microformats 2 property
+				'format' => 'status', // Post Format that maps to this
+				'description' => __( 'identifying you are at a particular geographic location', 'indieweb-post-kinds' ),
+				'description-url' => 'http://indieweb.org/checkin',
+			),
+			'wish' => array(
+				'singular_name' => _x( 'Wish', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Wishes', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'Wished', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'wish', // microformats 2 property
+				'format' => '', // Post Format that maps to this
+				'description' => __( 'a post indicating a desire/wish. The archive of which would be a wishlist, such as a gift registry or similar', 'indieweb-post-kinds' ),
+				'description-url' => '',
+			),
+			'play' => array(
+				'singular_name' => _x( 'Play', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Playing', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'Played', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'play', // microformats 2 property
+				'format' => 'status', // Post Format that maps to this
+				'description' => __( 'playing a game', 'indieweb-post-kinds' ),
+				'description-url' => 'https://indieweb.org/game_play',
+			),
+			'weather' => array(
+				'singular_name' => _x( 'Weather', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Weather', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( ' ', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'weather', // microformats 2 property
+				'format' => 'status', // Post Format that maps to this
+				'description' => __( 'current weather conditions', 'indieweb-post-kinds' ),
+				'description-url' => 'https://indieweb.org/weather',
+			),
+			'exercise' => array(
+				'singular_name' => _x( 'Exercise', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Exercise', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'Exercised', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'exercise', // microformats 2 property
+				'format' => 'status', // Post Format that maps to this
+				'description' => __( 'some form of physical activity or workout (examples: walk, run, cycle, hike, yoga, etc.)', 'indieweb-post-kinds' ),
+				'description-url' => 'https://indieweb.org/exercise',
+			),
+			'trip' => array(
+				'singular_name' => _x( 'Trip', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Trips', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'Travelled', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'trip', // microformats 2 property
+				'format' => '', // Post Format that maps to this
+				'description' => __( 'represents a geographic journey', 'indieweb-post-kinds' ),
+				'description-url' => 'https://indieweb.org/trip',
+			),
+			'itinerary' => array(
+				'singular_name' => _x( 'Itinerary', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Itineraries', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'Travelled', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'itinerary', // microformats 2 property
+				'format' => '', // Post Format that maps to this
+				'description' => __( 'parts of a scheduled trip including transit by car, plane, train, etc.', 'indieweb-post-kinds' ),
+				'description-url' => 'https://indieweb.org/trip',
+			),
+			'eat' => array(
+				'singular_name' => _x( 'Eat', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Eat', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'Ate', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'food', // microformats 2 property
+				'format' => 'status', // Post Format that maps to this
+				'description' => __( 'what you are eating, perhaps for a food dairy', 'indieweb-post-kinds' ),
+				'description-url' => 'https://indieweb.org/food',
+			),
+			'drink' => array(
+				'singular_name' => _x( 'Drink', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Drinks', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'Drank', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'food', // microformats 2 property
+				'format' => 'status', // Post Format that maps to this
+				'description' => __( 'what you are drinking, perhaps for a food dairy', 'indieweb-post-kinds' ),
+				'description-url' => 'https://indieweb.org/food',
+			),
+			'follow' => array(
+				'singular_name' => _x( 'Follow', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Follows', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'Followed', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'follow', // microformats 2 property
+				'format' => '', // Post Format that maps to this
+				'description' => __( 'indicating you are now following or subscribing to another person`s activities online', 'indieweb-post-kinds' ),
+				'description-url' => 'https://indieweb.org/follow',
+			),
+			'jam' => array(
+				'singular_name' => _x( 'Jam', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Jams', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'Listened to', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'jam-of', // microformats 2 property
+				'format' => 'audio', // Post Format that maps to this
+				'description' => __( 'a particularly personally meaningful song (a listen with added emphasis)', 'indieweb-post-kinds' ),
+				'description-url' => 'https://indieweb.org/jam',
+			),
+			'read' => array(
+				'singular_name' => _x( 'Read', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Reads', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'Read', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'read', // microformats 2 property
+				'format' => 'status', // Post Format that maps to this
+				'description' => __( 'reading a book, magazine, newspaper, other physical document, or online post', 'indieweb-post-kinds' ),
+				'description-url' => 'https://indieweb.org/read',
+			),
+			'quote' => array(
+				'singular_name' => _x( 'Quote', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Quotes', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'Quoted', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'quotation-of', // microformats 2 property
+				'format' => 'quote', // Post Format that maps to this
+				'description' => __( 'quoted content', 'indieweb-post-kinds' ),
+				'description-url' => 'https://indieweb.org/quote',
+			),
+			'mood' => array(
+				'singular_name' => _x( 'Mood', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Moods', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'Felt', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'mood', // microformats 2 property
+				'format' => 'status', // Post Format that maps to this
+				'description' => __( 'how you are feeling (example: happy, sad, indifferent, etc.)', 'indieweb-post-kinds' ),
+				'description-url' => 'https://indieweb.org/mood',
+			),
+			'recipe' => array(
+				'singular_name' => _x( 'Recipe', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Recipes', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'Cooked', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'recipe', // microformats 2 property
+				'format' => '', // Post Format that maps to this
+				'description' => __( 'list of ingredients and directions for making food or drink', 'indieweb-post-kinds' ),
+				'description-url' => 'https://indieweb.org/recipe',
+			),
+		);
+		$kinds = apply_filters( 'kind_info', $kinds );
+		if ( 'all' === $kind ) {
+			return $kinds;
 		}
-		$_kind = get_the_terms( $comment->comment_post_ID, 'kind' );
-		if ( ! empty( $_kind ) ) {
-			$kind = array_shift( $_kind );
-			$kindstrings = self::get_strings();
-			$post_format = $kindstrings[ $kind->slug ];
-		} else {
-			$post_format = get_post_format( $comment->comment_post_ID );
-			// replace "standard" with "Article"
-			if ( ! $post_format || 'standard' === $post_format ) {
-				$post_format = 'Article';
-			} else {
-				$post_formatstrings = get_post_format_strings();
-				// get the "nice" name
-				$post_format = $post_formatstrings[ $post_format ];
-			}
+		if ( ! array_key_exists( $kind, $kinds ) ) {
+			return false;
 		}
-		// generate the verb, for example "mentioned" or "liked"
-		$comment_type_excerpts = SemanticLinkbacksPlugin::get_comment_type_excerpts();
-		// get URL canonical url...
-		$url = get_comment_meta( $comment->comment_ID, 'semantic_linkbacks_canonical', true );
-		// ...or fall back to source
-		if ( ! $url ) {
-			$url = get_comment_meta( $comment->comment_ID, 'semantic_linkbacks_source', true );
+		$k = $kinds[ $kind ];
+		if ( 'all' === $property ) {
+			return $k;
 		}
-		// parse host
-		$host = parse_url( $url, PHP_URL_HOST );
-		// strip leading www, if any
-		$host = preg_replace( '/^www\./', '', $host );
-		// generate output
-		$text = sprintf( $comment_type_excerpts[ $comment_type ], get_comment_author_link( $comment->comment_ID ), 'this ' . $post_format, $url, $host );
-		return apply_filters( 'semantic_linkbacks_excerpt', $text );
+		if ( ! array_key_exists( $property, $k ) ) {
+			return false;
+		}
+		return $k[ $property ];
 	}
 
 	public static function webmention_links( $links, $post_ID ) {
@@ -437,18 +475,18 @@ class Kind_Taxonomy {
 	public static function kind_dropdown( $post_type, $which ) {
 		if ( 'post' === $post_type ) {
 			$taxonomy = 'kind';
-			$selected      = isset($_GET[$taxonomy]) ? $_GET[$taxonomy] : '';
-			$kind_taxonomy = get_taxonomy($taxonomy);
+			$selected      = isset( $_GET[ $taxonomy ] ) ? $_GET[ $taxonomy ] : '';
+			$kind_taxonomy = get_taxonomy( $taxonomy );
 			wp_dropdown_categories( array(
-				'show_option_all' =>  __("All {$kind_taxonomy->label}", 'indieweb-post-kinds' ),
-				'taxonomy'        =>  $taxonomy,
-				'name'            =>  $taxonomy,
-				'orderby'         =>  'name',
-				'selected'        =>  $selected,
-				'hierarchical'    =>  false,
-				'show_count'      =>  true, 
-				'hide_empty'      =>  true,
-				'value_field'     => 'slug' 
+				'show_option_all' => __( "All {$kind_taxonomy->label}", 'indieweb-post-kinds' ),
+				'taxonomy'        => $taxonomy,
+				'name'            => $taxonomy,
+				'orderby'         => 'name',
+				'selected'        => $selected,
+				'hierarchical'    => false,
+				'show_count'      => true,
+				'hide_empty'      => true,
+				'value_field'     => 'slug',
 			) );
 		}
 	}
@@ -458,7 +496,7 @@ class Kind_Taxonomy {
 			return;
 		}
 		if ( count( wp_get_post_terms( $ID,'kind' ) ) <= 0 ) {
-			set_post_kind( $ID, get_option('kind_default') );
+			set_post_kind( $ID, get_option( 'kind_default' ) );
 		}
 	}
 
@@ -488,6 +526,9 @@ class Kind_Taxonomy {
 	}
 
 	public static function post_class($classes) {
+		if ( 'post' !== get_post_type() ) {
+			return $classes;
+		}
 		// Adds kind classes to post
 		if ( ! is_singular() ) {
 			$classes = self::kinds_as_type( $classes );
@@ -497,24 +538,14 @@ class Kind_Taxonomy {
 	}
 
 	public static function body_class($classes) {
+		if ( 'post' !== get_post_type() ) {
+			return $classes;
+		}
 		// Adds kind classes to body
 		if ( is_singular() ) {
 			$classes = self::kinds_as_type( $classes );
 		}
 		return $classes;
-	}
-
-	/**
-	 * Returns true if kind is a response type kind.
-	 * This means dynamically generated content is added
-	 *
-	 * @param string $kind The post kind slug.
-	 * @return true/false.
-	 */
-	public static function response_kind( $kind ) {
-		$not_responses = array( 'article', 'note' , 'photo' );
-		if ( in_array( $kind, $not_responses ) ) { return false;
-		} else { return true; }
 	}
 
 	/**
@@ -524,8 +555,8 @@ class Kind_Taxonomy {
 	 * @return string The translated post format name.
 	 */
 	public static function get_post_kind_string( $slug ) {
-		$strings = self::get_strings();
-		return ( isset( $strings[ $slug ] ) ) ? $strings[ $slug ] : '';
+		$string = self::get_kind_info( $slug, 'singular_name' );
+		return $slug ? $slug : '';
 	}
 
 	/**
@@ -554,8 +585,8 @@ class Kind_Taxonomy {
 	public static function get_post_kind( $post = null ) {
 		$kind = get_post_kind_slug( $post );
 		if ( $kind ) {
-			$strings = self::get_strings();
-			return $strings[ $kind ];
+			return self::get_kind_info( $kind, 'singular_name' );
+			;
 		} else {
 			return false;
 		}
@@ -591,10 +622,10 @@ class Kind_Taxonomy {
 	public static function set_post_kind( $post, $kind = 'article' ) {
 		$post = get_post( $post );
 		if ( empty( $post ) ) {
-			return new WP_Error( 'invalid_post', __( 'Invalid post' ) ); }
+			return new WP_Error( 'invalid_post', __( 'Invalid post', 'indieweb-post-kinds' ) ); }
 		$kind = sanitize_key( $kind );
-		if ( ! array_key_exists( $kind, self::get_strings() ) ) {
-			$kind = 'article';
+		if ( ! self::get_kind_info( $kind, 'all' ) ) {
+			return new WP_Error( 'invalid_kind', __( 'Invalid Kind', 'indieweb-post-kinds' ) );
 		}
 		return wp_set_post_terms( $post->ID, $kind, 'kind' );
 	}
@@ -604,54 +635,6 @@ class Kind_Taxonomy {
 		$sprite = apply_filters( 'kind_icon_sprite', plugin_dir_url( __FILE__ ) . 'kind-sprite.svg', $kind );
 		return '<svg class="svg-icon svg-' . $kind . '" aria-hidden="true"><use xlink:href="' . $sprite . '#' . $kind . '"></use></svg>';
 	}
-
-	/**
-	 * Take mf2 properties and set a post kind
-	 *
-	 * @param array $input Micropub Request in JSON
-	 * @param array $wp_args Arguments passed to insert or update posts
-	 */
-
-	public static function micropub_set_kind( $input, $wp_args ) {
-		// Only continue if create or update
-		if ( ! $wp_args ) {
-			return;
-		}
-		// If there are no properties in the request set it as note
-		if ( ! isset( $input['properties'] ) ) {
-			set_post_kind( $wp_args['ID'], 'note' );
-		}
-		if ( isset( $input['properties']['rsvp'] ) ) {
-			set_post_kind( $wp_args['ID'], 'rsvp' );
-			return;
-		}
-		if ( isset( $input['properties']['in-reply-to'] ) ) {
-			set_post_kind( $wp_args['ID'], 'reply' );
-			return;
-		}
-		if ( isset( $input['properties']['bookmark-of'] ) || isset( $input['properties']['bookmark'] ) ) {
-			set_post_kind( $wp_args['ID'], 'bookmark' );
-			return;
-		}
-		if ( isset( $input['properties']['in-reply-to'] ) ) {
-			set_post_kind( $wp_args['ID'], 'reply' );
-			return;
-		}
-		// This basically adds Teacup support
-		if ( isset( $input['properties']['p3k-food'] ) ) {
-			if ( isset( $input['properties']['p3k-type'] ) ) {
-				if ( 'drink' === $input['properties']['p3k-type'] ) {
-					set_post_kind( $wp_args['ID'], 'drink' );
-					return;
-				}
-				set_post_kind( $post_id, 'eat' );
-				return;
-			}
-		}
-		// If it got all the way down here assume it is a note
-		set_post_kind( $wp_args['ID'], 'note' );
-	}
-
 } // End Class Kind_Taxonomy
 
 ?>
