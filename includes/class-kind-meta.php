@@ -228,11 +228,9 @@ class Kind_Meta {
 		}
 		$url = self::sanitize_text( $url );
 		$kind = get_post_kind_slug( $this->post );
-		$map = array_diff( Kind_Taxonomy::get_kind_properties(), array( '' ) );
-		if ( $kind ) {
-			if ( array_key_exists( $kind, $map ) ) {
-				$this->meta[ $map[ $kind ] ] = array( $url );
-			}
+		$property = Kind_Taxonomy::get_kind_info( $kind, $property );
+		if ( ! empty ( $property ) ) {
+			$this->meta[ $property ] = array( $url );
 		}
 		if ( ! array_key_exists( 'cite', $this->meta ) ) {
 			$this->meta['url'] = $url;
