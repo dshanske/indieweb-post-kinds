@@ -11,7 +11,7 @@ class Kind_Plugins {
 	public static function init() {
 		// Set Post Kind for Micropub Inputs.
 		add_action( 'after_micropub', array( 'Kind_Plugins', 'micropub_set_kind' ), 10, 2 );
-
+		add_action( 'after_micropub', array( 'Kind_Plugins', 'post_formats' ), 10, 2 );
 		// Override Post Type in Semantic Linkbacks.
 		add_filter( 'semantic_linkbacks_post_type', array( 'Kind_Plugins', 'semantic_post_type' ), 11, 2 );
 
@@ -130,6 +130,11 @@ class Kind_Plugins {
 			set_post_kind( $wp_args['ID'], 'note' );
 		}
 
+	}
+
+	public static function post_formats( $input, $wp_args ) {
+		$kind = get_post_kind_slug( $wp_args['ID'] );
+		set_post_format( $wp_args['ID'], self::get_kind_info( $kind, 'property' ) );
 	}
 
 } // End Class Kind_Plugins
