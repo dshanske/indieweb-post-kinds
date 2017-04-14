@@ -139,7 +139,10 @@ class Kind_View {
 	 *
 	 * @return array A translated post type string for specific domain or 'a post'
 	 */
-	public static function get_post_type_string($url) {
+	public static function get_post_type_string( $url ) {
+		if ( ! $url ) {
+			return ' ';
+		}
 		$strings = array(
 			'twitter.com' => _x( 'a tweet', 'indieweb-post-kinds' ),
 			'vimeo.com' => _x( 'a video', 'indieweb-post-kinds' ),
@@ -239,7 +242,7 @@ class Kind_View {
 		if ( is_array( $url ) ) {
 			$url = $url[0];
 		}
-		if ( ! array_key_exists( 'name', $cite ) && ! empty( $url ) ) {
+		if ( ! array_key_exists( 'name', $cite ) ) {
 			$cite['name'] = self::get_post_type_string( $url );
 		}
 		if ( isset( $url ) ) {

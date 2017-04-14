@@ -40,6 +40,7 @@ class Post_Kinds_Plugin {
 
 		// Plugin Specific Kind Customizations
 		require_once plugin_dir_path( __FILE__ ) . '/includes/class-kind-plugins.php';
+		add_action( 'init' , array( 'Kind_Plugins', 'init' ) );
 
 		// Config Settings.
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-config.php';

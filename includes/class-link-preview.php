@@ -100,6 +100,14 @@ class Link_Preview {
 		}
 		return new WP_Error( 'invalid_url' , __( 'Missing or Invalid URL' , 'indieweb-post-kinds' ), array( 'status' => 400 ) );
 	}
+
+	public static function localparse( $url ) {
+		if ( ! $url ) {
+			return new WP_Error( 'invalid_url' , __( 'Missing or Invalid URL' , 'indieweb-post-kinds' ), array( 'status' => 400 ) );
+		}
+		$content = Parse_Mf2::fetch( $url );
+		return self::mergeparse( $content, $url );
+	}
 		        
 
 
