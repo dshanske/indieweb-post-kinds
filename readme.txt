@@ -158,6 +158,9 @@ developer of this plugin.
 		* Generation of strings being moved from individual functions to one unified function to make management easier
 		* Description now appears on Archives
 		* Description now appears on settings page
+		* Adding of `kind-type` css class only to posts
+		* Enhance setting of kind based on micropub properties
+		* Only set post format on initial save not subsequent ones
 	= Version 2.5.1 =
 		* Fix bug hiding metabox
 		* Add drop down filter for Kinds to View Posts

@@ -622,10 +622,10 @@ class Kind_Taxonomy {
 	public static function set_post_kind( $post, $kind = 'article' ) {
 		$post = get_post( $post );
 		if ( empty( $post ) ) {
-			return new WP_Error( 'invalid_post', __( 'Invalid post' ) ); }
+			return new WP_Error( 'invalid_post', __( 'Invalid post', 'indieweb-post-kinds' ) ); }
 		$kind = sanitize_key( $kind );
-		if ( ! array_key_exists( $kind, self::get_strings() ) ) {
-			$kind = 'article';
+		if ( ! self::get_kind_info( $kind, 'all' ) ) {
+			return new WP_Error( 'invalid_kind', __( 'Invalid Kind', 'indieweb-post-kinds' ) );
 		}
 		return wp_set_post_terms( $post->ID, $kind, 'kind' );
 	}
