@@ -133,7 +133,7 @@ class Kind_Plugins {
 
 	public static function post_formats( $input, $wp_args ) {
 		$kind = get_post_kind_slug( $wp_args['ID'] );
-		set_post_format( $wp_args['ID'], Kind_Taxonomy::get_kind_info( $kind, 'property' ) );
+		set_post_format( $wp_args['ID'], Kind_Taxonomy::get_kind_info( $kind, 'format' ) );
 	}
 
 } // End Class Kind_Plugins
