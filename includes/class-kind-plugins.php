@@ -128,7 +128,7 @@ class Kind_Plugins {
 				return;
 			}
 		}
-		set_post_kind( $wp_args['ID'], 'note' );
+		set_post_kind( $wp_args['ID'], get_option( 'kind_default' ) );
 	}
 
 	public static function post_formats( $input, $wp_args ) {
