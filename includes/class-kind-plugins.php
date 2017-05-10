@@ -128,6 +128,8 @@ class Kind_Plugins {
 				return;
 			}
 		}
+
+		// Doing this as a temporary measure until there is further troubleshooting
 		set_post_kind( $wp_args['ID'], get_option( 'kind_default' ) );
 	}
 
