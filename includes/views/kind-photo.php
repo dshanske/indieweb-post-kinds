@@ -15,7 +15,7 @@
 <section>
 <header>
 <?php echo Kind_Taxonomy::get_icon( $kind );
-if( ! $embed ) {
+
 	if ( $title ) {
 		echo $title;
 	}
@@ -25,7 +25,7 @@ if( ! $embed ) {
 	if ( $site_name ) {
 		echo '<em>(<span class="p-publication">' . $site_name . '</span>)</em>';
 	}
-}
+
 ?>
 </header>
 <p>
