@@ -24,8 +24,8 @@ class Kind_View {
 					continue;
 			}
 			// If the Theme Has a kind_views directory look there first.
-			if ( file_exists( get_template_directory() . '/kind_views/' . $template_name ) ) {
-				$located = get_template_directory() . '/kind_views/' . $template_name;
+			if ( file_exists( get_stylesheet_directory() . '/kind_views/' . $template_name ) ) {
+				$located = get_stylesheet_directory() . '/kind_views/' . $template_name;
 				break;
 			}
 			// Look in the views subdirectory.
