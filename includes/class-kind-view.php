@@ -129,7 +129,7 @@ class Kind_View {
 		if ( strcmp( $embed, $url ) == 0 ) {
 			$embed = '';
 		} else {
-			$embed = '<div class="embed">' . $embed . '</div>';
+			$embed = '<div class="kind-embed">' . $embed . '</div>';
 		}
 			return $embed;
 	}
@@ -262,5 +262,14 @@ class Kind_View {
 		return sprintf( '<span class="p-publication">%1s</span>', $cite['publication'] );
 	}
 
+	public static function rsvp_text( $type ) {
+		$rsvp = array(
+			'yes' => __( 'Attending <a href="%1s" class="u-in-reply-to">%2s</a>', 'indieweb-post-kinds' ),
+			'maybe' => __( 'Might be attending <a href="%1s" class="u-in-reply-to">%2s</a>', 'indieweb-post-kinds' ),
+			'no' => __( 'Unable to Attend <a href="%1s" class="u-in-reply-to">%2s</a>', 'indieweb-post-kinds' ),
+			'interested' => __( 'Interested in Attending %s', 'indieweb-post-kinds' )
+		);
+		return $rsvp[ $type ];
+	}
 
 }  // End Class
