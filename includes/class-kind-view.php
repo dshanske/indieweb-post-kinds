@@ -272,4 +272,39 @@ class Kind_View {
 		return $rsvp[ $type ];
 	}
 
+	public static function display_duration( $duration ) {
+		if ( ! $duration ) {
+			return '';
+		}
+		$interval = new DateInterval( $duration );
+		$bits = array(
+			'year'    => $interval->y,
+			'month'   => $interval->m,
+			'day' 	  => $interval->d,
+			'hour'    => $interval->h,
+			'minute'  => $interval->i,
+			'second'  => $interval->s,
+		);
+		$return = '';
+		if ( $bits['year'] > 0 ) {
+			$return .= sprintf( _n( '%d year', '%d years', $bits['year'], 'indieweb-post-kinds'  ), $bits['year'] );
+		}
+		if ( $bits['month'] > 0 ) {
+			$return .= sprintf( _n( ' %d month', ' %d months', $bits['month'], 'indieweb-post-kinds'  ), $bits['month'] );
+		}
+		if ( $bits['day'] > 0 ) {
+			$return .= sprintf( _n( ' %d day', ' %d days', $bits['day'], 'indieweb-post-kinds'  ), $bits['day'] );
+		}
+		if ( $bits['hour'] > 0 ) {
+			$return .= sprintf( _n( ' %d hour', ' %d hours', $bits['hour'], 'indieweb-post-kinds'  ), $bits['hour'] );
+		}
+		if ( $bits['minute'] > 0 ) {
+			$return .= sprintf( _n( ' %d minute', ' %d minutes', $bits['minute'], 'indieweb-post-kinds'  ), $bits['minute'] );
+		}
+		if ( $bits['second'] > 0 ) {
+			$return .= sprintf( _n( ' %d second', ' %d seconds', $bits['second'], 'indieweb-post-kinds'  ), $bits['second'] );
+		}
+		return trim( $return );
+	}
+
 }  // End Class

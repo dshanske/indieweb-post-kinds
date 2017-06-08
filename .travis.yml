@@ -8,9 +8,9 @@ language: php
 # Declare versions of PHP to use. Use one decimal max.
 php:
   # aliased to a recent 5.5.x version
-  - "5.5"
+  - "7.0"
   # aliased to a recent 5.4.x version
-  - "5.4"
+  - "5.6"
   # aliased to a recent 5.3.x version
   - "5.3"
   # Current $required_php_version for WordPress: 5.2.4
@@ -23,14 +23,10 @@ env:
   # @link https://github.com/WordPress/WordPress
   - WP_VERSION=master WP_MULTISITE=0
   - WP_VERSION=master WP_MULTISITE=1
-  # WordPress 4.2
+  # WordPress 4.7
   # @link https://github.com/WordPress/WordPress/tree/4.2-branch
-  - WP_VERSION=4.2 WP_MULTISITE=0
-  - WP_VERSION=4.2 WP_MULTISITE=1
-  # WordPress 4.1
-  # @link https://github.com/WordPress/WordPress/tree/4.1-branch
-  - WP_VERSION=4.1 WP_MULTISITE=0
-  - WP_VERSION=4.1 WP_MULTISITE=1
+  - WP_VERSION=4.7 WP_MULTISITE=0
+  - WP_VERSION=4.7 WP_MULTISITE=1
 
 # Declare 5.6 beta in test matrix.
 # @link https://buddypress.trac.wordpress.org/ticket/5620
@@ -101,8 +97,8 @@ script:
   # -l flag: Run locally
   # --standard: Use WordPress as the standard.
   # --extensions: Only sniff PHP files.
-  - $WP_DEVELOP_DIR/php-codesniffer/scripts/phpcs -l -p -s -v -n . --standard=WordPress --extensions=php
-  - $WP_DEVELOP_DIR/php-codesniffer/scripts/phpcs -p -s -v -n includes/ --standard=WordPress --extensions=php
+  - $WP_DEVELOP_DIR/php-codesniffer/scripts/phpcs -l -p -s -v -n . --standard=phpcs.ruleset.xml --extensions=php
+  - $WP_DEVELOP_DIR/php-codesniffer/scripts/phpcs -p -s -v -n includes/ --standard=phpcs.ruleset.xml --extensions=php
 
 # Receive notifications for build results.
 # @link http://docs.travis-ci.com/user/notifications/#Email-notifications

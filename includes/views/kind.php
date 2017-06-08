@@ -69,7 +69,7 @@ if( ! $embed ) {
 		echo ' ' . __( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
 	}
 	if ( $site_name ) {
-		echo '<em>(<span class="p-publication">' . $site_name . '</span>)</em>';
+		echo '<em> (' . $site_name . '</em>';
 	}
 	if ( in_array( $kind, array( 'jam', 'listen', 'play', 'read', 'watch' ) ) ) {
 		$duration = $meta->get_duration();
