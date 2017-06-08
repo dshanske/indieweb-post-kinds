@@ -36,13 +36,13 @@
 .response blockquote {
   margin-left: 25px;
 }
-.response .u-url:link {
+.response a:link {
   text-decoration: none;
 }
-.response .u-url:hover {
+.response a:hover {
   text-decoration: none;
 }
-.response .u-photo, .response .u-featured {
+.response img {
   padding: 0;
   margin: 2px;
 }
