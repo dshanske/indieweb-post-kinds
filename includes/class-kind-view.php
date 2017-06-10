@@ -8,8 +8,21 @@
 // The Kind_View class sets up the kind display behavior for kinds
 class Kind_View {
 	public static function init() {
-			add_filter( 'the_content', array( 'Kind_View', 'content_response' ), 20 );
-			add_filter( 'the_excerpt', array( 'Kind_View', 'excerpt_response' ), 20 );
+		add_filter( 'the_content', array( 'Kind_View', 'content_response' ), 20 );
+		add_filter( 'the_excerpt', array( 'Kind_View', 'excerpt_response' ), 20 );
+		add_filter( 'wp_get_attachment_image_attributes', array( 'Kind_View', 'wp_get_attachment_image_attributes' ), 10 );
+	}
+
+	public static function wp_get_attachment_image_attributes( array $attr ) {
+		if ( isset( $attr['class'] ) ) {
+			$class = explode( " ", $attr['class'] );
+			$class[] = 'u-photo';
+			$attr['class'] = implode( " ", array_unique( $class ) );
+		}
+		else{ 
+			$attr['class'] = 'u-photo';
+		}
+		return $attr;
 	}
 
 	// This mirrors get_template_part but for views and locates the correct file and returns the output
@@ -38,12 +51,15 @@ class Kind_View {
 		include ( $located );
 		$return  = ob_get_contents();
 		ob_end_clean();
-		return $return;
+		return wp_make_content_images_responsive( $return );
 	}
 
 
 	// Return the Display
-	public static function get_display( $post_ID ) {
+	public static function get_display( $post_ID = null ) {
+		if ( ! $post_ID ) {
+			$post_ID = get_the_ID();
+		}
 		if ( 'post' === get_post_type( $post_ID ) ) {
 			$kind = get_post_kind_slug( $post_ID );
 			$content = self::get_view_part( 'kind', $kind );
@@ -52,21 +68,21 @@ class Kind_View {
 	}
 
 	// Echo the output of get_display
-	public static function display( ) {
-		echo self::get_display( );
+	public static function display( $post_ID = null ) {
+		echo self::get_display( $post_ID );
 	}
 
 	public static function content_response ( $content ) {
-		return self::get_display( get_the_ID() ) . $content;
+		return self::get_display( ) . $content;
 	}
 
 
 	public static function excerpt_response ( $content ) {
 		global $post;
 		if ( has_excerpt( get_the_ID() ) ) {
-			return self::get_display( get_the_ID() ) . get_the_excerpt();
+			return self::get_display( ) . get_the_excerpt();
 		} else {
-			return self::get_display( get_the_ID() ) . wp_trim_words( $post->post_content );
+			return self::get_display( ) . wp_trim_words( $post->post_content );
 		}
 	}
 
@@ -129,7 +145,7 @@ class Kind_View {
 		if ( strcmp( $embed, $url ) == 0 ) {
 			$embed = '';
 		} else {
-			$embed = '<div class="embed">' . $embed . '</div>';
+			$embed = '<div class="kind-embed">' . $embed . '</div>';
 		}
 			return $embed;
 	}
@@ -262,5 +278,49 @@ class Kind_View {
 		return sprintf( '<span class="p-publication">%1s</span>', $cite['publication'] );
 	}
 
+	public static function rsvp_text( $type ) {
+		$rsvp = array(
+			'yes' => __( 'Attending <a href="%1s" class="u-in-reply-to">%2s</a>', 'indieweb-post-kinds' ),
+			'maybe' => __( 'Might be attending <a href="%1s" class="u-in-reply-to">%2s</a>', 'indieweb-post-kinds' ),
+			'no' => __( 'Unable to Attend <a href="%1s" class="u-in-reply-to">%2s</a>', 'indieweb-post-kinds' ),
+			'interested' => __( 'Interested in Attending %s', 'indieweb-post-kinds' )
+		);
+		return $rsvp[ $type ];
+	}
+
+	public static function display_duration( $duration ) {
+		if ( ! $duration ) {
+			return '';
+		}
+		$interval = new DateInterval( $duration );
+		$bits = array(
+			'year'    => $interval->y,
+			'month'   => $interval->m,
+			'day' 	  => $interval->d,
+			'hour'    => $interval->h,
+			'minute'  => $interval->i,
+			'second'  => $interval->s,
+		);
+		$return = '';
+		if ( $bits['year'] > 0 ) {
+			$return .= sprintf( _n( '%d year', '%d years', $bits['year'], 'indieweb-post-kinds'  ), $bits['year'] );
+		}
+		if ( $bits['month'] > 0 ) {
+			$return .= sprintf( _n( ' %d month', ' %d months', $bits['month'], 'indieweb-post-kinds'  ), $bits['month'] );
+		}
+		if ( $bits['day'] > 0 ) {
+			$return .= sprintf( _n( ' %d day', ' %d days', $bits['day'], 'indieweb-post-kinds'  ), $bits['day'] );
+		}
+		if ( $bits['hour'] > 0 ) {
+			$return .= sprintf( _n( ' %d hour', ' %d hours', $bits['hour'], 'indieweb-post-kinds'  ), $bits['hour'] );
+		}
+		if ( $bits['minute'] > 0 ) {
+			$return .= sprintf( _n( ' %d minute', ' %d minutes', $bits['minute'], 'indieweb-post-kinds'  ), $bits['minute'] );
+		}
+		if ( $bits['second'] > 0 ) {
+			$return .= sprintf( _n( ' %d second', ' %d seconds', $bits['second'], 'indieweb-post-kinds'  ), $bits['second'] );
+		}
+		return trim( $return );
+	}
 
 }  // End Class

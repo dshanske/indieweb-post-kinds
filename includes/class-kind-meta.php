@@ -350,7 +350,7 @@ class Kind_Meta {
 		return $date . 'T' . $time . $offset;
 	}
 
-	public static function dateIntervalToString(\DateInterval $interval) {
+	public static function DateIntervalToString(\DateInterval $interval) {
 		// Reading all non-zero date parts.
 		$date = array_filter(array(
 			'Y' => $interval->y,
@@ -403,7 +403,7 @@ class Kind_Meta {
 		$end = date_create_from_format( 'Y-m-d\TH:i:sP', $end_string );
 		if ( ($start instanceof DateTime) && ($end instanceof DateTime)  ) {
 			$duration = $start->diff( $end );
-			return self::dateIntervalToString( $duration );
+			return self::DateIntervalToString( $duration );
 		}
 		return false;
 	}

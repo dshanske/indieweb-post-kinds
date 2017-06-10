@@ -12,15 +12,15 @@
 			margin-left: 25px;
 		}
 
-	.u-url:link {
+	a:link {
 		text-decoration: none;
 	}
 
-	.u-url:hover {
+	a:hover {
 		text-decoration: none;
 	}
 
-	.u-photo, .u-featured  {
+	img  {
   	padding: 0;
   	margin: 2px;
    }
@@ -31,7 +31,7 @@ ul.cites {
     display: inline;
 }
 
-.embeds {
+.kind-embeds {
     text-align: center;
     position: relative;
     width: 100%;

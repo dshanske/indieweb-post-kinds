@@ -24,9 +24,8 @@ class Kind_Taxonomy {
 		// Add Links to Ping to the Webmention Sender.
 		add_filter( 'webmention_links', array( 'Kind_Taxonomy', 'webmention_links' ), 11, 2 );
 
-		// Add Classes to Post and Body.
+		// Add Classes to Post.
 		add_filter( 'post_class', array( 'Kind_Taxonomy', 'post_class' ) );
-		add_filter( 'body_class', array( 'Kind_Taxonomy', 'body_class' ) );
 
 		// Trigger Webmention on Change in Post Status.
 		add_filter( 'transition_post_status', array( 'Kind_Taxonomy', 'transition' ), 10, 3 );
@@ -506,45 +505,11 @@ class Kind_Taxonomy {
 		}
 	}
 
-	public static function kinds_as_type($classes) {
-		$kind = get_post_kind_slug();
-		switch ( $kind ) {
-			case 'note':
-				$classes[] = 'h-as-note';
-				break;
-			case 'article':
-				$classes[] = 'h-as-article';
-				break;
-			case 'photo':
-				$classes[] = 'h-as-image';
-				break;
-			case 'bookmark':
-				$classes[] = 'h-as-bookmark';
-				break;
-		}
-		return $classes;
-	}
-
 	public static function post_class($classes) {
 		if ( 'post' !== get_post_type() ) {
 			return $classes;
 		}
-		// Adds kind classes to post
-		if ( ! is_singular() ) {
-			$classes = self::kinds_as_type( $classes );
-		}
 		$classes[] = 'kind-' . get_post_kind_slug();
-		return $classes;
-	}
-
-	public static function body_class($classes) {
-		if ( 'post' !== get_post_type() ) {
-			return $classes;
-		}
-		// Adds kind classes to body
-		if ( is_singular() ) {
-			$classes = self::kinds_as_type( $classes );
-		}
 		return $classes;
 	}
 
