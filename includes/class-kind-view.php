@@ -8,8 +8,21 @@
 // The Kind_View class sets up the kind display behavior for kinds
 class Kind_View {
 	public static function init() {
-			add_filter( 'the_content', array( 'Kind_View', 'content_response' ), 20 );
-			add_filter( 'the_excerpt', array( 'Kind_View', 'excerpt_response' ), 20 );
+		add_filter( 'the_content', array( 'Kind_View', 'content_response' ), 20 );
+		add_filter( 'the_excerpt', array( 'Kind_View', 'excerpt_response' ), 20 );
+		add_filter( 'wp_get_attachment_image_attributes', array( 'Kind_View', 'wp_get_attachment_image_attributes' ), 10 );
+	}
+
+	public static function wp_get_attachment_image_attributes( array $attr ) {
+		if ( isset( $attr['class'] ) ) {
+			$class = explode( " ", $attr['class'] );
+			$class[] = 'u-photo';
+			$attr['class'] = implode( " ", array_unique( $class ) );
+		}
+		else{ 
+			$attr['class'] = 'u-photo';
+		}
+		return $attr;
 	}
 
 	// This mirrors get_template_part but for views and locates the correct file and returns the output
@@ -38,7 +51,7 @@ class Kind_View {
 		include ( $located );
 		$return  = ob_get_contents();
 		ob_end_clean();
-		return $return;
+		return wp_make_content_images_responsive( $return );
 	}
 
 

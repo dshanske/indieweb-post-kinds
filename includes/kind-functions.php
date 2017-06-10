@@ -106,8 +106,8 @@ function get_kind_view_part($slug, $name = null) {
 	Kind_View::get_view_part( $slug, $name );
 }
 
-function kind_response_display() {
-        echo apply_filters( 'kind_response_display', '' );
+function kind_display( $post_ID = null ) {
+        echo Kind_View::get_display( $post_ID );
 }
 
 
