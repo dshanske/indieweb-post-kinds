@@ -1,9 +1,9 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like
-Stable tag: 2.5.2
+Stable tag: 2.6.0
 Requires at least: 4.7
-Tested up to: 4.7.2
+Tested up to: 4.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,7 +88,7 @@ may make it a Passive Kind.
 
  * **Article** - traditional long form content - a post with an explicit post name(title)
  * **Note** - short content - a post with just plain content (also the default)
- * **Photo** - image or photo post - a post with an embedded image as its primary focus
+ * **Photo** - image or photo post - a post with an embedded image as its primary focus. This uses either the featured image or attached images
 
 = The Response Kinds =
 
@@ -99,6 +99,7 @@ may make it a Passive Kind.
  * **Bookmark** - This is basically sharing/storing a link/bookmark. 
  * **Quote** - Quoted Content
  * **RSVP** - A specific type of Reply regarding an event
+
 = The Passive Kinds =
 
 To "Scrobble" a song is when listening to it, you would make it a post on
@@ -146,14 +147,32 @@ Post Kinds also automatically handles RSS feeds which can be made available or s
 * If you add `?kindurl=URL` to the post editor URL, it will automatically fill this into the URL box in post properties
 * If you add `?kind=like` to the post editor URL, it will automatically set the kind.
 
-So - `https://www.example.com/wp-admin/post-new.php?kindurl=URL&kind=like` will automatically set a like with the URL URL
+So - `https://www.example.com/wp-admin/post-new.php?kindurl=URL&kind=like` will automatically set a like with the URL
 
 == SNAP ==
 
-Indieweb Post Kinds had support for replying to Twitter posts using the Social Network Auto Poster plugin. The developers of that plugin have not contacted the
+Post Kinds had support for replying to Twitter posts using the Social Network Auto Poster plugin. The developers of that plugin have not contacted the
 developer of this plugin.
 
+== Theme Support ==
+
+Post Kinds automatically adds information to `the_content` and `the_excerpt` filter. Being as this is inside the content block, which may or may not be desirable, you may remove these filters as noted
+below and call `kind_display` directly. This will allow it to appear outside the content block.
+	* `remove_filter( 'the_content', array( 'Kind_View', 'content_response' ), 20 );`
+	* `remove_filter( 'the_excerpt', array( 'Kind_View', 'excerpt_response' ), 20 );`
+
+The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow you to manipulate the kind settings in a post. `get_post_kind_string` will return the display name of a kind.
+
+
 == Changelog ==
+	= Version 2.6.0 =
+		* Remove h-as properties
+		* Add basic templates for some different kinds
+		* Improve duration display
+		* If post_ID not passed to display function will use get_the_ID
+		* Remove mf2 CSS from being styled
+		* Allow for child themes to add kind templates
+		* Photo post will now use either featured image or gallery of attached media automatically.
 	= Version 2.5.2 =
 		* Generation of strings being moved from individual functions to one unified function to make management easier
 		* Description now appears on Archives

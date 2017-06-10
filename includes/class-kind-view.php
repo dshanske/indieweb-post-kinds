@@ -43,7 +43,10 @@ class Kind_View {
 
 
 	// Return the Display
-	public static function get_display( $post_ID ) {
+	public static function get_display( $post_ID = null ) {
+		if ( ! $post_ID ) {
+			$post_ID = get_the_ID();
+		}
 		if ( 'post' === get_post_type( $post_ID ) ) {
 			$kind = get_post_kind_slug( $post_ID );
 			$content = self::get_view_part( 'kind', $kind );
@@ -52,21 +55,21 @@ class Kind_View {
 	}
 
 	// Echo the output of get_display
-	public static function display( ) {
-		echo self::get_display( );
+	public static function display( $post_ID = null ) {
+		echo self::get_display( $post_ID );
 	}
 
 	public static function content_response ( $content ) {
-		return self::get_display( get_the_ID() ) . $content;
+		return self::get_display( ) . $content;
 	}
 
 
 	public static function excerpt_response ( $content ) {
 		global $post;
 		if ( has_excerpt( get_the_ID() ) ) {
-			return self::get_display( get_the_ID() ) . get_the_excerpt();
+			return self::get_display( ) . get_the_excerpt();
 		} else {
-			return self::get_display( get_the_ID() ) . wp_trim_words( $post->post_content );
+			return self::get_display( ) . wp_trim_words( $post->post_content );
 		}
 	}
 

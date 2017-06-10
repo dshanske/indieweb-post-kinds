@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the Post Kinds package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Kinds 2.5.2\n"
+"Project-Id-Version: Post Kinds 2.6.0\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2017-06-08 03:54:28+00:00\n"
+"POT-Creation-Date: 2017-06-10 16:46:32+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -249,53 +249,53 @@ msgstr ""
 msgid "Invalid Kind"
 msgstr ""
 
-#: includes/class-kind-view.php:267
+#: includes/class-kind-view.php:270
 msgid "Attending <a href=\"%1s\" class=\"u-in-reply-to\">%2s</a>"
 msgstr ""
 
-#: includes/class-kind-view.php:268
+#: includes/class-kind-view.php:271
 msgid "Might be attending <a href=\"%1s\" class=\"u-in-reply-to\">%2s</a>"
 msgstr ""
 
-#: includes/class-kind-view.php:269
+#: includes/class-kind-view.php:272
 msgid "Unable to Attend <a href=\"%1s\" class=\"u-in-reply-to\">%2s</a>"
 msgstr ""
 
-#: includes/class-kind-view.php:270
+#: includes/class-kind-view.php:273
 msgid "Interested in Attending %s"
 msgstr ""
 
-#: includes/class-kind-view.php:290
+#: includes/class-kind-view.php:293
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-kind-view.php:293
+#: includes/class-kind-view.php:296
 msgid " %d month"
 msgid_plural " %d months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-kind-view.php:296
+#: includes/class-kind-view.php:299
 msgid " %d day"
 msgid_plural " %d days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-kind-view.php:299
+#: includes/class-kind-view.php:302
 msgid " %d hour"
 msgid_plural " %d hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-kind-view.php:302
+#: includes/class-kind-view.php:305
 msgid " %d minute"
 msgid_plural " %d minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-kind-view.php:305
+#: includes/class-kind-view.php:308
 msgid " %d second"
 msgid_plural " %d seconds"
 msgstr[0] ""
@@ -384,12 +384,14 @@ msgid "End Time"
 msgstr ""
 
 #: includes/views/kind-bookmark.php:28 includes/views/kind-favorite.php:28
-#: includes/views/kind-like.php:28 includes/views/kind-listen.php:26
+#: includes/views/kind-jam.php:26 includes/views/kind-like.php:28
+#: includes/views/kind-listen.php:26 includes/views/kind-watch.php:26
 #: includes/views/kind.php:69
 msgid "by"
 msgstr ""
 
-#: includes/views/kind-listen.php:29
+#: includes/views/kind-jam.php:29 includes/views/kind-listen.php:29
+#: includes/views/kind-watch.php:29
 msgid " from "
 msgstr ""
 
@@ -871,22 +873,22 @@ msgctxt "indieweb-post-kinds"
 msgid "Cooked"
 msgstr ""
 
-#: includes/class-kind-view.php:147
+#: includes/class-kind-view.php:150
 msgctxt "indieweb-post-kinds"
 msgid "a tweet"
 msgstr ""
 
-#: includes/class-kind-view.php:148 includes/class-kind-view.php:149
+#: includes/class-kind-view.php:151 includes/class-kind-view.php:152
 msgctxt "indieweb-post-kinds"
 msgid "a video"
 msgstr ""
 
-#: includes/class-kind-view.php:150
+#: includes/class-kind-view.php:153
 msgctxt "indieweb-post-kinds"
 msgid "an image"
 msgstr ""
 
-#: includes/class-kind-view.php:156
+#: includes/class-kind-view.php:159
 msgctxt "indieweb-post-kinds"
 msgid "a post"
 msgstr ""
