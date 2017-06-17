@@ -69,12 +69,12 @@ if( ! $embed ) {
 		echo ' ' . __( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
 	}
 	if ( $site_name ) {
-		echo '<em> (' . $site_name . '</em>';
+		echo '<em> (' . $site_name . ')</em>';
 	}
-	if ( in_array( $kind, array( 'jam', 'listen', 'play', 'read', 'watch' ) ) ) {
+	if ( in_array( $kind, array( 'jam', 'listen', 'play', 'read', 'watch', 'audio', 'video' ) ) ) {
 		$duration = $meta->get_duration();
 		if ( $duration ) {
-			echo '(' . __( 'Duration: ', 'indieweb-post-kinds' ) . '<span class="p-duration">' . $duration . '</span>)';
+			echo '(<data class="p-duration" value="' . $duration . '">' . Kind_View::display_duration( $duration )  . '</data>)';
 		}
 	}
 }

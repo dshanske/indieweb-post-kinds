@@ -91,16 +91,16 @@ class Kind_Plugins {
 		}
 
 		if ( isset( $input['properties']['repost-of'] ) ) {
-			set_post_kind( $wp_args['ID'], 'repost' ); 
+			set_post_kind( $wp_args['ID'], 'repost' );
 			return;
-		}   
-		
+		}
+
 		if ( isset( $input['properties']['like-of'] ) ) {
-			set_post_kind( $wp_args['ID'], 'like' ); 
+			set_post_kind( $wp_args['ID'], 'like' );
 			return;
-		}	
+		}
 		if ( isset( $input['properties']['photo'] ) ) {
-			set_post_kind( $wp_args['ID'], 'photo' ); 
+			set_post_kind( $wp_args['ID'], 'photo' );
 			return;
 		}
 
@@ -122,9 +122,9 @@ class Kind_Plugins {
 		}
 		if ( ! empty( $input['properties']['name'] ) ) {
 			$name = trim( $input['properties']['name'] );
-			$content = trim( $input['properties']['content']);
+			$content = trim( $input['properties']['content'] );
 			if ( 0 !== strpos( $content, $name ) ) {
-				set_post_kind( $wp_args['ID'], 'article' ); 
+				set_post_kind( $wp_args['ID'], 'article' );
 				return;
 			}
 		}

@@ -107,7 +107,7 @@ function get_kind_view_part($slug, $name = null) {
 }
 
 function kind_display( $post_ID = null ) {
-        echo Kind_View::get_display( $post_ID );
+		echo Kind_View::get_display( $post_ID );
 }
 
 

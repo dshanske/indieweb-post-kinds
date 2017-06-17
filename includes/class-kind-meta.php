@@ -229,7 +229,7 @@ class Kind_Meta {
 		$url = self::sanitize_text( $url );
 		$kind = get_post_kind_slug( $this->post );
 		$property = Kind_Taxonomy::get_kind_info( $kind, 'property' );
-		if ( ! empty ( $property ) ) {
+		if ( ! empty( $property ) ) {
 			$this->meta[ $property ] = array( $url );
 		}
 		if ( ! array_key_exists( 'cite', $this->meta ) ) {

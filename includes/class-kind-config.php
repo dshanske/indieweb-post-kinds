@@ -133,7 +133,7 @@ class Kind_Config {
 	public static function admin_menu() {
 		// If the IndieWeb Plugin is installed use its menu.
 		if ( class_exists( 'IndieWeb_Plugin' ) ) {
-		    add_submenu_page(
+			add_submenu_page(
 				'indieweb',
 				__( 'Post Kinds', 'indieweb-post-kinds' ), // page title
 				__( 'Post Kinds', 'indieweb-post-kinds' ), // menu title
@@ -196,7 +196,7 @@ class Kind_Config {
 	public static function termcheck_callback() {
 		$terms = Kind_Taxonomy::get_kind_info( 'all', 'all' );
 		// Hide these terms until ready for use for now.
-		$hide = array( 'note', 'weather', 'exercise', 'travel', 'itinerary', 'tag', 'follow', 'drink', 'eat', 'trip', 'checkin', 'recipe', 'mood' );
+		$hide = array( 'note', 'weather', 'exercise', 'travel', 'itinerary', 'event', 'tag', 'follow', 'drink', 'eat', 'trip', 'checkin', 'recipe', 'mood', 'issue' );
 		foreach ( $hide as $hid ) {
 			unset( $terms[ $hid ] );
 		}

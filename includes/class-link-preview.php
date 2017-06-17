@@ -19,15 +19,15 @@ class Link_Preview {
 				'methods' => WP_REST_Server::READABLE,
 				'callback' => array( 'Link_Preview', 'parse' ),
 				'args'  => array(
-					'kindurl'  => array( 
+					'kindurl'  => array(
 						'required' => true,
 						'validate_callback' => array( 'Link_Preview', 'is_valid_url' ),
-						'sanitize_callback' => 'esc_url_raw'
+						'sanitize_callback' => 'esc_url_raw',
 					),
 				),
 				'permission_callback' => function () {
 					return current_user_can( 'edit_posts' );
-				}
+				},
 			),
 		) );
 	}
@@ -108,7 +108,7 @@ class Link_Preview {
 		$content = Parse_Mf2::fetch( $url );
 		return self::mergeparse( $content, $url );
 	}
-		        
+
 
 
 }

@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Post Kinds 2.6.0\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2017-06-10 16:46:32+00:00\n"
+"POT-Creation-Date: 2017-06-17 07:42:00+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -156,146 +156,166 @@ msgid "a post with an embedded image/photo as its primary focus"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:278
+msgid "a post with an embedded video as its primary focus"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:287
+msgid "a post with an embedded audio file as its primary focus"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:297
 msgid ""
 "allows you to tag a post as being of a specific category or tag, or for "
 "person tagging"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:287
+#: includes/class-kind-taxonomy.php:306
 msgid "a specific type of reply regarding attendance of an event"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:296
+#: includes/class-kind-taxonomy.php:315
 msgid "listening to audio; sometimes called a scrobble"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:305
+#: includes/class-kind-taxonomy.php:324
 msgid ""
 "watching a movie, television show, online video, play or other visual-based "
 "event"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:314
+#: includes/class-kind-taxonomy.php:333
 msgid "identifying you are at a particular geographic location"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:323
+#: includes/class-kind-taxonomy.php:342
 msgid ""
 "a post indicating a desire/wish. The archive of which would be a wishlist, "
 "such as a gift registry or similar"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:332
+#: includes/class-kind-taxonomy.php:351
 msgid "playing a game"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:341
+#: includes/class-kind-taxonomy.php:360
 msgid "current weather conditions"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:350
+#: includes/class-kind-taxonomy.php:369
 msgid ""
 "some form of physical activity or workout (examples: walk, run, cycle, "
 "hike, yoga, etc.)"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:359
+#: includes/class-kind-taxonomy.php:378
 msgid "represents a geographic journey"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:368
+#: includes/class-kind-taxonomy.php:387
 msgid "parts of a scheduled trip including transit by car, plane, train, etc."
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:377
+#: includes/class-kind-taxonomy.php:396
 msgid "what you are eating, perhaps for a food dairy"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:386
+#: includes/class-kind-taxonomy.php:405
 msgid "what you are drinking, perhaps for a food dairy"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:395
+#: includes/class-kind-taxonomy.php:414
 msgid ""
 "indicating you are now following or subscribing to another person`s "
 "activities online"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:404
+#: includes/class-kind-taxonomy.php:423
 msgid "a particularly personally meaningful song (a listen with added emphasis)"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:413
+#: includes/class-kind-taxonomy.php:432
 msgid "reading a book, magazine, newspaper, other physical document, or online post"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:422
+#: includes/class-kind-taxonomy.php:441
 msgid "quoted content"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:431
+#: includes/class-kind-taxonomy.php:450
 msgid "how you are feeling (example: happy, sad, indifferent, etc.)"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:440
+#: includes/class-kind-taxonomy.php:459
 msgid "list of ingredients and directions for making food or drink"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:590
+#: includes/class-kind-taxonomy.php:468
+msgid ""
+"Issue is a special kind of article post that is a reply to typically some "
+"source code, though potentially anything at a source control repository."
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:477
+msgid ""
+"An event is a type of post that in addition to a post name (event title) "
+"has a start datetime (likely end datetime), and a location."
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:628
 msgid "Invalid post"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:593
+#: includes/class-kind-taxonomy.php:631
 msgid "Invalid Kind"
 msgstr ""
 
-#: includes/class-kind-view.php:270
+#: includes/class-kind-view.php:316
 msgid "Attending <a href=\"%1s\" class=\"u-in-reply-to\">%2s</a>"
 msgstr ""
 
-#: includes/class-kind-view.php:271
+#: includes/class-kind-view.php:317
 msgid "Might be attending <a href=\"%1s\" class=\"u-in-reply-to\">%2s</a>"
 msgstr ""
 
-#: includes/class-kind-view.php:272
+#: includes/class-kind-view.php:318
 msgid "Unable to Attend <a href=\"%1s\" class=\"u-in-reply-to\">%2s</a>"
 msgstr ""
 
-#: includes/class-kind-view.php:273
+#: includes/class-kind-view.php:319
 msgid "Interested in Attending %s"
 msgstr ""
 
-#: includes/class-kind-view.php:293
+#: includes/class-kind-view.php:339
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-kind-view.php:296
+#: includes/class-kind-view.php:342
 msgid " %d month"
 msgid_plural " %d months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-kind-view.php:299
+#: includes/class-kind-view.php:345
 msgid " %d day"
 msgid_plural " %d days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-kind-view.php:302
+#: includes/class-kind-view.php:348
 msgid " %d hour"
 msgid_plural " %d hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-kind-view.php:305
+#: includes/class-kind-view.php:351
 msgid " %d minute"
 msgid_plural " %d minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-kind-view.php:308
+#: includes/class-kind-view.php:354
 msgid " %d second"
 msgid_plural " %d seconds"
 msgstr[0] ""
@@ -393,10 +413,6 @@ msgstr ""
 #: includes/views/kind-jam.php:29 includes/views/kind-listen.php:29
 #: includes/views/kind-watch.php:29
 msgid " from "
-msgstr ""
-
-#: includes/views/kind.php:77
-msgid "Duration: "
 msgstr ""
 
 #. Plugin URI of the plugin/theme
@@ -518,7 +534,8 @@ msgid "Articles"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:203 includes/class-kind-taxonomy.php:212
-#: includes/class-kind-taxonomy.php:266 includes/class-kind-taxonomy.php:338
+#: includes/class-kind-taxonomy.php:266 includes/class-kind-taxonomy.php:275
+#: includes/class-kind-taxonomy.php:284 includes/class-kind-taxonomy.php:357
 msgctxt "indieweb-post-kinds"
 msgid " "
 msgstr ""
@@ -620,275 +637,325 @@ msgstr ""
 
 #: includes/class-kind-taxonomy.php:273
 msgctxt "indieweb-post-kinds"
-msgid "Tag"
+msgid "Video"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:274
 msgctxt "indieweb-post-kinds"
-msgid "Tags"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:275
-msgctxt "indieweb-post-kinds"
-msgid "Tagged"
+msgid "Videos"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:282
 msgctxt "indieweb-post-kinds"
-msgid "RSVP"
+msgid "Audio"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:283
 msgctxt "indieweb-post-kinds"
-msgid "RSVPs"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:284
-msgctxt "indieweb-post-kinds"
-msgid "RSVPed"
-msgstr ""
-
-#: includes/class-kind-taxonomy.php:291
-msgctxt "indieweb-post-kinds"
-msgid "Listen"
+msgid "Audios"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:292
 msgctxt "indieweb-post-kinds"
-msgid "Listens"
+msgid "Tag"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:293
 msgctxt "indieweb-post-kinds"
-msgid "Listened"
+msgid "Tags"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:300
+#: includes/class-kind-taxonomy.php:294
 msgctxt "indieweb-post-kinds"
-msgid "Watch"
+msgid "Tagged"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:301
 msgctxt "indieweb-post-kinds"
-msgid "Watches"
+msgid "RSVP"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:302
 msgctxt "indieweb-post-kinds"
-msgid "Watched"
+msgid "RSVPs"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:309
+#: includes/class-kind-taxonomy.php:303
 msgctxt "indieweb-post-kinds"
-msgid "Checkin"
+msgid "RSVPed"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:310
 msgctxt "indieweb-post-kinds"
-msgid "Checkins"
+msgid "Listen"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:311
 msgctxt "indieweb-post-kinds"
-msgid "Checked into"
+msgid "Listens"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:318
+#: includes/class-kind-taxonomy.php:312
 msgctxt "indieweb-post-kinds"
-msgid "Wish"
+msgid "Listened"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:319
 msgctxt "indieweb-post-kinds"
-msgid "Wishes"
+msgid "Watch"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:320
 msgctxt "indieweb-post-kinds"
-msgid "Wished"
+msgid "Watches"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:327
+#: includes/class-kind-taxonomy.php:321
 msgctxt "indieweb-post-kinds"
-msgid "Play"
+msgid "Watched"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:328
 msgctxt "indieweb-post-kinds"
-msgid "Playing"
+msgid "Checkin"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:329
 msgctxt "indieweb-post-kinds"
-msgid "Played"
+msgid "Checkins"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:336 includes/class-kind-taxonomy.php:337
+#: includes/class-kind-taxonomy.php:330
 msgctxt "indieweb-post-kinds"
-msgid "Weather"
+msgid "Checked into"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:345 includes/class-kind-taxonomy.php:346
+#: includes/class-kind-taxonomy.php:337
 msgctxt "indieweb-post-kinds"
-msgid "Exercise"
+msgid "Wish"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:338
+msgctxt "indieweb-post-kinds"
+msgid "Wishes"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:339
+msgctxt "indieweb-post-kinds"
+msgid "Wished"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:346
+msgctxt "indieweb-post-kinds"
+msgid "Play"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:347
 msgctxt "indieweb-post-kinds"
+msgid "Playing"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:348
+msgctxt "indieweb-post-kinds"
+msgid "Played"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:355 includes/class-kind-taxonomy.php:356
+msgctxt "indieweb-post-kinds"
+msgid "Weather"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:364 includes/class-kind-taxonomy.php:365
+msgctxt "indieweb-post-kinds"
+msgid "Exercise"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:366
+msgctxt "indieweb-post-kinds"
 msgid "Exercised"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:354
+#: includes/class-kind-taxonomy.php:373
 msgctxt "indieweb-post-kinds"
 msgid "Trip"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:355
+#: includes/class-kind-taxonomy.php:374
 msgctxt "indieweb-post-kinds"
 msgid "Trips"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:356 includes/class-kind-taxonomy.php:365
+#: includes/class-kind-taxonomy.php:375 includes/class-kind-taxonomy.php:384
 msgctxt "indieweb-post-kinds"
 msgid "Travelled"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:363
+#: includes/class-kind-taxonomy.php:382
 msgctxt "indieweb-post-kinds"
 msgid "Itinerary"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:364
+#: includes/class-kind-taxonomy.php:383
 msgctxt "indieweb-post-kinds"
 msgid "Itineraries"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:372 includes/class-kind-taxonomy.php:373
+#: includes/class-kind-taxonomy.php:391 includes/class-kind-taxonomy.php:392
 msgctxt "indieweb-post-kinds"
 msgid "Eat"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:374
+#: includes/class-kind-taxonomy.php:393
 msgctxt "indieweb-post-kinds"
 msgid "Ate"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:381
+#: includes/class-kind-taxonomy.php:400
 msgctxt "indieweb-post-kinds"
 msgid "Drink"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:382
+#: includes/class-kind-taxonomy.php:401
 msgctxt "indieweb-post-kinds"
 msgid "Drinks"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:383
+#: includes/class-kind-taxonomy.php:402
 msgctxt "indieweb-post-kinds"
 msgid "Drank"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:390
+#: includes/class-kind-taxonomy.php:409
 msgctxt "indieweb-post-kinds"
 msgid "Follow"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:391
+#: includes/class-kind-taxonomy.php:410
 msgctxt "indieweb-post-kinds"
 msgid "Follows"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:392
+#: includes/class-kind-taxonomy.php:411
 msgctxt "indieweb-post-kinds"
 msgid "Followed"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:399
+#: includes/class-kind-taxonomy.php:418
 msgctxt "indieweb-post-kinds"
 msgid "Jam"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:400
+#: includes/class-kind-taxonomy.php:419
 msgctxt "indieweb-post-kinds"
 msgid "Jams"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:401
+#: includes/class-kind-taxonomy.php:420
 msgctxt "indieweb-post-kinds"
 msgid "Listened to"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:408 includes/class-kind-taxonomy.php:410
+#: includes/class-kind-taxonomy.php:427 includes/class-kind-taxonomy.php:429
 msgctxt "indieweb-post-kinds"
 msgid "Read"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:409
+#: includes/class-kind-taxonomy.php:428
 msgctxt "indieweb-post-kinds"
 msgid "Reads"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:417
+#: includes/class-kind-taxonomy.php:436
 msgctxt "indieweb-post-kinds"
 msgid "Quote"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:418
+#: includes/class-kind-taxonomy.php:437
 msgctxt "indieweb-post-kinds"
 msgid "Quotes"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:419
+#: includes/class-kind-taxonomy.php:438
 msgctxt "indieweb-post-kinds"
 msgid "Quoted"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:426
+#: includes/class-kind-taxonomy.php:445
 msgctxt "indieweb-post-kinds"
 msgid "Mood"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:427
+#: includes/class-kind-taxonomy.php:446
 msgctxt "indieweb-post-kinds"
 msgid "Moods"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:428
+#: includes/class-kind-taxonomy.php:447
 msgctxt "indieweb-post-kinds"
 msgid "Felt"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:435
+#: includes/class-kind-taxonomy.php:454
 msgctxt "indieweb-post-kinds"
 msgid "Recipe"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:436
+#: includes/class-kind-taxonomy.php:455
 msgctxt "indieweb-post-kinds"
 msgid "Recipes"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:437
+#: includes/class-kind-taxonomy.php:456
 msgctxt "indieweb-post-kinds"
 msgid "Cooked"
 msgstr ""
 
-#: includes/class-kind-view.php:150
+#: includes/class-kind-taxonomy.php:463
+msgctxt "indieweb-post-kinds"
+msgid "Issue"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:464
+msgctxt "indieweb-post-kinds"
+msgid "Issues"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:465
+msgctxt "indieweb-post-kinds"
+msgid "Filed an Issue"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:472
+msgctxt "indieweb-post-kinds"
+msgid "Event"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:473
+msgctxt "indieweb-post-kinds"
+msgid "Eventss"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:474
+msgctxt "indieweb-post-kinds"
+msgid "Planned"
+msgstr ""
+
+#: includes/class-kind-view.php:196
 msgctxt "indieweb-post-kinds"
 msgid "a tweet"
 msgstr ""
 
-#: includes/class-kind-view.php:151 includes/class-kind-view.php:152
+#: includes/class-kind-view.php:197 includes/class-kind-view.php:198
 msgctxt "indieweb-post-kinds"
 msgid "a video"
 msgstr ""
 
-#: includes/class-kind-view.php:153
+#: includes/class-kind-view.php:199
 msgctxt "indieweb-post-kinds"
 msgid "an image"
 msgstr ""
 
-#: includes/class-kind-view.php:159
+#: includes/class-kind-view.php:205
 msgctxt "indieweb-post-kinds"
 msgid "a post"
 msgstr ""

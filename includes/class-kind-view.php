@@ -10,16 +10,20 @@ class Kind_View {
 	public static function init() {
 		add_filter( 'the_content', array( 'Kind_View', 'content_response' ), 20 );
 		add_filter( 'the_excerpt', array( 'Kind_View', 'excerpt_response' ), 20 );
-		add_filter( 'wp_get_attachment_image_attributes', array( 'Kind_View', 'wp_get_attachment_image_attributes' ), 10 );
+		add_filter( 'wp_get_attachment_image_attributes', array( 'Kind_View', 'wp_get_attachment_image_attributes' ), 10, 2 );
 	}
 
-	public static function wp_get_attachment_image_attributes( array $attr ) {
-		if ( isset( $attr['class'] ) ) {
-			$class = explode( " ", $attr['class'] );
-			$class[] = 'u-photo';
-			$attr['class'] = implode( " ", array_unique( $class ) );
+	public static function wp_get_attachment_image_attributes( array $attr, WP_Post $attachment ) {
+		$parents = get_post_ancestors( $attachment );
+		$id = $parents[ count( $parents ) -1 ];
+		if ( 'photo' !== get_post_kind_slug( $id ) ) {
+			return $attr;
 		}
-		else{ 
+		if ( isset( $attr['class'] ) ) {
+			$class = explode( ' ', $attr['class'] );
+			$class[] = 'u-photo';
+			$attr['class'] = implode( ' ', array_unique( $class ) );
+		} else {
 			$attr['class'] = 'u-photo';
 		}
 		return $attr;
@@ -48,7 +52,7 @@ class Kind_View {
 			}
 		}
 		ob_start();
-		include ( $located );
+		include( $located );
 		$return  = ob_get_contents();
 		ob_end_clean();
 		return wp_make_content_images_responsive( $return );
@@ -130,10 +134,39 @@ class Kind_View {
 				return '';
 		}
 		$host = self::extract_domain_name( $url );
-		$whitelist = array( 
-			'animoto.com', 'blip.tv', 'cloudup.com', 'collegehumor.com', 'dailymotion.com', 'facebook.com', 'flickr.com', 'funnyordie.com', 'hulu.com', 'imgur.com', 'instagram.com', 
-			'issuu.com', 'kickstarter.com', 'meetup.com', 'mixcloud.com', 'photobucket.com', 'polldaddy.com', 'reddit.com', 'reverbnation.com', 'scribd.com', 'slideshare.net', 'smugmug.com',
-			'soundcloud.com', 'speakerdeck.com', 'spotify.com', 'ted.com', 'tumblr.com', 'twitter.com', 'videopress.com', 'vimeo.com', 'wordpress.tv', 'youtube.com'
+		$whitelist = array(
+			'animoto.com',
+		'blip.tv',
+		'cloudup.com',
+		'collegehumor.com',
+		'dailymotion.com',
+		'facebook.com',
+		'flickr.com',
+		'funnyordie.com',
+		'hulu.com',
+		'imgur.com',
+		'instagram.com',
+			'issuu.com',
+		'kickstarter.com',
+		'meetup.com',
+		'mixcloud.com',
+		'photobucket.com',
+		'polldaddy.com',
+		'reddit.com',
+		'reverbnation.com',
+		'scribd.com',
+		'slideshare.net',
+		'smugmug.com',
+			'soundcloud.com',
+		'speakerdeck.com',
+		'spotify.com',
+		'ted.com',
+		'tumblr.com',
+		'twitter.com',
+		'videopress.com',
+		'vimeo.com',
+		'wordpress.tv',
+		'youtube.com',
 		);
 		$whitelist = apply_filters( 'post_kind_embed_whitelist', $whitelist );
 		if ( ! in_array( $host, $whitelist ) ) {
@@ -190,7 +223,7 @@ class Kind_View {
 		$default = array(
 			'height' => 32,
 			'width' => 32,
-			'display' => 'both'
+			'display' => 'both',
 		);
 		$args = wp_parse_args( $args, $default );
 		/**
@@ -283,7 +316,7 @@ class Kind_View {
 			'yes' => __( 'Attending <a href="%1s" class="u-in-reply-to">%2s</a>', 'indieweb-post-kinds' ),
 			'maybe' => __( 'Might be attending <a href="%1s" class="u-in-reply-to">%2s</a>', 'indieweb-post-kinds' ),
 			'no' => __( 'Unable to Attend <a href="%1s" class="u-in-reply-to">%2s</a>', 'indieweb-post-kinds' ),
-			'interested' => __( 'Interested in Attending %s', 'indieweb-post-kinds' )
+			'interested' => __( 'Interested in Attending %s', 'indieweb-post-kinds' ),
 		);
 		return $rsvp[ $type ];
 	}
@@ -303,22 +336,22 @@ class Kind_View {
 		);
 		$return = '';
 		if ( $bits['year'] > 0 ) {
-			$return .= sprintf( _n( '%d year', '%d years', $bits['year'], 'indieweb-post-kinds'  ), $bits['year'] );
+			$return .= sprintf( _n( '%d year', '%d years', $bits['year'], 'indieweb-post-kinds' ), $bits['year'] );
 		}
 		if ( $bits['month'] > 0 ) {
-			$return .= sprintf( _n( ' %d month', ' %d months', $bits['month'], 'indieweb-post-kinds'  ), $bits['month'] );
+			$return .= sprintf( _n( ' %d month', ' %d months', $bits['month'], 'indieweb-post-kinds' ), $bits['month'] );
 		}
 		if ( $bits['day'] > 0 ) {
-			$return .= sprintf( _n( ' %d day', ' %d days', $bits['day'], 'indieweb-post-kinds'  ), $bits['day'] );
+			$return .= sprintf( _n( ' %d day', ' %d days', $bits['day'], 'indieweb-post-kinds' ), $bits['day'] );
 		}
 		if ( $bits['hour'] > 0 ) {
-			$return .= sprintf( _n( ' %d hour', ' %d hours', $bits['hour'], 'indieweb-post-kinds'  ), $bits['hour'] );
+			$return .= sprintf( _n( ' %d hour', ' %d hours', $bits['hour'], 'indieweb-post-kinds' ), $bits['hour'] );
 		}
 		if ( $bits['minute'] > 0 ) {
-			$return .= sprintf( _n( ' %d minute', ' %d minutes', $bits['minute'], 'indieweb-post-kinds'  ), $bits['minute'] );
+			$return .= sprintf( _n( ' %d minute', ' %d minutes', $bits['minute'], 'indieweb-post-kinds' ), $bits['minute'] );
 		}
 		if ( $bits['second'] > 0 ) {
-			$return .= sprintf( _n( ' %d second', ' %d seconds', $bits['second'], 'indieweb-post-kinds'  ), $bits['second'] );
+			$return .= sprintf( _n( ' %d second', ' %d seconds', $bits['second'], 'indieweb-post-kinds' ), $bits['second'] );
 		}
 		return trim( $return );
 	}
