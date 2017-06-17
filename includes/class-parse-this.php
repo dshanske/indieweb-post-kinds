@@ -126,7 +126,7 @@ class Parse_This {
 			'limit_response_size' => 1048576,
 			'redirection' => 5,
 			// Use an explicit user-agent for Press This
-			'user-agent' => 'Parse This (WordPress/' . get_bloginfo( 'version' ) . '); ' . get_bloginfo( 'url' )
+			'user-agent' => 'Parse This (WordPress/' . get_bloginfo( 'version' ) . '); ' . get_bloginfo( 'url' ),
 		);
 		$remote_url = wp_safe_remote_head( $url, $args );
 		if ( is_wp_error( $remote_url ) ) {
@@ -304,8 +304,9 @@ class Parse_This {
 	private function _limit_embed( $src ) {
 		$src = $this->_limit_url( $src );
 
-		if ( empty( $src ) )
+		if ( empty( $src ) ) {
 			return '';
+		}
 
 		if ( preg_match( '!//(m|www)\.youtube\.com/(embed|v)/([^?]+)\?.+$!i', $src, $src_matches ) ) {
 			// Embedded Youtube videos (www or mobile)
@@ -358,8 +359,7 @@ class Parse_This {
 		if ( ! in_array( $meta_value, $this->meta[$meta_name] ) ) {
 			if ( ! is_array( $meta_value ) ) {
 				$this->meta[$meta_name][] = $meta_value;
-			}
-			else {
+			} else {
 				$this->meta[$meta_name] = array_unique( array_merge( $this->meta[$meta_name], $meta_value ) );
 			}
 		}
@@ -460,7 +460,7 @@ class Parse_This {
 				$this->_set_meta_entry( 'series', $meta_value );
 				break;
 			case 'book:release_date':
-			case 'music:release_date': 
+			case 'music:release_date':
 				$this->_set_meta_entry( 'release_date', $meta_value );
 				break;
 			case 'og:video':
@@ -506,8 +506,7 @@ class Parse_This {
 			case 'book:tag':
 				if ( 1 < substr_count( $meta_value, ',' ) ) {
 					$this->_set_meta_entry( 'tag', explode( ',', $meta_value ), false );
-				}
-				else {
+				} else {
 					$this->_set_meta_entry( 'tag', $meta_value, false );
 				}
 				break;
@@ -545,7 +544,7 @@ class Parse_This {
 				'property' => true,
 				'name'     => true,
 				'content'  => true,
-			)
+			),
 		);
 		$source_content = wp_kses( $this->content, $allowed_elements );
 
@@ -648,24 +647,23 @@ class Parse_This {
 
 		$allowed_elements = array(
 			'a' => array(
-				'href' => true
-			)
+				'href' => true,
+			),
 		);
 		// Only hunt for links that are actual links
 		$source_content = wp_kses( $this->content, $allowed_elements );
 		$this->urls = wp_extract_urls( $source_content );
 
-
 	}
 
-        /**
-         * Verifies whether the provided URL is in the content..
-         *
-         * @since x.x.x
-         * @access public
-         *
-         * @param string $url URL.
-         */
+		/**
+		 * Verifies whether the provided URL is in the content..
+		 *
+		 * @since x.x.x
+		 * @access public
+		 *
+		 * @param string $url URL.
+		 */
 	public function verify_url_in_content( $url ) {
 		return in_array( $url, $this->urls );
 	}
@@ -673,8 +671,7 @@ class Parse_This {
 	public function get_meta( $key = null ) {
 		if ( ! $key ) {
 			return $this->meta;
-		}
-		else { 
+		} else {
 			if ( isset( $this->meta[ $key ] ) ) {
 				return $this->meta[ $key ];
 			}
@@ -693,9 +690,9 @@ class Parse_This {
 		$data['summary'] = $this->get_meta( 'description' );
 		// $data['site'] = ifset( $meta['og:site'] ) ?: ifset( $meta['twitter:site'] );
 		$data['author'] = $this->get_meta( 'author' );
-		
+
 		// $data['featured'] = ifset( $meta['og:image'] ) ?: ifset( $meta['twitter:image'] );
-		$data['publication'] =  $this->get_meta( 'site_name' ); // ifset( $meta['og:site_name'] ) ?: ifset( $meta['og:music:album'] );
+		$data['publication'] = $this->get_meta( 'site_name' ); // ifset( $meta['og:site_name'] ) ?: ifset( $meta['og:music:album'] );
 		$data['published'] = $this->get_meta( 'published' ) ?: $this->get_meta( 'release_date' );
 		$data['updated'] = $this->get_meta( 'modified' );
 		$data['category'] = array_values( $this->get_meta( 'tag' ) );
@@ -708,19 +705,19 @@ class Parse_This {
 		$data['media'] = $this->embeds;
 		$data['raw'] = $this->get_meta();
 		// $data['icon'] = ifset( $meta['msapplication-TileImage'] );
-                // $data['icon'] = ifset( $meta['msapplication-TileImage'] );
+				// $data['icon'] = ifset( $meta['msapplication-TileImage'] );
 		return array_filter( $data );
 	}
 
 	public function get_all() {
-	       return array(
-	       	       'images' => array_filter( $this->images ),
-		       'embeds' => array_filter( $this->embeds ),
-		       'meta' => array_filter( $this->meta ),
-		       'links' => array_filter( $this->links ),
-		       'urls' => array_filter( $this->urls ),
-		       'content' => $this->content
-	       );
+		   return array(
+					  'images' => array_filter( $this->images ),
+			   'embeds' => array_filter( $this->embeds ),
+			   'meta' => array_filter( $this->meta ),
+			   'links' => array_filter( $this->links ),
+			   'urls' => array_filter( $this->urls ),
+			   'content' => $this->content,
+		   );
 	}
 
 }

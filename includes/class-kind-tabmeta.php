@@ -61,8 +61,8 @@ class Kind_Tabmeta {
 			wp_localize_script( 'kindmeta-response', 'rest_object',
 				array(
 					'api_nonce' => wp_create_nonce( 'wp_rest' ),
-					'api_url'   => rest_url('/link-preview/1.0/'),
-					'link_preview_success_message' => __( 'Your URL has been successfully retrieved and parsed', 'indieweb-post-kinds' )
+					'api_url'   => rest_url( '/link-preview/1.0/' ),
+					'link_preview_success_message' => __( 'Your URL has been successfully retrieved and parsed', 'indieweb-post-kinds' ),
 				)
 			);
 
@@ -82,18 +82,18 @@ class Kind_Tabmeta {
 		foreach ( $t_zones as $a ) {
 			$t = '';
 			try {
-      				// this throws exception for 'US/Pacific-New'
-        			$zone = new DateTimeZone( $a );
+					  // this throws exception for 'US/Pacific-New'
+					$zone = new DateTimeZone( $a );
 				$seconds = $zone->getOffset( new DateTime( 'now' , $zone ) );
-        			$o[] = self::tz_seconds_to_offset( $seconds );
-      			} // exceptions must be catched, else a blank page
-      			catch (Exception $e) {
-      			// die("Exception : " . $e->getMessage() . '<br />');
-        		// what to do in catch ? , nothing just relax
-    			}
-    		}
-    		$o = array_unique( $o );
-    		asort( $o );
+					$o[] = self::tz_seconds_to_offset( $seconds );
+			} // exceptions must be catched, else a blank page
+			catch (Exception $e) {
+				// die("Exception : " . $e->getMessage() . '<br />');
+				// what to do in catch ? , nothing just relax
+			}
+		}
+			$o = array_unique( $o );
+			asort( $o );
 		return $o;
 	}
 
@@ -130,7 +130,7 @@ class Kind_Tabmeta {
 			'yes' => __( 'Yes', 'indieweb-post-kinds' ),
 			'no' => __( 'No', 'indieweb-post-kinds' ),
 			'maybe' => __( 'Maybe', 'indieweb-post-kinds' ),
-			'interested' => __( 'Interested', 'indieweb-post-kinds' )
+			'interested' => __( 'Interested', 'indieweb-post-kinds' ),
 		);
 		$string = '<label for="mf2_rsvp">' . __( 'RSVP', 'indieweb-post-kinds' ) .  '</label><br/>';
 		$string .= '<select name="mf2_rsvp" id="mf2_rsvp">';
@@ -160,16 +160,16 @@ class Kind_Tabmeta {
 
 
 	public static function tz_seconds_to_offset($seconds) {
-	    return ($seconds < 0 ? '-' : '+') . sprintf( '%02d:%02d', abs( $seconds / 60 / 60 ), abs( $seconds / 60 ) % 60 );
+		return ($seconds < 0 ? '-' : '+') . sprintf( '%02d:%02d', abs( $seconds / 60 / 60 ), abs( $seconds / 60 ) % 60 );
 	}
 
 	public static function tz_offset_to_seconds($offset) {
-	    if ( preg_match( '/([+-])(\d{2}):?(\d{2})/', $offset, $match ) ) {
-	      $sign = ($match[1] == '-' ? -1 : 1);
-	      return (($match[2] * 60 * 60) + ($match[3] * 60)) * $sign;
-	    } else {
-	      return 0;
-	    }
+		if ( preg_match( '/([+-])(\d{2}):?(\d{2})/', $offset, $match ) ) {
+			$sign = ($match[1] == '-' ? -1 : 1);
+			return (($match[2] * 60 * 60) + ($match[3] * 60)) * $sign;
+		} else {
+			return 0;
+		}
 	}
 
 	/* Create one or more meta boxes to be displayed on the post editor screen. */
@@ -195,7 +195,7 @@ class Kind_Tabmeta {
 				$url = $_GET['kindurl'];
 			}
 		}
-		$time =  array(); // $meta->get_time();
+		$time = array(); // $meta->get_time();
 		include_once( 'tabs/tab-navigation.php' );
 	}
 
@@ -268,8 +268,7 @@ class Kind_Tabmeta {
 		$duration = $meta->calculate_duration( $start, $end );
 		if ( $duration && ! isset( $_POST['cite_duration'] ) ) {
 			$meta->set( 'duration', $duration );
-		}
-		else { 
+		} else {
 			$meta->del( 'duration' );
 		}
 		$meta->set( 'rsvp' , $_POST['mf2_rsvp' ] );
@@ -285,7 +284,7 @@ class Kind_Tabmeta {
 		if ( isset( $_POST['cite_tags'] ) ) {
 			$cite['category'] = explode( ';', $_POST['cite_tags'] );
 		}
-		$cite['publication'] = ifset ( $_POST['cite_publication'] );
+		$cite['publication'] = ifset( $_POST['cite_publication'] );
 		$cite['featured'] = ifset( $_POST['cite_featured'] );
 
 		$meta->set_cite( array_filter( $cite ) );

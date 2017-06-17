@@ -133,7 +133,7 @@ class Kind_Config {
 	public static function admin_menu() {
 		// If the IndieWeb Plugin is installed use its menu.
 		if ( class_exists( 'IndieWeb_Plugin' ) ) {
-		    add_submenu_page(
+			add_submenu_page(
 				'indieweb',
 				__( 'Post Kinds', 'indieweb-post-kinds' ), // page title
 				__( 'Post Kinds', 'indieweb-post-kinds' ), // menu title
