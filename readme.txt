@@ -173,6 +173,7 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 		* Fix photo template
 		* Add audio and video kind.
 		* Reserve event and issue kind.
+		* Fix overbroad u-photo.
 	= Version 2.6.0 =
 		* Remove h-as properties
 		* Add basic templates for some different kinds
