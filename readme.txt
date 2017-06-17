@@ -88,7 +88,9 @@ may make it a Passive Kind.
 
  * **Article** - traditional long form content - a post with an explicit post name(title)
  * **Note** - short content - a post with just plain content (also the default)
- * **Photo** - image or photo post - a post with an embedded image as its primary focus. This uses either the featured image or attached images
+ * **Photo** - image or photo post - a post with an embedded image as its primary focus. This uses either the featured image or attached images depending on theme.
+ * **Video** - video post - a post with an embedded image as its primary focus.
+ * **Audio** - audio post - a post with an embedded sound file as its primary focus.
 
 = The Response Kinds =
 
@@ -132,6 +134,8 @@ interface at this time.
  * **Follow** - A post indicating you are now following someone's activities
  * **Mood** - Mood - Feeling
  * **Recipe** - Recipe
+ * **Issue** - Issue is a special kind of article post that is a reply to typically some source code, though potentially anything at a source control repository.
+ * **Event** - An event is a type of post that in addition to a post name (event title) has a start datetime (likely end datetime), and a location.
 
 == Archive Display ==
 
@@ -165,6 +169,10 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 
 == Changelog ==
+	= Version 2.6.1 =
+		* Fix photo template
+		* Add audio and video kind.
+		* Reserve event and issue kind.
 	= Version 2.6.0 =
 		* Remove h-as properties
 		* Add basic templates for some different kinds

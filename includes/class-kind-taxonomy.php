@@ -269,6 +269,25 @@ class Kind_Taxonomy {
 				'description' => __( 'a post with an embedded image/photo as its primary focus', 'indieweb-post-kinds' ),
 				'description-url' => 'http://indieweb.org/photo',
 			),
+			'video' => array(
+				'singular_name' => _x( 'Video', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Videos', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( ' ', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'video', // microformats 2 property
+				'format' => 'video', // Post Format that maps to this
+				'description' => __( 'a post with an embedded video as its primary focus', 'indieweb-post-kinds' ),
+				'description-url' => 'http://indieweb.org/video',
+			),
+			'audio' => array(
+				'singular_name' => _x( 'Audio', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Audios', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( ' ', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'audio', // microformats 2 property
+				'format' => 'audio', // Post Format that maps to this
+				'description' => __( 'a post with an embedded audio file as its primary focus', 'indieweb-post-kinds' ),
+				'description-url' => 'http://indieweb.org/audio',
+			),
+
 			'tag' => array(
 				'singular_name' => _x( 'Tag', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name' => _x( 'Tags', 'indieweb-post-kinds' ), // General name for the kind plural
@@ -440,8 +459,27 @@ class Kind_Taxonomy {
 				'description' => __( 'list of ingredients and directions for making food or drink', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/recipe',
 			),
+			'issue' => array(
+				'singular_name' => _x( 'Issue', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Issues', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'Filed an Issue', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'u-in-reply-to', // microformats 2 property
+				'format' => '', // Post Format that maps to this
+				'description' => __( 'Issue is a special kind of article post that is a reply to typically some source code, though potentially anything at a source control repository.', 'indieweb-post-kinds' ),
+				'description-url' => 'https://indieweb.org/issue',
+			),
+			'event' => array(
+				'singular_name' => _x( 'Event', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name' => _x( 'Eventss', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb' => _x( 'Planned', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property' => 'h-event', // microformats 2 property
+				'format' => '', // Post Format that maps to this
+				'description' => __( 'An event is a type of post that in addition to a post name (event title) has a start datetime (likely end datetime), and a location.', 'indieweb-post-kinds' ),
+				'description-url' => 'https://indieweb.org/event',
+			),
 		);
 		$kinds = apply_filters( 'kind_info', $kinds );
+		ksort( $kinds );
 		if ( 'all' === $kind ) {
 			return $kinds;
 		}
