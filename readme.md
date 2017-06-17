@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like  
-**Stable tag:** 2.6.0  
+**Stable tag:** 2.6.1  
 **Requires at least:** 4.7  
 **Tested up to:** 4.8  
 **License:** GPLv2 or later  
