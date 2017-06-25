@@ -13,6 +13,10 @@ $title = Kind_View::get_cite_title( $meta->get_cite(), $meta->get_url() );
 $embed = self::get_embed( $meta->get_url() );
 $rsvp = $meta->get( 'rsvp' );
 
+if ( ! $kind ) {
+	return;
+}
+
 // Add in the appropriate type
 switch ( $kind ) {
 	case 'like':
@@ -53,8 +57,7 @@ switch ( $kind ) {
 		$type = 'u-quotation-of';
 		break;
 	default:
-		$type = '';
-		break;
+		return;
 }
 ?>
 

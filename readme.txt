@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like
-Stable tag: 2.6.1
+Stable tag: 2.6.2
 Requires at least: 4.7
 Tested up to: 4.8
 License: GPLv2 or later
@@ -169,6 +169,8 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 
 == Changelog ==
+	= Version 2.6.2 =
+		* Fix for absence of kind
 	= Version 2.6.1 =
 		* Fix photo template
 		* Add audio and video kind.
