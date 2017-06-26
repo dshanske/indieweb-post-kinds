@@ -14,14 +14,23 @@ php:
   - 5.3
   - 5.6
   - 7
+  
+after_success: curl -L https://raw.githubusercontent.com/miya0001/travis2wpplugin/master/deploy.sh | bash
 
 env:
-  - WP_VERSION=latest WP_MULTISITE=0
+  matrix:
+    - WP_VERSION=latest WP_MULTISITE=0
+    
+  global:
+    - SVN_REPO: https://plugins.svn.wordpress.org/wp-uf2/
+    - GH_REF: https://github.com/indieweb/wordpress-uf2.git
+    - secure: <your key>
+
 
 matrix:
   include:
     - php: 5.6
-      env: WP_VERSION=latest WP_MULTISITE=1
+      env: WP_VERSION=latest WP_MULTISITE=1  WP_PULUGIN_DEPLOY=1
 
 before_script:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
