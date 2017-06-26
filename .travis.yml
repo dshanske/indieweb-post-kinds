@@ -22,8 +22,8 @@ env:
     - WP_VERSION=latest WP_MULTISITE=0
     
   global:
-    - SVN_REPO: https://plugins.svn.wordpress.org/wp-uf2/
-    - GH_REF: https://github.com/indieweb/wordpress-uf2.git
+    - SVN_REPO: https://plugins.svn.wordpress.org/indieweb-post-kinds/
+    - GH_REF: https://github.com/dshanske/indieweb-post-kinds.git
     - secure: <your key>
 
 
