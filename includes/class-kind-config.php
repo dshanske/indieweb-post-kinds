@@ -24,14 +24,7 @@ class Kind_Config {
 		add_action( 'admin_menu', array( 'Kind_Config', 'admin_menu' ), 11 );
 		// Add post help tab
 		add_action( 'load-post.php', array( 'Kind_Config', 'add_post_help_tab' ) , 20 );
-	}
 
-	/**
-	 * Function to Set up Admin Settings.
-	 *
-	 * @access public
-	 */
-	public static function admin_init() {
 		$args = array(
 			'type' => 'array',
 			'description' => 'Kinds Enabled on This Site',
@@ -54,19 +47,20 @@ class Kind_Config {
 		);
 		register_setting( 'iwt_options', 'kind_embeds', $args );
 		$args = array(
-			'type' => 'boolean',
-			'description' => 'Disable Content Protection on Responses',
-			'show_in_rest' => true,
-			'default' => 0,
-		);
-		register_setting( 'iwt_options', 'kind_protection', $args );
-		$args = array(
 			'type' => 'string',
 			'description' => 'KSES Content Protection on Responses',
-			'show_in_rest' => true,
+			'show_in_rest' => false,
 			'default' => str_replace( '},"',"},\r\n\"", wp_json_encode( wp_kses_allowed_html( 'post' ), JSON_PRETTY_PRINT ) ),
 		);
 		register_setting( 'iwt_options', 'kind_kses', $args );
+	}
+
+	/**
+	 * Function to Set up Settings.
+	 *
+	 * @access public
+	 */
+	public static function admin_init() {
 		add_settings_section(
 			'iwt-content',
 			__( 'Content Options',
@@ -83,7 +77,7 @@ class Kind_Config {
 		);
 		add_settings_field(
 			'defaultkind',
-			__( 'Default Kind', 'indieweb-post-kinds' ),
+			__( 'Default Kind for New Posts', 'indieweb-post-kinds' ),
 			array( 'Kind_Config', 'defaultkind_callback' ),
 			'iwt_options',
 			'iwt-content'
@@ -91,20 +85,12 @@ class Kind_Config {
 
 		add_settings_field(
 			'embeds',
-			__( 'Use Rich Embed Support for Responses to Whitelisted Sites', 'indieweb-post-kinds' ),
+			__( 'Embed Sites into your Response', 'indieweb-post-kinds' ),
 			array( 'Kind_Config', 'checkbox_callback' ),
 			'iwt_options', 'iwt-content' ,  array( 'name' => 'kind_embeds' )
 		);
 
-		add_settings_field(
-			'protection',
-			__( 'Disable KSES Content Protection on Responses(Advanced Feature)', 'indieweb-post-kinds' ),
-			array( 'Kind_Config', 'checkbox_callback' ),
-			'iwt_options',
-			'iwt-content',
-			array( 'name' => 'kind_protection' )
-		);
-		if ( 1 == get_option( 'kind_protection' ) ) {
+		if ( POST_KINDS_KSES ) {
 			add_settings_field(
 				'contentelements',
 				__( 'Response Content Allowed Html Elements', 'indieweb-post-kinds' ) . ' <a href="http://codex.wordpress.org/Function_Reference/wp_kses">*</a>',
@@ -116,7 +102,6 @@ class Kind_Config {
 		}
 		// Add Query Var to Admin
 		add_filter( 'query_vars', array( 'Kind_Config', 'query_var' ) );
-
 	}
 
 
@@ -196,7 +181,7 @@ class Kind_Config {
 	public static function termcheck_callback() {
 		$terms = Kind_Taxonomy::get_kind_info( 'all', 'all' );
 		// Hide these terms until ready for use for now.
-		$hide = array( 'note', 'weather', 'exercise', 'travel', 'itinerary', 'event', 'tag', 'follow', 'drink', 'eat', 'trip', 'checkin', 'recipe', 'mood', 'issue' );
+		$hide = array( 'note', 'weather', 'exercise', 'travel', 'itinerary', 'event', 'tag', 'follow', 'drink', 'eat', 'trip', 'recipe', 'mood', 'issue' );
 		foreach ( $hide as $hid ) {
 			unset( $terms[ $hid ] );
 		}

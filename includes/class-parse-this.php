@@ -435,9 +435,11 @@ class Parse_This {
 			case 'music:album:disc':
 				$this->_set_meta_entry( 'disc', $meta_value );
 				break;
+			case 'playfoursquare:location:latitude':
 			case 'place:location:latitude':
 				$this->_set_meta_entry( 'latitude', $meta_value );
 				break;
+			case 'playfoursquare:location:longitude':
 			case 'place:location:longitude':
 				$this->_set_meta_entry( 'longitude', $meta_value );
 				break;
@@ -560,6 +562,17 @@ class Parse_This {
 				if ( preg_match( '/(property|name)="([^"]+)"[^>]+content="([^"]+)"/', $value, $new_matches ) ) {
 					$meta_name  = $this->_limit_string( $new_matches[2] );
 					$meta_value = $this->_limit_string( $new_matches[3] );
+
+					// Sanity check. $key is usually things like 'title', 'description', 'keywords', etc.
+					if ( strlen( $meta_name ) > 200 ) {
+						continue;
+					}
+					$unfiltered[ $meta_name ] = $meta_value;
+					$this->_process_meta_entry( $meta_name, $meta_value );
+				}
+				if ( preg_match( '/content="([^"]+)"[^>]+(name|property)="([^"]+)"/', $value, $new_matches ) ) {
+					$meta_name  = $this->_limit_string( $new_matches[3] );
+					$meta_value = $this->_limit_string( $new_matches[1] );
 
 					// Sanity check. $key is usually things like 'title', 'description', 'keywords', etc.
 					if ( strlen( $meta_name ) > 200 ) {
@@ -700,6 +713,8 @@ class Parse_This {
 		// $data['audio'] = ifset( $meta['og:audio'] );
 		// $data['video'] = ifset( $meta['og:video'] );
 		$data['duration'] = $this->get_meta( 'duration' );
+		$data['longitude'] = $this->get_meta( 'longitude' );
+		$data['latitude'] = $this->get_meta( 'latitude' );
 		$type = $this->get_meta( 'type' );
 		$data['photo'] = $this->images;
 		$data['media'] = $this->embeds;
