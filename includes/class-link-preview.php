@@ -17,7 +17,7 @@ class Link_Preview {
 		register_rest_route( 'link-preview/1.0', '/parse', array(
 			array(
 				'methods' => WP_REST_Server::READABLE,
-				'callback' => array( 'Link_Preview', 'parse' ),
+				'callback' => array( 'Link_Preview', 'callback' ),
 				'args'  => array(
 					'kindurl'  => array(
 						'required' => true,
@@ -39,7 +39,7 @@ class Link_Preview {
 	 *
 	 * @return boolean
 	 */
-	public static function is_valid_url($url, $request, $key) {
+	public static function is_valid_url($url, $request = null, $key = null ) {
 		if ( ! is_string( $url ) || empty( $url ) ) {
 			return false;
 		}
@@ -58,6 +58,7 @@ class Link_Preview {
 		$parsethis = new Parse_This();
 		$parsethis->set_source( $content, $url );
 		$metadata = $parsethis->meta_to_microformats();
+		return $metadata;
 		if ( version_compare( PHP_VERSION, '5.3', '>' ) ) {
 			$mf2data = Parse_MF2::mf2parse( $content, $url );
 			$data = array_merge( $metadata, $mf2data );
@@ -91,25 +92,21 @@ class Link_Preview {
 	}
 
 	// Callback Handler
-	public static function parse( $request ) {
+	public static function callback( $request ) {
 		// We don't need to specifically check the nonce like with admin-ajax. It is handled by the API.
 		$params = $request->get_params();
 		if ( isset( $params['kindurl'] ) && ! empty( $params['kindurl' ] ) ) {
-			$content = Parse_Mf2::fetch( $params['kindurl'] );
-			return self::mergeparse( $content, $params['kindurl'] );
+			return self::parse( $params['kindurl'] );
 		}
 		return new WP_Error( 'invalid_url' , __( 'Missing or Invalid URL' , 'indieweb-post-kinds' ), array( 'status' => 400 ) );
 	}
 
-	public static function localparse( $url ) {
-		if ( ! $url ) {
+	public static function parse( $url ) {
+		if ( ! self::is_valid_url( $url ) ) {
 			return new WP_Error( 'invalid_url' , __( 'Missing or Invalid URL' , 'indieweb-post-kinds' ), array( 'status' => 400 ) );
 		}
 		$content = Parse_Mf2::fetch( $url );
 		return self::mergeparse( $content, $url );
 	}
-
-
-
 }
 ?>
