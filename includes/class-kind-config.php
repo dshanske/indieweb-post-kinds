@@ -181,13 +181,11 @@ class Kind_Config {
 	public static function termcheck_callback() {
 		$terms = Kind_Taxonomy::get_kind_info( 'all', 'all' );
 		// Hide these terms until ready for use for now.
-		$hide = array( 'note', 'weather', 'exercise', 'travel', 'itinerary', 'event', 'tag', 'follow', 'drink', 'eat', 'trip', 'recipe', 'mood', 'issue' );
-		foreach ( $hide as $hid ) {
-			unset( $terms[ $hid ] );
-		}
 		$termslist = get_option( 'kind_termslist' );
 		foreach ( $terms as $key => $value ) {
-			echo "<input name='kind_termslist[]' type='checkbox' value='" . $key . "' " . checked( in_array( $key, $termslist ), true, false ) . ' /><strong>' . $value['singular_name'] . '</strong> - ' . $value['description'] . '<br />';
+			if ( $value['show'] ) {
+				echo "<input name='kind_termslist[]' type='checkbox' value='" . $key . "' " . checked( in_array( $key, $termslist ), true, false ) . ' /><strong>' . $value['singular_name'] . '</strong> - ' . $value['description'] . '<br />';
+			}
 		}
 	}
 

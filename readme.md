@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like  
-**Stable tag:** 2.6.2  
+**Stable tag:** 2.6.3  
 **Requires at least:** 4.7  
 **Tested up to:** 4.8  
 **License:** GPLv2 or later  
@@ -173,6 +173,11 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 
 ## Changelog ##
+	= Version 2.6.3 =
+		* Hide KSES option behind POST_KINDS_KSES flag as it confused new users. (Sorry @acegiak)
+		* Allow meta tags with content first to be parsed and add Foursquare specific OGP tags
+		* Move enabling of kinds into the new unified settings
+		* Set checkin kind if checkin property is present in Micropub
 	= Version 2.6.2 =
 		* Fix for absence of kind
 	= Version 2.6.1 =

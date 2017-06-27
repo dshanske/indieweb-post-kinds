@@ -210,7 +210,9 @@ class Kind_Meta {
 					return $this->meta[ $property ];
 				}
 				if ( is_array( $this->meta[ $property ] ) ) {
-					return $this->meta[ $property ][0];
+					if ( isset( $this->meta[ $property ][0] ) ) {
+						return $this->meta[ $property ][0];
+					}
 				}
 			}
 		}

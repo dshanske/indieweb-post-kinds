@@ -205,6 +205,7 @@ class Kind_Taxonomy {
 				'format' => '', // Post Format that maps to this
 				'description' => __( 'traditional long form content: a post with an explicit title and body', 'indieweb-post-kinds' ),
 				'description-url' => 'http://indieweb.org/article',
+				'show' => true // Show in Settings
 			),
 			'note' => array(
 				'singular_name' => _x( 'Note', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -214,6 +215,7 @@ class Kind_Taxonomy {
 				'format' => 'aside', // Post Format that maps to this
 				'description' => __( 'short content: a post or status update with just plain content and typically without a title', 'indieweb-post-kinds' ),
 				'description-url' => 'http://indieweb.org/note',
+				'show' => false // Show in Settings
 			),
 			'reply' => array(
 				'singular_name' => _x( 'Reply', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -223,6 +225,7 @@ class Kind_Taxonomy {
 				'format' => 'link', // Post Format that maps to this
 				'description' => __( 'a reply to content typically on another site', 'indieweb-post-kinds' ),
 				'description-url' => 'http://indieweb.org/reply',
+				'show' => true // Show in Settings
 			),
 			'repost' => array(
 				'singular_name' => _x( 'Repost', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -232,6 +235,7 @@ class Kind_Taxonomy {
 				'format' => '', // Post Format that maps to this
 				'description' => __( 'a complete reposting of content from another site', 'indieweb-post-kinds' ),
 				'description-url' => 'http://indieweb.org/repost',
+				'show' => true // Show in Settings
 			),
 			'like' => array(
 				'singular_name' => _x( 'Like', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -241,6 +245,7 @@ class Kind_Taxonomy {
 				'format' => 'link', // Post Format that maps to this
 				'description' => __( 'a way to pay compliments to the original post/poster of external content', 'indieweb-post-kinds' ),
 				'description-url' => 'http://indieweb.org/like',
+				'show' => true // Show in Settings
 			),
 			'favorite' => array(
 				'singular_name' => _x( 'Favorite', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -250,6 +255,7 @@ class Kind_Taxonomy {
 				'format' => 'link', // Post Format that maps to this
 				'description' => __( 'special to the author', 'indieweb-post-kinds' ),
 				'description-url' => 'http://indieweb.org/favorite',
+				'show' => true // Show in Settings
 			),
 			'bookmark' => array(
 				'singular_name' => _x( 'Bookmark', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -259,6 +265,7 @@ class Kind_Taxonomy {
 				'format' => 'link', // Post Format that maps to this
 				'description' => __( 'storing a link/bookmark for personal use or sharing with others', 'indieweb-post-kinds' ),
 				'description-url' => 'http://indieweb.org/bookmark',
+				'show' => true // Show in Settings
 			),
 			'photo' => array(
 				'singular_name' => _x( 'Photo', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -268,6 +275,7 @@ class Kind_Taxonomy {
 				'format' => 'image', // Post Format that maps to this
 				'description' => __( 'a post with an embedded image/photo as its primary focus', 'indieweb-post-kinds' ),
 				'description-url' => 'http://indieweb.org/photo',
+				'show' => true // Show in Settings
 			),
 			'video' => array(
 				'singular_name' => _x( 'Video', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -277,6 +285,7 @@ class Kind_Taxonomy {
 				'format' => 'video', // Post Format that maps to this
 				'description' => __( 'a post with an embedded video as its primary focus', 'indieweb-post-kinds' ),
 				'description-url' => 'http://indieweb.org/video',
+				'show' => true // Show in Settings
 			),
 			'audio' => array(
 				'singular_name' => _x( 'Audio', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -286,6 +295,7 @@ class Kind_Taxonomy {
 				'format' => 'audio', // Post Format that maps to this
 				'description' => __( 'a post with an embedded audio file as its primary focus', 'indieweb-post-kinds' ),
 				'description-url' => 'http://indieweb.org/audio',
+				'show' => true // Show in Settings
 			),
 
 			'tag' => array(
@@ -296,6 +306,7 @@ class Kind_Taxonomy {
 				'format' => '', // Post Format that maps to this
 				'description' => __( 'allows you to tag a post as being of a specific category or tag, or for person tagging', 'indieweb-post-kinds' ),
 				'description-url' => 'http://indieweb.org/tag',
+				'show' => false // Show in Settings
 			),
 			'rsvp' => array(
 				'singular_name' => _x( 'RSVP', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -305,6 +316,7 @@ class Kind_Taxonomy {
 				'format' => '', // Post Format that maps to this
 				'description' => __( 'a specific type of reply regarding attendance of an event', 'indieweb-post-kinds' ),
 				'description-url' => 'http://indieweb.org/rsvp',
+				'show' => true // Show in Settings
 			),
 			'listen' => array(
 				'singular_name' => _x( 'Listen', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -314,6 +326,7 @@ class Kind_Taxonomy {
 				'format' => 'audio', // Post Format that maps to this
 				'description' => __( 'listening to audio; sometimes called a scrobble', 'indieweb-post-kinds' ),
 				'description-url' => 'http://indieweb.org/listen',
+				'show' => true // Show in Settings
 			),
 			'watch' => array(
 				'singular_name' => _x( 'Watch', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -323,6 +336,7 @@ class Kind_Taxonomy {
 				'format' => 'video-of', // Post Format that maps to this
 				'description' => __( 'watching a movie, television show, online video, play or other visual-based event', 'indieweb-post-kinds' ),
 				'description-url' => 'http://indieweb.org/watch',
+				'show' => true // Show in Settings
 			),
 			'checkin' => array(
 				'singular_name' => _x( 'Checkin', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -332,6 +346,7 @@ class Kind_Taxonomy {
 				'format' => 'status', // Post Format that maps to this
 				'description' => __( 'identifying you are at a particular geographic location', 'indieweb-post-kinds' ),
 				'description-url' => 'http://indieweb.org/checkin',
+				'show' => false // Show in Settings
 			),
 			'wish' => array(
 				'singular_name' => _x( 'Wish', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -341,6 +356,7 @@ class Kind_Taxonomy {
 				'format' => '', // Post Format that maps to this
 				'description' => __( 'a post indicating a desire/wish. The archive of which would be a wishlist, such as a gift registry or similar', 'indieweb-post-kinds' ),
 				'description-url' => '',
+				'show' => false // Show in Settings
 			),
 			'play' => array(
 				'singular_name' => _x( 'Play', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -350,6 +366,7 @@ class Kind_Taxonomy {
 				'format' => 'status', // Post Format that maps to this
 				'description' => __( 'playing a game', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/game_play',
+				'show' => true // Show in Settings
 			),
 			'weather' => array(
 				'singular_name' => _x( 'Weather', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -359,6 +376,7 @@ class Kind_Taxonomy {
 				'format' => 'status', // Post Format that maps to this
 				'description' => __( 'current weather conditions', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/weather',
+				'show' => false // Show in Settings
 			),
 			'exercise' => array(
 				'singular_name' => _x( 'Exercise', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -368,6 +386,7 @@ class Kind_Taxonomy {
 				'format' => 'status', // Post Format that maps to this
 				'description' => __( 'some form of physical activity or workout (examples: walk, run, cycle, hike, yoga, etc.)', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/exercise',
+				'show' => false // Show in Settings
 			),
 			'trip' => array(
 				'singular_name' => _x( 'Trip', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -377,6 +396,7 @@ class Kind_Taxonomy {
 				'format' => '', // Post Format that maps to this
 				'description' => __( 'represents a geographic journey', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/trip',
+				'show' => false // Show in Settings
 			),
 			'itinerary' => array(
 				'singular_name' => _x( 'Itinerary', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -386,6 +406,7 @@ class Kind_Taxonomy {
 				'format' => '', // Post Format that maps to this
 				'description' => __( 'parts of a scheduled trip including transit by car, plane, train, etc.', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/trip',
+				'show' => false // Show in Settings
 			),
 			'eat' => array(
 				'singular_name' => _x( 'Eat', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -395,6 +416,7 @@ class Kind_Taxonomy {
 				'format' => 'status', // Post Format that maps to this
 				'description' => __( 'what you are eating, perhaps for a food dairy', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/food',
+				'show' => false // Show in Settings
 			),
 			'drink' => array(
 				'singular_name' => _x( 'Drink', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -404,6 +426,7 @@ class Kind_Taxonomy {
 				'format' => 'status', // Post Format that maps to this
 				'description' => __( 'what you are drinking, perhaps for a food dairy', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/food',
+				'show' => false // Show in Settings
 			),
 			'follow' => array(
 				'singular_name' => _x( 'Follow', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -413,6 +436,7 @@ class Kind_Taxonomy {
 				'format' => '', // Post Format that maps to this
 				'description' => __( 'indicating you are now following or subscribing to another person`s activities online', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/follow',
+				'show' => false // Show in Settings
 			),
 			'jam' => array(
 				'singular_name' => _x( 'Jam', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -422,6 +446,7 @@ class Kind_Taxonomy {
 				'format' => 'audio', // Post Format that maps to this
 				'description' => __( 'a particularly personally meaningful song (a listen with added emphasis)', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/jam',
+				'show' => true // Show in Settings
 			),
 			'read' => array(
 				'singular_name' => _x( 'Read', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -431,6 +456,7 @@ class Kind_Taxonomy {
 				'format' => 'status', // Post Format that maps to this
 				'description' => __( 'reading a book, magazine, newspaper, other physical document, or online post', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/read',
+				'show' => true // Show in Settings
 			),
 			'quote' => array(
 				'singular_name' => _x( 'Quote', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -440,6 +466,7 @@ class Kind_Taxonomy {
 				'format' => 'quote', // Post Format that maps to this
 				'description' => __( 'quoted content', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/quote',
+				'show' => true // Show in Settings
 			),
 			'mood' => array(
 				'singular_name' => _x( 'Mood', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -449,6 +476,7 @@ class Kind_Taxonomy {
 				'format' => 'status', // Post Format that maps to this
 				'description' => __( 'how you are feeling (example: happy, sad, indifferent, etc.)', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/mood',
+				'show' => false // Show in Settings
 			),
 			'recipe' => array(
 				'singular_name' => _x( 'Recipe', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -458,6 +486,7 @@ class Kind_Taxonomy {
 				'format' => '', // Post Format that maps to this
 				'description' => __( 'list of ingredients and directions for making food or drink', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/recipe',
+				'show' => false // Show in Settings
 			),
 			'issue' => array(
 				'singular_name' => _x( 'Issue', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -467,6 +496,7 @@ class Kind_Taxonomy {
 				'format' => '', // Post Format that maps to this
 				'description' => __( 'Issue is a special kind of article post that is a reply to typically some source code, though potentially anything at a source control repository.', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/issue',
+				'show' => false // Show in Settings
 			),
 			'event' => array(
 				'singular_name' => _x( 'Event', 'indieweb-post-kinds' ), // Name for one instance of the kind
@@ -476,6 +506,7 @@ class Kind_Taxonomy {
 				'format' => '', // Post Format that maps to this
 				'description' => __( 'An event is a type of post that in addition to a post name (event title) has a start datetime (likely end datetime), and a location.', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/event',
+				'show' => false // Show in Settings
 			),
 		);
 		$kinds = apply_filters( 'kind_info', $kinds );
