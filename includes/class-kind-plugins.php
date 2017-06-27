@@ -85,6 +85,10 @@ class Kind_Plugins {
 			set_post_kind( $wp_args['ID'], 'rsvp' );
 			return;
 		}
+		if ( isset( $input['properties']['checkin'] ) ) {
+			set_post_kind( $wp_args['ID'], 'checkin' );
+			return;
+		}
 		if ( isset( $input['properties']['in-reply-to'] ) ) {
 			set_post_kind( $wp_args['ID'], 'reply' );
 			return;

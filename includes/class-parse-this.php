@@ -570,7 +570,7 @@ class Parse_This {
 					$unfiltered[ $meta_name ] = $meta_value;
 					$this->_process_meta_entry( $meta_name, $meta_value );
 				}
-				if ( preg_match( '/content="([^"]+)"[^>]+(name|property)="([^"]+)"/', $value, $new_matches ) ) {
+				if ( preg_match( '/content="([^"]+)"[^>]+(property|name)="([^"]+)"/', $value, $new_matches ) ) {
 					$meta_name  = $this->_limit_string( $new_matches[3] );
 					$meta_value = $this->_limit_string( $new_matches[1] );
 
