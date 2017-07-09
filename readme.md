@@ -178,6 +178,7 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 		* Allow meta tags with content first to be parsed and add Foursquare specific OGP tags
 		* Move enabling of kinds into the new unified settings
 		* Set checkin kind if checkin property is present in Micropub
+		* Preliminary checkin template
 	= Version 2.6.2 =
 		* Fix for absence of kind
 	= Version 2.6.1 =
