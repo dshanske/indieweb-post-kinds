@@ -99,7 +99,19 @@ class Kind_Plugins {
 			set_post_kind( $wp_args['ID'], 'like' );
 			return;
 		}
-		if ( isset( $input['properties']['photo'] ) ) {
+
+		// Video & audio come before photo, because either of these could contain a photo
+		if ( isset( $input['properties']['video'] ) || isset( $_FILES['video'] )  ) {
+			set_post_kind( $wp_args['ID'], 'video' );
+			return;
+		}
+
+		if ( isset( $input['properties']['audio'] ) || isset( $_FILES['audio'] )  ) {
+			set_post_kind( $wp_args['ID'], 'audio' );
+			return;
+		}
+
+		if ( isset( $input['properties']['photo'] ) || isset( $_FILES['photo'] )  ) {
 			set_post_kind( $wp_args['ID'], 'photo' );
 			return;
 		}
