@@ -58,7 +58,6 @@ class Link_Preview {
 		$parsethis = new Parse_This();
 		$parsethis->set_source( $content, $url );
 		$metadata = $parsethis->meta_to_microformats();
-		return $metadata;
 		if ( version_compare( PHP_VERSION, '5.3', '>' ) ) {
 			$mf2data = Parse_MF2::mf2parse( $content, $url );
 			$data = array_merge( $metadata, $mf2data );
