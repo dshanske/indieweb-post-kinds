@@ -500,7 +500,7 @@ class Kind_Taxonomy {
 			),
 			'event' => array(
 				'singular_name' => _x( 'Event', 'indieweb-post-kinds' ), // Name for one instance of the kind
-				'name' => _x( 'Eventss', 'indieweb-post-kinds' ), // General name for the kind plural
+				'name' => _x( 'Events', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb' => _x( 'Planned', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
 				'property' => 'h-event', // microformats 2 property
 				'format' => '', // Post Format that maps to this
@@ -667,7 +667,8 @@ class Kind_Taxonomy {
 	public static function get_icon( $kind ) {
 		// Substitute another svg sprite file
 		$sprite = apply_filters( 'kind_icon_sprite', plugin_dir_url( __FILE__ ) . 'kind-sprite.svg', $kind );
-		return '<svg class="svg-icon svg-' . $kind . '" aria-hidden="true"><use xlink:href="' . $sprite . '#' . $kind . '"></use></svg>';
+		$name = self::get_kind_info( $kind, 'singular_name' );
+		return '<svg class="svg-icon svg-' . $kind . '" aria-hidden="true" aria-label="' . $name .  '"><use xlink:href="' . $sprite . '#' . $kind . '"></use></svg>';
 	}
 } // End Class Kind_Taxonomy
 
