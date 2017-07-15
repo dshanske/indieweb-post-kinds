@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the Post Kinds package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Kinds 2.6.3\n"
+"Project-Id-Version: Post Kinds 2.6.4\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2017-06-27 06:40:55+00:00\n"
+"POT-Creation-Date: 2017-07-15 20:14:09+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -317,7 +317,7 @@ msgid_plural " %d seconds"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-link-preview.php:101 includes/class-link-preview.php:106
+#: includes/class-link-preview.php:100 includes/class-link-preview.php:105
 msgid "Missing or Invalid URL"
 msgstr ""
 
@@ -928,7 +928,7 @@ msgstr ""
 
 #: includes/class-kind-taxonomy.php:503
 msgctxt "indieweb-post-kinds"
-msgid "Eventss"
+msgid "Events"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:504

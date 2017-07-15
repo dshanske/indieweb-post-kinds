@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like  
-**Stable tag:** 2.6.3  
+**Stable tag:** 2.6.4  
 **Requires at least:** 4.7  
 **Tested up to:** 4.8  
 **License:** GPLv2 or later  
@@ -20,10 +20,10 @@ It can also distinguish certain types of passive posts in a manner similar to [p
 ## Screenshots ##
 
 ### 1. Here is an example of what a like looks like ###
-![Here is an example of what a like looks like](http://s.wordpress.org/extend/plugins/post-kinds/screenshot-1.png)
+![Here is an example of what a like looks like](https://ps.w.org/indieweb-post-kinds/trunk/screenshot-1.png)
 
 ### 2. Here is a reply to a Youtube video ###
-![Here is a reply to a Youtube video](http://s.wordpress.org/extend/plugins/post-kinds/screenshot-2.png)
+![Here is a reply to a Youtube video](https://ps.w.org/indieweb-post-kinds/trunk/screenshot-2.png)
 
 
 ## Frequently Asked Questions ##
@@ -173,6 +173,8 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 
 ## Changelog ##
+	= Version 2.6.4 = 
+		* Enhance kind detection ( props @Ruxton )
 	= Version 2.6.3 =
 		* Hide KSES option behind POST_KINDS_KSES flag as it confused new users. (Sorry @acegiak)
 		* Allow meta tags with content first to be parsed and add Foursquare specific OGP tags
