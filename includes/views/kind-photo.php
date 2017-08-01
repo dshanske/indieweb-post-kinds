@@ -20,22 +20,20 @@ if ( isset( $cite['name'] ) ) {
 ?>
 </header>
 </section>
-<p>
-<?php 
+<?php
 if ( $photos && ! has_post_thumbnail( get_the_ID() ) ) {
-	echo gallery_shortcode( 
-		array( 
-			'id' => get_the_ID() , 
-			'size' => 'large', 
+	echo gallery_shortcode(
+		array(
+			'id' => get_the_ID() ,
+			'size' => 'large',
 			'columns' => 1,
 			'link' => 'file'
 		) );
 }
-else { 
+else {
 	if ( $embed ) {
 		echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
 	}
 }
 ?>
-</p>
 <?php
