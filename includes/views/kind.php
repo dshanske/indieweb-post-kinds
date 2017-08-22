@@ -66,7 +66,7 @@ switch ( $kind ) {
 
 <section class="h-cite response <?php echo $type; ?> ">
 <header>
-<?php echo Kind_Taxonomy::get_icon( $kind );
+<?php echo Kind_Taxonomy::display_icon( $kind );
 if( ! $embed ) {
 	if ( $title ) {
 		echo $title;

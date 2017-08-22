@@ -46,6 +46,15 @@ class Kind_Config {
 			'default' => 1,
 		);
 		register_setting( 'iwt_options', 'kind_embeds', $args );
+
+		$args = array(
+			'type' => 'boolean',
+			'description' => 'Show Post Kind Icons on Posts',
+			'show_in_rest' => true,
+			'default' => 1,
+		);
+		register_setting( 'iwt_options', 'kind_icons', $args );
+
 		$args = array(
 			'type' => 'string',
 			'description' => 'KSES Content Protection on Responses',
@@ -89,6 +98,15 @@ class Kind_Config {
 			array( 'Kind_Config', 'checkbox_callback' ),
 			'iwt_options', 'iwt-content' ,  array( 'name' => 'kind_embeds' )
 		);
+		$shouldShowIcons = apply_filters('kind_icon_display',true);
+		if($shouldShowIcons) {
+			add_settings_field(
+				'icons',
+				__( 'Show icons on posts', 'indieweb-post-kinds' ),
+				array( 'Kind_Config', 'checkbox_callback' ),
+				'iwt_options', 'iwt-content', array( 'name' => 'kind_icons' )
+			);
+		}
 
 		if ( POST_KINDS_KSES ) {
 			add_settings_field(
@@ -254,8 +272,8 @@ class Kind_Config {
 				<ul><strong>Other</strong>
               				<li><strong>Start Time</strong></li>
               				<li><strong>End Time</strong></li>
-					<li><strong>Duration</strong> - Duration is calculated based on the difference between start and end time. You may just use the time field, 
-					omitting date and timezone and setting start time to 0:00:00 to set a simple duration.</li> 
+					<li><strong>Duration</strong> - Duration is calculated based on the difference between start and end time. You may just use the time field,
+					omitting date and timezone and setting start time to 0:00:00 to set a simple duration.</li>
 					<li><strong>RSVP</strong> - For RSVP posts, you can specify whether you are attending, not attending, unsure, or simply interested.</li>
             			</ul>
 			', 'indieweb-post-kinds'),

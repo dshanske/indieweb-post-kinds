@@ -664,11 +664,27 @@ class Kind_Taxonomy {
 		return wp_set_post_terms( $post->ID, $kind, 'kind' );
 	}
 
+	public static function should_display_post_kind_icon() {
+		$shouldShowIcons = apply_filters('kind_icon_display',true);
+		if($shouldShowIcons) {
+			$shouldShowIcons = get_option('kind_icons');
+		}
+
+		return $shouldShowIcons;
+	}
+
+	public static function display_icon( $kind ) {
+		if(should_display_post_kind_icon()) {
+			return self::get_icon($kind);
+		}
+	}
+
 	public static function get_icon( $kind ) {
 		// Substitute another svg sprite file
 		$sprite = apply_filters( 'kind_icon_sprite', plugin_dir_url( __FILE__ ) . 'kind-sprite.svg', $kind );
 		$name = self::get_kind_info( $kind, 'singular_name' );
-		return '<svg class="svg-icon svg-' . $kind . '" aria-hidden="true" aria-label="' . $name .  '"><use xlink:href="' . $sprite . '#' . $kind . '"></use></svg>';
+		if($sprite != "")
+			return '<svg class="svg-icon svg-' . $kind . '" aria-hidden="true" aria-label="' . $name .  '"><use xlink:href="' . $sprite . '#' . $kind . '"></use></svg>';
 	}
 } // End Class Kind_Taxonomy
 
