@@ -17,7 +17,7 @@ $duration = $meta->get_duration();
 
 <section class="response p-jam-of h-cite">
 <header>
-<?php echo Kind_Taxonomy::get_icon( 'jam' );
+<?php echo Kind_Taxonomy::display_icon( 'jam' );
 if( ! $embed ) {
 	if ( $title ) {
 		echo $title;

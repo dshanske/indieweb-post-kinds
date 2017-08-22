@@ -15,7 +15,7 @@ $embed = self::get_embed( $meta->get_url() );
 ?>
 <section class="response">
 <header>
-<?php echo Kind_Taxonomy::get_icon( 'video' );
+<?php echo Kind_Taxonomy::display_icon( 'video' );
 if ( isset( $cite['name'] ) ) {
 	echo sprintf( '<span class="p-name">%1s</a>', $cite['name'] );
 }

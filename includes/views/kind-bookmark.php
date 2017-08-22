@@ -14,7 +14,7 @@ $embed = self::get_embed( $meta->get_url() );
 
 <section class="response p-bookmark-of h-cite">
 <header>
-<?php echo Kind_Taxonomy::get_icon( 'bookmark' );
+<?php echo Kind_Taxonomy::display_icon( 'bookmark' );
 if( ! $embed ) {
 	if ( ! array_key_exists( 'name', $cite ) ) {
 		$cite['name'] = self::get_post_type_string( $url );
