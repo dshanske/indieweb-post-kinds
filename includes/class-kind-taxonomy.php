@@ -667,6 +667,9 @@ class Kind_Taxonomy {
 	public static function get_icon( $kind ) {
 		// Substitute another svg sprite file
 		$sprite = apply_filters( 'kind_icon_sprite', plugin_dir_url( __FILE__ ) . 'kind-sprite.svg', $kind );
+		if ( "" === $sprite ) {
+			return "";
+		}
 		$name = self::get_kind_info( $kind, 'singular_name' );
 		return '<svg class="svg-icon svg-' . $kind . '" aria-hidden="true" aria-label="' . $name .  '"><use xlink:href="' . $sprite . '#' . $kind . '"></use></svg>';
 	}
