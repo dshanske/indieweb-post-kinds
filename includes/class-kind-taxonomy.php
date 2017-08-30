@@ -664,6 +664,16 @@ class Kind_Taxonomy {
 		return wp_set_post_terms( $post->ID, $kind, 'kind' );
 	}
 
+	/** 
+	 * Display before Kind - either icon text or no display
+	 *
+	 * @param string $kind The slug for the kind of the current post
+	 * @return string Marked up kind information
+	 */
+	public static function get_before_kind( $kind ) {
+		return self::get_icon( $kind );
+	}
+
 	public static function get_icon( $kind ) {
 		// Substitute another svg sprite file
 		$sprite = apply_filters( 'kind_icon_sprite', plugin_dir_url( __FILE__ ) . 'kind-sprite.svg', $kind );

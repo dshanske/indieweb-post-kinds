@@ -16,7 +16,7 @@ $rsvp = $meta->get( 'rsvp' );
 
 <section class="response">
 <header>
-<?php echo Kind_Taxonomy::get_icon( 'rsvp' );
+<?php echo Kind_Taxonomy::get_before_kind( 'rsvp' );
 
 if( ! $embed ) {
 	if ( $rsvp ) {

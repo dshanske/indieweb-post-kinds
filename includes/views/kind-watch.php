@@ -17,7 +17,7 @@ $duration = $meta->get_duration();
 
 <section class="response p-watch-of h-cite">
 <header>
-<?php echo Kind_Taxonomy::get_icon( 'watch' );
+<?php echo Kind_Taxonomy::get_before_kind( 'watch' );
 if( ! $embed ) {
 	if ( $title ) {
 		echo $title;
