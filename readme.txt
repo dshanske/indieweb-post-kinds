@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like
-Stable tag: 2.6.4
+Stable tag: 2.6.5
 Requires at least: 4.7
 Requires PHP: 5.3
 Tested up to: 4.8
@@ -170,6 +170,13 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 
 == Changelog ==
+	= Version 2.6.5 =
+		* Add video kind template ( props @Ruxton )
+		* Restore ability to use text instead of icon
+		* Add option to select icon text or no display
+		* Add filter to disable icon or text
+		* Add new PHP requirement option to header
+		* Update Travis CI due changes
 	= Version 2.6.4 = 
 		* Enhance kind detection ( props @Ruxton )
 	= Version 2.6.3 =
