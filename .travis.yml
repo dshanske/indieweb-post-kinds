@@ -1,4 +1,6 @@
 language: php
+dist: precise
+sudo: required
 notifications:
   email:
     on_success: never

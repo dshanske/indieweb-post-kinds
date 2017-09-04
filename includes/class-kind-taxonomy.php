@@ -664,9 +664,36 @@ class Kind_Taxonomy {
 		return wp_set_post_terms( $post->ID, $kind, 'kind' );
 	}
 
+	public static function before_kind() {
+		return apply_filters( 'kind_icon_display', true );
+	}
+
+	/** 
+	 * Display before Kind - either icon text or no display
+	 *
+	 * @param string $kind The slug for the kind of the current post
+	 * @return string Marked up kind information
+	 */
+	public static function get_before_kind( $kind ) {
+		if ( ! self::before_kind() ) {
+			return '';
+		}
+		$display = get_option( 'kind_display' );
+		if ( 'hide' === $display ) {
+			return '';
+		}
+		if ( 'text' === $display ) {
+			return '<span class="kind-display-text">' . self::get_kind_info( $kind, 'verb' ) . '</span> ';
+		}
+		return self::get_icon( $kind );
+	}
+
 	public static function get_icon( $kind ) {
 		// Substitute another svg sprite file
 		$sprite = apply_filters( 'kind_icon_sprite', plugin_dir_url( __FILE__ ) . 'kind-sprite.svg', $kind );
+		if ( "" === $sprite ) {
+			return "";
+		}
 		$name = self::get_kind_info( $kind, 'singular_name' );
 		return '<svg class="svg-icon svg-' . $kind . '" aria-hidden="true" aria-label="' . $name .  '"><use xlink:href="' . $sprite . '#' . $kind . '"></use></svg>';
 	}

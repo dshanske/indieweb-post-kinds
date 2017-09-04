@@ -48,6 +48,13 @@ class Kind_Config {
 		register_setting( 'iwt_options', 'kind_embeds', $args );
 		$args = array(
 			'type' => 'string',
+			'description' => 'Display Preferences for Before Kind',
+			'show_in_rest' => true,
+			'default' => 'icon',
+		);
+		register_setting( 'iwt_options', 'kind_display', $args );
+		$args = array(
+			'type' => 'string',
 			'description' => 'KSES Content Protection on Responses',
 			'show_in_rest' => false,
 			'default' => str_replace( '},"',"},\r\n\"", wp_json_encode( wp_kses_allowed_html( 'post' ), JSON_PRETTY_PRINT ) ),
@@ -89,6 +96,23 @@ class Kind_Config {
 			array( 'Kind_Config', 'checkbox_callback' ),
 			'iwt_options', 'iwt-content' ,  array( 'name' => 'kind_embeds' )
 		);
+
+		add_settings_field(
+			'display',
+			__( 'Display Before Kind', 'indieweb-post-kinds' ),
+			array( 'Kind_Config', 'radio_callback' ),
+			'iwt_options', 'iwt-content' ,  
+			array( 
+				'name' => 'kind_display',
+				'class' => Kind_Taxonomy::before_kind() ? '' : 'hidden',
+				'options' => array(
+					'icon' => __( 'Show Icon', 'indieweb-post-kinds' ),
+					'text' => __( 'Show Text', 'indieweb-post-kinds' ),
+					'hide' => __( 'Display Nothing', 'indieweb-post-kinds' )
+				)
+			)
+		);
+
 
 		if ( POST_KINDS_KSES ) {
 			add_settings_field(
@@ -203,6 +227,18 @@ class Kind_Config {
 
 		foreach ( $terms as $term ) {
 			echo '<input id="kind_default" name="kind_default" type="radio" value="' . $term . '" '. checked( $term, $defaultkind, false ) . ' />' . Kind_Taxonomy::get_kind_info( $term, 'singular_name' ) . '<br />';
+		}
+	}
+
+	/**
+	 * Generate Radio Options.
+	 *
+	 * @access public
+	 */
+	public static function radio_callback( array $args ) {
+		$display = get_option( 'kind_display' );
+		foreach ( $args['options'] as $key => $value ) {
+			echo '<input id="' . $args['name'] . '" name="' . $args['name'] . '" type="radio" value="' . $key . '" '. checked( $key, $display, false ) . ' class="' . $args['class'] . '" />' . $value . '<br />';
 		}
 	}
 

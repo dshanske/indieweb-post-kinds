@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the Post Kinds package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Kinds 2.6.4\n"
+"Project-Id-Version: Post Kinds 2.6.5\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2017-07-15 20:14:09+00:00\n"
+"POT-Creation-Date: 2017-09-04 06:24:23+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,23 +14,39 @@ msgstr ""
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "X-Generator: grunt-wp-i18n 0.4.9\n"
 
-#: includes/class-kind-config.php:66
+#: includes/class-kind-config.php:73
 msgid "Content Options"
 msgstr ""
 
-#: includes/class-kind-config.php:73
+#: includes/class-kind-config.php:80
 msgid "Select All Kinds You Wish to Use"
 msgstr ""
 
-#: includes/class-kind-config.php:80
+#: includes/class-kind-config.php:87
 msgid "Default Kind for New Posts"
 msgstr ""
 
-#: includes/class-kind-config.php:88
+#: includes/class-kind-config.php:95
 msgid "Embed Sites into your Response"
 msgstr ""
 
-#: includes/class-kind-config.php:96
+#: includes/class-kind-config.php:102
+msgid "Display Before Kind"
+msgstr ""
+
+#: includes/class-kind-config.php:109
+msgid "Show Icon"
+msgstr ""
+
+#: includes/class-kind-config.php:110
+msgid "Show Text"
+msgstr ""
+
+#: includes/class-kind-config.php:111
+msgid "Display Nothing"
+msgstr ""
+
+#: includes/class-kind-config.php:120
 msgid "Response Content Allowed Html Elements"
 msgstr ""
 
@@ -38,19 +54,19 @@ msgstr ""
 msgid "Post Kinds"
 msgstr ""
 
-#: includes/class-kind-config.php:219
+#: includes/class-kind-config.php:255
 msgid "Indieweb Post Kinds"
 msgstr ""
 
-#: includes/class-kind-config.php:221
+#: includes/class-kind-config.php:257
 msgid "Adds support for responding and interacting with other sites."
 msgstr ""
 
-#: includes/class-kind-config.php:233 includes/class-kind-tabmeta.php:179
+#: includes/class-kind-config.php:269 includes/class-kind-tabmeta.php:179
 msgid "Post Properties"
 msgstr ""
 
-#: includes/class-kind-config.php:234
+#: includes/class-kind-config.php:270
 msgid ""
 "\n"
 "\t\t\t\t<p> The Post Properties tab represents the Microformats properties "
