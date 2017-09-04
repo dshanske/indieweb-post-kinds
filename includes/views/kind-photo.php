@@ -20,7 +20,6 @@ if ( isset( $cite['name'] ) ) {
 ?>
 </header>
 </section>
-<p>
 <?php 
 if ( $photos && ! has_post_thumbnail( get_the_ID() ) ) {
 	echo gallery_shortcode( 
@@ -37,5 +36,4 @@ else {
 	}
 }
 ?>
-</p>
 <?php
