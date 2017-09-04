@@ -675,7 +675,7 @@ class Kind_Taxonomy {
 	 * @return string Marked up kind information
 	 */
 	public static function get_before_kind( $kind ) {
-		if ( ! self::disable_before_kind() ) {
+		if ( ! self::before_kind() ) {
 			return '';
 		}
 		$display = get_option( 'kind_display' );
