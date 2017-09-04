@@ -664,6 +664,10 @@ class Kind_Taxonomy {
 		return wp_set_post_terms( $post->ID, $kind, 'kind' );
 	}
 
+	public static function before_kind() {
+		return apply_filters( 'kind_icon_display', true );
+	}
+
 	/** 
 	 * Display before Kind - either icon text or no display
 	 *
@@ -671,6 +675,16 @@ class Kind_Taxonomy {
 	 * @return string Marked up kind information
 	 */
 	public static function get_before_kind( $kind ) {
+		if ( ! self::disable_before_kind() ) {
+			return '';
+		}
+		$display = get_option( 'kind_display' );
+		if ( 'hide' === $display ) {
+			return '';
+		}
+		if ( 'text' === $display ) {
+			return '<span class="kind-display-text">' . self::get_kind_info( $kind, 'verb' ) . '</span> ';
+		}
 		return self::get_icon( $kind );
 	}
 
