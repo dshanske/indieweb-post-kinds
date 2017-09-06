@@ -20,7 +20,7 @@ $rsvp = $meta->get( 'rsvp' );
 
 if( ! $embed ) {
 	if ( $rsvp ) {
-		echo '<data class="p-rsvp" value=">' . $rsvp . '">' . sprintf( Kind_View::rsvp_text( $rsvp ), $url, $title ) . '</data>';
+		echo '<data class="p-rsvp" value="' . $rsvp . '">' . sprintf( Kind_View::rsvp_text( $rsvp ), $url, $title ) . '</data>';
 	}
 }
 ?>
