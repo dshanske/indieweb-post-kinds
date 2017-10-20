@@ -1,14 +1,15 @@
 language: php
-dist: precise
+dist: trusty
 sudo: required
 notifications:
   email:
     on_success: never
-    on_failure: change
-php:
-- 5.3
-- 5.6
-- 7
+    on_failure: chang
+cache:
+  directories:
+    - vendor
+    - $HOME/.composer/cache
+    - $HOME/.phpbrew
 after_success: curl -L https://raw.githubusercontent.com/miya0001/travis2wpplugin/master/deploy.sh
   | bash
 env:
@@ -20,15 +21,61 @@ env:
   - secure: SKEHj0zThPfUhTyTKtgNuzqPp+uvdUUcMWT0ZqyARjnOGII6dO2UDzQIUc5WolgFd/HYIFfaDzBd3+FPdDTunPiwIHxIYcyr2EjvEQLJYM1zqTAUtjEPpztemKRtrnbNd1TQgWIIqIaNk//WuYkuW7+vc/HsyyTm6PGEbHK6zj11UG8ZYT8ru/Sw+PxHebwlz3d+8H6iEvFSX/rkc1kMpntwNMoFYb9PgwhkvtJ6KkVRKu4uMCkXf6BnlVqJSAGdTn+XckDeY+pwgsWGIAPakLD9MKxAq2MMqfmCxTK8uMN3VBetlbbkT7JMaYyU95gw3+3QrcPLlmRLNdbiuguD39J820wjtflEUNCJ3Heg8JF0q4z/69s6n3LEinDxtJNesK/0G//nYjsLaKXARFfnvLSRbhZvxeePsmEWTxEGt9KvoW7iD/vnwYmf1aYeobwBfkCkvA7t5FSNUTMvI8yo33DWdOyFKdWRL0V2JaaOh0H81kaXOEBayplmDfdbNX7y77/bLU863V0JkORSsJNv7ZGl8zR77ja/s1Ep0F3d43QhIoQk40w8SckpLEx+2bUs3J2jNpBeike5cut7RuSPTt7G2AiipTfmPa666f+CsmfNAjd2MYFfB2NL5ZHwjmOuxYE6hicdKt2vwOjLa31hLY/u3bT8s346w+DzIPZmItU=
 matrix:
   include:
-  - php: 5.6
-    env: WP_VERSION=latest WP_MULTISITE=1  WP_PULUGIN_DEPLOY=1
+    - php: 7.1
+      env: WP_VERSION=latest
+    - php: 5.6
+      env: WP_VERSION=latest WP_PULUGIN_DEPLOY=1
+    - php: 7.1
+      env: WP_VERSION=latest SWITCH_TO_PHP=5.3
+    - php: 5.6
+      env: TRAVISCI=phpcs
+    - php: 7.1
+      env: TRAVISCI=js
 before_script:
-- export PATH="$HOME/.composer/vendor/bin:$PATH"
-- |
-  if [[ ${TRAVIS_PHP_VERSION:0:2} == "7." ]]; then
-    composer global require "phpunit/phpunit=5.7.*"
-  elif [[ ${TRAVIS_PHP_VERSION:0:3} != "5.2" ]]; then
-    composer global require "phpunit/phpunit=4.8.*"
-  fi
+  - export PATH="$HOME/.composer/vendor/bin:$PATH"
+  - |
+    if [[ ! -z "$WP_VERSION" ]] ; then
+      set -e
+      bash bin/install-wp-tests.sh wordpress_test root '' localhost $WP_VERSION
+      source bin/install-php-phpunit.sh
+      set +e
+    fi
+  - |
+    if [[ "$TRAVISCI" == "phpcs" ]] ; then
+      composer install
+    fi
 - bash bin/install-wp-tests.sh wordpress root '' localhost $WP_VERSION
-script: phpunit
+script:
+  - |
+    if [[ ! -z "$WP_VERSION" ]] ; then
+      # Run the build because otherwise there will be a bunch of warnings about
+      # failed `stat` calls from `filemtime()`.
+      npm install || exit 1
+      npm run build || exit 1
+      # Make sure phpegjs parser is up to date
+      node bin/create-php-parser.js || exit 1
+      if ! git diff --quiet --exit-code lib/parser.php; then
+        echo 'ERROR: The PEG parser has been updated, but the generated PHP version'
+        echo '       (lib/parser.php) has not.  Run `bin/create-php-parser.js` and'
+        echo '       commit the resulting changes to resolve this.'
+        sleep .2 # Otherwise Travis doesn't want to print the whole message
+        exit 1
+      fi
+      echo Running with the following versions:
+      php -v
+      phpunit --version
+      # Check parser syntax
+      php lib/parser.php || exit 1
+      # Run PHPUnit tests
+      phpunit || exit 1
+      WP_MULTISITE=1 phpunit || exit 1
+    fi
+  - |
+    if [[ "$TRAVISCI" == "phpcs" ]] ; then
+      ./vendor/bin/phpcs
+    fi
+  - |
+    if [[ "$TRAVISCI" == "js" ]] ; then
+      npm install || exit 1
+      npm run ci || exit 1
+    fi
