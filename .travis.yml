@@ -30,8 +30,6 @@ matrix:
       env: WP_VERSION=latest SWITCH_TO_PHP=5.3
     - php: 5.6
       env: TRAVISCI=phpcs
-    - php: 7.1
-      env: TRAVISCI=js
 before_script:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
   - |
@@ -60,9 +58,4 @@ script:
   - |
     if [[ "$TRAVISCI" == "phpcs" ]] ; then
       ./vendor/bin/phpcs
-    fi
-  - |
-    if [[ "$TRAVISCI" == "js" ]] ; then
-      npm install || exit 1
-      npm run ci || exit 1
     fi
