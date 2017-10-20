@@ -102,3 +102,7 @@ script:
       phpunit || exit 1
       WP_MULTISITE=1 phpunit || exit 1
     fi
+   - |
+     if [[ "$WP_TRAVISCI" == "travis:phpcs" ]] ; then
+       ./vendor/bin/phpcs
+     fi
