@@ -1,9 +1,15 @@
 <?xml version="1.0"?>
-<ruleset name="Indieweb-WordPress">
-	<description>Defaults for Indieweb</description>
+<ruleset name="Indieweb-Post-Kinds">
+	<description>Indieweb Post Kinds Standards</description>
+	<file>./phpunit</file>
+	<file>indieweb-post-kinds.php</file>
+	<rule ref="PHPCompatibility"/>
+	<config name="testVersion" value="5.3-"/>
 	<rule ref="WordPress-Core" />	
 	<rule ref="WordPress-Extra" />
 //	<rule ref="WordPress-Docs" />
+        <rule ref="WordPress.WP.I18n"/>
+	<config name="text_domain" value="indieweb-post-kinds,default"/>
 	<rule ref="WordPress-VIP">
 		<exclude name="WordPress.VIP.FileSystemWritesDisallow" />
 		<exclude name="WordPress.VIP.RestrictedFunctions" />
