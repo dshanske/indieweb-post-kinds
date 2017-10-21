@@ -12,7 +12,6 @@
  * Author URI: https://david.shanske.com
  * Text Domain: indieweb-post-kinds
  * Domain Path:  /languages
-
  */
 
 if ( ! defined( 'POST_KINDS_KSES' ) ) {
@@ -69,7 +68,7 @@ class Post_Kinds_Plugin {
 			if ( ! class_exists( 'Mf2\Parser' ) ) {
 				require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Parser.php';
 			}
-		  if ( ! function_exists( 'Mf2\xpcs' ) ) {
+			if ( ! function_exists( 'Mf2\xpcs' ) ) {
 				require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/functions.php';
 			}
 			if ( ! class_exists( 'Mf2\Shim' ) ) {
@@ -122,10 +121,10 @@ if ( ! function_exists( 'ifset' ) ) {
 	 * @param type $var Check if set.
 	 * @return $var|false Return either $var or false.
 	 */
-	function ifset(&$var) {
+	function ifset( &$var ) {
 
 		return isset( $var ) ? $var : false;
 	}
 }
 
-?>
+

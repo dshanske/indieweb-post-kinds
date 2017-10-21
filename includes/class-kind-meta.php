@@ -141,7 +141,7 @@ class Kind_Meta {
 			return $value;
 		}
 		$allowed = wp_kses_allowed_html( 'post' );
-		if ( 1 == get_option( 'kind_protection' ) ) {
+		if ( 1 === (int) get_option( 'kind_protection' ) ) {
 			$allowed = json_decode( get_option( 'kind_kses' ), true );
 		}
 		return wp_kses( $value , $allowed );
@@ -190,7 +190,7 @@ class Kind_Meta {
 	 *
 	 * @return string|array Either a string indicating the URL or an array of URLs.
 	 */
-	public function get_url( ) {
+	public function get_url() {
 		if ( ! isset( $this->meta ) ) {
 			return false;
 		}
@@ -310,7 +310,7 @@ class Kind_Meta {
 	 *
 	 * array $author Data on Author.
 	 */
-	public function set_author($author) {
+	public function set_author( $author ) {
 		if ( ! isset( $author ) ) {
 			return false;
 		}
@@ -326,7 +326,7 @@ class Kind_Meta {
 		$this->meta['cite']['author'] = $author;
 	}
 
-	public function set_cite($cite) {
+	public function set_cite( $cite ) {
 		if ( ! $cite ) {
 			return false;
 		}
@@ -342,7 +342,7 @@ class Kind_Meta {
 		$this->meta['cite'] = $cite;
 	}
 
-	public function build_time($date, $time, $offset) {
+	public function build_time( $date, $time, $offset ) {
 		if ( empty( $date ) ) {
 			$date = '0000-01-01';
 		}
@@ -352,34 +352,38 @@ class Kind_Meta {
 		return $date . 'T' . $time . $offset;
 	}
 
-	public static function DateIntervalToString(\DateInterval $interval) {
+	public static function date_interval_to_string( \DateInterval $interval ) {
 		// Reading all non-zero date parts.
-		$date = array_filter(array(
-			'Y' => $interval->y,
-			'M' => $interval->m,
-			'D' => $interval->d,
-		));
+		$date = array_filter(
+			array(
+				'Y' => $interval->y,
+				'M' => $interval->m,
+				'D' => $interval->d,
+			)
+		);
 
 		// Reading all non-zero time parts.
-		$time = array_filter(array(
-			'H' => $interval->h,
-			'M' => $interval->i,
-			'S' => $interval->s,
-		));
+		$time = array_filter(
+			array(
+				'H' => $interval->h,
+				'M' => $interval->i,
+				'S' => $interval->s,
+			)
+		);
 
-		$specString = 'P';
+		$spec = 'P';
 
 		// Adding each part to the spec-string.
 		foreach ( $date as $key => $value ) {
-			$specString .= $value . $key;
+			$spec .= $value . $key;
 		}
 		if ( count( $time ) > 0 ) {
-			$specString .= 'T';
+			$spec .= 'T';
 			foreach ( $time as $key => $value ) {
-				$specString .= $value . $key;
+				$spec .= $value . $key;
 			}
 		}
-		return $specString;
+		return $spec;
 	}
 
 	public function get_duration() {
@@ -398,14 +402,14 @@ class Kind_Meta {
 		if ( ! is_string( $start_string ) || ! is_string( $end_string ) ) {
 			return false;
 		}
-		if ( $start_string == $end_string ) {
+		if ( $start_string === $end_string ) {
 			return false;
 		}
 		$start = date_create_from_format( 'Y-m-d\TH:i:sP', $start_string );
 		$end = date_create_from_format( 'Y-m-d\TH:i:sP', $end_string );
-		if ( ($start instanceof DateTime) && ($end instanceof DateTime)  ) {
+		if ( ($start instanceof DateTime) && ($end instanceof DateTime) ) {
 			$duration = $start->diff( $end );
-			return self::DateIntervalToString( $duration );
+			return self::date_interval_to_string( $duration );
 		}
 		return false;
 	}
@@ -417,7 +421,7 @@ class Kind_Meta {
 			return;
 		}
 		$time['date'] = $datetime->format( 'Y-m-d' );
-		if ( '0000-01-01' == $time['date'] ) {
+		if ( '0000-01-01' === $time['date'] ) {
 			$time['date'] = '';
 		}
 		$time['time'] = $datetime->format( 'H:i:s' );
@@ -435,7 +439,7 @@ class Kind_Meta {
 		return ifset( $this->meta[ $key ] );
 	}
 
-	public function set( $key, $value) {
+	public function set( $key, $value ) {
 		$this->meta[ $key ] = self::sanitize_text( $value );
 	}
 

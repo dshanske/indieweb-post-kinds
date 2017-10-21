@@ -15,7 +15,7 @@ class Kind_View {
 
 	public static function wp_get_attachment_image_attributes( array $attr, WP_Post $attachment ) {
 		$parents = get_post_ancestors( $attachment );
-		$id = $parents[ count( $parents ) -1 ];
+		$id = $parents[ count( $parents ) - 1 ];
 		if ( 'photo' !== get_post_kind_slug( $id ) ) {
 			return $attr;
 		}
@@ -30,7 +30,7 @@ class Kind_View {
 	}
 
 	// This mirrors get_template_part but for views and locates the correct file and returns the output
-	public static function get_view_part($slug, $name = null) {
+	public static function get_view_part( $slug, $name = null ) {
 		$name = (string) $name;
 		if ( '' !== $name ) {
 			$templates[] = "{$slug}-{$name}.php";
@@ -76,17 +76,17 @@ class Kind_View {
 		echo self::get_display( $post_ID );
 	}
 
-	public static function content_response ( $content ) {
-		return self::get_display( ) . $content;
+	public static function content_response( $content ) {
+		return self::get_display() . $content;
 	}
 
 
-	public static function excerpt_response ( $content ) {
+	public static function excerpt_response( $content ) {
 		global $post;
 		if ( has_excerpt( get_the_ID() ) ) {
-			return self::get_display( ) . get_the_excerpt();
+			return self::get_display() . get_the_excerpt();
 		} else {
-			return self::get_display( ) . wp_trim_words( $post->post_content );
+			return self::get_display() . wp_trim_words( $post->post_content );
 		}
 	}
 
@@ -109,7 +109,7 @@ class Kind_View {
 	}
 
 	// Takes a url and returns it as marked up HTML
-	public static function get_url_link( $url, $name='', $atr='' ) {
+	public static function get_url_link( $url, $name = '', $atr = '' ) {
 		if ( empty( $url ) ) {
 			return '';
 		}
@@ -136,37 +136,37 @@ class Kind_View {
 		$host = self::extract_domain_name( $url );
 		$whitelist = array(
 			'animoto.com',
-		'blip.tv',
-		'cloudup.com',
-		'collegehumor.com',
-		'dailymotion.com',
-		'facebook.com',
-		'flickr.com',
-		'funnyordie.com',
-		'hulu.com',
-		'imgur.com',
-		'instagram.com',
+			'blip.tv',
+			'cloudup.com',
+			'collegehumor.com',
+			'dailymotion.com',
+			'facebook.com',
+			'flickr.com',
+			'funnyordie.com',
+			'hulu.com',
+			'imgur.com',
+			'instagram.com',
 			'issuu.com',
-		'kickstarter.com',
-		'meetup.com',
-		'mixcloud.com',
-		'photobucket.com',
-		'polldaddy.com',
-		'reddit.com',
-		'reverbnation.com',
-		'scribd.com',
-		'slideshare.net',
-		'smugmug.com',
+			'kickstarter.com',
+			'meetup.com',
+			'mixcloud.com',
+			'photobucket.com',
+			'polldaddy.com',
+			'reddit.com',
+			'reverbnation.com',
+			'scribd.com',
+			'slideshare.net',
+			'smugmug.com',
 			'soundcloud.com',
-		'speakerdeck.com',
-		'spotify.com',
-		'ted.com',
-		'tumblr.com',
-		'twitter.com',
-		'videopress.com',
-		'vimeo.com',
-		'wordpress.tv',
-		'youtube.com',
+			'speakerdeck.com',
+			'spotify.com',
+			'ted.com',
+			'tumblr.com',
+			'twitter.com',
+			'videopress.com',
+			'vimeo.com',
+			'wordpress.tv',
+			'youtube.com',
 		);
 		$whitelist = apply_filters( 'post_kind_embed_whitelist', $whitelist );
 		if ( ! in_array( $host, $whitelist ) ) {
@@ -215,11 +215,11 @@ class Kind_View {
 	 *
 	 *     @type int          $height        Display height of the author image in pixels. Defaults to $size.
 	 *     @type int          $width         Display width of the author image in pixels. Defaults to $size.
-	 *     @type string       $display			 Display 'photo', 'name', or 'both'. Defaults to 'name'.
+	 *     @type string       $display           Display 'photo', 'name', or 'both'. Defaults to 'name'.
 	 * }
 	 * @return false|string Marked up H-Card as String. False on failure.
 	 */
-	public static function get_hcard($author, $args = null) {
+	public static function get_hcard( $author, $args = null ) {
 		$default = array(
 			'height' => 32,
 			'width' => 32,
@@ -283,7 +283,7 @@ class Kind_View {
 		return $card;
 	}
 
-	public static function get_cite_title($cite, $url) {
+	public static function get_cite_title( $cite, $url ) {
 		if ( ! $cite ) {
 			return false;
 		}
@@ -301,7 +301,7 @@ class Kind_View {
 		}
 	}
 
-	public static function get_site_name($cite, $url) {
+	public static function get_site_name( $cite, $url ) {
 		if ( ! $cite ) {
 			return false;
 		}
@@ -313,9 +313,9 @@ class Kind_View {
 
 	public static function rsvp_text( $type ) {
 		$rsvp = array(
-			'yes' => __( 'Attending <a href="%1s" class="u-in-reply-to">%2s</a>', 'indieweb-post-kinds' ),
-			'maybe' => __( 'Might be attending <a href="%1s" class="u-in-reply-to">%2s</a>', 'indieweb-post-kinds' ),
-			'no' => __( 'Unable to Attend <a href="%1s" class="u-in-reply-to">%2s</a>', 'indieweb-post-kinds' ),
+			'yes' => __( 'Attending <a href="%1$1s" class="u-in-reply-to">%2$2s</a>', 'indieweb-post-kinds' ),
+			'maybe' => __( 'Might be attending <a href="%1$1s" class="u-in-reply-to">%2$2s</a>', 'indieweb-post-kinds' ),
+			'no' => __( 'Unable to Attend <a href="%1$1s" class="u-in-reply-to">%2$2s</a>', 'indieweb-post-kinds' ),
 			'interested' => __( 'Interested in Attending %s', 'indieweb-post-kinds' ),
 		);
 		return $rsvp[ $type ];
@@ -329,7 +329,7 @@ class Kind_View {
 		$bits = array(
 			'year'    => $interval->y,
 			'month'   => $interval->m,
-			'day' 	  => $interval->d,
+			'day'     => $interval->d,
 			'hour'    => $interval->h,
 			'minute'  => $interval->i,
 			'second'  => $interval->s,

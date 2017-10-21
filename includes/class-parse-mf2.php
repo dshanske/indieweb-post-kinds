@@ -8,7 +8,7 @@
 
 class Parse_MF2 {
 
-	public static function fetch($url) {
+	public static function fetch( $url ) {
 		global $wp_version;
 		if ( ! isset( $url ) || ! self::is_url( $url ) ) {
 			return new WP_Error( 'invalid-url', __( 'A valid URL was not provided.' ) );
@@ -64,7 +64,7 @@ class Parse_MF2 {
 		}
 		$textcontent = false;
 		$htmlcontent = false;
-		$content = $mf['properties'][$property][0];
+		$content = $mf['properties'][ $property ][0];
 		if ( is_string( $content ) ) {
 			 $textcontent = $content;
 		} elseif ( ! is_string( $content ) && is_array( $content ) && array_key_exists( 'value', $content ) ) {
@@ -75,7 +75,9 @@ class Parse_MF2 {
 				$textcontent = trim( $content['value'] );
 			}
 		}
-		$data = array( 'text' => $textcontent );
+		$data = array(
+			'text' => $textcontent,
+		);
 		if ( $htmlcontent && $textcontent != $htmlcontent ) {
 			$data['html'] = $htmlcontent;
 		}
@@ -89,8 +91,10 @@ class Parse_MF2 {
 	 * @param array $arr
 	 * @return bool
 	 */
-	public static function has_numeric_keys(array $arr) {
-		foreach ( $arr as $key => $val ) { if ( is_numeric( $key ) ) { return true; }
+	public static function has_numeric_keys( array $arr ) {
+		foreach ( $arr as $key => $val ) {
+			if ( is_numeric( $key ) ) {
+				return true; }
 		}
 		return false;
 	}
@@ -101,7 +105,7 @@ class Parse_MF2 {
 	 * @param $mf
 	 * @return bool
 	 */
-	public static function is_microformat($mf) {
+	public static function is_microformat( $mf ) {
 		return (is_array( $mf ) and ! self::has_numeric_keys( $mf ) and ! empty( $mf['type'] ) and isset( $mf['properties'] ));
 	}
 
@@ -112,7 +116,7 @@ class Parse_MF2 {
 	 * @param $mf
 	 * @return bool
 	 */
-	public static function is_microformat_collection($mf) {
+	public static function is_microformat_collection( $mf ) {
 		return (is_array( $mf ) and isset( $mf['items'] ) and is_array( $mf['items'] ));
 	}
 
@@ -122,7 +126,7 @@ class Parse_MF2 {
 	 * @param $p
 	 * @return bool
 	 */
-	public static function is_embedded_html($p) {
+	public static function is_embedded_html( $p ) {
 		return is_array( $p ) and ! self::hasNumericKeys( $p ) and isset( $p['value'] ) and isset( $p['html'] );
 	}
 
@@ -133,20 +137,20 @@ class Parse_MF2 {
 	 * @param $propname
 	 * @return bool
 	 */
-	public static function has_prop(array $mf, $propname) {
-		return ! empty( $mf['properties'][$propname] ) and is_array( $mf['properties'][$propname] );
+	public static function has_prop( array $mf, $propname ) {
+		return ! empty( $mf['properties'][ $propname ] ) and is_array( $mf['properties'][ $propname ] );
 	}
 
 
 	/**
 	 * Verifies if rel named $relname is in array $mf.
 	 *
-	 * @param array    $mf
+	 * @param array   $mf
 	 * @param $relname
 	 * @return bool
 	 */
-	public static function has_rel(array $mf, $relname) {
-		return ! empty( $mf['rels'][$relname] ) and is_array( $mf['rels'][$relname] );
+	public static function has_rel( array $mf, $relname ) {
+		return ! empty( $mf['rels'][ $relname ] ) and is_array( $mf['rels'][ $relname ] );
 	}
 
 
@@ -159,7 +163,7 @@ class Parse_MF2 {
 	 * @param null|string $fallback
 	 * @return mixed|null
 	 */
-	public static function get_prop(array $mf, $propName, $fallback = null) {
+	public static function get_prop( array $mf, $propName, $fallback = null ) {
 		return self::get_plaintext( $mf, $propName, $fallback );
 	}
 
@@ -169,7 +173,7 @@ class Parse_MF2 {
 	 * @param $v
 	 * @return mixed
 	 */
-	public static function to_plaintext($v) {
+	public static function to_plaintext( $v ) {
 		if ( self::is_microformat( $v ) or self::is_embedded_html( $v ) ) {
 			return $v['value']; }
 		return $v;
@@ -184,9 +188,9 @@ class Parse_MF2 {
 	 * @return mixed|null
 	 * @link http://php.net/manual/en/function.current.php
 	 */
-	public static function get_plaintext(array $mf, $propName, $fallback = null) {
-		if ( ! empty( $mf['properties'][$propName] ) and is_array( $mf['properties'][$propName] ) ) {
-			return self::to_plaintext( current( $mf['properties'][$propName] ) );
+	public static function get_plaintext( array $mf, $propName, $fallback = null ) {
+		if ( ! empty( $mf['properties'][ $propName ] ) and is_array( $mf['properties'][ $propName ] ) ) {
+			return self::to_plaintext( current( $mf['properties'][ $propName ] ) );
 		}
 		return $fallback;
 	}
@@ -199,9 +203,9 @@ class Parse_MF2 {
 	 * @param null|string $fallback
 	 * @return null
 	 */
-	public static function get_plaintext_array(array $mf, $propName, $fallback = null) {
-		if ( ! empty( $mf['properties'][$propName] ) and is_array( $mf['properties'][$propName] ) ) {
-			return array_map( array( 'Parse_Mf2', 'to_plaintext' ), $mf['properties'][$propName] ); }
+	public static function get_plaintext_array( array $mf, $propName, $fallback = null ) {
+		if ( ! empty( $mf['properties'][ $propName ] ) and is_array( $mf['properties'][ $propName ] ) ) {
+			return array_map( array( 'Parse_Mf2', 'to_plaintext' ), $mf['properties'][ $propName ] ); }
 		return $fallback;
 	}
 
@@ -209,26 +213,26 @@ class Parse_MF2 {
 	 *  Return an array of properties, and may contain plaintext content
 	 *
 	 * @param array       $mf
-	 * @param array $properties
+	 * @param array       $properties
 	 * @param null|string $fallback
 	 * @return null|array
 	 */
-	public static function get_prop_array(array $mf, $properties, $fallback = null) {
+	public static function get_prop_array( array $mf, $properties, $fallback = null ) {
 		$data = array();
 		foreach ( $properties as $p ) {
 			if ( array_key_exists( $p, $mf['properties'] ) ) {
-				foreach ( $mf['properties'][$p] as $v ) {
+				foreach ( $mf['properties'][ $p ] as $v ) {
 					if ( is_string( $v ) ) {
 						if ( ! array_key_exists( $p, $data ) ) {
-							$data[$p] = array();
+							$data[ $p ] = array();
 						}
-						$data[$p][] = $v;
+						$data[ $p ][] = $v;
 					} elseif ( self::is_microformat( $v ) ) {
 						if ( ($u = self::get_plaintext( $v, 'url' )) && self::is_URL( $u ) ) {
 							if ( ! array_key_exists( $p, $data ) ) {
-								$data[$p] = array();
+								$data[ $p ] = array();
 							}
-							$data[$p][] = $u;
+							$data[ $p ][] = $u;
 						}
 					}
 				}
@@ -243,7 +247,7 @@ class Parse_MF2 {
 	 * @param $v
 	 * @return mixed
 	 */
-	public static function to_html($v) {
+	public static function to_html( $v ) {
 		if ( self::is_embedded_html( $v ) ) {
 			return $v['html']; } elseif ( self::is_microformat( $v ) ) {
 			return htmlspecialchars( $v['value'] ); }
@@ -258,9 +262,9 @@ class Parse_MF2 {
 	 * @param null|string $fallback
 	 * @return mixed|null
 	 */
-	public static function get_html(array $mf, $propName, $fallback = null) {
-		if ( ! empty( $mf['properties'][$propName] ) and is_array( $mf['properties'][$propName] ) ) {
-			return self::to_html( current( $mf['properties'][$propName] ) ); }
+	public static function get_html( array $mf, $propName, $fallback = null ) {
+		if ( ! empty( $mf['properties'][ $propName ] ) and is_array( $mf['properties'][ $propName ] ) ) {
+			return self::to_html( current( $mf['properties'][ $propName ] ) ); }
 		return $fallback;
 	}
 
@@ -297,7 +301,7 @@ class Parse_MF2 {
 	 * @param null|string $fallback optional result if date not available
 	 * @return mixed|null
 	 */
-	public static function get_published(array $mf, $ensureValid = false, $fallback = null) {
+	public static function get_published( array $mf, $ensureValid = false, $fallback = null ) {
 		return self::get_datetime_property( 'published', $mf, $ensureValid, $fallback );
 	}
 
@@ -309,7 +313,7 @@ class Parse_MF2 {
 	 * @param null  $fallback
 	 * @return mixed|null
 	 */
-	public static function get_updated(array $mf, $ensureValid = false, $fallback = null) {
+	public static function get_updated( array $mf, $ensureValid = false, $fallback = null ) {
 		return self::get_datetime_property( 'updated', $mf, $ensureValid, $fallback );
 	}
 
@@ -322,18 +326,19 @@ class Parse_MF2 {
 	 * @param null|string                      $fallback
 	 * @return mixed|null
 	 */
-	public static function get_datetime_property($name, array $mf, $ensureValid = false, $fallback = null) {
+	public static function get_datetime_property( $name, array $mf, $ensureValid = false, $fallback = null ) {
 		$compliment = 'published' === $name ? 'updated' : 'published';
 		if ( self::has_prop( $mf, $name ) ) {
 			$return = self::get_prop( $mf, $name ); } elseif ( self::has_prop( $mf, $compliment ) ) {
 			$return = self::get_prop( $mf, $compliment );
-			} else { 		return $fallback; }
+			} else {
+				return $fallback; }
 			if ( ! $ensureValid ) {
 				return $return; } else {
 				try {
 					new DateTime( $return );
 					return $return;
-				} catch (Exception $e) {
+				} catch ( Exception $e ) {
 					return $fallback;
 				}
 				}
@@ -347,7 +352,7 @@ class Parse_MF2 {
 	 * @return bool
 	 * @link http://php.net/manual/en/function.parse-url.php
 	 */
-	public static function same_hostname($u1, $u2) {
+	public static function same_hostname( $u1, $u2 ) {
 		return wp_parse_url( $u1, PHP_URL_HOST ) === wp_parse_url( $u2, PHP_URL_HOST );
 	}
 
@@ -364,7 +369,7 @@ class Parse_MF2 {
 	 * @todo: this needs to be just part of an indiewebcamp.com/authorship algorithm, at the moment it tries to do too much
 	 * @todo: maybe split some bits of this out into separate functions
 	 */
-	public static function get_author(array $mf, array $context = null, $url = null, $matchName = true, $matchHostname = true) {
+	public static function get_author( array $mf, array $context = null, $url = null, $matchName = true, $matchHostname = true ) {
 		$entryAuthor = null;
 
 		if ( null === $url and self::has_prop( $mf, 'url' ) ) {
@@ -411,14 +416,16 @@ class Parse_MF2 {
 			}
 			// look for h-card with same hostname as $url if given
 			if ( null !== $url and $matchHostname ) {
-				$sameHostnameHCards = self::find_microformats_by_callable($hCards, function ($mf) use ($url) {
-					if ( ! has_prop( $mf, 'url' ) ) {
-						return false; }
-					foreach ( $mf['properties']['url'] as $u ) {
-						if ( same_hostname( $url, $u ) ) {
-							return true; }
-					}
-				}, false);
+				$sameHostnameHCards = self::find_microformats_by_callable(
+					$hCards, function ( $mf ) use ( $url ) {
+						if ( ! has_prop( $mf, 'url' ) ) {
+							return false; }
+						foreach ( $mf['properties']['url'] as $u ) {
+							if ( same_hostname( $url, $u ) ) {
+								return true; }
+						}
+					}, false
+				);
 				if ( ! empty( $sameHostnameHCards ) ) {
 					return current( $sameHostnameHCards ); }
 			}
@@ -428,7 +435,7 @@ class Parse_MF2 {
 			: $relAuthorHref;
 	}
 
-	public static function find_author($item, $mf2 ) {
+	public static function find_author( $item, $mf2 ) {
 		$author = array(
 			'type' => 'card',
 			'name' => null,
@@ -483,7 +490,7 @@ class Parse_MF2 {
 	 * @return mixed
 	 * @link http://php.net/manual/en/function.parse-url.php
 	 */
-	public static function parse_url($url) {
+	public static function parse_url( $url ) {
 		$r = wp_parse_url( $url );
 		$r['pathname'] = empty( $r['path'] ) ? '/' : $r['path'];
 		return $r;
@@ -498,14 +505,14 @@ class Parse_MF2 {
 	 * @return bool
 	 * @see parseUrl()
 	 */
-	public static function urls_match($url1, $url2) {
+	public static function urls_match( $url1, $url2 ) {
 		$u1 = parse_url( $url1 );
 		$u2 = parse_url( $url2 );
 		foreach ( array_merge( array_keys( $u1 ), array_keys( $u2 ) ) as $component ) {
 			if ( ! array_key_exists( $component, $u1 ) or ! array_key_exists( $component, $u1 ) ) {
 				return false;
 			}
-			if ( $u1[$component] != $u2[$component] ) {
+			if ( $u1[ $component ] != $u2[ $component ] ) {
 				return false;
 			}
 		}
@@ -523,37 +530,54 @@ class Parse_MF2 {
 	 * @param string $url The URL the microformats were fetched from
 	 * @return array|null Either a single h-card array structure, or null if none was found
 	 */
-	public static function get_representative_hcard(array $mfs, $url) {
-		$hCardsMatchingUidUrlPageUrl = find_microformats_by_callable($mfs, function ($hCard) use ($url) {
-			return has_prop( $hCard, 'uid' ) and has_prop( $hCard, 'url' )
-			and urls_match( get_plaintext( $hCard, 'uid' ), $url )
-			and count(array_filter($hCard['properties']['url'], function ($u) use ($url) {
-				return urls_match( $u, $url );
-			})) > 0;
-		});
-		if ( ! empty( $hCardsMatchingUidUrlPageUrl ) ) { return $hCardsMatchingUidUrlPageUrl[0]; }
+	public static function get_representative_hcard( array $mfs, $url ) {
+		$hCardsMatchingUidUrlPageUrl = find_microformats_by_callable(
+			$mfs, function ( $hCard ) use ( $url ) {
+				return has_prop( $hCard, 'uid' ) and has_prop( $hCard, 'url' )
+				and urls_match( get_plaintext( $hCard, 'uid' ), $url )
+				and count(
+					array_filter(
+						$hCard['properties']['url'], function ( $u ) use ( $url ) {
+							return urls_match( $u, $url );
+						}
+					)
+				) > 0;
+			}
+		);
+		if ( ! empty( $hCardsMatchingUidUrlPageUrl ) ) {
+			return $hCardsMatchingUidUrlPageUrl[0]; }
 		if ( ! empty( $mfs['rels']['me'] ) ) {
-			$hCardsMatchingUrlRelMe = self::find_microformats_by_callable($mfs, function ($hCard) use ($mfs) {
-				if ( hasProp( $hCard, 'url' ) ) {
-					foreach ( $mfs['rels']['me'] as $relUrl ) {
-						foreach ( $hCard['properties']['url'] as $url ) {
-							if ( urlsMatch( $url, $relUrl ) ) {
-								return true;
+			$hCardsMatchingUrlRelMe = self::find_microformats_by_callable(
+				$mfs, function ( $hCard ) use ( $mfs ) {
+					if ( hasProp( $hCard, 'url' ) ) {
+						foreach ( $mfs['rels']['me'] as $relUrl ) {
+							foreach ( $hCard['properties']['url'] as $url ) {
+								if ( urlsMatch( $url, $relUrl ) ) {
+									return true;
+								}
 							}
 						}
 					}
+					return false;
 				}
-				return false;
-			});
-			if ( ! empty( $hCardsMatchingUrlRelMe ) ) { return $hCardsMatchingUrlRelMe[0]; }
+			);
+			if ( ! empty( $hCardsMatchingUrlRelMe ) ) {
+				return $hCardsMatchingUrlRelMe[0]; }
 		}
-		$hCardsMatchingUrlPageUrl = find_microformats_by_callable($mfs, function ($hCard) use ($url) {
-			return has_prop( $hCard, 'url' )
-			and count(array_filter($hCard['properties']['url'], function ($u) use ($url) {
-				return urls_match( $u, $url );
-			})) > 0;
-		});
-		if ( count( $hCardsMatchingUrlPageUrl ) === 1 ) { return $hCardsMatchingUrlPageUrl[0]; }
+		$hCardsMatchingUrlPageUrl = find_microformats_by_callable(
+			$mfs, function ( $hCard ) use ( $url ) {
+				return has_prop( $hCard, 'url' )
+				and count(
+					array_filter(
+						$hCard['properties']['url'], function ( $u ) use ( $url ) {
+							return urls_match( $u, $url );
+						}
+					)
+				) > 0;
+			}
+		);
+		if ( count( $hCardsMatchingUrlPageUrl ) === 1 ) {
+			return $hCardsMatchingUrlPageUrl[0]; }
 		// Otherwise, no representative h-card could be found.
 		return null;
 	}
@@ -564,7 +588,7 @@ class Parse_MF2 {
 	 * @param array $mfs
 	 * @return array
 	 */
-	public static function flatten_microformat_properties(array $mf) {
+	public static function flatten_microformat_properties( array $mf ) {
 		$items = array();
 
 		if ( ! self::is_microformat( $mf ) ) {
@@ -588,7 +612,7 @@ class Parse_MF2 {
 	 * @param array $mfs
 	 * @return array
 	 */
-	public static function flatten_microformats(array $mfs) {
+	public static function flatten_microformats( array $mfs ) {
 		if ( self::is_microformat_collection( $mfs ) ) {
 			$mfs = $mfs['items']; } elseif ( self::is_microformat( $mfs ) ) {
 			$mfs = array( $mfs ); }
@@ -619,10 +643,12 @@ class Parse_MF2 {
 	 * @param bool  $flatten
 	 * @return mixed
 	 */
-	public static function find_microformats_by_type(array $mfs, $name, $flatten = true) {
-		return self::find_microformats_by_callable($mfs, function ($mf) use ($name) {
-			return in_array( $name, $mf['type'] );
-		}, $flatten);
+	public static function find_microformats_by_type( array $mfs, $name, $flatten = true ) {
+		return self::find_microformats_by_callable(
+			$mfs, function ( $mf ) use ( $name ) {
+				return in_array( $name, $mf['type'] );
+			}, $flatten
+		);
 	}
 
 
@@ -636,16 +662,18 @@ class Parse_MF2 {
 	 * @return mixed
 	 * @see findMicroformatsByCallable()
 	 */
-	public static function find_microformats_by_property(array $mfs, $propName, $propValue, $flatten = true) {
-		return find_microformats_by_callable($mfs, function ($mf) use ($propName, $propValue) {
-			if ( ! hasProp( $mf, $propName ) ) {
-				return false; }
+	public static function find_microformats_by_property( array $mfs, $propName, $propValue, $flatten = true ) {
+		return find_microformats_by_callable(
+			$mfs, function ( $mf ) use ( $propName, $propValue ) {
+				if ( ! hasProp( $mf, $propName ) ) {
+					return false; }
 
-			if ( in_array( $propValue, $mf['properties'][$propName] ) ) {
-				return true; }
+				if ( in_array( $propValue, $mf['properties'][ $propName ] ) ) {
+					return true; }
 
-			return false;
-		}, $flatten);
+				return false;
+			}, $flatten
+		);
 	}
 
 	/**
@@ -659,7 +687,7 @@ class Parse_MF2 {
 	 * @link http://php.net/manual/en/function.is-callable.php
 	 * @see flattenMicroformats()
 	 */
-	public static function find_microformats_by_callable(array $mfs, $callable, $flatten = true) {
+	public static function find_microformats_by_callable( array $mfs, $callable, $flatten = true ) {
 		if ( ! is_callable( $callable ) ) {
 			throw new \InvalidArgumentException( '$callable must be callable' ); }
 
@@ -669,11 +697,12 @@ class Parse_MF2 {
 		return array_values( array_filter( $mfs, $callable ) );
 	}
 
-	/* Parses marked up HTML using MF2.
+	/*
+	 Parses marked up HTML using MF2.
 	*
 	* @param string $content HTML marked up content.
 	*/
-	public static function mf2parse($content, $url) {
+	public static function mf2parse( $content, $url ) {
 		$host = wp_parse_url( $url, PHP_URL_HOST );
 		switch ( $host ) {
 			case 'twitter.com':
@@ -693,7 +722,9 @@ class Parse_MF2 {
 		if ( 1 == $count ) {
 			$item = $parsed['items'][0];
 			if ( in_array( 'h-feed', $item['type'] ) ) {
-				return array( 'type' => 'feed' );
+				return array(
+					'type' => 'feed',
+				);
 			}
 			if ( in_array( 'h-card', $item['type'] ) ) {
 				return self::parse_hcard( $item, $parsed, $url );
@@ -717,7 +748,7 @@ class Parse_MF2 {
 
 	private static function parse_hentry( $entry, $mf ) {
 		// Array Values
-		$properties = array( 'category', 'invitee', 'photo','video','audio','syndication','in-reply-to','like-of','repost-of','bookmark-of', 'tag-of', 'location', 'featured' );
+		$properties = array( 'category', 'invitee', 'photo', 'video', 'audio', 'syndication', 'in-reply-to', 'like-of', 'repost-of', 'bookmark-of', 'tag-of', 'location', 'featured' );
 		$data = self::get_prop_array( $entry, $properties );
 		$data['type'] = 'entry';
 		$data['published'] = self::get_published( $entry );
@@ -764,7 +795,7 @@ class Parse_MF2 {
 			}
 		}
 		if ( isset( $data['name'] ) && isset( $data['summary'] ) ) {
-			if ( $data['name'] == $data[ 'summary' ] ) {
+			if ( $data['name'] == $data['summary'] ) {
 				unset( $data['name'] );
 			}
 		}
@@ -779,7 +810,7 @@ class Parse_MF2 {
 			'url' => null,
 			'photo' => null,
 		);
-		$properties = array( 'url','name','photo' );
+		$properties = array( 'url', 'name', 'photo' );
 		foreach ( $properties as $p ) {
 			if ( 'url' == $p && $authorurl ) {
 				// If there is a matching author URL, use that one
@@ -795,7 +826,7 @@ class Parse_MF2 {
 				if ( ! $found && self::is_url( $hcard['properties']['url'][0] ) ) {
 					$data['url'] = $hcard['properties']['url'][0];
 				}
-			} else if ( ( $v = self::get_plaintext( $hcard, $p ) ) !== null ) {
+			} elseif ( ( $v = self::get_plaintext( $hcard, $p ) ) !== null ) {
 				// Make sure the URL property is actually a URL
 				if ( 'url' == $p || 'photo' == $p ) {
 					if ( self::is_url( $v ) ) {

@@ -58,7 +58,8 @@ class Kind_Tabmeta {
 
 			// Provide a global object to our JS file containing our REST API endpoint, and API nonce
 			// Nonce must be 'wp_rest'
-			wp_localize_script( 'kindmeta-response', 'rest_object',
+			wp_localize_script(
+				'kindmeta-response', 'rest_object',
 				array(
 					'api_nonce' => wp_create_nonce( 'wp_rest' ),
 					'api_url'   => rest_url( '/link-preview/1.0/' ),
@@ -87,8 +88,8 @@ class Kind_Tabmeta {
 				$seconds = $zone->getOffset( new DateTime( 'now' , $zone ) );
 					$o[] = self::tz_seconds_to_offset( $seconds );
 			} // exceptions must be catched, else a blank page
-			catch (Exception $e) {
-				// die("Exception : " . $e->getMessage() . '<br />');
+			catch ( Exception $e ) {
+				die( 'Exception : ' . $e->getMessage() . '<br />' );
 				// what to do in catch ? , nothing just relax
 			}
 		}
@@ -103,7 +104,7 @@ class Kind_Tabmeta {
 		if ( isset( $time['offset'] ) ) {
 			$offset = $time['offset'];
 		}
-		$string = '<label for="' . $prefix .  '">' . $label . '</label><br/>';
+		$string = '<label for="' . $prefix . '">' . $label . '</label><br/>';
 		$string .= '<input type="date" name="' . $prefix . '_date" id="' . $prefix . '_date" value="' . ifset( $time['date'] ) . '"/>';
 		$string .= '<input type="time" name="' . $prefix . '_time" id="' . $prefix . '_time" step="1" value="' . ifset( $time['time'] ) . '"/>';
 		$string .= self::select_offset( $prefix, $offset );
@@ -112,10 +113,10 @@ class Kind_Tabmeta {
 
 	public static function select_offset( $prefix, $select ) {
 		$tzlist = self::kind_get_timezones();
-		$string = '<select name="'  . $prefix . '_offset" id="' . $prefix . '_offset">';
+		$string = '<select name="' . $prefix . '_offset" id="' . $prefix . '_offset">';
 		foreach ( $tzlist as $key => $value ) {
 			$string .= '<option value="' . $value . '"';
-			if ( $select == $value ) {
+			if ( $select === $value ) {
 				$string .= ' selected';
 			}
 			$string .= '>GMT' . $value . '</option>';
@@ -132,11 +133,11 @@ class Kind_Tabmeta {
 			'maybe' => __( 'Maybe', 'indieweb-post-kinds' ),
 			'interested' => __( 'Interested', 'indieweb-post-kinds' ),
 		);
-		$string = '<label for="mf2_rsvp">' . __( 'RSVP', 'indieweb-post-kinds' ) .  '</label><br/>';
+		$string = '<label for="mf2_rsvp">' . __( 'RSVP', 'indieweb-post-kinds' ) . '</label><br/>';
 		$string .= '<select name="mf2_rsvp" id="mf2_rsvp">';
 		foreach ( $rsvps as $key => $value ) {
 			$string .= '<option value="' . $key . '"';
-			if ( $selected == $key ) {
+			if ( $selected === $key ) {
 				$string .= ' selected';
 			}
 			$string .= '>' . $value . '</option>';
@@ -147,7 +148,7 @@ class Kind_Tabmeta {
 
 	// Echos a Standard Formbox Box - Defaulting to Text
 	public static function metabox_text( $property, $label, $default = '', $type = 'text' ) {
-		$string = '<label for="' . $property .  '">' . $label . '</label><br/>';
+		$string = '<label for="' . $property . '">' . $label . '</label><br/>';
 		if ( 'textarea' === $type ) {
 			$string .= '<textarea name="' . $property . '" id="' . $property . '" data-role="none" class="widefat">' . $default . '</textarea>';
 			return $string;
@@ -159,13 +160,13 @@ class Kind_Tabmeta {
 
 
 
-	public static function tz_seconds_to_offset($seconds) {
+	public static function tz_seconds_to_offset( $seconds ) {
 		return ($seconds < 0 ? '-' : '+') . sprintf( '%02d:%02d', abs( $seconds / 60 / 60 ), abs( $seconds / 60 ) % 60 );
 	}
 
-	public static function tz_offset_to_seconds($offset) {
+	public static function tz_offset_to_seconds( $offset ) {
 		if ( preg_match( '/([+-])(\d{2}):?(\d{2})/', $offset, $match ) ) {
-			$sign = ($match[1] == '-' ? -1 : 1);
+			$sign = ('-' ? -1 : 1 === $match[1] );
 			return (($match[2] * 60 * 60) + ($match[3] * 60)) * $sign;
 		} else {
 			return 0;
@@ -195,14 +196,15 @@ class Kind_Tabmeta {
 				$url = $_GET['kindurl'];
 			}
 		}
-		$time = array(); // $meta->get_time();
+		$time = array();
 		include_once( 'tabs/tab-navigation.php' );
 	}
 
 	public static function change_title( $data, $postarr ) {
 
 		// If it is our form has not been submitted, so we dont want to do anything
-		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) { return; }
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return; }
 		if ( ! empty( $data['post_title'] ) ) {
 			return $data;
 		}
@@ -240,7 +242,7 @@ class Kind_Tabmeta {
 		}
 
 		// Check the user's permissions.
-		if ( isset( $_POST['post_type'] ) && 'page' == $_POST['post_type'] ) {
+		if ( isset( $_POST['post_type'] ) && 'page' === $_POST['post_type'] ) {
 			if ( ! current_user_can( 'edit_page', $post_id ) ) {
 				return;
 			}
@@ -271,7 +273,7 @@ class Kind_Tabmeta {
 		} else {
 			$meta->del( 'duration' );
 		}
-		$meta->set( 'rsvp' , $_POST['mf2_rsvp' ] );
+		$meta->set( 'rsvp' , $_POST['mf2_rsvp'] );
 
 		if ( isset( $_POST['cite_published_date'] ) || isset( $_POST['published_time'] ) ) {
 			$cite['published'] = $meta->build_time( $_POST['cite_published_date'], $_POST['cite_published_time'], $_POST['cite_published_offset'] );
@@ -302,10 +304,10 @@ class Kind_Tabmeta {
 	}
 
 	public static function transition_post_status( $new, $old, $post ) {
-		if ( $new == 'publish' && $old != 'publish' ) {
+		if ( 'publish' === $new && 'publish' !== $old ) {
 			self::save_post( $post->ID, $post );
 		}
 	}
 
 }
-?>
+
