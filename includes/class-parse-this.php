@@ -416,6 +416,7 @@ class Parse_This {
 			case 'book:author':
 			case 'article:author':
 			case 'good_reads:author':
+			case 'author':
 				$this->_set_meta_entry( 'author', $meta_value, false );
 				break;
 
@@ -704,6 +705,18 @@ class Parse_This {
 		$data['summary'] = $this->get_meta( 'description' );
 		// $data['site'] = ifset( $meta['og:site'] ) ?: ifset( $meta['twitter:site'] );
 		$data['author'] = $this->get_meta( 'author' );
+                if ( isset( $data['author'] ) && is_array( $data['author'] ) ) {
+			$author = array( 'url' => array(), 'name' => array() );
+			foreach( $data['author'] as $a ) {
+				if ( self::is_url( $a ) ) {
+					$author['url'][] = $a;
+				}
+				else{
+					$author['name'][] = $a;
+				}
+			}
+			$data['author'] = array_filter( $author );
+		}
 
 		// $data['featured'] = ifset( $meta['og:image'] ) ?: ifset( $meta['twitter:image'] );
 		$data['publication'] = $this->get_meta( 'site_name' ); // ifset( $meta['og:site_name'] ) ?: ifset( $meta['og:music:album'] );
