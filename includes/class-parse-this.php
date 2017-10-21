@@ -440,10 +440,12 @@ class Parse_This {
 				break;
 			case 'playfoursquare:location:latitude':
 			case 'place:location:latitude':
+			case 'og:latitude':
 				$this->_set_meta_entry( 'latitude', $meta_value );
 				break;
 			case 'playfoursquare:location:longitude':
 			case 'place:location:longitude':
+			case 'og:longitude':
 				$this->_set_meta_entry( 'longitude', $meta_value );
 				break;
 			case 'business:contact_data:street_address':

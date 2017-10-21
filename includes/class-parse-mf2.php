@@ -770,6 +770,7 @@ class Parse_MF2 {
 				}
 			}
 		}
+		return array();
 	}
 
 	private static function parse_hentry( $entry, $mf ) {

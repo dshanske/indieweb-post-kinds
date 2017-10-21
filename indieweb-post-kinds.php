@@ -64,18 +64,17 @@ class Post_Kinds_Plugin {
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-meta.php';
 
 		// Add an MF2 Parser
-		if ( version_compare( PHP_VERSION, '5.3', '>' ) ) {
-			if ( ! class_exists( 'Mf2\Parser' ) ) {
-				require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Parser.php';
-			}
-			if ( ! function_exists( 'Mf2\xpcs' ) ) {
-				require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/functions.php';
-			}
-			if ( ! class_exists( 'Mf2\Shim' ) ) {
-				require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Twitter.php';
-			}
-			require_once plugin_dir_path( __FILE__ ) . 'includes/class-parse-mf2.php';
+		if ( ! class_exists( 'Mf2\Parser' ) ) {
+			require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Parser.php';
 		}
+		if ( ! function_exists( 'Mf2\xpcs' ) ) {
+			require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/functions.php';
+		}
+		if ( ! class_exists( 'Mf2\Shim' ) ) {
+			require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Twitter.php';
+		}
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class-parse-mf2.php';
+
 		// Add Link Preview Parsing
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-parse-this.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-link-preview.php';
