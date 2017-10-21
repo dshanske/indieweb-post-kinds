@@ -3,3 +3,4 @@ node_modules/*
 sass/.sass-cache/*
 sass/svg/intermediate/*
 sass/symbol/*
+vendor/*
