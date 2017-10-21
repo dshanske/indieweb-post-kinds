@@ -21,19 +21,19 @@ class Kind_Plugins {
 	}
 
 	// Replaces need for Replacing the Entire Excerpt
-	public static function semantic_post_type($post_type, $post_id) {
-		return _x( 'this', 'indieweb-post-kinds' ) . ' ' . strtolower( get_post_kind( $post_id ) );
+	public static function semantic_post_type( $post_type, $post_id ) {
+		return _x( 'this', 'direct article', 'indieweb-post-kinds' ) . ' ' . strtolower( get_post_kind( $post_id ) );
 	}
 
 	// Replacement for the Semantic Linkbacks Comment Excerpt
-	public static function comment_text_excerpt($text, $comment = null, $args = array()) {
+	public static function comment_text_excerpt( $text, $comment = null, $args = array() ) {
 		// only change text for pingbacks/trackbacks/webmentions
 		if ( ! $comment || '' === $comment->comment_type || ! get_comment_meta( $comment->comment_ID, 'semantic_linkbacks_canonical', true ) ) {
 			return $text;
 		}
 		// check comment type
 		$comment_type = get_comment_meta( $comment->comment_ID, 'semantic_linkbacks_type', true );
-		if ( ! $comment_type || ! in_array( $comment_type, array_keys( SemanticLinkbacksPlugin::get_comment_type_strings() ) ) ) {
+		if ( ! $comment_type || ! in_array( $comment_type, array_keys( SemanticLinkbacksPlugin::get_comment_type_strings() ), true ) ) {
 			$comment_type = 'mention';
 		}
 		$_kind = get_the_terms( $comment->comment_post_ID, 'kind' );
@@ -61,7 +61,7 @@ class Kind_Plugins {
 			$url = get_comment_meta( $comment->comment_ID, 'semantic_linkbacks_source', true );
 		}
 		// parse host
-		$host = parse_url( $url, PHP_URL_HOST );
+		$host = wp_parse_url( $url, PHP_URL_HOST );
 		// strip leading www, if any
 		$host = preg_replace( '/^www\./', '', $host );
 		// generate output
@@ -105,17 +105,17 @@ class Kind_Plugins {
 		}
 
 		// Video & audio come before photo, because either of these could contain a photo
-		if ( isset( $input['properties']['video'] ) || isset( $_FILES['video'] )  ) {
+		if ( isset( $input['properties']['video'] ) || isset( $_FILES['video'] ) ) {
 			set_post_kind( $wp_args['ID'], 'video' );
 			return;
 		}
 
-		if ( isset( $input['properties']['audio'] ) || isset( $_FILES['audio'] )  ) {
+		if ( isset( $input['properties']['audio'] ) || isset( $_FILES['audio'] ) ) {
 			set_post_kind( $wp_args['ID'], 'audio' );
 			return;
 		}
 
-		if ( isset( $input['properties']['photo'] ) || isset( $_FILES['photo'] )  ) {
+		if ( isset( $input['properties']['photo'] ) || isset( $_FILES['photo'] ) ) {
 			set_post_kind( $wp_args['ID'], 'photo' );
 			return;
 		}
@@ -156,4 +156,4 @@ class Kind_Plugins {
 
 } // End Class Kind_Plugins
 
-?>
+

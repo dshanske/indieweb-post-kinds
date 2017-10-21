@@ -15,7 +15,7 @@ class Kind_View {
 
 	public static function wp_get_attachment_image_attributes( array $attr, WP_Post $attachment ) {
 		$parents = get_post_ancestors( $attachment );
-		$id = $parents[ count( $parents ) -1 ];
+		$id = $parents[ count( $parents ) - 1 ];
 		if ( 'photo' !== get_post_kind_slug( $id ) ) {
 			return $attr;
 		}
@@ -30,7 +30,7 @@ class Kind_View {
 	}
 
 	// This mirrors get_template_part but for views and locates the correct file and returns the output
-	public static function get_view_part($slug, $name = null) {
+	public static function get_view_part( $slug, $name = null ) {
 		$name = (string) $name;
 		if ( '' !== $name ) {
 			$templates[] = "{$slug}-{$name}.php";
@@ -60,33 +60,33 @@ class Kind_View {
 
 
 	// Return the Display
-	public static function get_display( $post_ID = null ) {
-		if ( ! $post_ID ) {
-			$post_ID = get_the_ID();
+	public static function get_display( $post_id = null ) {
+		if ( ! $post_id ) {
+			$post_id = get_the_ID();
 		}
-		if ( 'post' === get_post_type( $post_ID ) ) {
-			$kind = get_post_kind_slug( $post_ID );
+		if ( 'post' === get_post_type( $post_id ) ) {
+			$kind = get_post_kind_slug( $post_id );
 			$content = self::get_view_part( 'kind', $kind );
-			return apply_filters( 'kind-response-display', $content, $post_ID );
+			return apply_filters( 'kind_response_display', $content, $post_id );
 		}
 	}
 
 	// Echo the output of get_display
-	public static function display( $post_ID = null ) {
-		echo self::get_display( $post_ID );
+	public static function display( $post_id = null ) {
+		echo self::get_display( $post_id );
 	}
 
-	public static function content_response ( $content ) {
-		return self::get_display( ) . $content;
+	public static function content_response( $content ) {
+		return self::get_display() . $content;
 	}
 
 
-	public static function excerpt_response ( $content ) {
+	public static function excerpt_response( $content ) {
 		global $post;
 		if ( has_excerpt( get_the_ID() ) ) {
-			return self::get_display( ) . get_the_excerpt();
+			return self::get_display() . get_the_excerpt();
 		} else {
-			return self::get_display( ) . wp_trim_words( $post->post_content );
+			return self::get_display() . wp_trim_words( $post->post_content );
 		}
 	}
 
@@ -109,7 +109,7 @@ class Kind_View {
 	}
 
 	// Takes a url and returns it as marked up HTML
-	public static function get_url_link( $url, $name='', $atr='' ) {
+	public static function get_url_link( $url, $name = '', $atr = '' ) {
 		if ( empty( $url ) ) {
 			return '';
 		}
@@ -130,52 +130,52 @@ class Kind_View {
 
 	public static function get_embed( $url ) {
 		$option = get_option( 'kind_embeds' );
-		if ( 0 == $option ) {
+		if ( 0 === (int) $option ) {
 				return '';
 		}
 		$host = self::extract_domain_name( $url );
 		$whitelist = array(
 			'animoto.com',
-		'blip.tv',
-		'cloudup.com',
-		'collegehumor.com',
-		'dailymotion.com',
-		'facebook.com',
-		'flickr.com',
-		'funnyordie.com',
-		'hulu.com',
-		'imgur.com',
-		'instagram.com',
+			'blip.tv',
+			'cloudup.com',
+			'collegehumor.com',
+			'dailymotion.com',
+			'facebook.com',
+			'flickr.com',
+			'funnyordie.com',
+			'hulu.com',
+			'imgur.com',
+			'instagram.com',
 			'issuu.com',
-		'kickstarter.com',
-		'meetup.com',
-		'mixcloud.com',
-		'photobucket.com',
-		'polldaddy.com',
-		'reddit.com',
-		'reverbnation.com',
-		'scribd.com',
-		'slideshare.net',
-		'smugmug.com',
+			'kickstarter.com',
+			'meetup.com',
+			'mixcloud.com',
+			'photobucket.com',
+			'polldaddy.com',
+			'reddit.com',
+			'reverbnation.com',
+			'scribd.com',
+			'slideshare.net',
+			'smugmug.com',
 			'soundcloud.com',
-		'speakerdeck.com',
-		'spotify.com',
-		'ted.com',
-		'tumblr.com',
-		'twitter.com',
-		'videopress.com',
-		'vimeo.com',
-		'wordpress.tv',
-		'youtube.com',
+			'speakerdeck.com',
+			'spotify.com',
+			'ted.com',
+			'tumblr.com',
+			'twitter.com',
+			'videopress.com',
+			'vimeo.com',
+			'wordpress.tv',
+			'youtube.com',
 		);
 		$whitelist = apply_filters( 'post_kind_embed_whitelist', $whitelist );
-		if ( ! in_array( $host, $whitelist ) ) {
+		if ( ! in_array( $host, $whitelist, true ) ) {
 			return '';
 		}
 		if ( isset( $GLOBALS['wp_embed'] ) ) {
 			$embed = $GLOBALS['wp_embed']->autoembed( $url );
 		}
-		if ( strcmp( $embed, $url ) == 0 ) {
+		if ( 0 === strcmp( $embed, $url ) ) {
 			$embed = '';
 		} else {
 			$embed = '<div class="kind-embed">' . $embed . '</div>';
@@ -193,16 +193,16 @@ class Kind_View {
 			return ' ';
 		}
 		$strings = array(
-			'twitter.com' => _x( 'a tweet', 'indieweb-post-kinds' ),
-			'vimeo.com' => _x( 'a video', 'indieweb-post-kinds' ),
-			'youtube.com'   => _x( 'a video', 'indieweb-post-kinds' ),
-			'instagram.com' => _x( 'an image', 'indieweb-post-kinds' ),
+			'twitter.com' => _x( 'a tweet', 'singular Twitter', 'indieweb-post-kinds' ),
+			'vimeo.com' => _x( 'a video', 'singular Vimeo', 'indieweb-post-kinds' ),
+			'youtube.com'   => _x( 'a video', 'singular Youtube', 'indieweb-post-kinds' ),
+			'instagram.com' => _x( 'an image', 'singular Intagram', 'indieweb-post-kinds' ),
 		);
 		$domain = self::extract_domain_name( $url );
 		if ( array_key_exists( $domain, $strings ) ) {
 			return apply_filters( 'kind_post_type_string', $strings[ $domain ] );
 		} else {
-			return _x( 'a post', 'indieweb-post-kinds' );
+			return _x( 'a post', 'singular post', 'indieweb-post-kinds' );
 		}
 	}
 
@@ -215,11 +215,11 @@ class Kind_View {
 	 *
 	 *     @type int          $height        Display height of the author image in pixels. Defaults to $size.
 	 *     @type int          $width         Display width of the author image in pixels. Defaults to $size.
-	 *     @type string       $display			 Display 'photo', 'name', or 'both'. Defaults to 'name'.
+	 *     @type string       $display           Display 'photo', 'name', or 'both'. Defaults to 'name'.
 	 * }
 	 * @return false|string Marked up H-Card as String. False on failure.
 	 */
-	public static function get_hcard($author, $args = null) {
+	public static function get_hcard( $author, $args = null ) {
 		$default = array(
 			'height' => 32,
 			'width' => 32,
@@ -265,7 +265,6 @@ class Kind_View {
 				break;
 			case 'name':
 				return sprintf( '<span class="h-card p-author">%1s</span>', $author['name'] );
-				break;
 			case 'both':
 				if ( array_key_exists( 'photo', $author ) ) {
 					if ( ! array_key_exists( 'url', $author ) ) {
@@ -283,7 +282,7 @@ class Kind_View {
 		return $card;
 	}
 
-	public static function get_cite_title($cite, $url) {
+	public static function get_cite_title( $cite, $url ) {
 		if ( ! $cite ) {
 			return false;
 		}
@@ -301,7 +300,7 @@ class Kind_View {
 		}
 	}
 
-	public static function get_site_name($cite, $url) {
+	public static function get_site_name( $cite, $url ) {
 		if ( ! $cite ) {
 			return false;
 		}
@@ -313,9 +312,13 @@ class Kind_View {
 
 	public static function rsvp_text( $type ) {
 		$rsvp = array(
-			'yes' => __( 'Attending <a href="%1s" class="u-in-reply-to">%2s</a>', 'indieweb-post-kinds' ),
-			'maybe' => __( 'Might be attending <a href="%1s" class="u-in-reply-to">%2s</a>', 'indieweb-post-kinds' ),
-			'no' => __( 'Unable to Attend <a href="%1s" class="u-in-reply-to">%2s</a>', 'indieweb-post-kinds' ),
+			/* translators: URL for link to event and name of event */
+			'yes' => __( 'Attending <a href="%1$1s" class="u-in-reply-to">%2$2s</a>', 'indieweb-post-kinds' ),
+			/* translators: URL for link to event and name of event */
+			'maybe' => __( 'Might be attending <a href="%1$1s" class="u-in-reply-to">%2$2s</a>', 'indieweb-post-kinds' ),
+			/* translators: URL for link to event and name of event */
+			'no' => __( 'Unable to Attend <a href="%1$1s" class="u-in-reply-to">%2$2s</a>', 'indieweb-post-kinds' ),
+			/* translators: URL for link to event and name of event */
 			'interested' => __( 'Interested in Attending %s', 'indieweb-post-kinds' ),
 		);
 		return $rsvp[ $type ];
@@ -329,28 +332,34 @@ class Kind_View {
 		$bits = array(
 			'year'    => $interval->y,
 			'month'   => $interval->m,
-			'day' 	  => $interval->d,
+			'day'     => $interval->d,
 			'hour'    => $interval->h,
 			'minute'  => $interval->i,
 			'second'  => $interval->s,
 		);
 		$return = '';
 		if ( $bits['year'] > 0 ) {
+			/* translators: singular and plural */
 			$return .= sprintf( _n( '%d year', '%d years', $bits['year'], 'indieweb-post-kinds' ), $bits['year'] );
 		}
 		if ( $bits['month'] > 0 ) {
+			/* translators: singular and plural */
 			$return .= sprintf( _n( ' %d month', ' %d months', $bits['month'], 'indieweb-post-kinds' ), $bits['month'] );
 		}
 		if ( $bits['day'] > 0 ) {
+			/* translators: singular and plural */
 			$return .= sprintf( _n( ' %d day', ' %d days', $bits['day'], 'indieweb-post-kinds' ), $bits['day'] );
 		}
 		if ( $bits['hour'] > 0 ) {
+			/* translators: singular and plural */
 			$return .= sprintf( _n( ' %d hour', ' %d hours', $bits['hour'], 'indieweb-post-kinds' ), $bits['hour'] );
 		}
 		if ( $bits['minute'] > 0 ) {
+			/* translators: singular and plural */
 			$return .= sprintf( _n( ' %d minute', ' %d minutes', $bits['minute'], 'indieweb-post-kinds' ), $bits['minute'] );
 		}
 		if ( $bits['second'] > 0 ) {
+			/* translators: singular and plural */
 			$return .= sprintf( _n( ' %d second', ' %d seconds', $bits['second'], 'indieweb-post-kinds' ), $bits['second'] );
 		}
 		return trim( $return );

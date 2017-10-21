@@ -16,9 +16,10 @@ $rsvp = $meta->get( 'rsvp' );
 
 <section class="response">
 <header>
-<?php echo Kind_Taxonomy::get_before_kind( 'rsvp' );
+<?php
+echo Kind_Taxonomy::get_before_kind( 'rsvp' );
 
-if( ! $embed ) {
+if ( ! $embed ) {
 	if ( $rsvp ) {
 		echo '<data class="p-rsvp" value="' . $rsvp . '">' . sprintf( Kind_View::rsvp_text( $rsvp ), $url, $title ) . '</data>';
 	}
@@ -28,7 +29,7 @@ if( ! $embed ) {
 <?php
 if ( $embed ) {
 	echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
-} else if ( array_key_exists( 'summary', $cite ) ) {
+} elseif ( array_key_exists( 'summary', $cite ) ) {
 	echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $cite['summary'] );
 }
 

@@ -70,8 +70,10 @@ class Kind_Config {
 	public static function admin_init() {
 		add_settings_section(
 			'iwt-content',
-			__( 'Content Options',
-			'indieweb-post-kinds' ),
+			__(
+				'Content Options',
+				'indieweb-post-kinds'
+			),
 			array( 'Kind_Config', 'options_callback' ),
 			'iwt_options'
 		);
@@ -94,25 +96,26 @@ class Kind_Config {
 			'embeds',
 			__( 'Embed Sites into your Response', 'indieweb-post-kinds' ),
 			array( 'Kind_Config', 'checkbox_callback' ),
-			'iwt_options', 'iwt-content' ,  array( 'name' => 'kind_embeds' )
+			'iwt_options', 'iwt-content' ,  array(
+				'name' => 'kind_embeds',
+			)
 		);
 
 		add_settings_field(
 			'display',
 			__( 'Display Before Kind', 'indieweb-post-kinds' ),
 			array( 'Kind_Config', 'radio_callback' ),
-			'iwt_options', 'iwt-content' ,  
-			array( 
+			'iwt_options', 'iwt-content' ,
+			array(
 				'name' => 'kind_display',
 				'class' => Kind_Taxonomy::before_kind() ? '' : 'hidden',
 				'options' => array(
 					'icon' => __( 'Show Icon', 'indieweb-post-kinds' ),
 					'text' => __( 'Show Text', 'indieweb-post-kinds' ),
-					'hide' => __( 'Display Nothing', 'indieweb-post-kinds' )
-				)
+					'hide' => __( 'Display Nothing', 'indieweb-post-kinds' ),
+				),
 			)
 		);
-
 
 		if ( POST_KINDS_KSES ) {
 			add_settings_field(
@@ -121,7 +124,9 @@ class Kind_Config {
 				array( 'Kind_Config', 'textbox_callback' ),
 				'iwt_options',
 				'iwt-content',
-				array( 'name' => 'kind_kses' )
+				array(
+					'name' => 'kind_kses',
+				)
 			);
 		}
 		// Add Query Var to Admin
@@ -129,7 +134,7 @@ class Kind_Config {
 	}
 
 
-	public static function query_var($vars) {
+	public static function query_var( $vars ) {
 		$vars[] = 'kindurl';
 		return $vars;
 	}
@@ -161,7 +166,6 @@ class Kind_Config {
 	 * @access public
 	 */
 	public static function options_callback() {
-		esc_html_e( '', 'indieweb-post-kinds' );
 	}
 
 	/**
@@ -169,9 +173,9 @@ class Kind_Config {
 	 *
 	 * @access public
 	 * @param array $args {
-	 *		Arguments.
+	 *      Arguments.
 	 *
-	 *		@type string $name Checkbox Name.
+	 *      @type string $name Checkbox Name.
 	 */
 	public static function checkbox_callback( array $args ) {
 		$option = get_option( $args['name'] );
@@ -194,7 +198,7 @@ class Kind_Config {
 		if ( is_array( $option ) ) {
 			$option = print_r( $option, true );
 		}
-		echo "<textarea rows='10' cols='50' class='large-text code' name='" . $args['name'] . "'>". $option . '</textarea> ';
+		echo "<textarea rows='10' cols='50' class='large-text code' name='" . $args['name'] . "'>" . $option . '</textarea> ';
 	}
 
 	/**
@@ -208,7 +212,7 @@ class Kind_Config {
 		$termslist = get_option( 'kind_termslist' );
 		foreach ( $terms as $key => $value ) {
 			if ( $value['show'] ) {
-				echo "<input name='kind_termslist[]' type='checkbox' value='" . $key . "' " . checked( in_array( $key, $termslist ), true, false ) . ' /><strong>' . $value['singular_name'] . '</strong> - ' . $value['description'] . '<br />';
+				echo "<input name='kind_termslist[]' type='checkbox' value='" . $key . "' " . checked( in_array( $key, $termslist, true ), true, false ) . ' /><strong>' . $value['singular_name'] . '</strong> - ' . $value['description'] . '<br />';
 			}
 		}
 	}
@@ -226,7 +230,7 @@ class Kind_Config {
 		$defaultkind = get_option( 'kind_default' );
 
 		foreach ( $terms as $term ) {
-			echo '<input id="kind_default" name="kind_default" type="radio" value="' . $term . '" '. checked( $term, $defaultkind, false ) . ' />' . Kind_Taxonomy::get_kind_info( $term, 'singular_name' ) . '<br />';
+			echo '<input id="kind_default" name="kind_default" type="radio" value="' . $term . '" ' . checked( $term, $defaultkind, false ) . ' />' . Kind_Taxonomy::get_kind_info( $term, 'singular_name' ) . '<br />';
 		}
 	}
 
@@ -238,7 +242,7 @@ class Kind_Config {
 	public static function radio_callback( array $args ) {
 		$display = get_option( 'kind_display' );
 		foreach ( $args['options'] as $key => $value ) {
-			echo '<input id="' . $args['name'] . '" name="' . $args['name'] . '" type="radio" value="' . $key . '" '. checked( $key, $display, false ) . ' class="' . $args['class'] . '" />' . $value . '<br />';
+			echo '<input id="' . $args['name'] . '" name="' . $args['name'] . '" type="radio" value="' . $key . '" ' . checked( $key, $display, false ) . ' class="' . $args['class'] . '" />' . $value . '<br />';
 		}
 	}
 
@@ -252,9 +256,9 @@ class Kind_Config {
 	public static function options_form() {
 		Kind_Taxonomy::kind_defaultterms();
 		echo '<div class="wrap">';
-		echo '<h2>' . esc_html__( 'Indieweb Post Kinds', 'Post kinds' ) . '</h2>';
+		echo '<h2>' . esc_html__( 'Indieweb Post Kinds', 'indieweb-post-kinds' ) . '</h2>';
 		echo '<p>';
-		esc_html_e( 'Adds support for responding and interacting with other sites.', 'Post kinds' );
+		esc_html_e( 'Adds support for responding and interacting with other sites.', 'indieweb-post-kinds' );
 		echo '</p><hr />';
 		echo '<form method="post" action="options.php">';
 			settings_fields( 'iwt_options' );
@@ -264,40 +268,44 @@ class Kind_Config {
 	}
 
 	public static function add_post_help_tab() {
-		get_current_screen()->add_help_tab( array(
-			'id'       => 'post_kind_help',
-			'title'    => __( 'Post Properties', 'indieweb-post-kinds' ),
-			'content'  => __('
-				<p> The Post Properties tab represents the Microformats properties of a Post. For different kinds of posts, the different
-				fields mean something different. Example: Artist Name vs Author Name</p>
-				<ul><strong>Main</strong>
-					<li><strong>URL</strong> - The URL the post is responding to</li>
-					<li><strong>Name/Title</strong> - The name of what is being responded to</li>
-					<li><strong>Summary/Quote</strong> - Summary of what the post is responding to or quote</li>
-					<li><strong>Tags</strong> - Tags or categories for the piece to be displayed as hashtags</li>
-				</ul>
-				<ul><strong>Details</strong>
-					<li><strong>Site Name/Publication/Album</strong></li>
-					<li><strong>Featured Image/Site Icon</strong> - The URL of a featured image of what is being responded to or a site icon</li>
-              				<li><strong>Published Time</strong></li>
-              				<li><strong>Updated Time</strong></li>
-				</ul>
-				<ul><strong>Author</strong>
-					<li><strong>Author/Artist Name</strong> </li>
-					<li><strong>Author/Artist URL</strong></li>
-					<li><strong>Author/Artist Photo URL</strong></li>
-				</ul>
-				<ul><strong>Other</strong>
-              				<li><strong>Start Time</strong></li>
-              				<li><strong>End Time</strong></li>
-					<li><strong>Duration</strong> - Duration is calculated based on the difference between start and end time. You may just use the time field, 
-					omitting date and timezone and setting start time to 0:00:00 to set a simple duration.</li> 
-					<li><strong>RSVP</strong> - For RSVP posts, you can specify whether you are attending, not attending, unsure, or simply interested.</li>
-            			</ul>
-			', 'indieweb-post-kinds'),
-		) );
+		get_current_screen()->add_help_tab(
+			array(
+				'id'       => 'post_kind_help',
+				'title'    => __( 'Post Properties', 'indieweb-post-kinds' ),
+				'content'  => __(
+					'
+ 							<p> The Post Properties tab represents the Microformats properties of a Post. For different kinds of posts, the different
+ 							fields mean something different. Example: Artist Name vs Author Name</p>
+ 							<ul><strong>Main</strong>
+ 								<li><strong>URL</strong> - The URL the post is responding to</li>
+ 								<li><strong>Name/Title</strong> - The name of what is being responded to</li>
+ 								<li><strong>Summary/Quote</strong> - Summary of what the post is responding to or quote</li>
+ 								<li><strong>Tags</strong> - Tags or categories for the piece to be displayed as hashtags</li>
+ 							</ul>
+ 							<ul><strong>Details</strong>
+ 								<li><strong>Site Name/Publication/Album</strong></li>
+ 								<li><strong>Featured Image/Site Icon</strong> - The URL of a featured image of what is being responded to or a site icon</li>
+ 			              				<li><strong>Published Time</strong></li>
+ 			              				<li><strong>Updated Time</strong></li>
+ 							</ul>
+ 							<ul><strong>Author</strong>
+ 								<li><strong>Author/Artist Name</strong> </li>
+ 								<li><strong>Author/Artist URL</strong></li>
+ 								<li><strong>Author/Artist Photo URL</strong></li>
+ 							</ul>
+ 							<ul><strong>Other</strong>
+ 			              				<li><strong>Start Time</strong></li>
+ 			              				<li><strong>End Time</strong></li>
+ 								<li><strong>Duration</strong> - Duration is calculated based on the difference between start and end time. You may just use the time field, 
+ 								omitting date and timezone and setting start time to 0:00:00 to set a simple duration.</li> 
+ 								<li><strong>RSVP</strong> - For RSVP posts, you can specify whether you are attending, not attending, unsure, or simply interested.</li>
+ 			            			</ul>
+ 						', 'indieweb-post-kinds'
+				),
+			)
+		);
 	}
 
 } // End Class
 
-?>
+

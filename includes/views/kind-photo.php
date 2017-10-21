@@ -12,7 +12,8 @@ $embed = self::get_embed( $meta->get_url() );
 ?>
 <section class="response">
 <header>
-<?php echo Kind_Taxonomy::get_before_kind( 'photo' );
+<?php
+echo Kind_Taxonomy::get_before_kind( 'photo' );
 if ( isset( $cite['name'] ) ) {
 	echo sprintf( '<span class="p-name">%1s</a>', $cite['name'] );
 }
@@ -20,17 +21,17 @@ if ( isset( $cite['name'] ) ) {
 ?>
 </header>
 </section>
-<?php 
+<?php
 if ( $photos && ! has_post_thumbnail( get_the_ID() ) ) {
-	echo gallery_shortcode( 
-		array( 
-			'id' => get_the_ID() , 
-			'size' => 'large', 
+	echo gallery_shortcode(
+		array(
+			'id' => get_the_ID(),
+			'size' => 'large',
 			'columns' => 1,
-			'link' => 'file'
-		) );
-}
-else { 
+			'link' => 'file',
+		)
+	);
+} else {
 	if ( $embed ) {
 		echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
 	}

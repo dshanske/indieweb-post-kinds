@@ -35,7 +35,6 @@ class Parse_This {
 	 *
 	 * @since x.x.x
 	 * @access public
-	 *
 	 */
 	public function __construct( $url = null ) {
 		if ( $this->is_url( $url ) ) {
@@ -118,7 +117,7 @@ class Parse_This {
 	 */
 	public function fetch_source_html( $url ) {
 		if ( empty( $url ) ) {
-			return new WP_Error( 'invalid-url', __( 'A valid URL was not provided.' ) );
+			return new WP_Error( 'invalid-url', __( 'A valid URL was not provided.', 'indieweb-post-kinds' ) );
 		}
 
 		$args = array(
@@ -191,7 +190,7 @@ class Parse_This {
 
 		if ( is_numeric( $value ) || is_bool( $value ) ) {
 			$return = $value;
-		} else if ( is_string( $value ) ) {
+		} elseif ( is_string( $value ) ) {
 			if ( mb_strlen( $value ) > 5000 ) {
 				$return = mb_substr( $value, 0, 5000 );
 			} else {
@@ -260,28 +259,28 @@ class Parse_This {
 		if ( preg_match( '!/ad[sx]?/!i', $src ) ) {
 			// Ads
 			return '';
-		} else if ( preg_match( '!(/share-?this[^.]+?\.[a-z0-9]{3,4})(\?.*)?$!i', $src ) ) {
+		} elseif ( preg_match( '!(/share-?this[^.]+?\.[a-z0-9]{3,4})(\?.*)?$!i', $src ) ) {
 			// Share-this type button
 			return '';
-		} else if ( preg_match( '!/(spinner|loading|spacer|blank|rss)\.(gif|jpg|png)!i', $src ) ) {
+		} elseif ( preg_match( '!/(spinner|loading|spacer|blank|rss)\.(gif|jpg|png)!i', $src ) ) {
 			// Loaders, spinners, spacers
 			return '';
-		} else if ( preg_match( '!/([^./]+[-_])?(spinner|loading|spacer|blank)s?([-_][^./]+)?\.[a-z0-9]{3,4}!i', $src ) ) {
+		} elseif ( preg_match( '!/([^./]+[-_])?(spinner|loading|spacer|blank)s?([-_][^./]+)?\.[a-z0-9]{3,4}!i', $src ) ) {
 			// Fancy loaders, spinners, spacers
 			return '';
-		} else if ( preg_match( '!([^./]+[-_])?thumb[^.]*\.(gif|jpg|png)$!i', $src ) ) {
+		} elseif ( preg_match( '!([^./]+[-_])?thumb[^.]*\.(gif|jpg|png)$!i', $src ) ) {
 			// Thumbnails, too small, usually irrelevant to context
 			return '';
-		} else if ( false !== stripos( $src, '/wp-includes/' ) ) {
+		} elseif ( false !== stripos( $src, '/wp-includes/' ) ) {
 			// Classic WordPress interface images
 			return '';
-		} else if ( preg_match( '![^\d]\d{1,2}x\d+\.(gif|jpg|png)$!i', $src ) ) {
+		} elseif ( preg_match( '![^\d]\d{1,2}x\d+\.(gif|jpg|png)$!i', $src ) ) {
 			// Most often tiny buttons/thumbs (< 100px wide)
 			return '';
-		} else if ( preg_match( '!/pixel\.(mathtag|quantserve)\.com!i', $src ) ) {
+		} elseif ( preg_match( '!/pixel\.(mathtag|quantserve)\.com!i', $src ) ) {
 			// See mathtag.com and https://www.quantcast.com/how-we-do-it/iab-standard-measurement/how-we-collect-data/
 			return '';
-		} else if ( preg_match( '!/[gb]\.gif(\?.+)?$!i', $src ) ) {
+		} elseif ( preg_match( '!/[gb]\.gif(\?.+)?$!i', $src ) ) {
 			// WordPress.com stats gif
 			return '';
 		}
@@ -311,22 +310,26 @@ class Parse_This {
 		if ( preg_match( '!//(m|www)\.youtube\.com/(embed|v)/([^?]+)\?.+$!i', $src, $src_matches ) ) {
 			// Embedded Youtube videos (www or mobile)
 			$src = 'https://www.youtube.com/watch?v=' . $src_matches[3];
-		} else if ( preg_match( '!//player\.vimeo\.com/video/([\d]+)([?/].*)?$!i', $src, $src_matches ) ) {
+		} elseif ( preg_match( '!//player\.vimeo\.com/video/([\d]+)([?/].*)?$!i', $src, $src_matches ) ) {
 			// Embedded Vimeo iframe videos
 			$src = 'https://vimeo.com/' . (int) $src_matches[1];
-		} else if ( preg_match( '!//vimeo\.com/moogaloop\.swf\?clip_id=([\d]+)$!i', $src, $src_matches ) ) {
+		} elseif ( preg_match( '!//vimeo\.com/moogaloop\.swf\?clip_id=([\d]+)$!i', $src, $src_matches ) ) {
 			// Embedded Vimeo Flash videos
 			$src = 'https://vimeo.com/' . (int) $src_matches[1];
-		} else if ( preg_match( '!//vine\.co/v/([^/]+)/embed!i', $src, $src_matches ) ) {
+		} elseif ( preg_match( '!//vine\.co/v/([^/]+)/embed!i', $src, $src_matches ) ) {
 			// Embedded Vine videos
 			$src = 'https://vine.co/v/' . $src_matches[1];
-		} else if ( preg_match( '!//(www\.)?dailymotion\.com/embed/video/([^/?]+)([/?].+)?!i', $src, $src_matches ) ) {
+		} elseif ( preg_match( '!//(www\.)?dailymotion\.com/embed/video/([^/?]+)([/?].+)?!i', $src, $src_matches ) ) {
 			// Embedded Daily Motion videos
 			$src = 'https://www.dailymotion.com/video/' . $src_matches[2];
 		} else {
 			$oembed = _wp_oembed_get_object();
 
-			if ( ! $oembed->get_provider( $src, array( 'discover' => false ) ) ) {
+			if ( ! $oembed->get_provider(
+				$src, array(
+					'discover' => false,
+				)
+			) ) {
 				$src = '';
 			}
 		}
@@ -337,30 +340,29 @@ class Parse_This {
 	/**
 	 * Set a meta value or convert to array if multiple values
 	 *
-	 *
-	 * @param string $meta_name   Meta key name.
-	 * @param mixed  $meta_value  Meta value.
+	 * @param string  $meta_name   Meta key name.
+	 * @param mixed   $meta_value  Meta value.
 	 * @param boolean $single Single Value
 	 */
 	private function _set_meta_entry( $meta_name, $meta_value, $single = true ) {
 		// If the key does not exist set it.
-		if ( ! isset( $this->meta[$meta_name] ) ) {
-			$this->meta[$meta_name] = $meta_value;
+		if ( ! isset( $this->meta[ $meta_name ] ) ) {
+			$this->meta[ $meta_name ] = $meta_value;
 			return;
 		}
 		if ( $single ) {
 			return;
 		}
 		// If it exists but is not an array turn it into one.
-		if ( ! is_array( $this->meta[$meta_name] ) ) {
-			$this->meta[$meta_name] = array( $this->meta[$meta_name] );
+		if ( ! is_array( $this->meta[ $meta_name ] ) ) {
+			$this->meta[ $meta_name ] = array( $this->meta[ $meta_name ] );
 		}
 		// Do not allow duplicates.
-		if ( ! in_array( $meta_value, $this->meta[$meta_name] ) ) {
+		if ( ! in_array( $meta_value, $this->meta[ $meta_name ], true ) ) {
 			if ( ! is_array( $meta_value ) ) {
-				$this->meta[$meta_name][] = $meta_value;
+				$this->meta[ $meta_name ][] = $meta_value;
 			} else {
-				$this->meta[$meta_name] = array_unique( array_merge( $this->meta[$meta_name], $meta_value ) );
+				$this->meta[ $meta_name ] = array_unique( array_merge( $this->meta[ $meta_name ], $meta_value ) );
 			}
 		}
 	}
@@ -414,6 +416,7 @@ class Parse_This {
 			case 'book:author':
 			case 'article:author':
 			case 'good_reads:author':
+			case 'author':
 				$this->_set_meta_entry( 'author', $meta_value, false );
 				break;
 
@@ -437,10 +440,12 @@ class Parse_This {
 				break;
 			case 'playfoursquare:location:latitude':
 			case 'place:location:latitude':
+			case 'og:latitude':
 				$this->_set_meta_entry( 'latitude', $meta_value );
 				break;
 			case 'playfoursquare:location:longitude':
 			case 'place:location:longitude':
+			case 'og:longitude':
 				$this->_set_meta_entry( 'longitude', $meta_value );
 				break;
 			case 'business:contact_data:street_address':
@@ -473,7 +478,7 @@ class Parse_This {
 					$this->embeds = array();
 				}
 
-				if ( ! empty( $meta_value ) && ! in_array( $meta_value, $this->embeds ) ) {
+				if ( ! empty( $meta_value ) && ! in_array( $meta_value, $this->embeds, true ) ) {
 					$this->embeds[] = $meta_value;
 				}
 
@@ -497,7 +502,7 @@ class Parse_This {
 					$this->images = array();
 				}
 
-				if ( ! empty( $meta_value ) && ! in_array( $meta_value, $this->images ) ) {
+				if ( ! empty( $meta_value ) && ! in_array( $meta_value, $this->images, true ) ) {
 					$this->images[] = $meta_value;
 				}
 				break;
@@ -520,9 +525,8 @@ class Parse_This {
 	 *
 	 * @since 4.2.0
 	 * @access public
-	 *
 	 */
-	public function source_data_parse( ) {
+	public function source_data_parse() {
 		if ( empty( $this->content ) ) {
 			return false;
 		}
@@ -530,9 +534,9 @@ class Parse_This {
 		// Strip the content to only the elements being looked at
 		$allowed_elements = array(
 			'img' => array(
-			'src'      => true,
-			'width'    => true,
-			'height'   => true,
+				'src'      => true,
+				'width'    => true,
+				'height'   => true,
 			),
 			'iframe' => array(
 				'src'      => true,
@@ -602,7 +606,7 @@ class Parse_This {
 
 				if ( preg_match( '/src=(\'|")([^\'"]+)\\1/i', $value, $new_matches ) ) {
 					$src = $this->_limit_img( $new_matches[2] );
-					if ( ! empty( $src ) && ! in_array( $src, $this->images ) ) {
+					if ( ! empty( $src ) && ! in_array( $src, $this->images, true ) ) {
 						$this->images[] = $src;
 					}
 				}
@@ -621,7 +625,7 @@ class Parse_This {
 				if ( preg_match( '/src=(\'|")([^\'"]+)\\1/', $value, $new_matches ) ) {
 					$src = $this->_limit_embed( $new_matches[2] );
 
-					if ( ! empty( $src ) && ! in_array( $src, $this->embeds ) ) {
+					if ( ! empty( $src ) && ! in_array( $src, $this->embeds, true ) ) {
 						$this->embeds[] = $src;
 					}
 				}
@@ -678,7 +682,7 @@ class Parse_This {
 		 * @param string $url URL.
 		 */
 	public function verify_url_in_content( $url ) {
-		return in_array( $url, $this->urls );
+		return in_array( $url, $this->urls, true );
 	}
 
 	public function get_meta( $key = null ) {
@@ -703,12 +707,29 @@ class Parse_This {
 		$data['summary'] = $this->get_meta( 'description' );
 		// $data['site'] = ifset( $meta['og:site'] ) ?: ifset( $meta['twitter:site'] );
 		$data['author'] = $this->get_meta( 'author' );
+		if ( isset( $data['author'] ) && is_array( $data['author'] ) ) {
+			$author = array(
+				'url' => array(),
+				'name' => array(),
+			);
+			foreach ( $data['author'] as $a ) {
+				if ( self::is_url( $a ) ) {
+					$author['url'][] = $a;
+				} else {
+					$author['name'][] = $a;
+				}
+			}
+			$data['author'] = array_filter( $author );
+		}
 
 		// $data['featured'] = ifset( $meta['og:image'] ) ?: ifset( $meta['twitter:image'] );
 		$data['publication'] = $this->get_meta( 'site_name' ); // ifset( $meta['og:site_name'] ) ?: ifset( $meta['og:music:album'] );
 		$data['published'] = $this->get_meta( 'published' ) ?: $this->get_meta( 'release_date' );
 		$data['updated'] = $this->get_meta( 'modified' );
-		$data['category'] = array_values( $this->get_meta( 'tag' ) );
+		$tags = $this->get_meta( 'tag' );
+		if ( is_array( $tags ) ) {
+			$data['category'] = array_values( $tags );
+		}
 		// Extended Parameters
 		// $data['audio'] = ifset( $meta['og:audio'] );
 		// $data['video'] = ifset( $meta['og:video'] );
@@ -726,7 +747,7 @@ class Parse_This {
 
 	public function get_all() {
 		   return array(
-					  'images' => array_filter( $this->images ),
+			   'images' => array_filter( $this->images ),
 			   'embeds' => array_filter( $this->embeds ),
 			   'meta' => array_filter( $this->meta ),
 			   'links' => array_filter( $this->links ),

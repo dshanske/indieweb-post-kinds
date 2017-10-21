@@ -7,12 +7,11 @@
  * Plugin Name: Post Kinds
  * Plugin URI: https://wordpress.org/plugins/indieweb-post-kinds/
  * Description: Ever want to reply to someone else's post with a post on your own site? Or to "like" someone else's post, but with your own site?
- * Version: 2.6.5
+ * Version: 2.6.6
  * Author: David Shanske
  * Author URI: https://david.shanske.com
  * Text Domain: indieweb-post-kinds
  * Domain Path:  /languages
-
  */
 
 if ( ! defined( 'POST_KINDS_KSES' ) ) {
@@ -25,7 +24,7 @@ add_action( 'plugins_loaded', array( 'Post_Kinds_Plugin', 'plugins_loaded' ) );
 add_action( 'init', array( 'Post_Kinds_Plugin', 'init' ) );
 
 class Post_Kinds_Plugin {
-	public static $version = '2.6.5';
+	public static $version = '2.6.6';
 	public static function init() {
 		// Add Kind Taxonomy.
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-taxonomy.php';
@@ -65,18 +64,17 @@ class Post_Kinds_Plugin {
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-meta.php';
 
 		// Add an MF2 Parser
-		if ( version_compare( PHP_VERSION, '5.3', '>' ) ) {
-			if ( ! class_exists( 'Mf2\Parser' ) ) {
-				require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Parser.php';
-			}
-		  if ( ! function_exists( 'Mf2\xpcs' ) ) {
-				require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/functions.php';
-			}
-			if ( ! class_exists( 'Mf2\Shim' ) ) {
-				require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Twitter.php';
-			}
-			require_once plugin_dir_path( __FILE__ ) . 'includes/class-parse-mf2.php';
+		if ( ! class_exists( 'Mf2\Parser' ) ) {
+			require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Parser.php';
 		}
+		if ( ! function_exists( 'Mf2\xpcs' ) ) {
+			require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/functions.php';
+		}
+		if ( ! class_exists( 'Mf2\Shim' ) ) {
+			require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Twitter.php';
+		}
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class-parse-mf2.php';
+
 		// Add Link Preview Parsing
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-parse-this.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-link-preview.php';
@@ -122,10 +120,10 @@ if ( ! function_exists( 'ifset' ) ) {
 	 * @param type $var Check if set.
 	 * @return $var|false Return either $var or false.
 	 */
-	function ifset(&$var) {
+	function ifset( &$var ) {
 
 		return isset( $var ) ? $var : false;
 	}
 }
 
-?>
+

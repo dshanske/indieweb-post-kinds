@@ -97,18 +97,19 @@ function set_post_kind( $post, $kind ) {
 
 /**
  * Return the Displayed Response for a Specific Kind
+ *
  * @param $slug
  * @param $name
  * @return string
  */
 
-function get_kind_view_part($slug, $name = null) {
+function get_kind_view_part( $slug, $name = null ) {
 	Kind_View::get_view_part( $slug, $name );
 }
 
-function kind_display( $post_ID = null ) {
-		echo Kind_View::get_display( $post_ID );
+function kind_display( $post_id = null ) {
+		echo Kind_View::get_display( $post_id );
 }
 
 
-?>
+

@@ -58,7 +58,8 @@ switch ( $kind ) {
 		$type = 'u-quotation-of';
 		break;
 	case 'checkin':
-		$type = '';
+		$type = 'p-checkin';
+		break;
 	default:
 		return;
 }
@@ -66,8 +67,9 @@ switch ( $kind ) {
 
 <section class="h-cite response <?php echo $type; ?> ">
 <header>
-<?php echo Kind_Taxonomy::get_before_kind( $kind );
-if( ! $embed ) {
+<?php
+echo Kind_Taxonomy::get_before_kind( $kind );
+if ( ! $embed ) {
 	if ( $title ) {
 		echo $title;
 	}
@@ -80,7 +82,7 @@ if( ! $embed ) {
 	if ( in_array( $kind, array( 'jam', 'listen', 'play', 'read', 'watch', 'audio', 'video' ) ) ) {
 		$duration = $meta->get_duration();
 		if ( $duration ) {
-			echo '(<data class="p-duration" value="' . $duration . '">' . Kind_View::display_duration( $duration )  . '</data>)';
+			echo '(<data class="p-duration" value="' . $duration . '">' . Kind_View::display_duration( $duration ) . '</data>)';
 		}
 	}
 }
@@ -90,7 +92,7 @@ if( ! $embed ) {
 if ( $cite ) {
 	if ( $embed ) {
 		echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
-	} else if ( array_key_exists( 'summary', $cite ) ) {
+	} elseif ( array_key_exists( 'summary', $cite ) ) {
 		echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $cite['summary'] );
 	}
 }

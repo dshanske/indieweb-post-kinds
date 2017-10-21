@@ -17,8 +17,9 @@ $duration = $meta->get_duration();
 
 <section class="response p-jam-of h-cite">
 <header>
-<?php echo Kind_Taxonomy::get_before_kind( 'jam' );
-if( ! $embed ) {
+<?php
+echo Kind_Taxonomy::get_before_kind( 'jam' );
+if ( ! $embed ) {
 	if ( $title ) {
 		echo $title;
 	}
@@ -26,10 +27,10 @@ if( ! $embed ) {
 		echo ' ' . __( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
 	}
 	if ( $site_name ) {
-		echo __(' from ', 'indieweb-post-kinds' ) . '<em>' . $site_name . '</em>';
+		echo __( ' from ', 'indieweb-post-kinds' ) . '<em>' . $site_name . '</em>';
 	}
 	if ( $duration ) {
-		echo '(<data class="p-duration" value="' . $duration . '">' . Kind_View::display_duration( $duration )  . '</data>)';
+		echo '(<data class="p-duration" value="' . $duration . '">' . Kind_View::display_duration( $duration ) . '</data>)';
 	}
 }
 ?>
@@ -38,7 +39,7 @@ if( ! $embed ) {
 if ( $cite ) {
 	if ( $embed ) {
 		echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
-	} else if ( array_key_exists( 'summary', $cite ) ) {
+	} elseif ( array_key_exists( 'summary', $cite ) ) {
 		echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $cite['summary'] );
 	}
 }
