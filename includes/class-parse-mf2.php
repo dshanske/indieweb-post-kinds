@@ -53,6 +53,37 @@ class Parse_MF2 {
 	}
 
 	/**
+	 * Is this an h-adr.
+	 *
+	 * @param array $mf Parsed Microformats Array.
+	 * @return bool
+	 */
+	public static function is_hadr( $mf ) {
+		return is_array( $mf ) && ! empty( $mf['type'] ) && is_array( $mf['type'] ) && in_array( 'h-adr', $mf['type'], true );
+	}
+
+	/**
+	 * Is this an h-cite.
+	 *
+	 * @param array $mf Parsed Microformats Array.
+	 * @return bool
+	 */
+	public static function is_hcite( $mf ) {
+		return is_array( $mf ) && ! empty( $mf['type'] ) && is_array( $mf['type'] ) && in_array( 'h-cite', $mf['type'], true );
+	}
+
+	/**
+	 * Is this an h-event.
+	 *
+	 * @param array $mf Parsed Microformats Array.
+	 * @return bool
+	 */
+	public static function is_hevent( $mf ) {
+		return is_array( $mf ) && ! empty( $mf['type'] ) && is_array( $mf['type'] ) && in_array( 'h-event', $mf['type'], true );
+	}
+
+
+	/**
 	 * Parse Content
 	 *
 	 * @param array $mf Parsed Microformats Array.
@@ -84,21 +115,6 @@ class Parse_MF2 {
 		return $data;
 	}
 
-
-	/**
-	 * Iterates over array keys, returns true if has numeric keys.
-	 *
-	 * @param array $arr
-	 * @return bool
-	 */
-	public static function has_numeric_keys( array $arr ) {
-		foreach ( $arr as $key => $val ) {
-			if ( is_numeric( $key ) ) {
-				return true; }
-		}
-		return false;
-	}
-
 	/**
 	 * Verifies if $mf is an array without numeric keys, and has a 'properties' key.
 	 *
@@ -106,7 +122,7 @@ class Parse_MF2 {
 	 * @return bool
 	 */
 	public static function is_microformat( $mf ) {
-		return (is_array( $mf ) && ! self::has_numeric_keys( $mf ) && ! empty( $mf['type'] ) && isset( $mf['properties'] ));
+		return (is_array( $mf ) && ! wp_is_numeric_array( $mf ) && ! empty( $mf['type'] ) && isset( $mf['properties'] ));
 	}
 
 
@@ -127,7 +143,7 @@ class Parse_MF2 {
 	 * @return bool
 	 */
 	public static function is_embedded_html( $p ) {
-		return is_array( $p ) && ! self::hasNumericKeys( $p ) && isset( $p['value'] ) && isset( $p['html'] );
+		return is_array( $p ) && ! wp_is_numeric_array( $p ) && isset( $p['value'] ) && isset( $p['html'] );
 	}
 
 	/**
@@ -227,13 +243,22 @@ class Parse_MF2 {
 							$data[ $p ] = array();
 						}
 						$data[ $p ][] = $v;
-					} elseif ( self::is_microformat( $v ) ) {
-						$u = self::get_plaintext( $v, 'url' );
-						if ( ($u) && self::is_URL( $u ) ) {
-							if ( ! array_key_exists( $p, $data ) ) {
-								$data[ $p ] = array();
+					} 
+					elseif ( self::is_microformat( $v ) ) {
+						if ( self::is_hcard( $v, $mf ) ) {
+							$data[ $p ] = self::parse_hcard( $v, $mf );
+						}
+						else if ( self::is_hadr( $v, $mf ) ) {
+							$data[ $p ] = self::parse_hadr( $v, $mf );
+						}
+						else {
+							$u = self::get_plaintext( $v, 'url' );
+							if ( ($u) && self::is_URL( $u ) ) {
+								if ( ! array_key_exists( $p, $data ) ) {
+									$data[ $p ] = array();
+								}
+								$data[ $p ][] = $u;
 							}
-							$data[ $p ][] = $u;
 						}
 					}
 				}
@@ -749,7 +774,7 @@ class Parse_MF2 {
 
 	private static function parse_hentry( $entry, $mf ) {
 		// Array Values
-		$properties = array( 'category', 'invitee', 'photo', 'video', 'audio', 'syndication', 'in-reply-to', 'like-of', 'repost-of', 'bookmark-of', 'tag-of', 'location', 'featured' );
+		$properties = array( 'checkin', 'category', 'invitee', 'photo', 'video', 'audio', 'syndication', 'in-reply-to', 'like-of', 'repost-of', 'bookmark-of', 'tag-of', 'location', 'featured', 'swarm-coins' );
 		$data = self::get_prop_array( $entry, $properties );
 		$data['type'] = 'entry';
 		$data['published'] = self::get_published( $entry );
@@ -811,7 +836,11 @@ class Parse_MF2 {
 			'url' => null,
 			'photo' => null,
 		);
-		$properties = array( 'url', 'name', 'photo' );
+		// Possible Nested Values
+		$properties = array( 'org', 'location' );
+		$data = array_merge( $data, self::get_prop_array( $hcard, $properties ) );
+		// Single Values
+		$properties = array( 'url', 'name', 'photo', 'latitude', 'longitude', 'note', 'uid', 'bday', 'role', 'locality', 'region', 'country' );
 		foreach ( $properties as $p ) {
 			$v = self::get_plaintext( $hcard, $p );
 			if ( 'url' === $p && $authorurl ) {
@@ -842,7 +871,27 @@ class Parse_MF2 {
 		return array_filter( $data );
 	}
 
-
-
+	private static function parse_hadr( $hadr, $mf ) {
+		$data = array(
+			'type' => 'adr',
+			'name' => null,
+			'url' => null,
+		);
+		$properties = array( 'url', 'name', 'photo', 'location', 'latitude', 'longitude', 'note', 'uid', 'locality', 'region', 'country' );
+		foreach ( $properties as $p ) {
+			$v = self::get_plaintext( $hadr, $p );
+			if ( null !== $v ) {
+				// Make sure the URL property is actually a URL
+				if ( 'url' === $p || 'photo' === $p ) {
+					if ( self::is_url( $v ) ) {
+						$data[ $p ] = $v;
+					}
+				} else {
+					$data[ $p ] = $v;
+				}
+			}
+		}
+		return array_filter( $data );
+	}
 
 }
