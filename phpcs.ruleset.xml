@@ -1,8 +1,10 @@
 <?xml version="1.0"?>
 <ruleset name="Indieweb-Post-Kinds">
 	<description>Indieweb Post Kinds Standards</description>
-	<file>./phpunit</file>
-	<file>indieweb-post-kinds.php</file>
+
+	<file>./indieweb-post-kinds.php</file>
+	<file>./includes/</file>
+	<exclude-pattern>*/includes/*\.(inc|css|js|svg)</exclude-pattern>
 	<rule ref="PHPCompatibility"/>
 	<config name="testVersion" value="5.3-"/>
 	<rule ref="WordPress-Core" />	
