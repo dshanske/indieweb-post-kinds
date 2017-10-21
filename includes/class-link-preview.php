@@ -60,13 +60,9 @@ class Link_Preview {
 		$parsethis = new Parse_This();
 		$parsethis->set_source( $content, $url );
 		$metadata = $parsethis->meta_to_microformats();
-		if ( version_compare( PHP_VERSION, '5.3', '>' ) ) {
-			$mf2data = Parse_MF2::mf2parse( $content, $url );
-			$data = array_merge( $metadata, $mf2data );
-			$data = array_filter( $data );
-		} else {
-			$data = $metadata;
-		}
+		$mf2data = Parse_MF2::mf2parse( $content, $url );
+		$data = array_merge( $metadata, $mf2data );
+		$data = array_filter( $data );
 
 		if ( ! isset( $data['summary'] ) ) {
 			$data['summary'] = substr( $data['content']['text'], 0, 300 );
