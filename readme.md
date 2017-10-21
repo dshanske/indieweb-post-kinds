@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like  
-**Stable tag:** 2.6.5  
+**Stable tag:** 2.6.6  
 **Requires at least:** 4.7  
 **Requires PHP:** 5.3  
 **Tested up to:** 4.8  
@@ -174,6 +174,11 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 
 ## Changelog ##
+	= Version 2.6.6 =
+		* Fix eat svg icon
+		* Update travis and phpcs testing parameters
+		* Fixes in code based on phpcs discovered parameters
+		* Support additional properties in the parser and some nested microformats(h-adr)
 	= Version 2.6.5 =
 		* Add video kind template ( props @Ruxton )
 		* Restore ability to use text instead of icon
