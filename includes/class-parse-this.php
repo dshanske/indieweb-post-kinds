@@ -707,13 +707,15 @@ class Parse_This {
 		$data['summary'] = $this->get_meta( 'description' );
 		// $data['site'] = ifset( $meta['og:site'] ) ?: ifset( $meta['twitter:site'] );
 		$data['author'] = $this->get_meta( 'author' );
-                if ( isset( $data['author'] ) && is_array( $data['author'] ) ) {
-			$author = array( 'url' => array(), 'name' => array() );
-			foreach( $data['author'] as $a ) {
+		if ( isset( $data['author'] ) && is_array( $data['author'] ) ) {
+			$author = array(
+				'url' => array(),
+				'name' => array(),
+			);
+			foreach ( $data['author'] as $a ) {
 				if ( self::is_url( $a ) ) {
 					$author['url'][] = $a;
-				}
-				else{
+				} else {
 					$author['name'][] = $a;
 				}
 			}

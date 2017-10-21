@@ -557,7 +557,8 @@ class Kind_Taxonomy {
 			$kind_taxonomy = get_taxonomy( $taxonomy );
 			wp_dropdown_categories(
 				array(
-					'show_option_all' => sprintf( __( "All %1s", 'indieweb-post-kinds' ), $kind_taxonomy->label ),
+					/* translators: All */
+					'show_option_all' => sprintf( __( 'All %1s', 'indieweb-post-kinds' ), $kind_taxonomy->label ),
 					'taxonomy'        => $taxonomy,
 					'name'            => $taxonomy,
 					'orderby'         => 'name',

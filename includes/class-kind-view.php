@@ -67,7 +67,7 @@ class Kind_View {
 		if ( 'post' === get_post_type( $post_id ) ) {
 			$kind = get_post_kind_slug( $post_id );
 			$content = self::get_view_part( 'kind', $kind );
-			return apply_filters( 'kind-response-display', $content, $post_id );
+			return apply_filters( 'kind_response_display', $content, $post_id );
 		}
 	}
 
@@ -130,7 +130,7 @@ class Kind_View {
 
 	public static function get_embed( $url ) {
 		$option = get_option( 'kind_embeds' );
-		if ( 0 == $option ) {
+		if ( 0 === (int) $option ) {
 				return '';
 		}
 		$host = self::extract_domain_name( $url );
@@ -169,13 +169,13 @@ class Kind_View {
 			'youtube.com',
 		);
 		$whitelist = apply_filters( 'post_kind_embed_whitelist', $whitelist );
-		if ( ! in_array( $host, $whitelist ) ) {
+		if ( ! in_array( $host, $whitelist, true ) ) {
 			return '';
 		}
 		if ( isset( $GLOBALS['wp_embed'] ) ) {
 			$embed = $GLOBALS['wp_embed']->autoembed( $url );
 		}
-		if ( strcmp( $embed, $url ) == 0 ) {
+		if ( 0 === strcmp( $embed, $url ) ) {
 			$embed = '';
 		} else {
 			$embed = '<div class="kind-embed">' . $embed . '</div>';
@@ -202,7 +202,7 @@ class Kind_View {
 		if ( array_key_exists( $domain, $strings ) ) {
 			return apply_filters( 'kind_post_type_string', $strings[ $domain ] );
 		} else {
-			return _x( 'a post', 'indieweb-post-kinds' );
+			return _x( 'a post', 'singular post', 'indieweb-post-kinds' );
 		}
 	}
 
@@ -265,7 +265,6 @@ class Kind_View {
 				break;
 			case 'name':
 				return sprintf( '<span class="h-card p-author">%1s</span>', $author['name'] );
-				break;
 			case 'both':
 				if ( array_key_exists( 'photo', $author ) ) {
 					if ( ! array_key_exists( 'url', $author ) ) {
@@ -312,11 +311,14 @@ class Kind_View {
 	}
 
 	public static function rsvp_text( $type ) {
-		/* translators: URL for link to event and name of event */ 
 		$rsvp = array(
+			/* translators: URL for link to event and name of event */
 			'yes' => __( 'Attending <a href="%1$1s" class="u-in-reply-to">%2$2s</a>', 'indieweb-post-kinds' ),
+			/* translators: URL for link to event and name of event */
 			'maybe' => __( 'Might be attending <a href="%1$1s" class="u-in-reply-to">%2$2s</a>', 'indieweb-post-kinds' ),
+			/* translators: URL for link to event and name of event */
 			'no' => __( 'Unable to Attend <a href="%1$1s" class="u-in-reply-to">%2$2s</a>', 'indieweb-post-kinds' ),
+			/* translators: URL for link to event and name of event */
 			'interested' => __( 'Interested in Attending %s', 'indieweb-post-kinds' ),
 		);
 		return $rsvp[ $type ];
@@ -337,21 +339,27 @@ class Kind_View {
 		);
 		$return = '';
 		if ( $bits['year'] > 0 ) {
+			/* translators: singular and plural */
 			$return .= sprintf( _n( '%d year', '%d years', $bits['year'], 'indieweb-post-kinds' ), $bits['year'] );
 		}
 		if ( $bits['month'] > 0 ) {
+			/* translators: singular and plural */
 			$return .= sprintf( _n( ' %d month', ' %d months', $bits['month'], 'indieweb-post-kinds' ), $bits['month'] );
 		}
 		if ( $bits['day'] > 0 ) {
+			/* translators: singular and plural */
 			$return .= sprintf( _n( ' %d day', ' %d days', $bits['day'], 'indieweb-post-kinds' ), $bits['day'] );
 		}
 		if ( $bits['hour'] > 0 ) {
+			/* translators: singular and plural */
 			$return .= sprintf( _n( ' %d hour', ' %d hours', $bits['hour'], 'indieweb-post-kinds' ), $bits['hour'] );
 		}
 		if ( $bits['minute'] > 0 ) {
+			/* translators: singular and plural */
 			$return .= sprintf( _n( ' %d minute', ' %d minutes', $bits['minute'], 'indieweb-post-kinds' ), $bits['minute'] );
 		}
 		if ( $bits['second'] > 0 ) {
+			/* translators: singular and plural */
 			$return .= sprintf( _n( ' %d second', ' %d seconds', $bits['second'], 'indieweb-post-kinds' ), $bits['second'] );
 		}
 		return trim( $return );

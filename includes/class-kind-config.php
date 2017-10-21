@@ -212,7 +212,7 @@ class Kind_Config {
 		$termslist = get_option( 'kind_termslist' );
 		foreach ( $terms as $key => $value ) {
 			if ( $value['show'] ) {
-				echo "<input name='kind_termslist[]' type='checkbox' value='" . $key . "' " . checked( in_array( $key, $termslist ), true, false ) . ' /><strong>' . $value['singular_name'] . '</strong> - ' . $value['description'] . '<br />';
+				echo "<input name='kind_termslist[]' type='checkbox' value='" . $key . "' " . checked( in_array( $key, $termslist, true ), true, false ) . ' /><strong>' . $value['singular_name'] . '</strong> - ' . $value['description'] . '<br />';
 			}
 		}
 	}

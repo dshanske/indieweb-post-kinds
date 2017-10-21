@@ -243,15 +243,12 @@ class Parse_MF2 {
 							$data[ $p ] = array();
 						}
 						$data[ $p ][] = $v;
-					} 
-					elseif ( self::is_microformat( $v ) ) {
+					} elseif ( self::is_microformat( $v ) ) {
 						if ( self::is_hcard( $v, $mf ) ) {
 							$data[ $p ] = self::parse_hcard( $v, $mf );
-						}
-						else if ( self::is_hadr( $v, $mf ) ) {
+						} elseif ( self::is_hadr( $v, $mf ) ) {
 							$data[ $p ] = self::parse_hadr( $v, $mf );
-						}
-						else {
+						} else {
 							$u = self::get_plaintext( $v, 'url' );
 							if ( ($u) && self::is_URL( $u ) ) {
 								if ( ! array_key_exists( $p, $data ) ) {
