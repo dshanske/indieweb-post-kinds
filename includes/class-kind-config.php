@@ -166,7 +166,6 @@ class Kind_Config {
 	 * @access public
 	 */
 	public static function options_callback() {
-		esc_html_e( '', 'indieweb-post-kinds' );
 	}
 
 	/**
