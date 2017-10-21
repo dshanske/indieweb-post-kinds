@@ -9,6 +9,8 @@
 	<rule ref="PHPCompatibility"/>
 	<config name="testVersion" value="5.3-"/>
 	<rule ref="WordPress-Core" />	
+	<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+
 	<rule ref="WordPress-Extra" />
         <rule ref="WordPress.WP.I18n"/>
 	<config name="text_domain" value="indieweb-post-kinds,default"/>
