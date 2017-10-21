@@ -59,6 +59,7 @@ switch ( $kind ) {
 		break;
 	case 'checkin':
 		$type = 'p-checkin';
+		break;
 	default:
 		return;
 }
