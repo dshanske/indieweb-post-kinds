@@ -117,7 +117,7 @@ class Parse_This {
 	 */
 	public function fetch_source_html( $url ) {
 		if ( empty( $url ) ) {
-			return new WP_Error( 'invalid-url', __( 'A valid URL was not provided.' ) );
+			return new WP_Error( 'invalid-url', __( 'A valid URL was not provided.', 'indieweb-post-kinds' ) );
 		}
 
 		$args = array(
@@ -358,7 +358,7 @@ class Parse_This {
 			$this->meta[ $meta_name ] = array( $this->meta[ $meta_name ] );
 		}
 		// Do not allow duplicates.
-		if ( ! in_array( $meta_value, $this->meta[ $meta_name ] ) ) {
+		if ( ! in_array( $meta_value, $this->meta[ $meta_name ], true ) ) {
 			if ( ! is_array( $meta_value ) ) {
 				$this->meta[ $meta_name ][] = $meta_value;
 			} else {
@@ -475,7 +475,7 @@ class Parse_This {
 					$this->embeds = array();
 				}
 
-				if ( ! empty( $meta_value ) && ! in_array( $meta_value, $this->embeds ) ) {
+				if ( ! empty( $meta_value ) && ! in_array( $meta_value, $this->embeds, true ) ) {
 					$this->embeds[] = $meta_value;
 				}
 
@@ -499,7 +499,7 @@ class Parse_This {
 					$this->images = array();
 				}
 
-				if ( ! empty( $meta_value ) && ! in_array( $meta_value, $this->images ) ) {
+				if ( ! empty( $meta_value ) && ! in_array( $meta_value, $this->images, true ) ) {
 					$this->images[] = $meta_value;
 				}
 				break;
@@ -603,7 +603,7 @@ class Parse_This {
 
 				if ( preg_match( '/src=(\'|")([^\'"]+)\\1/i', $value, $new_matches ) ) {
 					$src = $this->_limit_img( $new_matches[2] );
-					if ( ! empty( $src ) && ! in_array( $src, $this->images ) ) {
+					if ( ! empty( $src ) && ! in_array( $src, $this->images, true ) ) {
 						$this->images[] = $src;
 					}
 				}
@@ -622,7 +622,7 @@ class Parse_This {
 				if ( preg_match( '/src=(\'|")([^\'"]+)\\1/', $value, $new_matches ) ) {
 					$src = $this->_limit_embed( $new_matches[2] );
 
-					if ( ! empty( $src ) && ! in_array( $src, $this->embeds ) ) {
+					if ( ! empty( $src ) && ! in_array( $src, $this->embeds, true ) ) {
 						$this->embeds[] = $src;
 					}
 				}
@@ -679,7 +679,7 @@ class Parse_This {
 		 * @param string $url URL.
 		 */
 	public function verify_url_in_content( $url ) {
-		return in_array( $url, $this->urls );
+		return in_array( $url, $this->urls, true );
 	}
 
 	public function get_meta( $key = null ) {

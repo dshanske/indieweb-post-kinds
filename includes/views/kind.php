@@ -58,7 +58,7 @@ switch ( $kind ) {
 		$type = 'u-quotation-of';
 		break;
 	case 'checkin':
-		$type = '';
+		$type = 'p-checkin';
 	default:
 		return;
 }

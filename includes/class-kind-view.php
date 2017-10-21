@@ -60,20 +60,20 @@ class Kind_View {
 
 
 	// Return the Display
-	public static function get_display( $post_ID = null ) {
-		if ( ! $post_ID ) {
-			$post_ID = get_the_ID();
+	public static function get_display( $post_id = null ) {
+		if ( ! $post_id ) {
+			$post_id = get_the_ID();
 		}
-		if ( 'post' === get_post_type( $post_ID ) ) {
-			$kind = get_post_kind_slug( $post_ID );
+		if ( 'post' === get_post_type( $post_id ) ) {
+			$kind = get_post_kind_slug( $post_id );
 			$content = self::get_view_part( 'kind', $kind );
-			return apply_filters( 'kind-response-display', $content, $post_ID );
+			return apply_filters( 'kind-response-display', $content, $post_id );
 		}
 	}
 
 	// Echo the output of get_display
-	public static function display( $post_ID = null ) {
-		echo self::get_display( $post_ID );
+	public static function display( $post_id = null ) {
+		echo self::get_display( $post_id );
 	}
 
 	public static function content_response( $content ) {
@@ -193,10 +193,10 @@ class Kind_View {
 			return ' ';
 		}
 		$strings = array(
-			'twitter.com' => _x( 'a tweet', 'indieweb-post-kinds' ),
-			'vimeo.com' => _x( 'a video', 'indieweb-post-kinds' ),
-			'youtube.com'   => _x( 'a video', 'indieweb-post-kinds' ),
-			'instagram.com' => _x( 'an image', 'indieweb-post-kinds' ),
+			'twitter.com' => _x( 'a tweet', 'singular Twitter', 'indieweb-post-kinds' ),
+			'vimeo.com' => _x( 'a video', 'singular Vimeo', 'indieweb-post-kinds' ),
+			'youtube.com'   => _x( 'a video', 'singular Youtube', 'indieweb-post-kinds' ),
+			'instagram.com' => _x( 'an image', 'singular Intagram', 'indieweb-post-kinds' ),
 		);
 		$domain = self::extract_domain_name( $url );
 		if ( array_key_exists( $domain, $strings ) ) {
@@ -312,6 +312,7 @@ class Kind_View {
 	}
 
 	public static function rsvp_text( $type ) {
+		/* translators: URL for link to event and name of event */ 
 		$rsvp = array(
 			'yes' => __( 'Attending <a href="%1$1s" class="u-in-reply-to">%2$2s</a>', 'indieweb-post-kinds' ),
 			'maybe' => __( 'Might be attending <a href="%1$1s" class="u-in-reply-to">%2$2s</a>', 'indieweb-post-kinds' ),

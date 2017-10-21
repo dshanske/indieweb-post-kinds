@@ -27,7 +27,8 @@ if ( isset( $cite['name'] ) ) {
 <?php
 if ( $videos && ! has_post_thumbnail( get_the_ID() ) ) {
 
-	$poster = wp_get_attachment_image_src( $first_photo->ID,'full' )[0];
+	$poster = wp_get_attachment_image_src( $first_photo->ID,'full' );
+	$poster = $poster[0];
 
 	echo wp_video_shortcode(
 		array(

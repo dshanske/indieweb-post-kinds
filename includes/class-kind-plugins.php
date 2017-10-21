@@ -22,7 +22,7 @@ class Kind_Plugins {
 
 	// Replaces need for Replacing the Entire Excerpt
 	public static function semantic_post_type( $post_type, $post_id ) {
-		return _x( 'this', 'indieweb-post-kinds' ) . ' ' . strtolower( get_post_kind( $post_id ) );
+		return _x( 'this', 'direct article', 'indieweb-post-kinds' ) . ' ' . strtolower( get_post_kind( $post_id ) );
 	}
 
 	// Replacement for the Semantic Linkbacks Comment Excerpt
