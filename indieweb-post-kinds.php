@@ -78,6 +78,13 @@ class Post_Kinds_Plugin {
 		// Add Link Preview Parsing
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-parse-this.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-link-preview.php';
+
+		// Add Debugger
+		if ( WP_DEBUG ) {
+			require_once plugin_dir_path( __FILE__ ) . 'includes/class-mf2-debugger.php';
+			add_action( 'init', array( 'MF2_Debugger', 'init' ) );
+		}
+
 		add_action( 'init' , array( 'Link_Preview', 'init' ) );
 
 		// Load stylesheets.
