@@ -29,6 +29,7 @@ class MF2_Post {
 		$this->content = $post->post_content;
 		$this->summary = $post->post_excerpt;
 		$this->mf2 = $this->get_mf2meta();
+		$this->kind = get_post_kind_slug( $this->ID );
 	}
 
 
@@ -163,11 +164,14 @@ class MF2_Post {
 	 * @param  boolean $single Whether to return a a single value or array if there is only one value.
 	 * @return boolean|string|array The result or false if does not exist.
 	 */
-	public function get( $key = null, $single  = false ) {
+	public function get( $key = null, $single = false ) {
 		if ( null === $key ) {
-			return $this->mf2;
+			$return = array_merge( get_object_vars( $this ), $this->mf2 );
+			unset( $return['mf2'] );
+			return $return;
 		}
-		$properties = array( 'ID', 'post_author', 'published', 'updated', 'content', 'summary', 'post_parent' );
+		$properties = array_keys( get_object_vars( $this ) );
+		unset( $properties['mf2'] );
 		if ( in_array( $key, $properties, true ) ) {
 			$return = $this->$key;
 		} else {
@@ -176,7 +180,7 @@ class MF2_Post {
 			}
 			$return = $this->mf2[ $key ];
 		}
-		if ( empty ( $return ) ) {
+		if ( empty( $return ) ) {
 			return false;
 		}
 		if ( is_array( $return ) ) {
@@ -201,6 +205,18 @@ class MF2_Post {
 	}
 
 	public function set( $key, $value ) {
+		$properties = array_keys( get_object_vars( $this ) );
+		unset( $properties['mf2'] );
+		if ( ! in_array( $key, $properties, true ) ) {
+			update_post_meta( $this->ID, 'mf2_' . $key, $value );
+		} else {
+			wp_update_post(
+				array(
+					'ID' => $this->ID,
+					$key => $value,
+				)
+			);
+		}
 	}
 
 	public function delete( $key ) {

@@ -32,6 +32,13 @@ class MF2_Debugger {
 			auth_redirect();
 		}
 		if ( filter_var( $url, FILTER_VALIDATE_URL ) === false ) {
+			if ( is_numeric( $url ) ) {
+				header( 'Content-Type: application/json; charset=' . get_option( 'blog_charset' ) );
+				status_header( 200 );
+				$response = new MF2_Post( (int) $url );
+				echo wp_json_encode( $response->get( null ) );
+				exit;
+			}
 			status_header( 400 );
 			_e( 'The URL is Invalid', 'indieweb-post-kinds' );
 			exit;
@@ -49,7 +56,7 @@ class MF2_Debugger {
 
 		}
 	}
-	public function form_header() {
+	public static function form_header() {
 		header( 'Content-Type: text/html; charset=' . get_option( 'blog_charset' ) );
 		?>
 		<!DOCTYPE html>
@@ -83,7 +90,7 @@ class MF2_Debugger {
 		<form action="<?php echo site_url(); ?>/?pkdebug=<?php echo $action; ?>" method="post" enctype="multipart/form-data">
 		<p>
 			<?php _e( 'URL:', 'indieweb-post-kinds' ); ?>
-		<input type="url" name="pkdebug" size="70" />
+		<input type="text" name="pkdebug" size="70" />
 		</p>
 			<input type="submit" />
 	  </form>
