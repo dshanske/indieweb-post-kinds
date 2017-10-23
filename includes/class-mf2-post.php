@@ -14,6 +14,10 @@ class MF2_Post {
 	public $summary;
 	public $post_parent;
 	public $kind;
+	public $url;
+	public $name;
+	public $category = array();
+	public $featured;
 	private $mf2;
 
 	public function __construct( $post ) {
@@ -30,6 +34,25 @@ class MF2_Post {
 		$this->summary = $post->post_excerpt;
 		$this->mf2 = $this->get_mf2meta();
 		$this->kind = get_post_kind_slug( $this->ID );
+		$this->url = get_permalink( $this->ID );
+		$this->name = $post->post_name;
+		// Get a list of categories and extract their names
+		$post_categories = get_the_terms( $post->ID, 'category' );
+		if ( ! empty( $post_categories ) && ! is_wp_error( $post_categories ) ) {
+		    $this->category = wp_list_pluck( $post_categories, 'name' );
+		}
+		 
+		// Get a list of tags and extract their names
+		$post_tags = get_the_terms( $post->ID, 'post_tag' );
+		if ( ! empty( $post_tags ) && ! is_wp_error( $post_tags ) ) {
+			    $this->category = array_merge( $this->category, wp_list_pluck( $post_tags, 'name' ) );
+		}
+		if ( in_array( 'Uncategorized', $this->category ) ) {
+			unset( $this->category[ array_search( 'Uncategorized', $this->category ) ] );
+		}
+		if ( has_post_thumbnail( $post ) ) {
+			$this->featured = wp_get_attachment_url( get_post_thumbnail_id( $post ), 'full' );
+		}
 	}
 
 
@@ -168,7 +191,7 @@ class MF2_Post {
 		if ( null === $key ) {
 			$return = array_merge( get_object_vars( $this ), $this->mf2 );
 			unset( $return['mf2'] );
-			return $return;
+			return array_filter( $return );
 		}
 		$properties = array_keys( get_object_vars( $this ) );
 		unset( $properties['mf2'] );
