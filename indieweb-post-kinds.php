@@ -62,6 +62,7 @@ class Post_Kinds_Plugin {
 
 		// Add Kind Meta Storage and Retrieval Functions.
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-meta.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class-mf2-post.php';
 
 		// Add an MF2 Parser
 		if ( ! class_exists( 'Mf2\Parser' ) ) {
