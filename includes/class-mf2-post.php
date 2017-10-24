@@ -39,16 +39,16 @@ class MF2_Post {
 		// Get a list of categories and extract their names
 		$post_categories = get_the_terms( $post->ID, 'category' );
 		if ( ! empty( $post_categories ) && ! is_wp_error( $post_categories ) ) {
-		    $this->category = wp_list_pluck( $post_categories, 'name' );
+			$this->category = wp_list_pluck( $post_categories, 'name' );
 		}
-		 
+
 		// Get a list of tags and extract their names
 		$post_tags = get_the_terms( $post->ID, 'post_tag' );
 		if ( ! empty( $post_tags ) && ! is_wp_error( $post_tags ) ) {
-			    $this->category = array_merge( $this->category, wp_list_pluck( $post_tags, 'name' ) );
+				$this->category = array_merge( $this->category, wp_list_pluck( $post_tags, 'name' ) );
 		}
-		if ( in_array( 'Uncategorized', $this->category ) ) {
-			unset( $this->category[ array_search( 'Uncategorized', $this->category ) ] );
+		if ( in_array( 'Uncategorized', $this->category, true ) ) {
+			unset( $this->category[ array_search( 'Uncategorized', $this->category, true ) ] );
 		}
 		if ( has_post_thumbnail( $post ) ) {
 			$this->featured = wp_get_attachment_url( get_post_thumbnail_id( $post ), 'full' );
