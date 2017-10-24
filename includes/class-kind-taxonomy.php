@@ -652,7 +652,7 @@ class Kind_Taxonomy {
 	public static function has_post_kind( $kinds = array(), $post = null ) {
 		$prefixed = array();
 		if ( $kinds ) {
-			foreach ( (array) $kind as $single ) {
+			foreach ( (array) $kinds as $single ) {
 				$kind[] = sanitize_key( $single );
 			}
 		}
