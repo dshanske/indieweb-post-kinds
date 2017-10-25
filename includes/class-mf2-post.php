@@ -221,7 +221,7 @@ class MF2_Post {
 		if ( 1 === count( $value ) ) {
 			return array_shift( $value );
 		}
-		if ( is_multi_array( $value ) ) {
+		if ( self::is_multi_array( $value ) ) {
 			return array_map( array( $this, 'single_array' ), $value );
 		}
 		return $value;
