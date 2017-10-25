@@ -22,5 +22,12 @@ class MF2PostTest extends WP_UnitTestCase {
 		$mf2_post = new MF2_Post( $post );
 		$this->assertEquals( 4, $mf2_post->get( 'post_author', true ) );
 	}
+	public function test_set_and_get_published() {
+		$post = self::factory()->post->create();
+		$mf2_post = new MF2_Post( $post );
+		$mf2_post->set( 'published', '2016-01-01T04:01:23-08:00' );
+		$mf2_post = new MF2_Post( $post );
+		$this->assertEquals( '2016-01-01T12:01:23+00:00', $mf2_post->get( 'published', true ) );
+	}
 }
 

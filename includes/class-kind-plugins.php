@@ -31,7 +31,6 @@ class Kind_Plugins {
 	 * @param array $input Micropub Request in JSON
 	 * @param array $wp_args Arguments passed to insert or update posts
 	 */
-
 	public static function micropub_set_kind( $input, $wp_args ) {
 		// Only continue if create or update
 		if ( ! $wp_args ) {
