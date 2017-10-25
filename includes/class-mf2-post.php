@@ -234,6 +234,12 @@ class MF2_Post {
 			update_post_meta( $this->ID, 'mf2_' . $key, $value );
 		} else {
 			switch( $key ) {
+				case 'url':
+					break;
+				case 'content':
+					$key = 'post_content';
+				case 'summary':
+					$key = 'post_excerpt';
 				case 'published':
 					$date = new DateTime( $value );
 					$tz_string = get_option( 'timezone_string' );
@@ -250,6 +256,25 @@ class MF2_Post {
 							'ID' => $this->ID,
 							'post_date' => $post_date,
 							'post_date_gmt' => $post_date_gmt
+						)
+					);
+					break;
+				case 'updated':
+					$date = new DateTime( $value );
+					$tz_string = get_option( 'timezone_string' );
+					if ( empty( $tz_string ) ) {
+						$tz_string = 'UTC';
+					}
+					$date->setTimeZone( new DateTimeZone( $tz_string ) );
+					$tz = $date->getTimezone(); 
+					$post_modified = $date->format( 'Y-m-d H:i:s' );
+					$date->setTimeZone( new DateTimeZone( 'GMT' ) );
+					$post_modified_gmt = $date->format( 'Y-m-d H:i:s' );
+					wp_update_post(
+						array(
+							'ID' => $this->ID,
+							'post_modified' => $post_modified,
+							'post_modified_gmt' => $post_modified_gmt
 						)
 					);
 					break;
