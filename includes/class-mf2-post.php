@@ -105,7 +105,7 @@ class MF2_Post {
 
 	public static function sanitize_text( $value ) {
 		if ( is_array( $value ) ) {
-			return array_map( array( 'Kind_Meta', 'sanitize_text' ), $value );
+			return array_map( array( $this, 'sanitize_text' ), $value );
 		}
 		if ( self::is_url( $value ) ) {
 			$value = esc_url_raw( $value );
@@ -233,13 +233,9 @@ class MF2_Post {
 		if ( ! in_array( $key, $properties, true ) ) {
 			update_post_meta( $this->ID, 'mf2_' . $key, $value );
 		} else {
-			switch( $key ) {
+			switch ( $key ) {
 				case 'url':
 					break;
-				case 'content':
-					$key = 'post_content';
-				case 'summary':
-					$key = 'post_excerpt';
 				case 'published':
 					$date = new DateTime( $value );
 					$tz_string = get_option( 'timezone_string' );
@@ -247,7 +243,7 @@ class MF2_Post {
 						$tz_string = 'UTC';
 					}
 					$date->setTimeZone( new DateTimeZone( $tz_string ) );
-					$tz = $date->getTimezone(); 
+					$tz = $date->getTimezone();
 					$post_date = $date->format( 'Y-m-d H:i:s' );
 					$date->setTimeZone( new DateTimeZone( 'GMT' ) );
 					$post_date_gmt = $date->format( 'Y-m-d H:i:s' );
@@ -255,7 +251,7 @@ class MF2_Post {
 						array(
 							'ID' => $this->ID,
 							'post_date' => $post_date,
-							'post_date_gmt' => $post_date_gmt
+							'post_date_gmt' => $post_date_gmt,
 						)
 					);
 					break;
@@ -266,7 +262,7 @@ class MF2_Post {
 						$tz_string = 'UTC';
 					}
 					$date->setTimeZone( new DateTimeZone( $tz_string ) );
-					$tz = $date->getTimezone(); 
+					$tz = $date->getTimezone();
 					$post_modified = $date->format( 'Y-m-d H:i:s' );
 					$date->setTimeZone( new DateTimeZone( 'GMT' ) );
 					$post_modified_gmt = $date->format( 'Y-m-d H:i:s' );
@@ -274,7 +270,25 @@ class MF2_Post {
 						array(
 							'ID' => $this->ID,
 							'post_modified' => $post_modified,
-							'post_modified_gmt' => $post_modified_gmt
+							'post_modified_gmt' => $post_modified_gmt,
+						)
+					);
+					break;
+				case 'content':
+					$key = 'post_content';
+					wp_update_post(
+						array(
+							'ID' => $this->ID,
+							$key => $value,
+						)
+					);
+					break;
+				case 'summary':
+					$key = 'post_excerpt';
+					wp_update_post(
+						array(
+							'ID' => $this->ID,
+							$key => $value,
 						)
 					);
 					break;
@@ -282,7 +296,7 @@ class MF2_Post {
 					wp_update_post(
 						array(
 							'ID' => $this->ID,
-							$key => $value
+							$key => $value,
 						)
 					);
 			}
@@ -291,4 +305,79 @@ class MF2_Post {
 
 	public function delete( $key ) {
 	}
+
+	public function divide_time( $time_string ) {
+		$time = array();
+		$datetime = date_create_from_format( 'Y-m-d\TH:i:sP', $time_string );
+		if ( ! $datetime ) {
+			return;
+		}
+		$time['date'] = $datetime->format( 'Y-m-d' );
+		if ( '0000-01-01' === $time['date'] ) {
+			$time['date'] = '';
+		}
+		$time['time'] = $datetime->format( 'H:i:s' );
+		$time['offset'] = $datetime->format( 'P' );
+		return $time;
+	}
+
+	public function calculate_duration( $start_string, $end_string ) {
+		$start = array();
+		$end = array();
+		if ( ! is_string( $start_string ) || ! is_string( $end_string ) ) {
+			return false;
+		}
+		if ( $start_string === $end_string ) {
+			return false;
+		}
+		$start = date_create_from_format( 'Y-m-d\TH:i:sP', $start_string );
+		$end = date_create_from_format( 'Y-m-d\TH:i:sP', $end_string );
+		if ( ($start instanceof DateTime) && ($end instanceof DateTime) ) {
+			$duration = $start->diff( $end );
+			return self::date_interval_to_string( $duration );
+		}
+		return false;
+	}
+
+	public static function date_interval_to_string( \DateInterval $interval ) {
+		// Reading all non-zero date parts.
+		$date = array_filter(
+			array(
+				'Y' => $interval->y,
+				'M' => $interval->m,
+				'D' => $interval->d,
+			)
+		);
+		// Reading all non-zero time parts.
+		$time = array_filter(
+			array(
+				'H' => $interval->h,
+				'M' => $interval->i,
+				'S' => $interval->s,
+			)
+		);
+		$spec = 'P';
+		// Adding each part to the spec-string.
+		foreach ( $date as $key => $value ) {
+			$spec .= $value . $key;
+		}
+		if ( count( $time ) > 0 ) {
+			$spec .= 'T';
+			foreach ( $time as $key => $value ) {
+				$spec .= $value . $key;
+			}
+		}
+		return $spec;
+	}
+
+	public function build_time( $date, $time, $offset ) {
+		if ( empty( $date ) ) {
+			$date = '0000-01-01';
+		}
+		if ( empty( $time ) ) {
+			$time = '00:00:00';
+		}
+		return $date . 'T' . $time . $offset;
+	}
+
 }
