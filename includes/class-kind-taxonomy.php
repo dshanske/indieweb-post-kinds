@@ -538,8 +538,9 @@ class Kind_Taxonomy {
 	}
 
 	public static function webmention_links( $links, $post_id ) {
-		$meta  = new Kind_Meta( $post_id );
-		$cites = $meta->get_url();
+		$mf2_post  = new MF2_Post( $post_id );
+		$cite = $mf2_post->fetch();
+		$cites = ifset( $cite['url'] );
 		if ( is_string( $cites ) ) {
 			$links[] = $cites;
 		}
