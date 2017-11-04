@@ -4,14 +4,18 @@
  *
  */
 
-$kind      = get_post_kind_slug( get_the_ID() );
-$meta      = new Kind_Meta( get_the_ID() );
-$author    = Kind_View::get_hcard( $meta->get_author() );
-$cite      = $meta->get_cite();
-$site_name = Kind_View::get_site_name( $meta->get_cite(), $meta->get_url() );
-$title     = Kind_View::get_cite_title( $meta->get_cite(), $meta->get_url() );
-$embed     = self::get_embed( $meta->get_url() );
-$duration  = $meta->get_duration();
+$mf2_post = new MF2_Post( get_the_ID() );
+$cite = $mf2_post->fetch();
+$author = Kind_View::get_hcard( ifset( $cite['author'] ) );
+$url    = $cite['url'];
+$site_name = Kind_View::get_site_name( $meta->get_cite(), $url );
+$title     = Kind_View::get_cite_title( $meta->get_cite(), $url );
+$embed  = self::get_embed( $url );
+$duration  = $mf2_post->get( 'duration' );
+if ( ! $duration ) {
+        $duration = $mf2_post->calculate_duration( $mf2_post->get('dt-start'), $mf2_post->get('dt-end') );
+}
+
 
 ?>
 

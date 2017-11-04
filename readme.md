@@ -51,6 +51,11 @@ The plugin requires the [webmention](https://wordpress.org/plugins/webmention/) 
 
 ## Upgrade Notice ##
 
+### 2.7.0 ###
+
+Storage locations have now changed as part of the nested properties settings and things should migrate automatically but pleasse backup before upgrade.
+Kind_Meta function is deprecated and will be removed in 2.8.0, so if you depend on this, please update to use MF2_Post
+
 ### 2.5.0 ###
 
 Settings have been completely changed and you will have to reset.
@@ -174,6 +179,12 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 
 ## Changelog ##
+	= Version 2.7.0 =
+		* Introduction of MF2_Post class to convert the Post into MF2 properties as a replacement for Kind_Meta
+		* Unit tests for Kind_Taxonomy
+		* Tests revealed issue in has_kind function - fixed
+		* Kind_Meta now deprecated and is a wrapper for retrieving using MF2_Post
+		* Storage has changed to a nested mf2 from a simplified jf2 however returns from MF2_Post are still in the simplified JF2 by default
 	= Version 2.6.6 =
 		* Fix eat svg icon
 		* Update travis and phpcs testing parameters

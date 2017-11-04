@@ -126,11 +126,11 @@ if ( ! function_exists( 'ifset' ) ) {
 	 * If set, return otherwise false.
 	 *
 	 * @param type $var Check if set.
-	 * @return $var|false Return either $var or false.
+	 * @return $var|false Return either $var or $return.
 	 */
-	function ifset( &$var ) {
+	function ifset( &$var, $return = false ) {
 
-		return isset( $var ) ? $var : false;
+		return isset( $var ) ? $var : $return;
 	}
 }
 

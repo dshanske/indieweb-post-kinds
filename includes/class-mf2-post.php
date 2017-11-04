@@ -55,6 +55,9 @@ class MF2_Post {
 		}
 	}
 
+	public static function get_post() {
+		return get_post( $this->ID );
+	}
 
 	/**
 	 * Is prefix in string.
@@ -214,6 +217,11 @@ class MF2_Post {
 		}
 	}
 
+	public function has_key( $key ) {
+		$keys = array_merge( get_object_vars( $this ), $this->mf2 );
+		return isset( $keys[ $key ] );
+	}
+
 	private function single_array( $value ) {
 		if ( ! is_array( $value ) ) {
 			return $value;
@@ -233,7 +241,7 @@ class MF2_Post {
 				self::set( $k, $v );
 			}
 		}
-		if ( null === $value ) {
+		if ( null === $value || empty( $value ) ) {
 			return;
 		}
 		$properties = array_keys( get_object_vars( $this ) );
@@ -312,11 +320,98 @@ class MF2_Post {
 	}
 
 	public function delete( $key ) {
-		delete_post_meta( $this->post->ID, 'mf2_' . $key );
+		delete_post_meta( $this->ID, 'mf2_' . $key );
 	}
 
-	// Retrieve the right property to use for the link preview based on the kind. Return false if none.
-	public function get_cite() {
+	public function mf2_to_jf2( $cite ) {
+		if ( ! $cite || ! is_array( $cite ) | ! isset( $cite['properties'] ) ) {
+			return $cite;
+		}
+		$return = array();
+		if ( isset( $cite['type'] ) ) {
+			$return['type'] = array_shift( $cite['type'] );
+		}
+		foreach( $cite['properties'] as $key => $value ) {
+			if ( is_array( $value ) && 1 === count( $value ) ) {
+				$value = array_shift( $value );
+			}
+			$return[$key] = $value;
+		}
+		return $return;
+	}
+
+	public function jf2_to_mf2( $cite, $type='h-cite' ) {
+		if ( ! $cite || ! is_array( $cite ) | isset( $cite['properties'] ) ) {
+			return $cite;
+		}
+		$return = array();
+		$return['type'] = array( ifset( $cite['type'], $type ) );
+		$return['properties'] = array();
+		unset( $cite['type'] );
+		foreach( $cite as $key => $value ) {
+			if ( ! is_array( $value ) ) {
+				$value = array( $value );
+			}
+			$return['properties'][$key] = $value;
+		}
+		return $return;
+	}
+
+
+
+	public function set_by_kind( $value, $type = 'h-cite' ) {
+		if ( ! $this->kind || ! $value ) {
+			return false;
+		}
+
+		// Find out where to find information
+		$property = Kind_Taxonomy::get_kind_info( $this->kind, 'property' );
+		if ( is_array( $value ) ) {
+			$value = $this->jf2_to_mf2( $value, $type );
+		}
+			
+		// If the property is not set then exit
+		if ( ! $property ) {
+			return false;
+		}
+		$this->set( $property, $value );
+	}
+
+
+	// Retrieve the right property to use for the link preview based on the kind.
+	// It will return an array of properties or false if it cannot find what it needs.
+	// Also will update old posts with new settings
+	public function fetch() {
+		if ( ! $this->kind ) {
+			return false;
+		}
+		// Find out where to find information
+		$property = Kind_Taxonomy::get_kind_info( $this->kind, 'property' );
+		// If the property is not set then exit
+		if ( ! $property || ! $this->has_key( $property ) ) {
+			return false;
+		}
+		$return = $this->get( $property );
+		if ( wp_is_numeric_array( $return ) ) {
+			$return = array_shift( $return );
+		}
+		// If it is in fact a string it is the pre 2.7.0 format and should be updated
+		if ( is_string ( $return ) ) {
+			if ( $this->has_key( 'cite' ) ) {
+				$cite = array_filter( $this->get( 'cite' ) );
+				$cite['url'] = $return;
+				$this->set( $property, $cite );
+				$this->delete( 'cite' );
+				return $cite;
+			}
+			else { 
+				return array( 'url' => $return );
+			}
+		}
+		if ( is_array( $return ) ) {
+			return $this->mf2_to_jf2( $return );
+		}
+		return false;
 	}
 
 

@@ -187,13 +187,12 @@ class Kind_Tabmeta {
 
 	public static function display_metabox( $object, $box ) {
 		wp_nonce_field( 'tabkind_metabox', 'tabkind_metabox_nonce' );
-		$meta   = new kind_meta( $object->ID );
-		$cite   = $meta->get_cite();
-		$author = $meta->get_author();
-		$url    = $meta->get_url();
-		if ( ! $url ) {
+		$mf2_post = new MF2_Post( $object->ID );
+		$cite   = $mf2_post->fetch();
+		$author = isset( $cite['author'] ) ? $cite['author'] : array();
+		if ( ! isset( $cite['url'] ) ) {
 			if ( array_key_exists( 'kindurl', $_GET ) ) {
-				$url = $_GET['kindurl'];
+				$cite['url'] = $_GET['kindurl'];
 			}
 		}
 		$time = array();
@@ -220,7 +219,7 @@ class Kind_Tabmeta {
 	}
 
 
-	public function build_time( $date, $time, $offset ) {
+	public static function build_time( $date, $time, $offset ) {
 		if ( empty( $date ) ) {
 			$date = '0000-01-01';
 		}
@@ -230,7 +229,7 @@ class Kind_Tabmeta {
 		return $date . 'T' . $time . $offset;
 	}
 
-	public function divide_time( $time_string ) {
+	public static function divide_time( $time_string ) {
 			$time     = array();
 			$datetime = date_create_from_format( 'Y-m-d\TH:i:sP', $time_string );
 		if ( ! $datetime ) {
@@ -277,7 +276,6 @@ class Kind_Tabmeta {
 				return;
 			}
 		}
-		$meta     = new Kind_Meta( $post );
 		$mf2_post = new MF2_Post( $post );
 		$cite     = array();
 		$start    = '';
@@ -316,18 +314,28 @@ class Kind_Tabmeta {
 		$cite['publication'] = ifset( $_POST['cite_publication'] );
 		$cite['featured']    = ifset( $_POST['cite_featured'] );
 
-		$meta->set_cite( array_filter( $cite ) );
+		$cite = array_filter( $cite );
 		$author          = array();
 		$author['name']  = ifset( $_POST['cite_author_name'] );
 		$author['url']   = ifset( $_POST['cite_author_url'] );
 		$author['photo'] = ifset( $_POST['cite_author_photo'] );
 		if ( ! empty( $author ) ) {
-			$meta->set_author( $author );
+			$cite['author'] =  $author;
 		}
-		if ( isset( $_POST['cite_url'] ) ) {
-			$meta->set_url( $_POST['cite_url'] );
+		// Make sure there is no overwrite of properties that might not be handled by the plugin
+		$fetch = $mf2_post->fetch();
+		if ( ! $fetch ) {
+			$fetch = array();
 		}
-		$meta->save_meta( $post );
+		$cite = array_merge( $fetch, $cite );
+		// Temporary code which assumes everything except a checkin is a citation
+		if ( 'checkin' === $mf2_post->get( 'kind' ) ) {
+			$type = 'h-card';
+		}
+		else {
+			$type = 'h-cite';
+		}	
+		$mf2_post->set_by_kind( $cite, $type );
 	}
 
 	public static function transition_post_status( $new, $old, $post ) {
