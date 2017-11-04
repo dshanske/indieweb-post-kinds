@@ -4,13 +4,13 @@
  *
  */
 
-$meta = new Kind_Meta( get_the_ID() );
+$meta   = new Kind_Meta( get_the_ID() );
 $author = Kind_View::get_hcard( $meta->get_author() );
-$cite = $meta->get_cite();
-$url = $meta->get_url();
-$title = isset( $cite['name'] ) ? $cite['name'] : $url;
-$embed = self::get_embed( $url );
-$rsvp = $meta->get( 'rsvp' );
+$cite   = $meta->get_cite();
+$url    = $meta->get_url();
+$title  = isset( $cite['name'] ) ? $cite['name'] : $url;
+$embed  = self::get_embed( $url );
+$rsvp   = $meta->get( 'rsvp' );
 
 ?>
 

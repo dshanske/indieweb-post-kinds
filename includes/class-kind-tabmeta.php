@@ -12,7 +12,7 @@ class Kind_Tabmeta {
 		add_action( 'load-post.php', array( 'Kind_Tabmeta', 'kindbox_setup' ) );
 		add_action( 'load-post-new.php', array( 'Kind_Tabmeta', 'kindbox_setup' ) );
 		add_action( 'save_post', array( 'Kind_Tabmeta', 'save_post' ), 8, 2 );
-		add_action( 'transition_post_status', array( 'Kind_Tabmeta', 'transition_post_status' ) ,5,3 );
+		add_action( 'transition_post_status', array( 'Kind_Tabmeta', 'transition_post_status' ), 5, 3 );
 	}
 
 	/* Meta box setup function. */
@@ -61,8 +61,8 @@ class Kind_Tabmeta {
 			wp_localize_script(
 				'kindmeta-response', 'rest_object',
 				array(
-					'api_nonce' => wp_create_nonce( 'wp_rest' ),
-					'api_url'   => rest_url( '/link-preview/1.0/' ),
+					'api_nonce'                    => wp_create_nonce( 'wp_rest' ),
+					'api_url'                      => rest_url( '/link-preview/1.0/' ),
 					'link_preview_success_message' => __( 'Your URL has been successfully retrieved and parsed', 'indieweb-post-kinds' ),
 				)
 			);
@@ -77,7 +77,7 @@ class Kind_Tabmeta {
 	}
 
 	public static function kind_get_timezones() {
-		$o = array();
+		$o       = array();
 		$t_zones = timezone_identifiers_list();
 
 		foreach ( $t_zones as $a ) {
@@ -85,8 +85,8 @@ class Kind_Tabmeta {
 			try {
 					  // this throws exception for 'US/Pacific-New'
 					$zone = new DateTimeZone( $a );
-				$seconds = $zone->getOffset( new DateTime( 'now' , $zone ) );
-					$o[] = self::tz_seconds_to_offset( $seconds );
+				$seconds  = $zone->getOffset( new DateTime( 'now', $zone ) );
+					$o[]  = self::tz_seconds_to_offset( $seconds );
 			} // exceptions must be catched, else a blank page
 			catch ( Exception $e ) {
 				die( 'Exception : ' . $e->getMessage() . '<br />' );
@@ -100,11 +100,11 @@ class Kind_Tabmeta {
 
 	public static function kind_the_time( $prefix, $label, $time ) {
 		$tz_seconds = get_option( 'gmt_offset' ) * 3600;
-		$offset = self::tz_seconds_to_offset( $tz_seconds );
+		$offset     = self::tz_seconds_to_offset( $tz_seconds );
 		if ( isset( $time['offset'] ) ) {
 			$offset = $time['offset'];
 		}
-		$string = '<label for="' . $prefix . '">' . $label . '</label><br/>';
+		$string  = '<label for="' . $prefix . '">' . $label . '</label><br/>';
 		$string .= '<input type="date" name="' . $prefix . '_date" id="' . $prefix . '_date" value="' . ifset( $time['date'] ) . '"/>';
 		$string .= '<input type="time" name="' . $prefix . '_time" id="' . $prefix . '_time" step="1" value="' . ifset( $time['time'] ) . '"/>';
 		$string .= self::select_offset( $prefix, $offset );
@@ -126,14 +126,14 @@ class Kind_Tabmeta {
 	}
 
 	public static function rsvp_select( $selected ) {
-		$rsvps = array(
-			'' => false,
-			'yes' => __( 'Yes', 'indieweb-post-kinds' ),
-			'no' => __( 'No', 'indieweb-post-kinds' ),
-			'maybe' => __( 'Maybe', 'indieweb-post-kinds' ),
+		$rsvps   = array(
+			''           => false,
+			'yes'        => __( 'Yes', 'indieweb-post-kinds' ),
+			'no'         => __( 'No', 'indieweb-post-kinds' ),
+			'maybe'      => __( 'Maybe', 'indieweb-post-kinds' ),
 			'interested' => __( 'Interested', 'indieweb-post-kinds' ),
 		);
-		$string = '<label for="mf2_rsvp">' . __( 'RSVP', 'indieweb-post-kinds' ) . '</label><br/>';
+		$string  = '<label for="mf2_rsvp">' . __( 'RSVP', 'indieweb-post-kinds' ) . '</label><br/>';
 		$string .= '<select name="mf2_rsvp" id="mf2_rsvp">';
 		foreach ( $rsvps as $key => $value ) {
 			$string .= '<option value="' . $key . '"';
@@ -161,13 +161,13 @@ class Kind_Tabmeta {
 
 
 	public static function tz_seconds_to_offset( $seconds ) {
-		return ($seconds < 0 ? '-' : '+') . sprintf( '%02d:%02d', abs( $seconds / 60 / 60 ), abs( $seconds / 60 ) % 60 );
+		return ( $seconds < 0 ? '-' : '+' ) . sprintf( '%02d:%02d', abs( $seconds / 60 / 60 ), abs( $seconds / 60 ) % 60 );
 	}
 
 	public static function tz_offset_to_seconds( $offset ) {
 		if ( preg_match( '/([+-])(\d{2}):?(\d{2})/', $offset, $match ) ) {
-			$sign = ('-' ? -1 : 1 === $match[1] );
-			return (($match[2] * 60 * 60) + ($match[3] * 60)) * $sign;
+			$sign = ( '-' ? -1 : 1 === $match[1] );
+			return ( ( $match[2] * 60 * 60 ) + ( $match[3] * 60 ) ) * $sign;
 		} else {
 			return 0;
 		}
@@ -187,17 +187,17 @@ class Kind_Tabmeta {
 
 	public static function display_metabox( $object, $box ) {
 		wp_nonce_field( 'tabkind_metabox', 'tabkind_metabox_nonce' );
-		$meta = new kind_meta( $object->ID );
-		$cite = $meta->get_cite();
+		$meta   = new kind_meta( $object->ID );
+		$cite   = $meta->get_cite();
 		$author = $meta->get_author();
-		$url = $meta->get_url();
+		$url    = $meta->get_url();
 		if ( ! $url ) {
 			if ( array_key_exists( 'kindurl', $_GET ) ) {
 				$url = $_GET['kindurl'];
 			}
 		}
 		$time = array();
-		include_once( 'tabs/tab-navigation.php' );
+		include_once 'tabs/tab-navigation.php';
 	}
 
 	public static function change_title( $data, $postarr ) {
@@ -209,14 +209,40 @@ class Kind_Tabmeta {
 			return $data;
 		}
 		$kind_strings = Kind_Taxonomy::get_strings();
-		$kind = get_term_by( taxonomy_id, $_POST['tax_input']['kind'], 'kind' );
-		$title = $kind_strings[ $kind->slug ];
+		$kind         = get_term_by( taxonomy_id, $_POST['tax_input']['kind'], 'kind' );
+		$title        = $kind_strings[ $kind->slug ];
 		if ( ! empty( $_POST['cite_name'] ) ) {
 				$title .= ' - ' . $_POST['cite_name'];
 		}
 		$data['post_title'] = $title;
-		$data['post_name'] = sanitize_title( $data['post_title'] );
+		$data['post_name']  = sanitize_title( $data['post_title'] );
 		return $data;
+	}
+
+
+	public function build_time( $date, $time, $offset ) {
+		if ( empty( $date ) ) {
+			$date = '0000-01-01';
+		}
+		if ( empty( $time ) ) {
+			$time = '00:00:00';
+		}
+		return $date . 'T' . $time . $offset;
+	}
+
+	public function divide_time( $time_string ) {
+			$time     = array();
+			$datetime = date_create_from_format( 'Y-m-d\TH:i:sP', $time_string );
+		if ( ! $datetime ) {
+				return;
+		}
+			$time['date'] = $datetime->format( 'Y-m-d' );
+		if ( '0000-01-01' === $time['date'] ) {
+				$time['date'] = '';
+		}
+			$time['time']   = $datetime->format( 'H:i:s' );
+			$time['offset'] = $datetime->format( 'P' );
+			return $time;
 	}
 
 	/* Save the meta box's post metadata. */
@@ -251,48 +277,49 @@ class Kind_Tabmeta {
 				return;
 			}
 		}
-		$kind = get_post_kind_slug( $post );
-		$meta = new Kind_Meta( $post );
-		$cite = array();
-		$start = '';
-		$end = '';
+		$meta     = new Kind_Meta( $post );
+		$mf2_post = new MF2_Post( $post );
+		$cite     = array();
+		$start    = '';
+		$end      = '';
 
 		if ( isset( $_POST['mf2_start_date'] ) || isset( $_POST['mf2_start_time'] ) ) {
-			$start = $meta->build_time( $_POST['mf2_start_date'], $_POST['mf2_start_time'], $_POST['mf2_start_offset'] );
+			$start = self::build_time( $_POST['mf2_start_date'], $_POST['mf2_start_time'], $_POST['mf2_start_offset'] );
 		}
 		if ( isset( $_POST['mf2_end_date'] ) || isset( $_POST['mf2_end_time'] ) ) {
-			$end = $meta->build_time( $_POST['mf2_end_date'], $_POST['mf2_end_time'], $_POST['mf2_end_offset'] );
+			$end = self::build_time( $_POST['mf2_end_date'], $_POST['mf2_end_time'], $_POST['mf2_end_offset'] );
 		}
 		if ( $start !== $end ) {
-			$meta->set( 'dt-start', $start );
-			$meta->set( 'dt-end', $end );
+			$mf2_post->set( 'dt-start', $start );
+			$mf2_post->set( 'dt-end', $end );
 		}
-		$duration = $meta->calculate_duration( $start, $end );
+		$duration = $mf2_post->calculate_duration( $start, $end );
 		if ( $duration && ! isset( $_POST['cite_duration'] ) ) {
-			$meta->set( 'duration', $duration );
+			$mf2_post->set( 'duration', $duration );
 		} else {
-			$meta->del( 'duration' );
+			$mf2_post->delete( 'duration' );
 		}
-		$meta->set( 'rsvp' , $_POST['mf2_rsvp'] );
+		$mf2_post->set( 'rsvp', $_POST['mf2_rsvp'] );
 
 		if ( isset( $_POST['cite_published_date'] ) || isset( $_POST['published_time'] ) ) {
-			$cite['published'] = $meta->build_time( $_POST['cite_published_date'], $_POST['cite_published_time'], $_POST['cite_published_offset'] );
+			$cite['published'] = self::build_time( $_POST['cite_published_date'], $_POST['cite_published_time'], $_POST['cite_published_offset'] );
 		}
 		if ( isset( $_POST['cite_updated_date'] ) || isset( $_POST['cite_updated_time'] ) ) {
-			$cite['updated'] = $meta->build_time( $_POST['cite_updated_date'], $_POST['cite_updated_time'], $_POST['cite_updated_offset'] );
+			$cite['updated'] = self::build_time( $_POST['cite_updated_date'], $_POST['cite_updated_time'], $_POST['cite_updated_offset'] );
 		}
 		$cite['summary'] = ifset( $_POST['cite_summary'] );
-		$cite['name'] = ifset( $_POST['cite_name'] );
+		$cite['name']    = ifset( $_POST['cite_name'] );
+		$cite['url']     = ifset( $_POST['cite_url'] );
 		if ( isset( $_POST['cite_tags'] ) ) {
 			$cite['category'] = explode( ';', $_POST['cite_tags'] );
 		}
 		$cite['publication'] = ifset( $_POST['cite_publication'] );
-		$cite['featured'] = ifset( $_POST['cite_featured'] );
+		$cite['featured']    = ifset( $_POST['cite_featured'] );
 
 		$meta->set_cite( array_filter( $cite ) );
-		$author = array();
-		$author['name'] = ifset( $_POST['cite_author_name'] );
-		$author['url'] = ifset( $_POST['cite_author_url'] );
+		$author          = array();
+		$author['name']  = ifset( $_POST['cite_author_name'] );
+		$author['url']   = ifset( $_POST['cite_author_url'] );
 		$author['photo'] = ifset( $_POST['cite_author_photo'] );
 		if ( ! empty( $author ) ) {
 			$meta->set_author( $author );

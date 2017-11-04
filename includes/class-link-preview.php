@@ -17,11 +17,11 @@ class Link_Preview {
 		register_rest_route(
 			'link-preview/1.0', '/parse', array(
 				array(
-					'methods' => WP_REST_Server::READABLE,
-					'callback' => array( 'Link_Preview', 'callback' ),
-					'args'  => array(
-						'kindurl'  => array(
-							'required' => true,
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( 'Link_Preview', 'callback' ),
+					'args'                => array(
+						'kindurl' => array(
+							'required'          => true,
 							'validate_callback' => array( 'Link_Preview', 'is_valid_url' ),
 							'sanitize_callback' => 'esc_url_raw',
 						),
@@ -60,9 +60,9 @@ class Link_Preview {
 		$parsethis = new Parse_This();
 		$parsethis->set_source( $content, $url );
 		$metadata = $parsethis->meta_to_microformats();
-		$mf2data = Parse_MF2::mf2parse( $content, $url );
-		$data = array_merge( $metadata, $mf2data );
-		$data = array_filter( $data );
+		$mf2data  = Parse_MF2::mf2parse( $content, $url );
+		$data     = array_merge( $metadata, $mf2data );
+		$data     = array_filter( $data );
 
 		if ( ! isset( $data['summary'] ) ) {
 			$data['summary'] = substr( $data['content']['text'], 0, 300 );
@@ -96,7 +96,7 @@ class Link_Preview {
 			return self::parse( $params['kindurl'] );
 		}
 		return new WP_Error(
-			'invalid_url' , __( 'Missing or Invalid URL' , 'indieweb-post-kinds' ), array(
+			'invalid_url', __( 'Missing or Invalid URL', 'indieweb-post-kinds' ), array(
 				'status' => 400,
 			)
 		);
@@ -105,7 +105,7 @@ class Link_Preview {
 	public static function parse( $url ) {
 		if ( ! self::is_valid_url( $url ) ) {
 			return new WP_Error(
-				'invalid_url' , __( 'Missing or Invalid URL' , 'indieweb-post-kinds' ), array(
+				'invalid_url', __( 'Missing or Invalid URL', 'indieweb-post-kinds' ), array(
 					'status' => 400,
 				)
 			);

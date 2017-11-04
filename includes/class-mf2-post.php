@@ -1,10 +1,10 @@
 <?php
 /**
  * MF2 Post Class
-  *
-   * @package Post Kinds
-	* Assists in retrieving/saving microformats 2 properties from a post
-	 */
+ *
+ * @package Post Kinds
+ * Assists in retrieving/saving microformats 2 properties from a post
+ */
 class MF2_Post {
 	public $ID;
 	public $post_author;
@@ -25,17 +25,17 @@ class MF2_Post {
 		if ( ! $post ) {
 			return false;
 		}
-		$this->ID = $post->ID;
+		$this->ID          = $post->ID;
 		$this->post_author = $post->post_author;
 		$this->post_parent = $post->post_parent;
-		$this->published = mysql2date( DATE_W3C, $post->post_date );
-		$this->updated = mysql2date( DATE_W3C, $post->post_modified );
-		$this->content = $post->post_content;
-		$this->summary = $post->post_excerpt;
-		$this->mf2 = $this->get_mf2meta();
-		$this->kind = get_post_kind_slug( $this->ID );
-		$this->url = get_permalink( $this->ID );
-		$this->name = $post->post_name;
+		$this->published   = mysql2date( DATE_W3C, $post->post_date );
+		$this->updated     = mysql2date( DATE_W3C, $post->post_modified );
+		$this->content     = $post->post_content;
+		$this->summary     = $post->post_excerpt;
+		$this->mf2         = $this->get_mf2meta();
+		$this->kind        = get_post_kind_slug( $this->ID );
+		$this->url         = get_permalink( $this->ID );
+		$this->name        = $post->post_name;
 		// Get a list of categories and extract their names
 		$post_categories = get_the_terms( $post->ID, 'category' );
 		if ( ! empty( $post_categories ) && ! is_wp_error( $post_categories ) ) {
@@ -100,7 +100,7 @@ class MF2_Post {
 		if ( 1 === (int) get_option( 'kind_protection' ) ) {
 			$allowed = json_decode( get_option( 'kind_kses' ), true );
 		}
-		return wp_kses( $value , $allowed );
+		return wp_kses( $value, $allowed );
 	}
 
 	public static function sanitize_text( $value ) {
@@ -149,13 +149,13 @@ class MF2_Post {
 					$new['published'] = $response['published'];
 				}
 				if ( ! empty( $response['author'] ) ) {
-					$new['card'] = array();
+					$new['card']         = array();
 					$new['card']['name'] = $response['author'];
 					if ( ! empty( $response['icon'] ) ) {
 						$new['card']['photo'] = $response['icon'];
 					}
 				}
-				$new = array_unique( $new );
+				$new         = array_unique( $new );
 				$new['card'] = array_unique( $new['card'] );
 				if ( isset( $new ) ) {
 					update_post_meta( $this->ID, 'mf2_cite', $new );
@@ -169,7 +169,7 @@ class MF2_Post {
 				unset( $meta[ $key ] );
 			} else {
 				unset( $meta[ $key ] );
-				$key = str_replace( 'mf2_', '', $key );
+				$key   = str_replace( 'mf2_', '', $key );
 				$value = array_map( 'maybe_unserialize', $value );
 				if ( 1 === count( $value ) ) {
 					$value = array_shift( $value );
@@ -227,7 +227,15 @@ class MF2_Post {
 		return $value;
 	}
 
-	public function set( $key, $value ) {
+	public function set( $key, $value = null ) {
+		if ( is_array( $key ) ) {
+			foreach ( $key as $k => $v ) {
+				self::set( $k, $v );
+			}
+		}
+		if ( null === $value ) {
+			return;
+		}
 		$properties = array_keys( get_object_vars( $this ) );
 		unset( $properties['mf2'] );
 		if ( ! in_array( $key, $properties, true ) ) {
@@ -237,39 +245,39 @@ class MF2_Post {
 				case 'url':
 					break;
 				case 'published':
-					$date = new DateTime( $value );
+					$date      = new DateTime( $value );
 					$tz_string = get_option( 'timezone_string' );
 					if ( empty( $tz_string ) ) {
 						$tz_string = 'UTC';
 					}
 					$date->setTimeZone( new DateTimeZone( $tz_string ) );
-					$tz = $date->getTimezone();
+					$tz        = $date->getTimezone();
 					$post_date = $date->format( 'Y-m-d H:i:s' );
 					$date->setTimeZone( new DateTimeZone( 'GMT' ) );
 					$post_date_gmt = $date->format( 'Y-m-d H:i:s' );
 					wp_update_post(
 						array(
-							'ID' => $this->ID,
-							'post_date' => $post_date,
+							'ID'            => $this->ID,
+							'post_date'     => $post_date,
 							'post_date_gmt' => $post_date_gmt,
 						)
 					);
 					break;
 				case 'updated':
-					$date = new DateTime( $value );
+					$date      = new DateTime( $value );
 					$tz_string = get_option( 'timezone_string' );
 					if ( empty( $tz_string ) ) {
 						$tz_string = 'UTC';
 					}
 					$date->setTimeZone( new DateTimeZone( $tz_string ) );
-					$tz = $date->getTimezone();
+					$tz            = $date->getTimezone();
 					$post_modified = $date->format( 'Y-m-d H:i:s' );
 					$date->setTimeZone( new DateTimeZone( 'GMT' ) );
 					$post_modified_gmt = $date->format( 'Y-m-d H:i:s' );
 					wp_update_post(
 						array(
-							'ID' => $this->ID,
-							'post_modified' => $post_modified,
+							'ID'                => $this->ID,
+							'post_modified'     => $post_modified,
 							'post_modified_gmt' => $post_modified_gmt,
 						)
 					);
@@ -304,26 +312,17 @@ class MF2_Post {
 	}
 
 	public function delete( $key ) {
+		delete_post_meta( $this->post->ID, 'mf2_' . $key );
 	}
 
-	public function divide_time( $time_string ) {
-		$time = array();
-		$datetime = date_create_from_format( 'Y-m-d\TH:i:sP', $time_string );
-		if ( ! $datetime ) {
-			return;
-		}
-		$time['date'] = $datetime->format( 'Y-m-d' );
-		if ( '0000-01-01' === $time['date'] ) {
-			$time['date'] = '';
-		}
-		$time['time'] = $datetime->format( 'H:i:s' );
-		$time['offset'] = $datetime->format( 'P' );
-		return $time;
+	// Retrieve the right property to use for the link preview based on the kind. Return false if none.
+	public function get_cite() {
 	}
+
 
 	public function calculate_duration( $start_string, $end_string ) {
 		$start = array();
-		$end = array();
+		$end   = array();
 		if ( ! is_string( $start_string ) || ! is_string( $end_string ) ) {
 			return false;
 		}
@@ -331,8 +330,8 @@ class MF2_Post {
 			return false;
 		}
 		$start = date_create_from_format( 'Y-m-d\TH:i:sP', $start_string );
-		$end = date_create_from_format( 'Y-m-d\TH:i:sP', $end_string );
-		if ( ($start instanceof DateTime) && ($end instanceof DateTime) ) {
+		$end   = date_create_from_format( 'Y-m-d\TH:i:sP', $end_string );
+		if ( ( $start instanceof DateTime ) && ( $end instanceof DateTime ) ) {
 			$duration = $start->diff( $end );
 			return self::date_interval_to_string( $duration );
 		}
@@ -369,15 +368,4 @@ class MF2_Post {
 		}
 		return $spec;
 	}
-
-	public function build_time( $date, $time, $offset ) {
-		if ( empty( $date ) ) {
-			$date = '0000-01-01';
-		}
-		if ( empty( $time ) ) {
-			$time = '00:00:00';
-		}
-		return $date . 'T' . $time . $offset;
-	}
-
 }

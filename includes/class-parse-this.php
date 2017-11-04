@@ -77,7 +77,7 @@ class Parse_This {
 					// Replace the POSTED content <img> with correct uploaded ones.
 					// Need to do it in two steps so we don't replace links to the original image if any.
 					$new_image = str_replace( $image_src, $new_src, $image );
-					$content = str_replace( $image, $new_image, $content );
+					$content   = str_replace( $image, $new_image, $content );
 				}
 			}
 		}
@@ -100,7 +100,7 @@ class Parse_This {
 			$this->content = $source_content;
 		}
 		if ( $this->is_url( $url ) ) {
-			$this->url = $url;
+			$this->url    = $url;
 			$this->domain = wp_parse_url( $url, PHP_URL_HOST );
 		}
 		$this->source_data_parse();
@@ -121,11 +121,11 @@ class Parse_This {
 		}
 
 		$args = array(
-			'timeout' => 30,
+			'timeout'             => 30,
 			'limit_response_size' => 1048576,
-			'redirection' => 5,
+			'redirection'         => 5,
 			// Use an explicit user-agent for Press This
-			'user-agent' => 'Parse This (WordPress/' . get_bloginfo( 'version' ) . '); ' . get_bloginfo( 'url' ),
+			'user-agent'          => 'Parse This (WordPress/' . get_bloginfo( 'version' ) . '); ' . get_bloginfo( 'url' ),
 		);
 		$remote_url = wp_safe_remote_head( $url, $args );
 		if ( is_wp_error( $remote_url ) ) {
@@ -135,8 +135,8 @@ class Parse_This {
 			return new WP_Error( 'content-type', 'Content Type is Media' );
 		}
 
-		$remote_url = wp_safe_remote_get( $url, $args );
-		$this->domain = wp_parse_url( $url, PHP_URL_HOST );
+		$remote_url    = wp_safe_remote_get( $url, $args );
+		$this->domain  = wp_parse_url( $url, PHP_URL_HOST );
 		$this->content = wp_remote_retrieve_body( $remote_url );
 		$this->source_data_parse();
 		return true;
@@ -533,26 +533,26 @@ class Parse_This {
 
 		// Strip the content to only the elements being looked at
 		$allowed_elements = array(
-			'img' => array(
-				'src'      => true,
-				'width'    => true,
-				'height'   => true,
+			'img'    => array(
+				'src'    => true,
+				'width'  => true,
+				'height' => true,
 			),
 			'iframe' => array(
-				'src'      => true,
+				'src' => true,
 			),
-			'link' => array(
+			'link'   => array(
 				'rel'      => true,
 				'itemprop' => true,
 				'href'     => true,
 			),
-			'meta' => array(
+			'meta'   => array(
 				'property' => true,
 				'name'     => true,
 				'content'  => true,
 			),
 		);
-		$source_content = wp_kses( $this->content, $allowed_elements );
+		$source_content   = wp_kses( $this->content, $allowed_elements );
 
 		// Fetch and gather <meta> data first, so discovered media is offered 1st to user.
 		if ( empty( $this->meta ) ) {
@@ -669,7 +669,7 @@ class Parse_This {
 		);
 		// Only hunt for links that are actual links
 		$source_content = wp_kses( $this->content, $allowed_elements );
-		$this->urls = wp_extract_urls( $source_content );
+		$this->urls     = wp_extract_urls( $source_content );
 
 	}
 
@@ -702,14 +702,14 @@ class Parse_This {
 	 * @param string $content HTML marked up content
 	 */
 	public function meta_to_microformats() {
-		$data = array();
-		$data['name'] = $this->get_meta( 'title' ); // ifset( $meta['og:music:song'] );
+		$data            = array();
+		$data['name']    = $this->get_meta( 'title' ); // ifset( $meta['og:music:song'] );
 		$data['summary'] = $this->get_meta( 'description' );
 		// $data['site'] = ifset( $meta['og:site'] ) ?: ifset( $meta['twitter:site'] );
 		$data['author'] = $this->get_meta( 'author' );
 		if ( isset( $data['author'] ) && is_array( $data['author'] ) ) {
 			$author = array(
-				'url' => array(),
+				'url'  => array(),
 				'name' => array(),
 			);
 			foreach ( $data['author'] as $a ) {
@@ -724,22 +724,22 @@ class Parse_This {
 
 		// $data['featured'] = ifset( $meta['og:image'] ) ?: ifset( $meta['twitter:image'] );
 		$data['publication'] = $this->get_meta( 'site_name' ); // ifset( $meta['og:site_name'] ) ?: ifset( $meta['og:music:album'] );
-		$data['published'] = $this->get_meta( 'published' ) ?: $this->get_meta( 'release_date' );
-		$data['updated'] = $this->get_meta( 'modified' );
-		$tags = $this->get_meta( 'tag' );
+		$data['published']   = $this->get_meta( 'published' ) ?: $this->get_meta( 'release_date' );
+		$data['updated']     = $this->get_meta( 'modified' );
+		$tags                = $this->get_meta( 'tag' );
 		if ( is_array( $tags ) ) {
 			$data['category'] = array_values( $tags );
 		}
 		// Extended Parameters
 		// $data['audio'] = ifset( $meta['og:audio'] );
 		// $data['video'] = ifset( $meta['og:video'] );
-		$data['duration'] = $this->get_meta( 'duration' );
+		$data['duration']  = $this->get_meta( 'duration' );
 		$data['longitude'] = $this->get_meta( 'longitude' );
-		$data['latitude'] = $this->get_meta( 'latitude' );
-		$type = $this->get_meta( 'type' );
-		$data['photo'] = $this->images;
-		$data['media'] = $this->embeds;
-		$data['raw'] = $this->get_meta();
+		$data['latitude']  = $this->get_meta( 'latitude' );
+		$type              = $this->get_meta( 'type' );
+		$data['photo']     = $this->images;
+		$data['media']     = $this->embeds;
+		$data['raw']       = $this->get_meta();
 		// $data['icon'] = ifset( $meta['msapplication-TileImage'] );
 				// $data['icon'] = ifset( $meta['msapplication-TileImage'] );
 		return array_filter( $data );
@@ -747,11 +747,11 @@ class Parse_This {
 
 	public function get_all() {
 		   return array(
-			   'images' => array_filter( $this->images ),
-			   'embeds' => array_filter( $this->embeds ),
-			   'meta' => array_filter( $this->meta ),
-			   'links' => array_filter( $this->links ),
-			   'urls' => array_filter( $this->urls ),
+			   'images'  => array_filter( $this->images ),
+			   'embeds'  => array_filter( $this->embeds ),
+			   'meta'    => array_filter( $this->meta ),
+			   'links'   => array_filter( $this->links ),
+			   'urls'    => array_filter( $this->urls ),
 			   'content' => $this->content,
 		   );
 	}

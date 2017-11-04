@@ -4,11 +4,11 @@
  *
  */
 
-$meta = new Kind_Meta( get_the_ID() );
+$meta   = new Kind_Meta( get_the_ID() );
 $author = Kind_View::get_hcard( $meta->get_author() );
-$cite = $meta->get_cite();
-$url = $meta->get_url();
-$embed = self::get_embed( $meta->get_url() );
+$cite   = $meta->get_cite();
+$url    = $meta->get_url();
+$embed  = self::get_embed( $meta->get_url() );
 
 ?>
 

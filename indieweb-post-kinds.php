@@ -41,11 +41,11 @@ class Post_Kinds_Plugin {
 
 		// Plugin Specific Kind Customizations
 		require_once plugin_dir_path( __FILE__ ) . '/includes/class-kind-plugins.php';
-		add_action( 'init' , array( 'Kind_Plugins', 'init' ) );
+		add_action( 'init', array( 'Kind_Plugins', 'init' ) );
 
 		// Config Settings.
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-config.php';
-		add_action( 'init' , array( 'Kind_Config', 'init' ) );
+		add_action( 'init', array( 'Kind_Config', 'init' ) );
 
 		// Add a Settings Link to the Plugins Page.
 		$plugin = plugin_basename( __FILE__ );
@@ -53,12 +53,12 @@ class Post_Kinds_Plugin {
 
 		// Add Kind Post UI Configuration
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-tabmeta.php';
-		add_action( 'init' , array( 'Kind_Tabmeta', 'init' ) );
+		add_action( 'init', array( 'Kind_Tabmeta', 'init' ) );
 		Kind_Tabmeta::$version = self::$version;
 
 		// Add Kind Display Functions.
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-view.php';
-		add_action( 'init' , array( 'Kind_View', 'init' ) );
+		add_action( 'init', array( 'Kind_View', 'init' ) );
 
 		// Add Kind Meta Storage and Retrieval Functions.
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-meta.php';
@@ -86,7 +86,7 @@ class Post_Kinds_Plugin {
 			add_action( 'init', array( 'MF2_Debugger', 'init' ) );
 		}
 
-		add_action( 'init' , array( 'Link_Preview', 'init' ) );
+		add_action( 'init', array( 'Link_Preview', 'init' ) );
 
 		// Load stylesheets.
 		add_action( 'wp_enqueue_scripts', array( 'Post_Kinds_Plugin', 'style_load' ) );

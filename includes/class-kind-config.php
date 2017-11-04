@@ -19,45 +19,45 @@ class Kind_Config {
 	 * @access public
 	 */
 	public static function init() {
-		add_action( 'admin_init' , array( 'Kind_Config', 'admin_init' ) );
+		add_action( 'admin_init', array( 'Kind_Config', 'admin_init' ) );
 		add_action( 'after_setup_theme', array( 'Kind_Config', 'remove_post_formats' ), 11 );
 		add_action( 'admin_menu', array( 'Kind_Config', 'admin_menu' ), 11 );
 		// Add post help tab
-		add_action( 'load-post.php', array( 'Kind_Config', 'add_post_help_tab' ) , 20 );
+		add_action( 'load-post.php', array( 'Kind_Config', 'add_post_help_tab' ), 20 );
 
 		$args = array(
-			'type' => 'array',
-			'description' => 'Kinds Enabled on This Site',
+			'type'         => 'array',
+			'description'  => 'Kinds Enabled on This Site',
 			'show_in_rest' => true,
-			'default' => array( 'article', 'reply', 'bookmark' ),
+			'default'      => array( 'article', 'reply', 'bookmark' ),
 		);
 		register_setting( 'iwt_options', 'kind_termslist', $args );
 		$args = array(
-			'type' => 'string',
-			'description' => 'Default Kind',
+			'type'         => 'string',
+			'description'  => 'Default Kind',
 			'show_in_rest' => true,
-			'default' => 'note',
+			'default'      => 'note',
 		);
 		register_setting( 'iwt_options', 'kind_default', $args );
 		$args = array(
-			'type' => 'boolean',
-			'description' => 'Rich Embed Support for Whitelisted Sites',
+			'type'         => 'boolean',
+			'description'  => 'Rich Embed Support for Whitelisted Sites',
 			'show_in_rest' => true,
-			'default' => 1,
+			'default'      => 1,
 		);
 		register_setting( 'iwt_options', 'kind_embeds', $args );
 		$args = array(
-			'type' => 'string',
-			'description' => 'Display Preferences for Before Kind',
+			'type'         => 'string',
+			'description'  => 'Display Preferences for Before Kind',
 			'show_in_rest' => true,
-			'default' => 'icon',
+			'default'      => 'icon',
 		);
 		register_setting( 'iwt_options', 'kind_display', $args );
 		$args = array(
-			'type' => 'string',
-			'description' => 'KSES Content Protection on Responses',
+			'type'         => 'string',
+			'description'  => 'KSES Content Protection on Responses',
 			'show_in_rest' => false,
-			'default' => str_replace( '},"',"},\r\n\"", wp_json_encode( wp_kses_allowed_html( 'post' ), JSON_PRETTY_PRINT ) ),
+			'default'      => str_replace( '},"', "},\r\n\"", wp_json_encode( wp_kses_allowed_html( 'post' ), JSON_PRETTY_PRINT ) ),
 		);
 		register_setting( 'iwt_options', 'kind_kses', $args );
 	}
@@ -96,7 +96,7 @@ class Kind_Config {
 			'embeds',
 			__( 'Embed Sites into your Response', 'indieweb-post-kinds' ),
 			array( 'Kind_Config', 'checkbox_callback' ),
-			'iwt_options', 'iwt-content' ,  array(
+			'iwt_options', 'iwt-content', array(
 				'name' => 'kind_embeds',
 			)
 		);
@@ -105,10 +105,10 @@ class Kind_Config {
 			'display',
 			__( 'Display Before Kind', 'indieweb-post-kinds' ),
 			array( 'Kind_Config', 'radio_callback' ),
-			'iwt_options', 'iwt-content' ,
+			'iwt_options', 'iwt-content',
 			array(
-				'name' => 'kind_display',
-				'class' => Kind_Taxonomy::before_kind() ? '' : 'hidden',
+				'name'    => 'kind_display',
+				'class'   => Kind_Taxonomy::before_kind() ? '' : 'hidden',
 				'options' => array(
 					'icon' => __( 'Show Icon', 'indieweb-post-kinds' ),
 					'text' => __( 'Show Text', 'indieweb-post-kinds' ),
@@ -178,7 +178,7 @@ class Kind_Config {
 	 *      @type string $name Checkbox Name.
 	 */
 	public static function checkbox_callback( array $args ) {
-		$option = get_option( $args['name'] );
+		$option  = get_option( $args['name'] );
 		$checked = ifset( $option );
 		echo "<input name='" . $args['name'] . "' type='hidden' value='0' />";
 		echo "<input name='" . $args['name'] . "' type='checkbox' value='1' " . checked( 1, $checked, false ) . ' /> ';
@@ -224,7 +224,7 @@ class Kind_Config {
 	 * @access public
 	 */
 	public static function defaultkind_callback() {
-		$terms = get_option( 'kind_termslist' );
+		$terms   = get_option( 'kind_termslist' );
 		$terms[] = 'note';
 
 		$defaultkind = get_option( 'kind_default' );
@@ -270,9 +270,9 @@ class Kind_Config {
 	public static function add_post_help_tab() {
 		get_current_screen()->add_help_tab(
 			array(
-				'id'       => 'post_kind_help',
-				'title'    => __( 'Post Properties', 'indieweb-post-kinds' ),
-				'content'  => __(
+				'id'      => 'post_kind_help',
+				'title'   => __( 'Post Properties', 'indieweb-post-kinds' ),
+				'content' => __(
 					'
  							<p> The Post Properties tab represents the Microformats properties of a Post. For different kinds of posts, the different
  							fields mean something different. Example: Artist Name vs Author Name</p>

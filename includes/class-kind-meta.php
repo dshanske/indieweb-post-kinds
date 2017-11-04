@@ -90,13 +90,13 @@ class Kind_Meta {
 					$new['published'] = $response['published'];
 				}
 				if ( ! empty( $response['author'] ) ) {
-					$new['card'] = array();
+					$new['card']         = array();
 					$new['card']['name'] = $response['author'];
 					if ( ! empty( $response['icon'] ) ) {
 						$new['card']['photo'] = $response['icon'];
 					}
 				}
-				$new = array_unique( $new );
+				$new         = array_unique( $new );
 				$new['card'] = array_unique( $new['card'] );
 				if ( isset( $new ) ) {
 					update_post_meta( $this->post->ID, 'mf2_cite', $new );
@@ -110,7 +110,7 @@ class Kind_Meta {
 				unset( $meta[ $key ] );
 			} else {
 				unset( $meta[ $key ] );
-				$key = str_replace( 'mf2_', '', $key );
+				$key   = str_replace( 'mf2_', '', $key );
 				$value = array_map( 'maybe_unserialize', $value );
 				$value = array_shift( $value );
 				// If value is a multi-array with only one element.
@@ -144,7 +144,7 @@ class Kind_Meta {
 		if ( 1 === (int) get_option( 'kind_protection' ) ) {
 			$allowed = json_decode( get_option( 'kind_kses' ), true );
 		}
-		return wp_kses( $value , $allowed );
+		return wp_kses( $value, $allowed );
 	}
 
 	public static function sanitize_text( $value ) {
@@ -166,8 +166,8 @@ class Kind_Meta {
 	 * @param array $raw An array of properties.
 	 */
 	public function build_meta( $raw ) {
-		$raw = apply_filters( 'kind_build_meta', $raw );
-		$kind = get_post_kind_slug( $this->post );
+		$raw      = apply_filters( 'kind_build_meta', $raw );
+		$kind     = get_post_kind_slug( $this->post );
 		$property = Kind_Taxonomy::get_kind_info( $kind, 'property' );
 		if ( isset( $raw['url'] ) ) {
 			/**
@@ -194,7 +194,7 @@ class Kind_Meta {
 		if ( ! isset( $this->meta ) ) {
 			return false;
 		}
-		$kind = get_post_kind_slug( $this->post );
+		$kind     = get_post_kind_slug( $this->post );
 		$property = Kind_Taxonomy::get_kind_info( $kind, 'property' );
 		if ( array_key_exists( 'cite', $this->meta ) ) {
 			if ( array_key_exists( 'url', $this->meta['cite'] ) ) {
@@ -228,8 +228,8 @@ class Kind_Meta {
 		if ( empty( $url ) ) {
 			return;
 		}
-		$url = self::sanitize_text( $url );
-		$kind = get_post_kind_slug( $this->post );
+		$url      = self::sanitize_text( $url );
+		$kind     = get_post_kind_slug( $this->post );
 		$property = Kind_Taxonomy::get_kind_info( $kind, 'property' );
 		if ( ! empty( $property ) ) {
 			$this->meta[ $property ] = array( $url );
@@ -338,18 +338,8 @@ class Kind_Meta {
 		if ( isset( $cite['content'] ) ) {
 				$cite['content'] = self::sanitize_content( $cite['content'] );
 		}
-		$cite = array_filter( $cite );
+		$cite               = array_filter( $cite );
 		$this->meta['cite'] = $cite;
-	}
-
-	public function build_time( $date, $time, $offset ) {
-		if ( empty( $date ) ) {
-			$date = '0000-01-01';
-		}
-		if ( empty( $time ) ) {
-			$time = '00:00:00';
-		}
-		return $date . 'T' . $time . $offset;
 	}
 
 	public static function date_interval_to_string( \DateInterval $interval ) {
@@ -398,7 +388,7 @@ class Kind_Meta {
 
 	public function calculate_duration( $start_string, $end_string ) {
 		$start = array();
-		$end = array();
+		$end   = array();
 		if ( ! is_string( $start_string ) || ! is_string( $end_string ) ) {
 			return false;
 		}
@@ -406,29 +396,13 @@ class Kind_Meta {
 			return false;
 		}
 		$start = date_create_from_format( 'Y-m-d\TH:i:sP', $start_string );
-		$end = date_create_from_format( 'Y-m-d\TH:i:sP', $end_string );
-		if ( ($start instanceof DateTime) && ($end instanceof DateTime) ) {
+		$end   = date_create_from_format( 'Y-m-d\TH:i:sP', $end_string );
+		if ( ( $start instanceof DateTime ) && ( $end instanceof DateTime ) ) {
 			$duration = $start->diff( $end );
 			return self::date_interval_to_string( $duration );
 		}
 		return false;
 	}
-
-	public function divide_time( $time_string ) {
-		$time = array();
-		$datetime = date_create_from_format( 'Y-m-d\TH:i:sP', $time_string );
-		if ( ! $datetime ) {
-			return;
-		}
-		$time['date'] = $datetime->format( 'Y-m-d' );
-		if ( '0000-01-01' === $time['date'] ) {
-			$time['date'] = '';
-		}
-		$time['time'] = $datetime->format( 'H:i:s' );
-		$time['offset'] = $datetime->format( 'P' );
-		return $time;
-	}
-
 
 	/**
 	 * Return a specific meta key.

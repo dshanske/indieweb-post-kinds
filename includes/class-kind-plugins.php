@@ -92,7 +92,7 @@ class Kind_Plugins {
 			}
 		}
 		if ( ! empty( $input['properties']['name'] ) ) {
-			$name = trim( $input['properties']['name'] );
+			$name    = trim( $input['properties']['name'] );
 			$content = trim( $input['properties']['content'] );
 			if ( 0 !== strpos( $content, $name ) ) {
 				set_post_kind( $wp_args['ID'], 'article' );
