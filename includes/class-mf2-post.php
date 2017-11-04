@@ -334,18 +334,18 @@ class MF2_Post {
 			return $cite;
 		}
 		if ( ! isset( $cite['properties'] ) ) {
-			return $this->single_array($cite );
+			return $this->single_array( $cite );
 		}
 		$return = array();
 		if ( isset( $cite['type'] ) ) {
 			$return['type'] = array_shift( $cite['type'] );
 		}
-		foreach( $cite['properties'] as $key => $value ) {
+		foreach ( $cite['properties'] as $key => $value ) {
 			if ( is_array( $value ) && 1 === count( $value ) ) {
 				$value = array_shift( $value );
 				$value = $this->mf2_to_jf2( $value );
 			}
-			$return[$key] = $value;
+			$return[ $key ] = $value;
 		}
 		return $return;
 	}
@@ -357,19 +357,19 @@ class MF2_Post {
 		return $value;
 	}
 
-	public function jf2_to_mf2( $cite, $type='h-cite' ) {
+	public function jf2_to_mf2( $cite, $type = 'h-cite' ) {
 		if ( ! $cite || ! is_array( $cite ) | isset( $cite['properties'] ) ) {
 			return $cite;
 		}
-		$return = array();
-		$return['type'] = array( ifset( $cite['type'], $type ) );
+		$return               = array();
+		$return['type']       = array( ifset( $cite['type'], $type ) );
 		$return['properties'] = array();
 		unset( $cite['type'] );
-		foreach( $cite as $key => $value ) {
+		foreach ( $cite as $key => $value ) {
 			if ( ! is_array( $value ) ) {
 				$value = array( $value );
 			}
-			$return['properties'][$key] = $value;
+			$return['properties'][ $key ] = $value;
 		}
 		return $return;
 	}
@@ -384,7 +384,7 @@ class MF2_Post {
 		if ( is_array( $value ) ) {
 			$value = $this->jf2_to_mf2( $value, $type );
 		}
-			
+
 		// If the property is not set then exit
 		if ( ! $property ) {
 			return false;
@@ -411,15 +411,14 @@ class MF2_Post {
 			$return = array_shift( $return );
 		}
 		// If it is in fact a string it is the pre 2.7.0 format and should be updated
-		if ( is_string ( $return ) ) {
+		if ( is_string( $return ) ) {
 			if ( $this->has_key( 'cite' ) ) {
-				$cite = array_filter( $this->get( 'cite' ) );
+				$cite        = array_filter( $this->get( 'cite' ) );
 				$cite['url'] = $return;
 				$this->set( $property, $cite );
 				$this->delete( 'cite' );
 				return $cite;
-			}
-			else { 
+			} else {
 				return array( 'url' => $return );
 			}
 		}

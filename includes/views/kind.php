@@ -4,19 +4,19 @@
  *	The Goal of this Template is to be a general all-purpose model that will be replaced by customization in other templates
  */
 
-$mf2_post = new MF2_Post( get_the_ID() );
-$cite = $mf2_post->fetch();
-$author = Kind_View::get_hcard( ifset( $cite['author'] ) );
-$url    = $cite['url'];
+$mf2_post  = new MF2_Post( get_the_ID() );
+$cite      = $mf2_post->fetch();
+$author    = Kind_View::get_hcard( ifset( $cite['author'] ) );
+$url       = $cite['url'];
 $site_name = Kind_View::get_site_name( $meta->get_cite(), $url );
 $title     = Kind_View::get_cite_title( $meta->get_cite(), $url );
-$embed  = self::get_embed( $url );
+$embed     = self::get_embed( $url );
 $duration  = $mf2_post->get( 'duration' );
 if ( ! $duration ) {
-        $duration = $mf2_post->calculate_duration( $mf2_post->get('dt-start'), $mf2_post->get('dt-end') );
+		$duration = $mf2_post->calculate_duration( $mf2_post->get( 'dt-start' ), $mf2_post->get( 'dt-end' ) );
 }
-$kind      = get_post_kind_slug( get_the_ID() );
-$rsvp      = $mf2_post->get( 'rsvp' );
+$kind = get_post_kind_slug( get_the_ID() );
+$rsvp = $mf2_post->get( 'rsvp' );
 
 if ( ! $kind ) {
 	return;

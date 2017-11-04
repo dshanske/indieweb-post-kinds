@@ -4,11 +4,11 @@
  *
  */
 
-$mf2_post   = new MF2_Post( get_the_ID() );
-$photos = get_attached_media( 'image', get_the_ID() );
-$cite   = $mf2_post->fetch();
-$url    = $cite['url'];
-$embed  = self::get_embed( $url );
+$mf2_post = new MF2_Post( get_the_ID() );
+$photos   = get_attached_media( 'image', get_the_ID() );
+$cite     = $mf2_post->fetch();
+$url      = $cite['url'];
+$embed    = self::get_embed( $url );
 ?>
 <section class="response">
 <header>

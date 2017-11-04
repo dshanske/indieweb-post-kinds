@@ -5,12 +5,12 @@
  */
 
 $mf2_post = new MF2_Post( get_the_ID() );
-$cite = $mf2_post->fetch();
-$author = Kind_View::get_hcard( ifset( $cite['author'] ) );
-$url    = $cite['url'];
-$embed  = self::get_embed( $url );
-$title  = isset( $cite['name'] ) ? $cite['name'] : $url;
-$rsvp   = $mf2_post->get( 'rsvp' );
+$cite     = $mf2_post->fetch();
+$author   = Kind_View::get_hcard( ifset( $cite['author'] ) );
+$url      = $cite['url'];
+$embed    = self::get_embed( $url );
+$title    = isset( $cite['name'] ) ? $cite['name'] : $url;
+$rsvp     = $mf2_post->get( 'rsvp' );
 
 ?>
 

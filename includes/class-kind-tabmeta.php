@@ -188,8 +188,8 @@ class Kind_Tabmeta {
 	public static function display_metabox( $object, $box ) {
 		wp_nonce_field( 'tabkind_metabox', 'tabkind_metabox_nonce' );
 		$mf2_post = new MF2_Post( $object->ID );
-		$cite   = $mf2_post->fetch();
-		$author = isset( $cite['author'] ) ? $cite['author'] : array();
+		$cite     = $mf2_post->fetch();
+		$author   = $mf2_post->get_single( ifset( $cite['author'], array() ) );
 		if ( ! isset( $cite['url'] ) ) {
 			if ( array_key_exists( 'kindurl', $_GET ) ) {
 				$cite['url'] = $_GET['kindurl'];
@@ -314,13 +314,13 @@ class Kind_Tabmeta {
 		$cite['publication'] = ifset( $_POST['cite_publication'] );
 		$cite['featured']    = ifset( $_POST['cite_featured'] );
 
-		$cite = array_filter( $cite );
+		$cite            = array_filter( $cite );
 		$author          = array();
 		$author['name']  = ifset( $_POST['cite_author_name'] );
 		$author['url']   = ifset( $_POST['cite_author_url'] );
 		$author['photo'] = ifset( $_POST['cite_author_photo'] );
 		if ( ! empty( $author ) ) {
-			$cite['author'] =  $author;
+			$cite['author'] = $author;
 		}
 		// Make sure there is no overwrite of properties that might not be handled by the plugin
 		$fetch = $mf2_post->fetch();
@@ -331,10 +331,9 @@ class Kind_Tabmeta {
 		// Temporary code which assumes everything except a checkin is a citation
 		if ( 'checkin' === $mf2_post->get( 'kind' ) ) {
 			$type = 'h-card';
-		}
-		else {
+		} else {
 			$type = 'h-cite';
-		}	
+		}
 		$mf2_post->set_by_kind( $cite, $type );
 	}
 
