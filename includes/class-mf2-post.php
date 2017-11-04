@@ -222,11 +222,14 @@ class MF2_Post {
 		return isset( $keys[ $key ] );
 	}
 
-	private function single_array( $value ) {
+	private function single_array( $value, $discard = false ) {
 		if ( ! is_array( $value ) ) {
 			return $value;
 		}
 		if ( 1 === count( $value ) ) {
+			return array_shift( $value );
+		}
+		if ( $discard && wp_is_numeric_array( $value ) ) {
 			return array_shift( $value );
 		}
 		if ( self::is_multi_array( $value ) ) {
@@ -324,8 +327,14 @@ class MF2_Post {
 	}
 
 	public function mf2_to_jf2( $cite ) {
-		if ( ! $cite || ! is_array( $cite ) | ! isset( $cite['properties'] ) ) {
+		if ( ! $cite ) {
 			return $cite;
+		}
+		if ( ! is_array( $cite ) ) {
+			return $cite;
+		}
+		if ( ! isset( $cite['properties'] ) ) {
+			return $this->single_array($cite );
 		}
 		$return = array();
 		if ( isset( $cite['type'] ) ) {
@@ -334,10 +343,18 @@ class MF2_Post {
 		foreach( $cite['properties'] as $key => $value ) {
 			if ( is_array( $value ) && 1 === count( $value ) ) {
 				$value = array_shift( $value );
+				$value = $this->mf2_to_jf2( $value );
 			}
 			$return[$key] = $value;
 		}
 		return $return;
+	}
+
+	public function get_single( $value ) {
+		if ( is_array( $value ) ) {
+			return array_shift( $value );
+		}
+		return $value;
 	}
 
 	public function jf2_to_mf2( $cite, $type='h-cite' ) {
@@ -356,8 +373,6 @@ class MF2_Post {
 		}
 		return $return;
 	}
-
-
 
 	public function set_by_kind( $value, $type = 'h-cite' ) {
 		if ( ! $this->kind || ! $value ) {
