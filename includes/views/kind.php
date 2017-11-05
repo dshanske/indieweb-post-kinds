@@ -6,8 +6,14 @@
 
 $mf2_post  = new MF2_Post( get_the_ID() );
 $cite      = $mf2_post->fetch();
-$author    = Kind_View::get_hcard( ifset( $cite['author'] ) );
-$url       = $cite['url'];
+$author = array();
+if ( isset( $cite['author'] ) ) {
+	$author    = Kind_View::get_hcard( $cite['author'] );
+}
+$url = '';
+if ( isset( $cite['url'] ) ) {
+	$url       = $cite['url'];
+}
 $site_name = Kind_View::get_site_name( $cite );
 $title     = Kind_View::get_cite_title( $cite );
 $embed     = self::get_embed( $url );
@@ -93,7 +99,7 @@ if ( ! $embed ) {
 ?>
 </header>
 <?php
-if ( $cite ) {
+if ( $cite && is_array( $cite ) ) {
 	if ( $embed ) {
 		echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
 	} elseif ( array_key_exists( 'summary', $cite ) ) {
