@@ -282,13 +282,13 @@ class Kind_View {
 		return $card;
 	}
 
-	public static function get_cite_title( $cite, $url ) {
+	public static function get_cite_title( $cite ) {
 		if ( ! $cite ) {
 			return false;
 		}
 		// FIXME: Temporary Fix for array functionality
-		if ( is_array( $url ) ) {
-			$url = $url[0];
+		if ( is_array( $cite['url'] ) ) {
+			$url = $cite['url'][0];
 		}
 		if ( ! array_key_exists( 'name', $cite ) ) {
 			$cite['name'] = self::get_post_type_string( $url );
@@ -300,7 +300,7 @@ class Kind_View {
 		}
 	}
 
-	public static function get_site_name( $cite, $url ) {
+	public static function get_site_name( $cite ) {
 		if ( ! $cite ) {
 			return false;
 		}
