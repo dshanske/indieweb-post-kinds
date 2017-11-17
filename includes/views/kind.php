@@ -83,7 +83,7 @@ if ( ! $embed ) {
 	if ( $title ) {
 		echo $title;
 	}
-	if ( $author ) {
+	if ( ! empty( $author ) ) {
 		echo ' ' . __( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
 	}
 	if ( $site_name ) {
