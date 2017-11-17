@@ -4,15 +4,15 @@
  *	The Goal of this Template is to be a general all-purpose model that will be replaced by customization in other templates
  */
 
-$mf2_post  = new MF2_Post( get_the_ID() );
-$cite      = $mf2_post->fetch();
-$author = array();
+$mf2_post = new MF2_Post( get_the_ID() );
+$cite     = $mf2_post->fetch();
+$author   = array();
 if ( isset( $cite['author'] ) ) {
-	$author    = Kind_View::get_hcard( $cite['author'] );
+	$author = Kind_View::get_hcard( $cite['author'] );
 }
 $url = '';
 if ( isset( $cite['url'] ) ) {
-	$url       = $cite['url'];
+	$url = $cite['url'];
 }
 $site_name = Kind_View::get_site_name( $cite );
 $title     = Kind_View::get_cite_title( $cite );

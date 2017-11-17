@@ -16,7 +16,7 @@ if ( isset( $cite['category'] ) ) {
 }
 
 // FIXME: Discards extra URLs as currently unsupported
-if ( is_array( $cite['url'] ) ) {
+if ( isset( $cite['url'] ) && is_array( $cite['url'] ) ) {
 	$cite['url'] = array_shift( $cite['url'] );
 }
 

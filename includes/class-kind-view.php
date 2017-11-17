@@ -294,13 +294,13 @@ class Kind_View {
 		}
 		// FIXME: Temporary Fix for array functionality
 		if ( is_array( $cite['url'] ) ) {
-			$cite['url']  = $cite['url'][0];
+			$cite['url'] = $cite['url'][0];
 		}
 		if ( ! array_key_exists( 'name', $cite ) ) {
 			$cite['name'] = self::get_post_type_string( $cite['url'] );
 		}
 		return sprintf( '<a href="%1s" class="p-name u-url">%2s</a>', $cite['url'], $cite['name'] );
-		
+
 	}
 
 	public static function get_site_name( $cite ) {

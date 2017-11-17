@@ -347,7 +347,7 @@ class MF2_Post {
 			}
 			$return[ $key ] = $value;
 		}
-		return $return;
+		return array_filter( $return );
 	}
 
 	public function get_single( $value ) {
@@ -371,7 +371,7 @@ class MF2_Post {
 			}
 			$return['properties'][ $key ] = $value;
 		}
-		return $return;
+		return array_filter( $return );
 	}
 
 	public function set_by_kind( $value, $type = 'h-cite' ) {

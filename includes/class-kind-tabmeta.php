@@ -220,6 +220,9 @@ class Kind_Tabmeta {
 
 
 	public static function build_time( $date, $time, $offset ) {
+		if ( empty( $date ) && empty( $time ) ) {
+			return '';
+		}
 		if ( empty( $date ) ) {
 			$date = '0000-01-01';
 		}
@@ -309,19 +312,20 @@ class Kind_Tabmeta {
 		$cite['name']    = ifset( $_POST['cite_name'] );
 		$cite['url']     = ifset( $_POST['cite_url'] );
 		if ( isset( $_POST['cite_tags'] ) ) {
-			$cite['category'] = explode( ';', $_POST['cite_tags'] );
+			$cite['category'] = array_filter( explode( ';', $_POST['cite_tags'] ) );
 		}
 		$cite['publication'] = ifset( $_POST['cite_publication'] );
 		$cite['featured']    = ifset( $_POST['cite_featured'] );
 
-		$cite            = array_filter( $cite );
 		$author          = array();
 		$author['name']  = ifset( $_POST['cite_author_name'] );
 		$author['url']   = ifset( $_POST['cite_author_url'] );
 		$author['photo'] = ifset( $_POST['cite_author_photo'] );
+		$author          = array_filter( $author );
 		if ( ! empty( $author ) ) {
 			$cite['author'] = $author;
 		}
+		$cite = array_filter( $cite );
 		// Make sure there is no overwrite of properties that might not be handled by the plugin
 		$fetch = $mf2_post->fetch();
 		if ( ! $fetch ) {
