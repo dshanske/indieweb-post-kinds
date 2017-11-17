@@ -4,10 +4,11 @@
  *
  */
 
-$meta = new Kind_Meta( get_the_ID() );
-$cite = $meta->get_cite();
-$url = $meta->get_url();
-$embed = self::get_embed( $meta->get_url() );
+$mf2_post = new MF2_Post( get_the_ID() );
+$cite     = $mf2_post->fetch();
+$url      = $mf2_post->get_single( $cite['url'] );
+$name     = $mf2_post->get_single( $cite['name'] );
+$embed    = self::get_embed( $url );
 
 ?>
 
@@ -20,9 +21,9 @@ if ( ! $embed ) {
 		$cite['name'] = self::get_post_type_string( $url );
 	}
 	if ( isset( $url ) ) {
-		echo sprintf( '<a href="%1s" class="p-name u-url">%2s</a>', $url, $cite['name'] );
+		echo sprintf( '<a href="%1s" class="p-name u-url">%2s</a>', $url, $name );
 	} else {
-		echo sprintf( '<span class="p-name">%1s</span>', $cite['name'] );
+		echo sprintf( '<span class="p-name">%1s</span>', $name );
 	}
 }
 ?>

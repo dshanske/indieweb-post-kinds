@@ -4,15 +4,25 @@
  *	The Goal of this Template is to be a general all-purpose model that will be replaced by customization in other templates
  */
 
+$mf2_post = new MF2_Post( get_the_ID() );
+$cite     = $mf2_post->fetch();
+$author   = array();
+if ( isset( $cite['author'] ) ) {
+	$author = Kind_View::get_hcard( $cite['author'] );
+}
+$url = '';
+if ( isset( $cite['url'] ) ) {
+	$url = $cite['url'];
+}
+$site_name = Kind_View::get_site_name( $cite );
+$title     = Kind_View::get_cite_title( $cite );
+$embed     = self::get_embed( $url );
+$duration  = $mf2_post->get( 'duration' );
+if ( ! $duration ) {
+		$duration = $mf2_post->calculate_duration( $mf2_post->get( 'dt-start' ), $mf2_post->get( 'dt-end' ) );
+}
 $kind = get_post_kind_slug( get_the_ID() );
-$meta = new Kind_Meta( get_the_ID() );
-$author = Kind_View::get_hcard( $meta->get_author() );
-$cite = $meta->get_cite();
-$url = $meta->get_url();
-$site_name = Kind_View::get_site_name( $meta->get_cite(), $url );
-$title = Kind_View::get_cite_title( $meta->get_cite(), $url );
-$embed = self::get_embed( $url );
-$rsvp = $meta->get( 'rsvp' );
+$rsvp = $mf2_post->get( 'rsvp' );
 
 if ( ! $kind ) {
 	return;
@@ -73,7 +83,7 @@ if ( ! $embed ) {
 	if ( $title ) {
 		echo $title;
 	}
-	if ( $author ) {
+	if ( ! empty( $author ) ) {
 		echo ' ' . __( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
 	}
 	if ( $site_name ) {
@@ -89,7 +99,7 @@ if ( ! $embed ) {
 ?>
 </header>
 <?php
-if ( $cite ) {
+if ( $cite && is_array( $cite ) ) {
 	if ( $embed ) {
 		echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
 	} elseif ( array_key_exists( 'summary', $cite ) ) {

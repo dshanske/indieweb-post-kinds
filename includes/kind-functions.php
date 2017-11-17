@@ -15,11 +15,11 @@
  * @return array The array of post kind slugs.
  */
 function get_post_mf2meta( $post, $key = '' ) {
-	$meta = new Kind_Meta( $post );
+	$mf2_post = new MF2_Post( $post );
 	if ( empty( $key ) ) {
-		return $meta->get_all_meta();
+		return $mf2_post->get( null );
 	}
-	return $meta->get_key( $key );
+	return $mf2_post->get( $key );
 }
 
 /**

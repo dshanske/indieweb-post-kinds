@@ -12,11 +12,11 @@
 	<div id="kindmetatab-other">
 
 	<p> <?php _e( 'Start Time and End Time will be Used to Calculate Duration', 'indieweb-post-kinds' ); ?> </p>
-	<?php echo self::kind_the_time( 'mf2_start', __( 'Start Time', 'indieweb-post-kinds' ), $meta->divide_time( $meta->get( 'dt-start' ) ) ); ?>
+	<?php echo self::kind_the_time( 'mf2_start', __( 'Start Time', 'indieweb-post-kinds' ), self::divide_time( $mf2_post->get( 'dt-start', true ) ) ); ?>
 	<br />
-	<?php echo self::kind_the_time( 'mf2_end', __( 'End Time', 'indieweb-post-kinds' ), $meta->divide_time( $meta->get( 'dt-end' ) ) ); ?>
+	<?php echo self::kind_the_time( 'mf2_end', __( 'End Time', 'indieweb-post-kinds' ), self::divide_time( $mf2_post->get( 'dt-end', true ) ) ); ?>
 	<br />
-	<?php echo self::rsvp_select( $meta->get( 'rsvp' ) ); ?>
+	<?php echo self::rsvp_select( $mf2_post->get( 'rsvp', true ) ); ?>
 
 	</div><!-- #kindmetatab-other -->
 

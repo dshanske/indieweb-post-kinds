@@ -7,10 +7,10 @@
 	</h2>
 
 	<?php
-		include_once( 'tab-main.php' );
-		include_once( 'tab-details.php' );
-		include_once( 'tab-author.php' );
-		include_once( 'tab-other.php' );
+		require_once 'tab-main.php';
+		require_once 'tab-details.php';
+		require_once 'tab-author.php';
+		require_once 'tab-other.php';
 	?>
 </div>
 

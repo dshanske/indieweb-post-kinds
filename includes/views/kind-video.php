@@ -4,13 +4,13 @@
  *
  */
 
-$meta = new Kind_Meta( get_the_ID() );
-$videos = get_attached_media( 'video', get_the_ID() );
-$photos = get_attached_media( 'image', get_the_ID() );
+$mf2_post    = new MF2_Post( get_the_ID() );
+$videos      = get_attached_media( 'video', get_the_ID() );
+$photos      = get_attached_media( 'image', get_the_ID() );
 $first_photo = array_pop( array_reverse( $photos ) );
-$cite = $meta->get_cite();
-$url = $meta->get_url();
-$embed = self::get_embed( $meta->get_url() );
+$cite        = $mf2_post->fetch();
+$url         = $cite['url'];
+$embed       = self::get_embed( $url );
 
 ?>
 <section class="response">
@@ -27,7 +27,7 @@ if ( isset( $cite['name'] ) ) {
 <?php
 if ( $videos && ! has_post_thumbnail( get_the_ID() ) ) {
 
-	$poster = wp_get_attachment_image_src( $first_photo->ID,'full' );
+	$poster = wp_get_attachment_image_src( $first_photo->ID, 'full' );
 	$poster = $poster[0];
 
 	echo wp_video_shortcode(

@@ -4,11 +4,11 @@
  *
  */
 
-$meta = new Kind_Meta( get_the_ID() );
-$photos = get_attached_media( 'image', get_the_ID() );
-$cite = $meta->get_cite();
-$url = $meta->get_url();
-$embed = self::get_embed( $meta->get_url() );
+$mf2_post = new MF2_Post( get_the_ID() );
+$photos   = get_attached_media( 'image', get_the_ID() );
+$cite     = $mf2_post->fetch();
+$url      = $cite['url'];
+$embed    = self::get_embed( $url );
 ?>
 <section class="response">
 <header>
@@ -25,10 +25,10 @@ if ( isset( $cite['name'] ) ) {
 if ( $photos && ! has_post_thumbnail( get_the_ID() ) ) {
 	echo gallery_shortcode(
 		array(
-			'id' => get_the_ID(),
-			'size' => 'large',
+			'id'      => get_the_ID(),
+			'size'    => 'large',
 			'columns' => 1,
-			'link' => 'file',
+			'link'    => 'file',
 		)
 	);
 } else {

@@ -1,10 +1,10 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like
-Stable tag: 2.6.6
+Stable tag: 2.7.0
 Requires at least: 4.7
 Requires PHP: 5.3
-Tested up to: 4.8
+Tested up to: 4.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -46,6 +46,11 @@ The Development version of the plugin is hosted at [Github](https://github.com/d
 The plugin requires the [webmention](https://wordpress.org/plugins/webmention/) plugin to support sending/receiving notice of a reply/like to another site which will appear as a comment. The [Semantic Linkbacks](https://wordpress.org/plugins/semantic-linkbacks/) plugin is available to more richly display the comment.
 
 == Upgrade Notice ==
+
+= 2.7.0 = 
+
+Storage locations have now changed as part of the nested properties settings and things should migrate automatically but pleasse backup before upgrade.
+Kind_Meta function is deprecated and will be removed in 2.8.0, so if you depend on this, please update to use MF2_Post
 
 = 2.5.0 =
 
@@ -102,6 +107,7 @@ may make it a Passive Kind.
  * **Bookmark** - This is basically sharing/storing a link/bookmark. 
  * **Quote** - Quoted Content
  * **RSVP** - A specific type of Reply regarding an event
+ * **Check-In** - Identifying you are at a place. This would use the extended WordPress Geodata. It will require the Simple Location plugin to add location awareness to posts.
 
 = The Passive Kinds =
 
@@ -128,7 +134,6 @@ interface at this time.
  * **Exercise** - Representing some form of physical activity
  * **Trip** - Representing a trip...this represents a geographic journey and would require location awareness.
  * **Itinerary** - Itinerary - this would refer to scheduled transit, plane, train, etc. and does not require location awareness
- * **Check-In** - Identifying you are at a place. This would use the extended WordPress Geodata. It will require the Simple Location plugin to add location awareness to posts.
  * **Tag** - Allows you to tag a post as being of a specific tag, or person tagging.
  * **Eat** - Representing recording what you eat, perhaps for a food diary
  * **Drink** - Similar to Eat
@@ -170,6 +175,13 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 
 == Changelog ==
+	= Version 2.7.0 =
+		* Introduction of MF2_Post class to convert the Post into MF2 properties as a replacement for Kind_Meta
+		* Unit tests for Kind_Taxonomy
+		* Tests revealed issue in has_kind function - fixed
+		* Kind_Meta now deprecated and is a wrapper for retrieving using MF2_Post
+		* Storage has changed to a nested mf2 from a simplified jf2 however returns from MF2_Post are still in the simplified JF2 by default
+		* Checkin kind is now active but there is no full Post UI for it so this is primarily for use Micropub.
 	= Version 2.6.6 =
 		* Fix eat svg icon
 		* Update travis and phpcs testing parameters
