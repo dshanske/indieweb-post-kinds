@@ -57,7 +57,7 @@ class Kind_Config {
 			'type'         => 'string',
 			'description'  => 'KSES Content Protection on Responses',
 			'show_in_rest' => false,
-			'default'      => str_replace( '},"', "},\r\n\"", wp_json_encode( wp_kses_allowed_html( 'post' ), JSON_PRETTY_PRINT ) ),
+			'default'      => str_replace( '},"', "},\r\n\"", wp_json_encode( wp_kses_allowed_html( 'post' ), 128 ) ),
 		);
 		register_setting( 'iwt_options', 'kind_kses', $args );
 	}
