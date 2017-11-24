@@ -18,7 +18,7 @@ class Parse_MF2 {
 			'limit_response_size' => 1048576,
 			'redirection'         => 20,
 			// Use an explicit user-agent for Post Kinds
-			'user-agent'          =>  'Post Kinds (WordPress/' . $wp_version . '); ' . get_bloginfo( 'url' ),
+			'user-agent'          => 'Post Kinds (WordPress/' . $wp_version . '); ' . get_bloginfo( 'url' ),
 		);
 		$response = wp_safe_remote_head( $url, $args );
 		if ( is_wp_error( $response ) ) {

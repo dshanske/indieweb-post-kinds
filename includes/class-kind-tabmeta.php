@@ -189,12 +189,13 @@ class Kind_Tabmeta {
 		wp_nonce_field( 'tabkind_metabox', 'tabkind_metabox_nonce' );
 		$mf2_post = new MF2_Post( $object->ID );
 		$cite     = $mf2_post->fetch();
-		$author   = $mf2_post->get_single( ifset( $cite['author'], array() ) );
+		$author   = ifset( $cite['author'], array() );
 		if ( ! isset( $cite['url'] ) ) {
 			if ( array_key_exists( 'kindurl', $_GET ) ) {
 				$cite['url'] = $_GET['kindurl'];
 			}
 		}
+
 		$time = array();
 		include_once 'tabs/tab-navigation.php';
 	}
@@ -289,8 +290,7 @@ class Kind_Tabmeta {
 			if ( ! $start ) {
 				$mf2_post->delete( 'dt-start' );
 			}
-		}
-		else {
+		} else {
 			$mf2_post->delete( 'dt-start' );
 		}
 		if ( isset( $_POST['mf2_end_date'] ) || isset( $_POST['mf2_end_time'] ) ) {
@@ -298,8 +298,7 @@ class Kind_Tabmeta {
 			if ( ! $end ) {
 				$mf2_post->delete( 'dt-end' );
 			}
-		}
-		else {
+		} else {
 			$mf2_post->delete( 'dt-end' );
 		}
 		if ( $start !== $end ) {
