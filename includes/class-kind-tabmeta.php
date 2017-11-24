@@ -286,9 +286,21 @@ class Kind_Tabmeta {
 
 		if ( isset( $_POST['mf2_start_date'] ) || isset( $_POST['mf2_start_time'] ) ) {
 			$start = self::build_time( $_POST['mf2_start_date'], $_POST['mf2_start_time'], $_POST['mf2_start_offset'] );
+			if ( ! $start ) {
+				$mf2_post->delete( 'dt-start' );
+			}
+		}
+		else {
+			$mf2_post->delete( 'dt-start' );
 		}
 		if ( isset( $_POST['mf2_end_date'] ) || isset( $_POST['mf2_end_time'] ) ) {
 			$end = self::build_time( $_POST['mf2_end_date'], $_POST['mf2_end_time'], $_POST['mf2_end_offset'] );
+			if ( ! $end ) {
+				$mf2_post->delete( 'dt-end' );
+			}
+		}
+		else {
+			$mf2_post->delete( 'dt-end' );
 		}
 		if ( $start !== $end ) {
 			$mf2_post->set( 'dt-start', $start );
