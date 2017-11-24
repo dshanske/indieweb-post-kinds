@@ -314,6 +314,9 @@ class Kind_View {
 	}
 
 	public static function rsvp_text( $type ) {
+		if ( ! $type ) {
+			return '';
+		}
 		$rsvp = array(
 			/* translators: URL for link to event and name of event */
 			'yes'        => __( 'Attending <a href="%1$1s" class="u-in-reply-to">%2$2s</a>', 'indieweb-post-kinds' ),
