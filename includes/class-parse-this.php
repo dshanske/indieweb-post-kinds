@@ -39,7 +39,10 @@ class Parse_This {
 	public function __construct( $url = null ) {
 		if ( $this->is_url( $url ) ) {
 			$this->url = $url;
-			$this->fetch_source_html( $url );
+			$return    = $this->fetch_source_html( $url );
+			if ( is_wp_error( $return ) ) {
+				return $return;
+			}
 		}
 	}
 
@@ -127,10 +130,18 @@ class Parse_This {
 			// Use an explicit user-agent for Press This
 			'user-agent'          => 'Parse This (WordPress/' . get_bloginfo( 'version' ) . '); ' . get_bloginfo( 'url' ),
 		);
-		$remote_url = wp_safe_remote_head( $url, $args );
+		$remote_url    = wp_safe_remote_head( $url, $args );
+		$response_code = wp_remote_retrieve_response_code( $response );
 		if ( is_wp_error( $remote_url ) ) {
 			return $remote_url;
 		}
+		switch ( $response_code ) {
+			case 200:
+				break;
+			default:
+				return new WP_Error( 'source_error', wp_remote_retrieve_response_message( $response ), array( 'status' => $response_code ) );
+		}
+
 		if ( preg_match( '#(image|audio|video|model)/#is', wp_remote_retrieve_header( $response, 'content-type' ) ) ) {
 			return new WP_Error( 'content-type', 'Content Type is Media' );
 		}
@@ -546,6 +557,7 @@ class Parse_This {
 				'itemprop' => true,
 				'href'     => true,
 			),
+			'title'  => array(),
 			'meta'   => array(
 				'property' => true,
 				'name'     => true,
@@ -563,7 +575,7 @@ class Parse_This {
 			// For Debugging Purposes Generate an Entire Unfiltered Array
 			$unfiltered = array();
 			foreach ( $items as $value ) {
-				if ( preg_match( '/(property|name)="([^"]+)"[^>]+content="([^"]+)"/', $value, $new_matches ) ) {
+				if ( preg_match( '/(property|name)=[\'"]([^"]+)[\'"][^>]+content=[\'"]([^"]+)[\'"]/', $value, $new_matches ) ) {
 					$meta_name  = $this->_limit_string( $new_matches[2] );
 					$meta_value = $this->_limit_string( $new_matches[3] );
 
@@ -574,7 +586,7 @@ class Parse_This {
 					$unfiltered[ $meta_name ] = $meta_value;
 					$this->_process_meta_entry( $meta_name, $meta_value );
 				}
-				if ( preg_match( '/content="([^"]+)"[^>]+(property|name)="([^"]+)"/', $value, $new_matches ) ) {
+				if ( preg_match( '/content=[\'"]([^"]+)[\'"][^>]+(property|name)=[\'"]([^"]+)[\'"]/', $value, $new_matches ) ) {
 					$meta_name  = $this->_limit_string( $new_matches[3] );
 					$meta_value = $this->_limit_string( $new_matches[1] );
 
@@ -670,7 +682,6 @@ class Parse_This {
 		// Only hunt for links that are actual links
 		$source_content = wp_kses( $this->content, $allowed_elements );
 		$this->urls     = wp_extract_urls( $source_content );
-
 	}
 
 		/**
@@ -741,7 +752,7 @@ class Parse_This {
 		$data['media']     = $this->embeds;
 		$data['raw']       = $this->get_meta();
 		// $data['icon'] = ifset( $meta['msapplication-TileImage'] );
-				// $data['icon'] = ifset( $meta['msapplication-TileImage'] );
+		// $data['icon'] = ifset( $meta['msapplication-TileImage'] );
 		return array_filter( $data );
 	}
 

@@ -61,6 +61,7 @@ jQuery( document ).on( 'click', '.kind-retrieve-button', function($) {
 		},
 	  error: function() {
 		  alert( 'Error' );
+		  console.log( response );
 		}
 	});
 })

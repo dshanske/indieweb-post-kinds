@@ -111,6 +111,9 @@ class Link_Preview {
 			);
 		}
 		$content = Parse_Mf2::fetch( $url );
+		if ( is_wp_error( $content ) ) {
+			return $content;
+		}
 		return self::mergeparse( $content, $url );
 	}
 }

@@ -24,11 +24,18 @@ class Parse_MF2 {
 		if ( is_wp_error( $response ) ) {
 			return $response;
 		}
+		$response_code = wp_remote_retrieve_response_code( $response );
 		if ( preg_match( '#(image|audio|video|model)/#is', wp_remote_retrieve_header( $response, 'content-type' ) ) ) {
 			return new WP_Error( 'content-type', 'Content Type is Media' );
 		}
 		$response = wp_safe_remote_get( $url, $args );
-		$body     = wp_remote_retrieve_body( $response );
+		switch ( $response_code ) {
+			case 200:
+				break;
+			default:
+				return new WP_Error( 'source_error', wp_remote_retrieve_response_message( $response ), array( 'status' => $response_code ) );
+		}
+		$body = wp_remote_retrieve_body( $response );
 		return $body;
 	}
 
@@ -755,6 +762,7 @@ class Parse_MF2 {
 				return self::parse_hentry( $item, $parsed );
 			}
 		}
+
 		foreach ( $parsed['items'] as $item ) {
 			if ( array_key_exists( 'url', $item['properties'] ) ) {
 				$urls = $item['properties']['url'];
@@ -767,6 +775,20 @@ class Parse_MF2 {
 				}
 			}
 		}
+		// No matching URLs so assume the first h-entry
+		foreach ( $parsed['items'] as $item ) {
+			if ( in_array( 'h-feed', $item['type'], true ) ) {
+				if ( in_array( 'children', $item, true ) ) {
+					return array(
+						'type' => 'feed',
+					);
+				}
+			}
+			if ( in_array( 'h-entry', $item['type'], true ) || in_array( 'h-cite', $item['type'], true ) ) {
+				return self::parse_hentry( $item, $parsed );
+			}
+		}
+
 		return array();
 	}
 
@@ -801,8 +823,11 @@ class Parse_MF2 {
 				$author = array_filter( $author );
 				if ( ! isset( $author['name'] ) && isset( $author['url'] ) ) {
 					$content = self::fetch( $author['url'] );
-					$parsed  = Mf2\parse( $content, $author['url'] );
-					$hcard   = self::find_microformats_by_type( $parsed, 'h-card' );
+					if ( is_wp_error( $content ) ) {
+						$content = '';
+					}
+					$parsed = Mf2\parse( $content, $author['url'] );
+					$hcard  = self::find_microformats_by_type( $parsed, 'h-card' );
 					if ( is_array( $hcard ) && ! empty( $hcard ) ) {
 						$hcard = $hcard[0];
 					}
