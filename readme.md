@@ -179,13 +179,15 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 
 ## Changelog ##
-	= Version 2.7.0 =
+	= Version 2.7.0 ( 2017-11-24 ) =
 		* Introduction of MF2_Post class to convert the Post into MF2 properties as a replacement for Kind_Meta
 		* Unit tests for Kind_Taxonomy
 		* Tests revealed issue in has_kind function - fixed
 		* Kind_Meta now deprecated and is a wrapper for retrieving using MF2_Post
 		* Storage has changed to a nested mf2 from a simplified jf2 however returns from MF2_Post are still in the simplified JF2 by default
 		* Checkin kind is now active but there is no full Post UI for it so this is primarily for use Micropub.
+		* Additional improvements in template and storage.
+		* Improvements in parsing different cases for the purpose of previewing links
 	= Version 2.6.6 =
 		* Fix eat svg icon
 		* Update travis and phpcs testing parameters

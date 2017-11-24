@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Post Kinds 2.7.0\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2017-11-17 02:45:56+00:00\n"
+"POT-Creation-Date: 2017-11-24 05:40:56+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -699,8 +699,12 @@ msgstr ""
 msgid "URL:"
 msgstr ""
 
-#: includes/class-parse-mf2.php:14 includes/class-parse-this.php:120
+#: includes/class-parse-mf2.php:14 includes/class-parse-this.php:123
 msgid "A valid URL was not provided."
+msgstr ""
+
+#: includes/class-parse-mf2.php:38
+msgid "Unknown Retrieval Error: Response Code "
 msgstr ""
 
 #: includes/tabs/tab-author.php:12

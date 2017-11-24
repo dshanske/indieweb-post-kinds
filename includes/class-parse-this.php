@@ -208,7 +208,7 @@ class Parse_This {
 				$return = $value;
 			}
 
-			$return = html_entity_decode( $return, ENT_QUOTES, 'UTF-8' );
+			// $return = html_entity_decode( $return, ENT_QUOTES, 'UTF-8' );
 			$return = sanitize_text_field( trim( $return ) );
 		}
 
