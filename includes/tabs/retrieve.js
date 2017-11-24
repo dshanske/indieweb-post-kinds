@@ -11,6 +11,14 @@ jQuery( document ).on( 'click', '.kind-retrieve-button', function($) {
 				kindurl: jQuery("#cite_url").val()
 			},
 		success : function( response ) {
+			if ( typeof response === 'undefined' ) {
+				alert( 'Error: Unable to Retrieve' );
+				return;
+			}
+			if ( 'message' in response ) {
+				alert( response.message );
+				return;
+			}
 			if ( 'name' in response ) {
 				jQuery("#cite_name").val(response['name']);
 				if ( jQuery('#title').val() === '' ) {
@@ -60,7 +68,11 @@ jQuery( document ).on( 'click', '.kind-retrieve-button', function($) {
 			alert(response.message);
 		},
 	  error: function() {
-		  alert( 'Error' );
+		  if ( 'message' in response ) {
+			  alert( response.message );
+			  return;
+		  }
+		  alert( 'Error: Undefined URL' );
 		  console.log( response );
 		}
 	});

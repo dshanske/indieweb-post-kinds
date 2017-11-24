@@ -18,7 +18,7 @@ class Parse_MF2 {
 			'limit_response_size' => 1048576,
 			'redirection'         => 20,
 			// Use an explicit user-agent for Post Kinds
-			'user-agent'          => 'Post Kinds (WordPress/' . $wp_version . '); ' . get_bloginfo( 'url' ),
+			'user-agent'          =>  'Post Kinds (WordPress/' . $wp_version . '); ' . get_bloginfo( 'url' ),,
 		);
 		$response = wp_safe_remote_head( $url, $args );
 		if ( is_wp_error( $response ) ) {
@@ -33,7 +33,11 @@ class Parse_MF2 {
 			case 200:
 				break;
 			default:
-				return new WP_Error( 'source_error', wp_remote_retrieve_response_message( $response ), array( 'status' => $response_code ) );
+				$message = wp_remote_retrieve_response_message( $response );
+				if ( empty( $message ) ) {
+					$message = __( 'Unknown Retrieval Error: Response Code ', 'indieweb-post-kinds' ) . $response_code;
+				}
+				return new WP_Error( 'source_error', $message, array( 'status' => $response_code ) );
 		}
 		$body = wp_remote_retrieve_body( $response );
 		return $body;
