@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like
-Stable tag: 2.7.0
+Stable tag: 2.7.1
 Requires at least: 4.7
 Requires PHP: 5.3
 Tested up to: 4.9
@@ -175,6 +175,9 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 
 == Changelog ==
+	= Version 2.7.1 ( 2017-11-25 ) =
+		* Fix check-in markup
+		* Fix errors caused by transition to arrays in 2.7.0 by not calling for single values in output
 	= Version 2.7.0 ( 2017-11-24 ) =
 		* Introduction of MF2_Post class to convert the Post into MF2 properties as a replacement for Kind_Meta
 		* Unit tests for Kind_Taxonomy
