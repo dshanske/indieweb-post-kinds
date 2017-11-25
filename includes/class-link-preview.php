@@ -64,7 +64,7 @@ class Link_Preview {
 		$data     = array_merge( $metadata, $mf2data );
 		$data     = array_filter( $data );
 
-		if ( ! isset( $data['summary'] ) ) {
+		if ( ! isset( $data['summary'] ) && isset( $data['content'] ) ) {
 			$data['summary'] = substr( $data['content']['text'], 0, 300 );
 			if ( 300 < strlen( $data['content']['text'] ) ) {
 				$data['summary'] .= '...';
