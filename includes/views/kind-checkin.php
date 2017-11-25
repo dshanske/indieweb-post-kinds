@@ -12,7 +12,7 @@ $embed    = self::get_embed( $url );
 
 ?>
 
-<section class="response p-checkin">
+<section class="response">
 <header>
 <?php
 echo Kind_Taxonomy::get_before_kind( 'checkin' );
@@ -21,9 +21,9 @@ if ( ! $embed ) {
 		$cite['name'] = self::get_post_type_string( $url );
 	}
 	if ( isset( $url ) ) {
-		echo sprintf( '<a href="%1s" class="p-name u-url">%2s</a>', $url, $name );
+		echo sprintf( '<a href="%1s" class="u-checkin h-card">%2s</a>', $url, $name );
 	} else {
-		echo sprintf( '<span class="p-name">%1s</span>', $name );
+		echo sprintf( '<span class="h-card p-checkin">%1s</span>', $name );
 	}
 }
 ?>
