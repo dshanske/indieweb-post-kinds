@@ -17,12 +17,12 @@ if ( isset( $cite['url'] ) ) {
 $site_name = Kind_View::get_site_name( $cite );
 $title     = Kind_View::get_cite_title( $cite );
 $embed     = self::get_embed( $url );
-$duration  = $mf2_post->get( 'duration' );
+$duration  = $mf2_post->get( 'duration', true );
 if ( ! $duration ) {
 		$duration = $mf2_post->calculate_duration( $mf2_post->get( 'dt-start' ), $mf2_post->get( 'dt-end' ) );
 }
 $kind = get_post_kind_slug( get_the_ID() );
-$rsvp = $mf2_post->get( 'rsvp' );
+$rsvp = $mf2_post->get( 'rsvp', true );
 
 if ( ! $kind ) {
 	return;
