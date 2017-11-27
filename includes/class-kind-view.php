@@ -15,7 +15,11 @@ class Kind_View {
 
 	public static function wp_get_attachment_image_attributes( array $attr, WP_Post $attachment ) {
 		$parents = get_post_ancestors( $attachment );
-		$id      = $parents[ count( $parents ) - 1 ];
+		$count = count( $parents );
+		if ( 0 === $count ) {
+			return $attr;
+		}
+		$id      = $parents[ $count - 1 ];
 		if ( 'photo' !== get_post_kind_slug( $id ) ) {
 			return $attr;
 		}

@@ -90,7 +90,6 @@ if ( ! $embed ) {
 		echo '<em> (' . $site_name . ')</em>';
 	}
 	if ( in_array( $kind, array( 'jam', 'listen', 'play', 'read', 'watch', 'audio', 'video' ) ) ) {
-		$duration = $meta->get_duration();
 		if ( $duration ) {
 			echo '(<data class="p-duration" value="' . $duration . '">' . Kind_View::display_duration( $duration ) . '</data>)';
 		}
