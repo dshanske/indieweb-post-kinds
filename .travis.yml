@@ -103,5 +103,5 @@ script:
     fi
   - |
     if [[ "$WP_TRAVISCI" == "travis:phpcs" ]] ; then
-      ./vendor/bin/phpcs -p -s -v -n --standard=./phpcs.ruleset.xml --extensions=php
+      ./vendor/bin/phpcs -p -s -v -n --standard=./phpcs.xml --extensions=php
     fi

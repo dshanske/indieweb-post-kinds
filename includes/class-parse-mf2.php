@@ -739,10 +739,6 @@ class Parse_MF2 {
 	public static function mf2parse( $content, $url ) {
 		$host = wp_parse_url( $url, PHP_URL_HOST );
 		switch ( $host ) {
-			case 'twitter.com':
-			case 'www.twitter.com':
-				$parsed = Mf2\Shim\parseTwitter( $content, $url );
-				break;
 			default:
 				$parsed = Mf2\parse( $content, $url );
 		}

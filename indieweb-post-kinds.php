@@ -66,14 +66,9 @@ class Post_Kinds_Plugin {
 
 		// Add an MF2 Parser
 		if ( ! class_exists( 'Mf2\Parser' ) ) {
-			require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Parser.php';
+			require_once plugin_dir_path( __FILE__ ) . '/vendor/mf2/mf2/Mf2/Parser.php';
 		}
-		if ( ! function_exists( 'Mf2\xpcs' ) ) {
-			require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/functions.php';
-		}
-		if ( ! class_exists( 'Mf2\Shim' ) ) {
-			require_once plugin_dir_path( __FILE__ ) . 'includes/Mf2/Twitter.php';
-		}
+
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-parse-mf2.php';
 
 		// Add Link Preview Parsing

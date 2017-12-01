@@ -4,3 +4,7 @@ sass/.sass-cache/*
 sass/svg/intermediate/*
 sass/symbol/*
 vendor/*
+!/vendor/mf2
+/vendor/mf2/mf2/*
+!/vendor/mf2/mf2/Mf2
+
