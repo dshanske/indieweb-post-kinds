@@ -4,7 +4,7 @@
 **Stable tag:** 2.7.1  
 **Requires at least:** 4.7  
 **Requires PHP:** 5.3  
-**Tested up to:** 4.9  
+**Tested up to:** 4.9.1  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -111,7 +111,7 @@ may make it a Passive Kind.
  * **Bookmark** - This is basically sharing/storing a link/bookmark. 
  * **Quote** - Quoted Content
  * **RSVP** - A specific type of Reply regarding an event
- * **Check-In** - Identifying you are at a place. This would use the extended WordPress Geodata. It will require the Simple Location plugin to add location awareness to posts.
+ * **Check-In** - Identifying you are at a place. There is currently only limited support for this.
 
 ### The Passive Kinds ###
 
@@ -179,6 +179,10 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 
 ## Changelog ##
+	= Version 2.7.2 ( 2017-11-30 ) =
+		* Remove PHP Shim library as not maintained and only used to get two extra properties from Twitter
+		* Switch to Composer for quick updates to PHP-MF2 (inspired by similar move by Semantic Linkbacks )
+		* Additional bugfixes for issues introduced in 2.7.0
 	= Version 2.7.1 ( 2017-11-25 ) =
 		* Fix check-in markup
 		* Fix errors caused by transition to arrays in 2.7.0 by not calling for single values in output

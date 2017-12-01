@@ -1,7 +1,21 @@
 {
+   "name": "dshanske/indieweb-post-kinds",
+     "description": "Post Kinds for WordPress",
+     "type": "wordpress-plugin",
+     "license": "GPLv2 or later",
+     "authors": [
+       {
+	       "name": "David Shanske",
+	       "email": "david@shanske.com"
+       }
+     ],
+     "extra": {
+		"installer-name": "indieweb-post-kinds"
+     },
     "require": {
 	"php": ">=5.3.0",
-	"mf2/mf2": "dev-master"
+	"mf2/mf2": "dev-master",
+	"composer/installers": "~1.0"
     },
     "require-dev": {
         "dealerdirect/phpcodesniffer-composer-installer": "^0.4",
