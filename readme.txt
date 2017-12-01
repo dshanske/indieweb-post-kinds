@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like
-Stable tag: 2.7.1
+Stable tag: 2.7.2
 Requires at least: 4.7
 Requires PHP: 5.3
 Tested up to: 4.9.1
