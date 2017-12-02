@@ -421,6 +421,7 @@ class Parse_This {
 			case 'article:published':
 			case 'og:article:published':
 			case 'og:article:published_time':
+			case 'date':
 				$datetime = new DateTime( $meta_value );
 				if ( $datetime ) {
 					$meta_value = $datetime->format( DATE_W3C );
@@ -849,6 +850,10 @@ class Parse_This {
 		$data['media']     = $this->embeds;
 		$data['video']     = $this->video;
 		$data['audio']     = $this->audio;
+		$data['url']       = $this->get_meta( 'url' );
+		if ( ! $data['url'] ) {
+			$data['url'] = $this->url;
+		}
 		if ( WP_DEBUG ) {
 			$data['raw']         = $this->get_meta();
 			$data['raw']['urls'] = $this->urls;
