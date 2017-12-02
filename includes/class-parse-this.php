@@ -57,11 +57,10 @@ class Parse_This {
 	 * @access public
 	 *
 	 * @param int    $post_id Post ID.
-	 * @param string $content Optional. Current expected markup for Press This. Expects slashed. Default empty.
 	 * @return string New markup with old image URLs replaced with the local attachment ones if swapped.
 	 */
-	public function side_load_images( $post_id, $content = '' ) {
-		$content = wp_unslash( $content );
+	public function side_load_images( $post_id ) {
+		$this->content = wp_unslash( $this->content );
 
 		if ( preg_match_all( '/<img [^>]+>/', $content, $matches ) && current_user_can( 'upload_files' ) ) {
 			foreach ( (array) $matches[0] as $image ) {
@@ -84,13 +83,13 @@ class Parse_This {
 					// Replace the POSTED content <img> with correct uploaded ones.
 					// Need to do it in two steps so we don't replace links to the original image if any.
 					$new_image = str_replace( $image_src, $new_src, $image );
-					$content   = str_replace( $image, $new_image, $content );
+					$this->content   = str_replace( $image, $new_image, $content );
 				}
 			}
 		}
 
 		// Expected slashed
-		return wp_slash( $content );
+		return wp_slash( $this->content );
 	}
 
 	/**
@@ -289,6 +288,12 @@ class Parse_This {
 		} elseif ( false !== stripos( $src, '/wp-includes/' ) ) {
 			// Classic WordPress interface images
 			return '';
+		} elseif ( false !== stripos( $src, '/wp-content/themes' ) ) {
+			// Anything within a WordPress theme directory
+			return '';
+		} elseif ( false !== stripos( $src, '/wp-content/plugins' ) ) {
+			// Anything within a WordPress plugin directory
+			return '';
 		} elseif ( preg_match( '![^\d]\d{1,2}x\d+\.(gif|jpg|png)$!i', $src ) ) {
 			// Most often tiny buttons/thumbs (< 100px wide)
 			return '';
@@ -299,8 +304,8 @@ class Parse_This {
 			// WordPress.com stats gif
 			return '';
 		}
-
-		return $src;
+		// Optionally add additional limits
+		return apply_filters( 'parse_this_img_filters', $src );
 	}
 
 	/**
@@ -464,16 +469,24 @@ class Parse_This {
 				$this->_set_meta_entry( 'longitude', $meta_value );
 				break;
 			case 'business:contact_data:street_address':
+			case 'og:street_address':
 				$this->_set_meta_entry( 'street_address', $meta_value );
 				break;
 			case 'business:contact_data:locality':
+			case 'og:locality':
 				$this->_set_meta_entry( 'locality', $meta_value );
 				break;
 			case 'business:contact_data:postal_code':
+			case 'og:postal_code':
 				$this->_set_meta_entry( 'postal_code', $meta_value );
 				break;
-			case 'business:contact_data:country_name':
-				$this->_set_meta_entry( 'country_name', $meta_value );
+			case 'business:contact_data:country-name':
+			case 'og:country-name':
+				$this->_set_meta_entry( 'country-name', $meta_value );
+				break;
+			case 'business:contact_data:region':
+			case 'og:region':
+				$this->_set_meta_entry( 'region', $meta_value );
 				break;
 			case 'music:album:track':
 				$this->_set_meta_entry( 'track', $meta_value );
@@ -542,6 +555,11 @@ class Parse_This {
 	 * @access public
 	 */
 	public function source_data_parse() {
+		$pre = apply_filters( 'pre_parse_this_data_parse', null, $this );
+		if ( $pre ) {
+			return $pre;
+		}
+			
 		if ( empty( $this->content ) ) {
 			return false;
 		}
@@ -602,7 +620,10 @@ class Parse_This {
 					$this->_process_meta_entry( $meta_name, $meta_value );
 				}
 			}
-			$this->_set_meta_entry( 'unfiltered', $unfiltered );
+			// For debugging pass through unfiltered parameters
+			if ( WP_DEBUG ) {
+				$this->_set_meta_entry( 'unfiltered', $unfiltered );
+			}
 		}
 
 		// Fetch and gather <img> data.
@@ -634,7 +655,6 @@ class Parse_This {
 			$this->video = array();
 		}
 
-
 		if ( preg_match_all( '/<video [^>]+>/', $source_content, $matches ) ) {
 			$items = $this->_limit_array( $matches[0] );
 
@@ -653,7 +673,6 @@ class Parse_This {
 			$this->audio = array();
 		}
 
-
 		if ( preg_match_all( '/<audio [^>]+>/', $source_content, $matches ) ) {
 			$items = $this->_limit_array( $matches[0] );
 
@@ -666,7 +685,6 @@ class Parse_This {
 				}
 			}
 		}
-
 
 		// Fetch and gather <iframe> data.
 		if ( empty( $this->embeds ) ) {
@@ -741,10 +759,10 @@ class Parse_This {
 			'm4a',
 			'm4b',
 			'flac',
-			'aac'
+			'aac',
 		);
 
-		foreach( $this->urls as $url ) {
+		foreach ( $this->urls as $url ) {
 			$extension = pathinfo( wp_parse_url( $url, PHP_URL_PATH ), PATHINFO_EXTENSION );
 			if ( in_array( $extension, $audio_extensions, true ) ) {
 				$this->audio[] = $url;
@@ -781,6 +799,7 @@ class Parse_This {
 
 	/**
 	 * Maps the return from Parse This to Microformat Properties
+	 * Partly this is to have some sort of simple structure for the data to be used
 	 *
 	 * @param string $content HTML marked up content
 	 */
@@ -814,8 +833,6 @@ class Parse_This {
 			$data['category'] = array_values( $tags );
 		}
 		// Extended Parameters
-		// $data['audio'] = ifset( $meta['og:audio'] );
-		// $data['video'] = ifset( $meta['og:video'] );
 		$data['duration']  = $this->get_meta( 'duration' );
 		$data['longitude'] = $this->get_meta( 'longitude' );
 		$data['latitude']  = $this->get_meta( 'latitude' );
@@ -824,20 +841,23 @@ class Parse_This {
 		$data['media']     = $this->embeds;
 		$data['video']     = $this->video;
 		$data['audio']     = $this->audio;
-		$data['urls']      = $this->urls;
-		$data['raw']       = $this->get_meta();
-		// $data['icon'] = ifset( $meta['msapplication-TileImage'] );
-		// $data['icon'] = ifset( $meta['msapplication-TileImage'] );
+		if( WP_DEBUG ) {
+			$data['raw']       = $this->get_meta();
+			$data['raw']['urls'] = $this->urls;
+		}
 		return array_filter( $data );
 	}
 
 	public function get_all() {
-		   return array(
+		return array(
+			   'url'     => array_filter( $this->url ),
 			   'images'  => array_filter( $this->images ),
 			   'embeds'  => array_filter( $this->embeds ),
 			   'meta'    => array_filter( $this->meta ),
 			   'links'   => array_filter( $this->links ),
 			   'urls'    => array_filter( $this->urls ),
+			   'video'   => array_filter( $this->video ),
+			   'audio'   => array_filter( $this->audio ),
 			   'content' => $this->content,
 		   );
 	}
