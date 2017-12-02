@@ -21,11 +21,10 @@ It can also distinguish certain types of passive posts in a manner similar to [p
 ## Screenshots ##
 
 ### 1. Here is an example of what a like looks like ###
-![Here is an example of what a like looks like](https://ps.w.org/indieweb-post-kinds/trunk/screenshot-1.png)
+![Here is an example of what a like looks like](https://user-images.githubusercontent.com/5882943/33469928-6bf8c4d4-d61a-11e7-80d5-3ddba794f515.PNG)
 
 ### 2. Here is a reply to a Youtube video ###
-![Here is a reply to a Youtube video](https://ps.w.org/indieweb-post-kinds/trunk/screenshot-2.png)
-
+![Here is a reply to a Youtube video](https://user-images.githubusercontent.com/5882943/33470576-cf5e70b6-d61d-11e7-9e6a-05e1e04bf2ef.PNG)
 
 ## Frequently Asked Questions ##
 
@@ -449,7 +448,7 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 		* Option to Update Metadata Deliberately Commented Out. 
 		* Anyone who used the old plugin should backup their database before considering migration. The data should still be in the database regardless.
 	= Version 0.1 = 
-**		* Revised settings page to use WordPress Settings API. Alert:** This version switches to using an array for storage of response data for future development. To migrate your data, please backup your database and then check Migrate to new data structure on update on the options page.  
+		* Revised settings page to use WordPress Settings API. Alert:** This version switches to using an array for storage of response data for future development. To migrate your data, please backup your database and then check Migrate to new data structure on update on the options page.**  
 	= Version 0.06 = 
 		* Added in support for Favorite
 		* fixed webmention support.
