@@ -49,14 +49,28 @@ module.exports = function(grunt) {
                    '!package.json',
                    '!.gitignore',
 		   '!kind.css.map',
-		   '!kind.min.css.map'
+		   '!kind.min.css.map',
+		   '!vendor/**',
+		   'vendor/mf2/mf2/Mf2/Parser.php'
                ],
                dest: 'build/trunk/'
-           }
+           },
+	    assets: {
+	       options: {
+	           mode: true
+	       },
+	       src: [
+	         'assets/*'
+	       ],
+	       dest: 'build/'
+	    }
        },
 
     wp_readme_to_markdown: {
       target: {
+      	options: {
+      	  screenshot_url: '/assets/{screenshot}.png'
+	},
         files: {
           'readme.md': 'readme.txt'
         }

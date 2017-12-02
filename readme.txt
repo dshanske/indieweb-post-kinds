@@ -175,6 +175,12 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 
 == Changelog ==
+	= Version 2.7.? ( 2017-12-?? ) =
+		* Change user agent
+		* Parser now captures video and audio tags and attempts to identify common file extensions
+		* Adding filters to make additional custom parsing possible
+		* Additional site tests
+		* Add specific featured image parsing
 	= Version 2.7.2 ( 2017-11-30 ) =
 		* Remove PHP Shim library as not maintained and only used to get two extra properties from Twitter
 		* Switch to Composer for quick updates to PHP-MF2 (inspired by similar move by Semantic Linkbacks )

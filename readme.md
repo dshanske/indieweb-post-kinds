@@ -21,10 +21,10 @@ It can also distinguish certain types of passive posts in a manner similar to [p
 ## Screenshots ##
 
 ### 1. Here is an example of what a like looks like ###
-![Here is an example of what a like looks like](https://ps.w.org/indieweb-post-kinds/trunk/screenshot-1.png)
+![Here is an example of what a like looks like](/assets/screenshot-1.png)
 
 ### 2. Here is a reply to a Youtube video ###
-![Here is a reply to a Youtube video](https://ps.w.org/indieweb-post-kinds/trunk/screenshot-2.png)
+![Here is a reply to a Youtube video](/assets/screenshot-2.png)
 
 
 ## Frequently Asked Questions ##
@@ -179,6 +179,12 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 
 ## Changelog ##
+	= Version 2.7.? ( 2017-12-?? ) =
+		* Change user agent
+		* Parser now captures video and audio tags and attempts to identify common file extensions
+		* Adding filters to make additional custom parsing possible
+		* Additional site tests
+		* Add specific featured image parsing
 	= Version 2.7.2 ( 2017-11-30 ) =
 		* Remove PHP Shim library as not maintained and only used to get two extra properties from Twitter
 		* Switch to Composer for quick updates to PHP-MF2 (inspired by similar move by Semantic Linkbacks )
