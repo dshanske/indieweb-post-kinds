@@ -9,7 +9,6 @@
 class Parse_MF2 {
 
 	public static function fetch( $url ) {
-		global $wp_version;
 		if ( ! isset( $url ) || ! self::is_url( $url ) ) {
 			return new WP_Error( 'invalid-url', __( 'A valid URL was not provided.', 'indieweb-post-kinds' ) );
 		}

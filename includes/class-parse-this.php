@@ -24,6 +24,10 @@ class Parse_This {
 
 	private $urls = array();
 
+	private $video = array();
+
+	private $audio = array();
+
 	private $url = '';
 
 	private $domain = '';
@@ -625,6 +629,45 @@ class Parse_This {
 			}
 		}
 
+		// Fetch and gather <video> data.
+		if ( empty( $this->video ) ) {
+			$this->video = array();
+		}
+
+
+		if ( preg_match_all( '/<video [^>]+>/', $source_content, $matches ) ) {
+			$items = $this->_limit_array( $matches[0] );
+
+			foreach ( $items as $value ) {
+				if ( preg_match( '/src=(\'|")([^\'"]+)\\1/i', $value, $new_matches ) ) {
+					$src = $new_matches[2];
+					if ( ! empty( $src ) && ! in_array( $src, $this->video, true ) ) {
+						$this->video[] = $src;
+					}
+				}
+			}
+		}
+
+		// Fetch and gather <audio> data.
+		if ( empty( $this->audio ) ) {
+			$this->audio = array();
+		}
+
+
+		if ( preg_match_all( '/<audio [^>]+>/', $source_content, $matches ) ) {
+			$items = $this->_limit_array( $matches[0] );
+
+			foreach ( $items as $value ) {
+				if ( preg_match( '/src=(\'|")([^\'"]+)\\1/i', $value, $new_matches ) ) {
+					$src = $new_matches[2];
+					if ( ! empty( $src ) && ! in_array( $src, $this->audio, true ) ) {
+						$this->audio[] = $src;
+					}
+				}
+			}
+		}
+
+
 		// Fetch and gather <iframe> data.
 		if ( empty( $this->embeds ) ) {
 			$this->embeds = array();
@@ -682,6 +725,35 @@ class Parse_This {
 		// Only hunt for links that are actual links
 		$source_content = wp_kses( $this->content, $allowed_elements );
 		$this->urls     = wp_extract_urls( $source_content );
+
+		$video_extensions = array(
+			'mp4',
+			'mkv',
+			'webm',
+			'ogv',
+			'avi',
+			'm4v',
+			'mpg',
+		);
+		$audio_extensions = array(
+			'mp3',
+			'ogg',
+			'm4a',
+			'm4b',
+			'flac',
+			'aac'
+		);
+
+		foreach( $this->urls as $url ) {
+			$extension = pathinfo( wp_parse_url( $url, PHP_URL_PATH ), PATHINFO_EXTENSION );
+			if ( in_array( $extension, $audio_extensions, true ) ) {
+				$this->audio[] = $url;
+			}
+			if ( in_array( $extension, $video_extensions, true ) ) {
+				$this->video[] = $url;
+			}
+		}
+
 	}
 
 		/**
@@ -750,6 +822,9 @@ class Parse_This {
 		$type              = $this->get_meta( 'type' );
 		$data['photo']     = $this->images;
 		$data['media']     = $this->embeds;
+		$data['video']     = $this->video;
+		$data['audio']     = $this->audio;
+		$data['urls']      = $this->urls;
 		$data['raw']       = $this->get_meta();
 		// $data['icon'] = ifset( $meta['msapplication-TileImage'] );
 		// $data['icon'] = ifset( $meta['msapplication-TileImage'] );
