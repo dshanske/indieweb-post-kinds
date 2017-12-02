@@ -128,7 +128,7 @@ class Parse_This {
 			'limit_response_size' => 1048576,
 			'redirection'         => 5,
 			// Use an explicit user-agent for Press This
-			'user-agent'          => 'Parse This (WordPress/' . get_bloginfo( 'version' ) . '); ' . get_bloginfo( 'url' ),
+			'user-agent'          => 'Parse This (WP/' . get_bloginfo( 'version' ) . '); ' . get_bloginfo( 'url' ),
 		);
 		$remote_url    = wp_safe_remote_head( $url, $args );
 		$response_code = wp_remote_retrieve_response_code( $response );
