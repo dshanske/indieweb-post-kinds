@@ -82,8 +82,8 @@ class Parse_This {
 				if ( ! is_wp_error( $new_src ) ) {
 					// Replace the POSTED content <img> with correct uploaded ones.
 					// Need to do it in two steps so we don't replace links to the original image if any.
-					$new_image = str_replace( $image_src, $new_src, $image );
-					$this->content   = str_replace( $image, $new_image, $content );
+					$new_image     = str_replace( $image_src, $new_src, $image );
+					$this->content = str_replace( $image, $new_image, $content );
 				}
 			}
 		}
@@ -421,12 +421,20 @@ class Parse_This {
 			case 'article:published':
 			case 'og:article:published':
 			case 'og:article:published_time':
+				$datetime = new DateTime( $meta_value );
+				if ( $datetime ) {
+					$meta_value = $datetime->format( DATE_W3C );
+				}
 				$this->_set_meta_entry( 'published', $meta_value );
 				break;
 			case 'article:modified_time':
 			case 'article:modified':
 			case 'og:article:modified':
 			case 'og:article:modified_time':
+				$datetime = new DateTime( $meta_value );
+				if ( $datetime ) {
+					$meta_value = $datetime->format( DATE_W3C );
+				}    
 				$this->_set_meta_entry( 'modified', $meta_value );
 				break;
 			case 'article:expiration_time':
@@ -525,6 +533,8 @@ class Parse_This {
 			case 'twitter:image0':
 			case 'twitter:image:src':
 			case 'twitter:image':
+				// The image will join the list of images but also be declared the featured image
+				$this->_set_meta_entry( 'featured', $meta_value );
 				$meta_value = $this->_limit_img( $meta_value );
 				if ( ! isset( $this->images ) ) {
 					$this->images = array();
@@ -559,7 +569,7 @@ class Parse_This {
 		if ( $pre ) {
 			return $pre;
 		}
-			
+
 		if ( empty( $this->content ) ) {
 			return false;
 		}
@@ -805,10 +815,9 @@ class Parse_This {
 	 */
 	public function meta_to_microformats() {
 		$data            = array();
-		$data['name']    = $this->get_meta( 'title' ); // ifset( $meta['og:music:song'] );
+		$data['name']    = $this->get_meta( 'title' );
 		$data['summary'] = $this->get_meta( 'description' );
-		// $data['site'] = ifset( $meta['og:site'] ) ?: ifset( $meta['twitter:site'] );
-		$data['author'] = $this->get_meta( 'author' );
+		$data['author']  = $this->get_meta( 'author' );
 		if ( isset( $data['author'] ) && is_array( $data['author'] ) ) {
 			$author = array(
 				'url'  => array(),
@@ -823,9 +832,8 @@ class Parse_This {
 			}
 			$data['author'] = array_filter( $author );
 		}
-
-		// $data['featured'] = ifset( $meta['og:image'] ) ?: ifset( $meta['twitter:image'] );
-		$data['publication'] = $this->get_meta( 'site_name' ); // ifset( $meta['og:site_name'] ) ?: ifset( $meta['og:music:album'] );
+		$data['featured']    = $this->get_meta( 'featured' );
+		$data['publication'] = $this->get_meta( 'site_name' );
 		$data['published']   = $this->get_meta( 'published' ) ?: $this->get_meta( 'release_date' );
 		$data['updated']     = $this->get_meta( 'modified' );
 		$tags                = $this->get_meta( 'tag' );
@@ -841,8 +849,8 @@ class Parse_This {
 		$data['media']     = $this->embeds;
 		$data['video']     = $this->video;
 		$data['audio']     = $this->audio;
-		if( WP_DEBUG ) {
-			$data['raw']       = $this->get_meta();
+		if ( WP_DEBUG ) {
+			$data['raw']         = $this->get_meta();
 			$data['raw']['urls'] = $this->urls;
 		}
 		return array_filter( $data );
@@ -850,16 +858,16 @@ class Parse_This {
 
 	public function get_all() {
 		return array(
-			   'url'     => array_filter( $this->url ),
-			   'images'  => array_filter( $this->images ),
-			   'embeds'  => array_filter( $this->embeds ),
-			   'meta'    => array_filter( $this->meta ),
-			   'links'   => array_filter( $this->links ),
-			   'urls'    => array_filter( $this->urls ),
-			   'video'   => array_filter( $this->video ),
-			   'audio'   => array_filter( $this->audio ),
-			   'content' => $this->content,
-		   );
+			'url'     => array_filter( $this->url ),
+			'images'  => array_filter( $this->images ),
+			'embeds'  => array_filter( $this->embeds ),
+			'meta'    => array_filter( $this->meta ),
+			'links'   => array_filter( $this->links ),
+			'urls'    => array_filter( $this->urls ),
+			'video'   => array_filter( $this->video ),
+			'audio'   => array_filter( $this->audio ),
+			'content' => $this->content,
+		);
 	}
 
 }
