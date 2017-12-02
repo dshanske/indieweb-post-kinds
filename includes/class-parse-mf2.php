@@ -17,7 +17,7 @@ class Parse_MF2 {
 			'limit_response_size' => 1048576,
 			'redirection'         => 20,
 			// Use an explicit user-agent for Post Kinds
-			'user-agent' => 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:57.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36 Post Kinds/WP' . get_bloginfo( 'version' ) . '(' . get_bloginfo( 'url' ) . ')'
+			'user-agent'          => 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:57.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36 Post Kinds/WP' . get_bloginfo( 'version' ) . '(' . get_bloginfo( 'url' ) . ')',
 		);
 		$response = wp_safe_remote_head( $url, $args );
 		if ( is_wp_error( $response ) ) {
