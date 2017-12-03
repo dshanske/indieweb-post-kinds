@@ -341,7 +341,7 @@ class MF2_Post {
 			$return['type'] = array_shift( $cite['type'] );
 		}
 		foreach ( $cite['properties'] as $key => $value ) {
-			if ( is_array( $value ) && 1 === count( $value ) ) {
+			if ( is_array( $value ) && 1 === count( $value ) && wp_is_numeric_array( $value ) ) {
 				$value = array_shift( $value );
 				$value = $this->mf2_to_jf2( $value );
 			}

@@ -435,7 +435,7 @@ class Parse_This {
 				$datetime = new DateTime( $meta_value );
 				if ( $datetime ) {
 					$meta_value = $datetime->format( DATE_W3C );
-				}    
+				}
 				$this->_set_meta_entry( 'modified', $meta_value );
 				break;
 			case 'article:expiration_time':

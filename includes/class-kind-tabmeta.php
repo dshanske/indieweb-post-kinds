@@ -333,16 +333,15 @@ class Kind_Tabmeta {
 		$author['url']   = ifset( $_POST['cite_author_url'] );
 		$author['photo'] = ifset( $_POST['cite_author_photo'] );
 		$author          = array_filter( $author );
-		if ( ! empty( $author ) ) {
-			$cite['author'] = $author;
-		}
-		$cite = array_filter( $cite );
+		$cite['author']  = $author;
+
 		// Make sure there is no overwrite of properties that might not be handled by the plugin
 		$fetch = $mf2_post->fetch();
 		if ( ! $fetch ) {
 			$fetch = array();
 		}
 		$cite = array_merge( $fetch, $cite );
+		$cite = array_filter( $cite );
 		// Temporary code which assumes everything except a checkin is a citation
 		if ( 'checkin' === $mf2_post->get( 'kind' ) ) {
 			$type = 'h-card';
