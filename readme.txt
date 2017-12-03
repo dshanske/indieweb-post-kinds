@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like
-Stable tag: 2.7.2
+Stable tag: 2.7.3
 Requires at least: 4.7
 Requires PHP: 5.3
 Tested up to: 4.9.1
@@ -175,12 +175,15 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 
 == Changelog ==
-	= Version 2.7.? ( 2017-12-?? ) =
+	= Version 2.7.3 ( 2017-12-03 ) =
 		* Change user agent
 		* Parser now captures video and audio tags and attempts to identify common file extensions
 		* Adding filters to make additional custom parsing possible
 		* Additional site tests
 		* Add specific featured image parsing
+		* Fix issue with author details generating fatal error when name only
+		* Fix underlying issue of collapsing single property associative arrays instead of just single property numeric arrays
+		* Parsing tweaks to allow for improved data to be passed, even if not yet displayed
 	= Version 2.7.2 ( 2017-11-30 ) =
 		* Remove PHP Shim library as not maintained and only used to get two extra properties from Twitter
 		* Switch to Composer for quick updates to PHP-MF2 (inspired by similar move by Semantic Linkbacks )
