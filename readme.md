@@ -16,7 +16,8 @@ Post Kinds adds support for responding to and interacting with other sites using
 developed by the IndieWeb by implementing
 [kinds of posts](http://indieweb.org/post_kinds).
 
-It can also distinguish certain types of passive posts in a manner similar to [post formats](http://codex.wordpress.org/Post_Formats).
+It can also distinguish certain types of passive posts in a manner similar to [post formats](http://codex.wordpress.org/Post_Formats). While it can work alongside
+post formats, it is recommended as a replacement as it functions in a similar manner.
 
 ## Screenshots ##
 
@@ -179,6 +180,8 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 
 ## Changelog ##
+	= Version 2.7.4 ( 2017-12-?? ) =
+		* Check for missing properties in all templates which should only happen if improperly filled 
 	= Version 2.7.3 ( 2017-12-03 ) =
 		* Change user agent
 		* Parser now captures video and audio tags and attempts to identify common file extensions
