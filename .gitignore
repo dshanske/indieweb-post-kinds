@@ -7,4 +7,4 @@ vendor/*
 !/vendor/mf2
 /vendor/mf2/mf2/*
 !/vendor/mf2/mf2/Mf2
-
+!/vendor/mf2/mf2/LICENSE.md
