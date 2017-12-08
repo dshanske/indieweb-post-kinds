@@ -210,11 +210,13 @@ class Kind_Config {
 		$terms = Kind_Taxonomy::get_kind_info( 'all', 'all' );
 		// Hide these terms until ready for use for now.
 		$termslist = get_option( 'kind_termslist' );
+		echo '<div id="kind-all">';
 		foreach ( $terms as $key => $value ) {
 			if ( $value['show'] ) {
-				echo "<input name='kind_termslist[]' type='checkbox' value='" . $key . "' " . checked( in_array( $key, $termslist, true ), true, false ) . ' /><strong>' . $value['singular_name'] . '</strong> - ' . $value['description'] . '<br />';
+				echo "<input name='kind_termslist[]' type='checkbox' value='" . $key . "' " . checked( in_array( $key, $termslist, true ), true, false ) . ' />' . Kind_Taxonomy::get_icon( $key ) . '<strong>' . $value['singular_name'] . '</strong> - ' . $value['description'] . '<br />';
 			}
 		}
+		echo '</div>';
 	}
 
 
