@@ -6,7 +6,7 @@
 
 $mf2_post = new MF2_Post( get_the_ID() );
 $cite     = $mf2_post->fetch();
-if ( ! $ cite ) {
+if ( ! $cite ) {
 	return;
 }
 $author   = Kind_View::get_hcard( ifset( $cite['author'] ) );
