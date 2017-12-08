@@ -9,6 +9,9 @@ $videos      = get_attached_media( 'video', get_the_ID() );
 $photos      = get_attached_media( 'image', get_the_ID() );
 $first_photo = array_pop( array_reverse( $photos ) );
 $cite        = $mf2_post->fetch();
+if ( ! $cite ) {
+	$cite = array();
+}
 $url         = $cite['url'];
 $embed       = self::get_embed( $url );
 
