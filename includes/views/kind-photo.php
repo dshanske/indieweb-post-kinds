@@ -10,8 +10,8 @@ $cite     = $mf2_post->fetch();
 if ( ! $cite ) {
 	$cite = array();
 }
-$url      = ifset( $cite['url'] );
-$embed    = self::get_embed( $url );
+$url   = ifset( $cite['url'] );
+$embed = self::get_embed( $url );
 ?>
 <section class="response">
 <header>

@@ -9,9 +9,9 @@ $cite     = $mf2_post->fetch();
 if ( ! $cite ) {
 	return;
 }
-$author   = Kind_View::get_hcard( ifset( $cite['author'] ) );
-$url      = $cite['url'];
-$embed    = self::get_embed( $url );
+$author = Kind_View::get_hcard( ifset( $cite['author'] ) );
+$url    = $cite['url'];
+$embed  = self::get_embed( $url );
 
 
 ?>

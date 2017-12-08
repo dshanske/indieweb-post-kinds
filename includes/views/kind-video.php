@@ -12,8 +12,8 @@ $cite        = $mf2_post->fetch();
 if ( ! $cite ) {
 	$cite = array();
 }
-$url         = $cite['url'];
-$embed       = self::get_embed( $url );
+$url   = $cite['url'];
+$embed = self::get_embed( $url );
 
 ?>
 <section class="response">

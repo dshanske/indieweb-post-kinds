@@ -9,9 +9,9 @@ $cite     = $mf2_post->fetch();
 if ( ! $cite ) {
 	return;
 }
-$url      = $mf2_post->get_single( $cite['url'] );
-$name     = $mf2_post->get_single( $cite['name'] );
-$embed    = self::get_embed( $url );
+$url   = $mf2_post->get_single( $cite['url'] );
+$name  = $mf2_post->get_single( $cite['name'] );
+$embed = self::get_embed( $url );
 
 ?>
 
