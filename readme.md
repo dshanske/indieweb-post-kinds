@@ -179,7 +179,7 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 ## Changelog ##
 
-### 2.7.4 ( 2017-12-?? ) ###
+### 2.7.4 ( 2017-12-09 ) ###
 * Check for missing properties in all templates which should only happen if improperly filled 
 * Switch entirely to icons from the new Font Awesome 5 release
 * Bugfixes
