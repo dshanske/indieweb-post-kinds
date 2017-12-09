@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Post Kinds 2.7.3\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2017-12-03 06:03:41+00:00\n"
+"POT-Creation-Date: 2017-12-09 16:06:10+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -54,19 +54,19 @@ msgstr ""
 msgid "Post Kinds"
 msgstr ""
 
-#: includes/class-kind-config.php:259
+#: includes/class-kind-config.php:261
 msgid "Indieweb Post Kinds"
 msgstr ""
 
-#: includes/class-kind-config.php:261
+#: includes/class-kind-config.php:263
 msgid "Adds support for responding and interacting with other sites."
 msgstr ""
 
-#: includes/class-kind-config.php:274 includes/class-kind-tabmeta.php:180
+#: includes/class-kind-config.php:276 includes/class-kind-tabmeta.php:180
 msgid "Post Properties"
 msgstr ""
 
-#: includes/class-kind-config.php:275
+#: includes/class-kind-config.php:277
 msgid ""
 "\n"
 " \t\t\t\t\t\t\t<p> The Post Properties tab represents the Microformats "
@@ -781,15 +781,15 @@ msgstr ""
 msgid "End Time"
 msgstr ""
 
-#: includes/views/kind-bookmark.php:29 includes/views/kind-favorite.php:30
-#: includes/views/kind-jam.php:30 includes/views/kind-like.php:29
-#: includes/views/kind-listen.php:31 includes/views/kind-watch.php:31
+#: includes/views/kind-bookmark.php:32 includes/views/kind-favorite.php:33
+#: includes/views/kind-jam.php:33 includes/views/kind-like.php:32
+#: includes/views/kind-listen.php:34 includes/views/kind-watch.php:34
 #: includes/views/kind.php:87
 msgid "by"
 msgstr ""
 
-#: includes/views/kind-jam.php:33 includes/views/kind-listen.php:34
-#: includes/views/kind-watch.php:34
+#: includes/views/kind-jam.php:36 includes/views/kind-listen.php:37
+#: includes/views/kind-watch.php:37
 msgid " from "
 msgstr ""
 

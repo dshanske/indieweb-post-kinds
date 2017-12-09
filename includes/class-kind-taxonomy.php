@@ -704,7 +704,7 @@ class Kind_Taxonomy {
 
 	public static function get_icon( $kind ) {
 		// Substitute another svg sprite file
-		$sprite = apply_filters( 'kind_icon_sprite', plugin_dir_url( __FILE__ ) . 'kind-sprite.svg', $kind );
+		$sprite = apply_filters( 'kind_icon_sprite', plugins_url( 'kinds.svg', dirname( __FILE__ ) ), $kind );
 		if ( '' === $sprite ) {
 			return '';
 		}

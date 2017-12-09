@@ -11,8 +11,8 @@ if ( ! $cite ) {
 }
 $author    = Kind_View::get_hcard( ifset( $cite['author'] ) );
 $url       = $cite['url'];
-$site_name = Kind_View::get_site_name( $meta->get_cite(), $url );
-$title     = Kind_View::get_cite_title( $meta->get_cite(), $url );
+$site_name = Kind_View::get_site_name( $cite, $url );
+$title     = Kind_View::get_cite_title( $cite, $url );
 $embed     = self::get_embed( $url );
 $duration  = $mf2_post->get( 'duration' );
 if ( ! $duration ) {
