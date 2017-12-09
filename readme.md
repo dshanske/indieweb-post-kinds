@@ -13,11 +13,13 @@ Ever want to reply to someone else's post with a post on your own site? Or to "l
 ## Description ##
 
 Post Kinds adds support for responding to and interacting with other sites using the standards
-developed by the IndieWeb by implementing
-[kinds of posts](http://indieweb.org/post_kinds).
+developed by the IndieWeb by implementing [kinds of posts](http://indieweb.org/post_kinds).
 
 It can also distinguish certain types of passive posts in a manner similar to [post formats](http://codex.wordpress.org/Post_Formats). While it can work alongside
 post formats, it is recommended as a replacement as it functions in a similar manner.
+
+Many sites will not need all of the kinds set up. What kinds of posts you wish to publish are specific to your needs. 
+
 
 ## Screenshots ##
 
@@ -28,27 +30,14 @@ post formats, it is recommended as a replacement as it functions in a similar ma
 ![Here is a reply to a Youtube video](/assets/screenshot-2.png)
 
 
-## Frequently Asked Questions ##
-
-### How does it work? ###
-
-1. Bob wants to reply to Sue on his own website.
-2. Sue enables webmentions(separate plugin) on her site.
-3. Bob creates a post and sets it as a reply to or a like of Sue's post.
-4. A webmention is sent to Sue's site, and stored as a comment on Sue's post.
-
-### How do I learn more? ###
-
-For more information on the Indieweb and tools for WordPress, visit [Getting Started on
-WordPress](http://indieweb.org/Getting_Started_on_WordPress).
-
-### How do I get support? ###
-
-The Development version of the plugin is hosted at [Github](https://github.com/dshanske/indieweb-post-kinds). You can file issues there.
-
 ## Installation ##
 
 The plugin requires the [webmention](https://wordpress.org/plugins/webmention/) plugin to support sending/receiving notice of a reply/like to another site which will appear as a comment. The [Semantic Linkbacks](https://wordpress.org/plugins/semantic-linkbacks/) plugin is available to more richly display the comment.
+
+##  Credits ##
+
+1. Kind Icons are currently provided by [Font Awesome](http://fontawesome.io) and are licensed as [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). A copy of the license notice is bundled.
+2. [Chris Aldrich](http://boffosocko.com) always receives a credit on my plugins due his regular feedback, input, and usage.
 
 ## Upgrade Notice ##
 
@@ -82,20 +71,29 @@ first as a precaution. Lots of changes under the hood which will bear fruit in f
 This version migrates data to a new storage formats. Backup your installation
 first as a precaution.
 
-## Post Kinds ##
+## Frequently Asked Questions ##
 
-Many sites will not need all of the kinds set up. What kinds of posts you wish
-to publish are specific to your needs.
+### How does it work? ###
 
-You can enable/disable more based on preference. Some may be enabled by plugins.
+1. Bob wants to reply to Sue on his own website.
+2. Sue enables webmentions(separate plugin) on her site.
+3. Bob creates a post and sets it as a reply to or a like of Sue's post.
+4. A webmention is sent to Sue's site, and stored as a comment on Sue's post.
 
-Not having a post kind enabled will not disable the functionality on existing 
-posts, it only hides the selection in adding new posts.
+### How do I learn more? ###
 
-### The Non-Response Kinds ###
+For more information on the Indieweb and tools for WordPress, visit [Getting Started on
+WordPress](http://indieweb.org/Getting_Started_on_WordPress).
 
-These kinds have an analog in post formats. Adding context to one of these
-may make it a Passive Kind.
+### There are too many Post Kinds ###
+
+You can enable/disable more based on preference. Some may be enabled by plugins. You do not have to use ones you don't want. Not having a post kind enabled 
+will not disable the functionality on existing posts, it only hides the selection in adding new posts.
+
+
+### What are the kinds of posts I can make? ###
+
+These kinds have an analog in post formats. Adding context to one of these may make it a Passive Kind.
 
  * **Article** - traditional long form content - a post with an explicit post name(title)
  * **Note** - short content - a post with just plain content (also the default)
@@ -103,7 +101,7 @@ may make it a Passive Kind.
  * **Video** - video post - a post with an embedded image as its primary focus.
  * **Audio** - audio post - a post with an embedded sound file as its primary focus.
 
-### The Response Kinds ###
+The Response Kinds
 
  * **Reply** - Replying to someone else's comment
  * **Repost** - a complete repost of someone else's content
@@ -113,13 +111,11 @@ may make it a Passive Kind.
  * **Quote** - Quoted Content
  * **RSVP** - A specific type of Reply regarding an event
  * **Check-In** - Identifying you are at a place. There is currently only limited support for this.
-
-### The Passive Kinds ###
+ 
+The Passive Kinds
 
 To "Scrobble" a song is when listening to it, you would make it a post on
-your website. This is the most well-known example of a passive kind of post.
-
-They are formed by having content in the context box on one of these types of
+your website. This is the most well-known example of a passive kind of post. They are formed by having content in the context box on one of these types of
 posts.
 
  * **Listen** - scrobble - listening to an audio post 
@@ -128,7 +124,7 @@ posts.
  * **Play** - playing a game
  * **Read** - reading a book, compared to online material
 
-### Reserved ###
+### What kinds do you plan to add in the future? ###
 
 The following Kinds are reserved for future use but will not show up in the 
 interface at this time.
@@ -148,26 +144,28 @@ interface at this time.
  * **Issue** - Issue is a special kind of article post that is a reply to typically some source code, though potentially anything at a source control repository.
  * **Event** - An event is a type of post that in addition to a post name (event title) has a start datetime (likely end datetime), and a location.
 
-## Archive Display ##
+### Can I create archives for each kind? ###
 
 Post Kinds automatically handles the display of archives of individual types. So to view all the posts marked as "note", for example, one could visit the URL http://www.YOURSITE.COM/kind/note/. 
 Simply replace YOURSITE.COM with your particular site name and the particular post kind name to access the others.
 
-## RSS ##
+### Do you have RSS feeds for each kind? ###
 
 Post Kinds also automatically handles RSS feeds which can be made available or subscribed to for any of the particular kinds. The RSS feed for all the posts marked as "note", for example could be found at either the URL `http://www.example.com/kind/note/feed` or  `http://www.example.com/feed/?kind=note` (if one doesn't have pretty permalinks enabled). Others can be obtained by replacing "note" with the other kinds.
 
-## Bookmarklet Configuration ##
+### Do you support bookmarklets? ###
+
+At the moment, a fully automatic bookmarklet is not yet part of the plugin but you can send data directly to the Post Editor
 
 * If you add `?kindurl=URL` to the post editor URL, it will automatically fill this into the URL box in post properties
 * If you add `?kind=like` to the post editor URL, it will automatically set the kind.
 
 So - `https://www.example.com/wp-admin/post-new.php?kindurl=URL&kind=like` will automatically set a like with the URL
 
-## SNAP ##
+### How do I get support? ###
 
-Post Kinds had support for replying to Twitter posts using the Social Network Auto Poster plugin. The developers of that plugin have not contacted the
-developer of this plugin.
+The Development version of the plugin is hosted at [Github](https://github.com/dshanske/indieweb-post-kinds). You can file issues there.
+
 
 ## Theme Support ##
 
@@ -182,6 +180,7 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 ## Changelog ##
 	= Version 2.7.4 ( 2017-12-?? ) =
 		* Check for missing properties in all templates which should only happen if improperly filled 
+		* Switch entirely to icons from the new Font Awesome 5 release
 	= Version 2.7.3 ( 2017-12-03 ) =
 		* Change user agent
 		* Parser now captures video and audio tags and attempts to identify common file extensions
@@ -364,13 +363,11 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 		* Add filters for parsing from additional markup and building the metadata
 		* Support for microformats2 import of metadata in addition to existing
 			support for OpenGraph
-		* In the next version, will be rewriting the additions to the post editor.
-			per request, it will give more control over the automatic parsing.
+		* In the next version, will be rewriting the additions to the post editor. per request, it will give more control over the automatic parsing.
 		* Webmentions are now only sent if the new status is publish
 	= Version 2.1.1 =
 		* Bugfixes from Version 2.1.0
-		* Removal of Semantic Linkbacks code due upgrade in Semantic Linkbacks 
-			making it unnecessary 
+		* Removal of Semantic Linkbacks code due upgrade in Semantic Linkbacks making it unnecessary 
 	= Version 2.1.0 = 
 		* Metadata Processing will be centralizing in the Kind_Meta class
 		* Continuing to move toward WordPress Coding Standards including inline documentation
@@ -399,8 +396,7 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 		* Customizable display objects now supported
 		* Open Graph Protocol Parsing Added to Extract Title/Description/Image from URLs
 		* Sideloads Author Picture
-		* Add Duration Meta Field by request of Acegiak. This can be used for duration of activity...
-			for example, watching/playing/listening/exercising/etc.
+		* Add Duration Meta Field by request of Acegiak. This can be used for duration of activity...for example, watching/playing/listening/exercising/etc.
 	= Version 1.4.1 =
 		* Bug fixes for changes made in 1.4.0. 
 	= Version 1.4.0 = 
@@ -435,16 +431,16 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 		* Adds support for passive kinds. 
 		* Some code cleanup and commenting. 
 		* Start of add_theme_support function. This will replace the setting to embed in content in a future version.
- 	= Version 1.0.2 = 
+	= Version 1.0.2 = 
 		* Bug fixes
- 	= Version 1.0.1 = 
+	= Version 1.0.1 = 
 		* Update Readme to better describe 
 	= Version 1.0 =
 		* Now in the WordPress repository
 	= Version 0.3 = 
 		* Custom Code for Generating the Kind Select Box to Allow for Default Kind. 
 		* Defined constant POST_KIND_EXCLUDE to hide kinds from the selector 
- 	= Version 0.24 = 
+	= Version 0.24 = 
 		* Added Grunt/SASS support to more easily control changes and support internationalization
 	= Version 0.23 =
 		* Option to refresh the cache on each load added

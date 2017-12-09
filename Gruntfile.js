@@ -112,7 +112,7 @@ module.exports = function(grunt) {
 		},
 		dist: {
 				files: {
-					'includes/kind-sprite.svg': ['svgs/*.svg']
+					'kinds.svg': ['svgs/*.svg']
 				}
 		}
 	},
