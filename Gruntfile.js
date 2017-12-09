@@ -136,12 +136,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-wp-readme-to-markdown');
   grunt.loadNpmTasks( 'grunt-wp-i18n' );
   grunt.loadNpmTasks('grunt-contrib-sass');
-  grunt.loadNpmTasks('grunt-wp-deploy');
   grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks( 'grunt-contrib-clean' );
   grunt.loadNpmTasks('grunt-svgstore');
   grunt.loadNpmTasks('grunt-checktextdomain');
-  grunt.loadNpmTasks( 'grunt-git' );
   // Default task(s).
   grunt.registerTask('default', ['wp_readme_to_markdown', 'makepot', 'sass', 'svgstore', 'checktextdomain']);
 
