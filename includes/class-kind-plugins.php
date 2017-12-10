@@ -10,8 +10,9 @@
 class Kind_Plugins {
 	public static function init() {
 		// Set Post Kind for Micropub Inputs.
-		add_action( 'after_micropub', array( 'Kind_Plugins', 'micropub_set_kind' ), 10, 2 );
+		add_action( 'after_micropub', array( 'Kind_Plugins', 'micropub_set_kind' ), 9, 2 );
 		add_action( 'after_micropub', array( 'Kind_Plugins', 'post_formats' ), 11, 2 );
+		add_filter( 'before_micropub', array( 'Kind_Plugins', 'micropub_parse'), 11 );
 		// Override Post Type in Semantic Linkbacks.
 		add_filter( 'semantic_linkbacks_post_type', array( 'Kind_Plugins', 'semantic_post_type' ), 11, 2 );
 
@@ -107,6 +108,23 @@ class Kind_Plugins {
 	public static function post_formats( $input, $wp_args ) {
 		$kind = get_post_kind_slug( $wp_args['ID'] );
 		set_post_format( $wp_args['ID'], Kind_Taxonomy::get_kind_info( $kind, 'format' ) );
+	}
+
+	public static function micropub_parse( $input ) {
+		$parsed = array( 'bookmark-of', 'like-of', 'favorite-of' );
+		foreach( $input['properties'] as $property => $value ) {
+			if ( ! wp_is_numeric_array( $value ) ) {
+				continue;
+			}
+			if ( in_array( $property, $parsed, true ) ) {
+				foreach( $value as $i => $v ) {
+					if ( Link_Preview::is_valid_url( $v ) ) {
+						$input['properties'][$property][$i] = Link_Preview::simple_parse( $v );
+					}
+				}
+			}
+		}
+		return $input;
 	}
 
 } // End Class Kind_Plugins

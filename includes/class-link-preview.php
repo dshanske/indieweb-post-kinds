@@ -77,6 +77,13 @@ class Link_Preview {
 				}
 			}
 		}
+		// Attempt to set a featured image
+		if ( ! isset( $data['featured'] ) ) {
+			if ( isset( $data['photo'] ) && is_array( $data['photo'] ) && 1 === count( $data['photo'] ) ) {
+				$data['featured'] = $data['photo'];
+				unset( $data['photo'] );
+			}
+		}
 
 		/**
 		 * Parse additionally by plugin.
@@ -115,6 +122,21 @@ class Link_Preview {
 			return $content;
 		}
 		return self::mergeparse( $content, $url );
+	}
+
+	public static function simple_parse( $url ) {
+		$parse = self::parse( $url );
+		if ( is_wp_error( $parse ) ) {
+			return $parse;
+		}
+		$unset = array( 'raw', 'content' );
+		foreach ( $unset as $u ) {
+			if ( isset( $parse[$u] ) ) {
+				unset( $parse[$u] );
+			}
+		}
+		return $parse;
+
 	}
 }
 

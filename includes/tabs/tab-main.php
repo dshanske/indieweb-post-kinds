@@ -7,7 +7,7 @@
  */
 
 if ( isset( $cite['category'] ) ) {
-	$tags = $mf2_post->get_single( $cite['category'] );
+	$tags = $cite['category'];
 	if ( is_array( $tags ) ) {
 		$tags = implode( ';', $tags );
 	}
