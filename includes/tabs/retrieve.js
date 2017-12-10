@@ -48,13 +48,13 @@ jQuery( document ).on( 'click', '.kind-retrieve-button', function($) {
       			}
       			if ( ( 'author' in response ) && ( typeof response['author'] != 'string' ) ) {
 	      			if ( 'name' in response['author'] ) {
-  	      				jQuery("#cite_author_name").val(response['author']['name']) ;
+  	      				jQuery("#cite_author_name").val(response['author']['name'].join(";") ) ;
     		  		}
         			if ( 'photo' in response['author'] ) {
-          			jQuery("#cite_author_photo").val(response['author']['photo']) ;
+          			jQuery("#cite_author_photo").val(response['author']['photo'].join(";") ) ;
         			}
         			if ( 'url' in response['author'] ) {
-          			jQuery("#cite_author_url").val(response['author']['url']) ;
+          			jQuery("#cite_author_url").val(response['author']['url'].join(";") ) ;
         			}
 			}
 			if ( 'category' in response ) {
