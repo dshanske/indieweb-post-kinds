@@ -2,10 +2,10 @@ jQuery( document ).on( 'click', '.kind-retrieve-button', function($) {
 	jQuery.ajax({ 
 			type: 'GET',
 	        	// Here we supply the endpoint url, as opposed to the action in the data object with the admin-ajax method
-			url: rest_object.api_url + 'parse/', 
+			url: pk_link_preview.api_url + 'parse/', 
 			beforeSend: function ( xhr ) {
 			       	// Here we set a header 'X-WP-Nonce' with the nonce as opposed to the nonce in the data object with admin-ajax
-				xhr.setRequestHeader( 'X-WP-Nonce', rest_object.api_nonce );
+				xhr.setRequestHeader( 'X-WP-Nonce', pk_link_preview.api_nonce );
 			},
 			data: { 
 				kindurl: jQuery("#cite_url").val()
@@ -60,7 +60,7 @@ jQuery( document ).on( 'click', '.kind-retrieve-button', function($) {
 			if ( 'category' in response ) {
 				jQuery("#cite_tags").val( response['category'].join(";") );
 			}
-		alert( rest_object.link_preview_success_message );
+		alert( pk_link_preview.success_message );
 		console.log( response );
 		},
 	  fail: function( response ) {

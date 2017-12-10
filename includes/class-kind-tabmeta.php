@@ -59,11 +59,11 @@ class Kind_Tabmeta {
 			// Provide a global object to our JS file containing our REST API endpoint, and API nonce
 			// Nonce must be 'wp_rest'
 			wp_localize_script(
-				'kindmeta-response', 'rest_object',
+				'kindmeta-response', 'pk_link_preview',
 				array(
 					'api_nonce'                    => wp_create_nonce( 'wp_rest' ),
 					'api_url'                      => rest_url( '/link-preview/1.0/' ),
-					'link_preview_success_message' => __( 'Your URL has been successfully retrieved and parsed', 'indieweb-post-kinds' ),
+					'success_message' => __( 'Your URL has been successfully retrieved and parsed', 'indieweb-post-kinds' ),
 				)
 			);
 
