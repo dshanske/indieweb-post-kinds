@@ -76,20 +76,20 @@ class Kind_Tabmeta {
 		}
 	}
 
-        public static function implode( $array ) {
-                $array = kind_flatten_array( $array );
-                if ( ! is_array( $array ) ) {
-                        return $array;
-                }
-                return implode( ';', $array );
-        }
+	public static function implode( $array ) {
+			$array = kind_flatten_array( $array );
+		if ( ! is_array( $array ) ) {
+				return $array;
+		}
+			return implode( ';', $array );
+	}
 
-        public static function explode( $string ) {
-                if ( ! is_string( $string ) ) {
-                        return $string;
-                }
-                return kind_flatten_array( explode( ';', $string ) );
-        }
+	public static function explode( $string ) {
+		if ( ! is_string( $string ) ) {
+				return $string;
+		}
+			return kind_flatten_array( explode( ';', $string ) );
+	}
 
 	public static function kind_get_timezones() {
 		$o       = array();
@@ -98,10 +98,10 @@ class Kind_Tabmeta {
 		foreach ( $t_zones as $a ) {
 			$t = '';
 			try {
-					  // this throws exception for 'US/Pacific-New'
-					$zone = new DateTimeZone( $a );
-				$seconds  = $zone->getOffset( new DateTime( 'now', $zone ) );
-					$o[]  = self::tz_seconds_to_offset( $seconds );
+				// this throws exception for 'US/Pacific-New'
+				$zone    = new DateTimeZone( $a );
+				$seconds = $zone->getOffset( new DateTime( 'now', $zone ) );
+				$o[]     = self::tz_seconds_to_offset( $seconds );
 			} // exceptions must be catched, else a blank page
 			catch ( Exception $e ) {
 				die( 'Exception : ' . $e->getMessage() . '<br />' );
@@ -206,8 +206,8 @@ class Kind_Tabmeta {
 		$cite     = $mf2_post->fetch();
 		$author   = ifset( $cite['author'], array() );
 		if ( ! isset( $cite['url'] ) ) {
-			if ( array_key_exists( 'kindurl', $_GET ) && Link_Preview::is_valid_url( $_GET[ 'kindurl' ] ) ) {
-				$cite = Link_Preview::parse( $_GET['kindurl'] );
+			if ( array_key_exists( 'kindurl', $_GET ) && Link_Preview::is_valid_url( $_GET['kindurl'] ) ) {
+				$cite   = Link_Preview::parse( $_GET['kindurl'] );
 				$author = ifset( $cite['author'], array() );
 			}
 		}

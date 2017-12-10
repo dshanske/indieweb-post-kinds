@@ -131,8 +131,8 @@ class Link_Preview {
 		}
 		$unset = array( 'raw', 'content' );
 		foreach ( $unset as $u ) {
-			if ( isset( $parse[$u] ) ) {
-				unset( $parse[$u] );
+			if ( isset( $parse[ $u ] ) ) {
+				unset( $parse[ $u ] );
 			}
 		}
 		return $parse;
