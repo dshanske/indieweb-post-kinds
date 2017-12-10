@@ -259,7 +259,7 @@ class Kind_View {
 		if ( array_key_exists( 'url', $author ) && is_array( $author['url'] ) ) {
 			$author['url'] = $author['url'][0];
 		}
-		if ( is_array( $author['name'] ) ) {
+		if ( array_key_exists( 'name', $author ) && is_array( $author['name'] ) ) {
 			$author['name'] = $author['name'][0];
 		}
 

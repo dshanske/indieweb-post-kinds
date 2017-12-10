@@ -61,8 +61,8 @@ class Kind_Tabmeta {
 			wp_localize_script(
 				'kindmeta-response', 'pk_link_preview',
 				array(
-					'api_nonce'                    => wp_create_nonce( 'wp_rest' ),
-					'api_url'                      => rest_url( '/link-preview/1.0/' ),
+					'api_nonce'       => wp_create_nonce( 'wp_rest' ),
+					'api_url'         => rest_url( '/link-preview/1.0/' ),
 					'success_message' => __( 'Your URL has been successfully retrieved and parsed', 'indieweb-post-kinds' ),
 				)
 			);
