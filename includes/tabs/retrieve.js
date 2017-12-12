@@ -67,13 +67,9 @@ jQuery( document ).on( 'click', '.kind-retrieve-button', function($) {
 		  	console.log( response );
 			alert(response.message);
 		},
-	  error: function() {
-		  if ( 'message' in response ) {
-			  alert( response.message );
-			  return;
-		  }
-		  alert( 'Error: Undefined URL' );
-		  console.log( response );
+	  error: function( jqXHR, textStatus, errorThrown) {
+	     	  alert( textStatus );
+		  console.log( jqXHR );
 		}
 	});
 })
