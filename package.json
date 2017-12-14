@@ -4,7 +4,9 @@
   },
   "devDependencies": {
     "eslint": "^4.13.1",
+    "eslint-config-grunt": "^2.0.1",
     "eslint-config-wordpress": "^2.0.0",
+    "eslint-plugin-pabigot": "^1.1.0",
     "eslint-plugin-wordpress": "^0.1.0",
     "grunt": "^1.0.1",
     "grunt-checktextdomain": "^1.0.1",

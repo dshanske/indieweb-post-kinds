@@ -59,7 +59,7 @@ class Kind_Tabmeta {
 			// Provide a global object to our JS file containing our REST API endpoint, and API nonce
 			// Nonce must be 'wp_rest'
 			wp_localize_script(
-				'kindmeta-response', 'pk_link_preview',
+				'kindmeta-response', 'PKAPI',
 				array(
 					'api_nonce'       => wp_create_nonce( 'wp_rest' ),
 					'api_url'         => rest_url( '/link-preview/1.0/' ),

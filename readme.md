@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like  
-**Stable tag:** 2.7.4  
+**Stable tag:** 2.7.5  
 **Requires at least:** 4.7  
 **Requires PHP:** 5.3  
 **Tested up to:** 4.9.1  
@@ -162,6 +162,17 @@ At the moment, a fully automatic bookmarklet is not yet part of the plugin but y
 
 So - `https://www.example.com/wp-admin/post-new.php?kindurl=URL&kind=like` will automatically set a like with the URL
 
+### Can I post automatically outside the Post Editor? ###
+
+You can now post using the REST API, with the additional namespace of `link-preview/1.0/parse`. The parameters are:
+* kind - The name of the kind, all lowercase
+* kindurl - The URL being responded to, if any
+* status - Publish Status ( published if not added )
+* content - Post Content
+
+However, you will have to authenticate to the REST API for this to work. There are a few options [here](https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/). Once you have an
+authentication method, you will have to pass it along with your request. Using the [Micropub](https://wordpress.org/plugins/micropub) plugin for WordPress is easier in most ways.
+
 ### How do I get support? ###
 
 The Development version of the plugin is hosted at [Github](https://github.com/dshanske/indieweb-post-kinds). You can file issues there.
@@ -178,6 +189,13 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 
 ## Changelog ##
+
+### 2.7.5 ( 2017-12-14 ) ###
+* Remove support for showing settings in REST API due issue with array property
+* Add support for automatically retrieving when URL passed through from Micropub
+* Add support for automatically retrieving when URL passed through as query variable in post UI
+* Add support for simple API using REST to post
+* Multi-author data no longer dropped but not fully supported
 
 ### 2.7.4 ( 2017-12-09 ) ###
 * Check for missing properties in all templates which should only happen if improperly filled 
