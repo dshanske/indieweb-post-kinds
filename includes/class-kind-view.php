@@ -255,6 +255,14 @@ class Kind_View {
 		if ( ! empty( $card ) ) {
 			return $card;
 		}
+		// Temporarily drop multi-data on display
+		if ( array_key_exists( 'url', $author ) && is_array( $author['url'] ) ) {
+			$author['url'] = $author['url'][0];
+		}
+		if ( array_key_exists( 'name', $author ) && is_array( $author['name'] ) ) {
+			$author['name'] = $author['name'][0];
+		}
+
 		// If no filter generated the card, generate the card.
 		switch ( $args['display'] ) {
 			case 'photo':

@@ -111,5 +111,13 @@ function kind_display( $post_id = null ) {
 		echo Kind_View::get_display( $post_id );
 }
 
-
+function kind_flatten_array( $array ) {
+	if ( ! is_array( $array ) ) {
+		return $array;
+	}
+	if ( 1 === count( $array ) && wp_is_numeric_array( $array ) ) {
+		return $array[0];
+	}
+	return array_map( 'kind_flatten_array', $array );
+}
 

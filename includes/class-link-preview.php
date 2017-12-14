@@ -18,7 +18,7 @@ class Link_Preview {
 			'link-preview/1.0', '/parse', array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( 'Link_Preview', 'callback' ),
+					'callback'            => array( 'Link_Preview', 'read' ),
 					'args'                => array(
 						'kindurl' => array(
 							'required'          => true,
@@ -27,7 +27,30 @@ class Link_Preview {
 						),
 					),
 					'permission_callback' => function () {
-						return current_user_can( 'edit_posts' );
+						return current_user_can( 'publish_posts' );
+					},
+				),
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( 'Link_Preview', 'create' ),
+					'args'                => array(
+						'kindurl' => array(
+							'validate_callback' => array( 'Link_Preview', 'is_valid_url' ),
+							'sanitize_callback' => 'esc_url_raw',
+						),
+						'kind'    => array(
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_key',
+						),
+						'content' => array(
+							'sanitize_callback' => 'wp_kses_post',
+						),
+						'status'  => array(
+							'sanitize_callback' => 'sanitize_key',
+						),
+					),
+					'permission_callback' => function() {
+						return current_user_can( 'publish_posts' );
 					},
 				),
 			)
@@ -77,6 +100,13 @@ class Link_Preview {
 				}
 			}
 		}
+		// Attempt to set a featured image
+		if ( ! isset( $data['featured'] ) ) {
+			if ( isset( $data['photo'] ) && is_array( $data['photo'] ) && 1 === count( $data['photo'] ) ) {
+				$data['featured'] = $data['photo'];
+				unset( $data['photo'] );
+			}
+		}
 
 		/**
 		 * Parse additionally by plugin.
@@ -89,7 +119,7 @@ class Link_Preview {
 	}
 
 	// Callback Handler
-	public static function callback( $request ) {
+	public static function read( $request ) {
 		// We don't need to specifically check the nonce like with admin-ajax. It is handled by the API.
 		$params = $request->get_params();
 		if ( isset( $params['kindurl'] ) && ! empty( $params['kindurl'] ) ) {
@@ -100,6 +130,52 @@ class Link_Preview {
 				'status' => 400,
 			)
 		);
+	}
+
+	// Create Post
+	public static function create( $request ) {
+		$params = $request->get_params();
+		if ( ! isset( $params['kind'] ) ) {
+			return new WP_Error(
+				'incomplete', __( 'Missing Kind', 'indieweb-post-kinds' ), array(
+					'status' => 400,
+				)
+			);
+		}
+		if ( ! isset( $params['kindurl'] ) && ! isset( $params['content'] ) ) {
+			return new WP_Error(
+				'incomplete', __( 'Missing Content or KindURL', 'indieweb-post-kinds' ), array(
+					'status' => 400,
+				)
+			);
+		}
+		if ( ! isset( $params['status'] ) ) {
+			$params['status'] = 'publish';
+		}
+		$postarr = array(
+			'post_status' => $params['status'],
+			'post_author' => get_current_user_id(),
+		);
+		if ( isset( $params['kindurl'] ) ) {
+			$parse                 = self::simple_parse( $params['kindurl'] );
+			$postarr['post_title'] = $parse['name'];
+			$property              = Kind_Taxonomy::get_kind_info( $params['kind'], 'property' );
+			if ( ! $property ) {
+				return;
+			}
+			$postarr['meta_input'] = array(
+				'mf2_' . $property => $parse,
+			);
+		}
+		if ( isset( $params['content'] ) ) {
+			$postarr['post_content'] = $params['content'];
+		}
+		$ret = wp_insert_post( $postarr, true );
+		if ( is_wp_error( $ret ) ) {
+			return $ret;
+		}
+		set_post_kind( $ret, $params['kind'] );
+		return $ret;
 	}
 
 	public static function parse( $url ) {
@@ -115,6 +191,19 @@ class Link_Preview {
 			return $content;
 		}
 		return self::mergeparse( $content, $url );
+	}
+
+	public static function simple_parse( $url ) {
+		$parse = self::parse( $url );
+		if ( is_wp_error( $parse ) ) {
+			return $parse;
+		}
+		$unset = array( 'raw', 'content', 'unfiltered' );
+		foreach ( $unset as $u ) {
+			unset( $parse[ $u ] );
+		}
+		return $parse;
+
 	}
 }
 

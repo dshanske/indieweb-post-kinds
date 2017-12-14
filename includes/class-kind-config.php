@@ -28,28 +28,28 @@ class Kind_Config {
 		$args = array(
 			'type'         => 'array',
 			'description'  => 'Kinds Enabled on This Site',
-			'show_in_rest' => true,
+			'show_in_rest' => false,
 			'default'      => array( 'article', 'reply', 'bookmark' ),
 		);
 		register_setting( 'iwt_options', 'kind_termslist', $args );
 		$args = array(
 			'type'         => 'string',
 			'description'  => 'Default Kind',
-			'show_in_rest' => true,
+			'show_in_rest' => false,
 			'default'      => 'note',
 		);
 		register_setting( 'iwt_options', 'kind_default', $args );
 		$args = array(
 			'type'         => 'boolean',
 			'description'  => 'Rich Embed Support for Whitelisted Sites',
-			'show_in_rest' => true,
+			'show_in_rest' => false,
 			'default'      => 1,
 		);
 		register_setting( 'iwt_options', 'kind_embeds', $args );
 		$args = array(
 			'type'         => 'string',
 			'description'  => 'Display Preferences for Before Kind',
-			'show_in_rest' => true,
+			'show_in_rest' => false,
 			'default'      => 'icon',
 		);
 		register_setting( 'iwt_options', 'kind_display', $args );
