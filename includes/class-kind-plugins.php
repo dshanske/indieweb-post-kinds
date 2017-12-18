@@ -111,6 +111,9 @@ class Kind_Plugins {
 	}
 
 	public static function micropub_parse( $input ) {
+		if ( ! input ) {
+			return $input;
+		}
 		$parsed = array( 'bookmark-of', 'like-of', 'favorite-of' );
 		foreach ( $input['properties'] as $property => $value ) {
 			if ( ! wp_is_numeric_array( $value ) ) {
