@@ -114,6 +114,10 @@ class Kind_Plugins {
 		if ( ! $input ) {
 			return $input;
 		}
+		// q indicates a get query
+		if ( isset ( $input['q'] ) ) {
+			return $input;
+		}
 		$parsed = array( 'bookmark-of', 'like-of', 'favorite-of' );
 		foreach ( $input['properties'] as $property => $value ) {
 			if ( ! wp_is_numeric_array( $value ) ) {
