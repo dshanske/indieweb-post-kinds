@@ -111,7 +111,7 @@ class Kind_Plugins {
 	}
 
 	public static function micropub_parse( $input ) {
-		if ( ! input ) {
+		if ( ! $input ) {
 			return $input;
 		}
 		$parsed = array( 'bookmark-of', 'like-of', 'favorite-of' );
