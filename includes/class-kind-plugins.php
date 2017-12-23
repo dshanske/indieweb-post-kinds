@@ -56,10 +56,36 @@ class Kind_Plugins {
 			return;
 		}
 
+		if ( isset( $input['properties']['favorite-of'] ) ) {
+			set_post_kind( $wp_args['ID'], 'favorite' );
+			return;
+		}
+
 		if ( isset( $input['properties']['bookmark-of'] ) || isset( $input['properties']['bookmark'] ) ) {
 			set_post_kind( $wp_args['ID'], 'bookmark' );
 			return;
 		}
+
+		if ( isset( $input['properties']['watch-of'] ) || isset( $input['properties']['watch'] ) ) {
+			set_post_kind( $wp_args['ID'], 'watch' );
+			return;
+		}
+
+		if ( isset( $input['properties']['jam-of'] ) || isset( $input['properties']['jam'] ) ) {
+			set_post_kind( $wp_args['ID'], 'jam' );
+			return;
+		}
+
+		if ( isset( $input['properties']['listen-of'] ) || isset( $input['properties']['listen'] ) ) {
+			set_post_kind( $wp_args['ID'], 'listen' );
+			return;
+		}
+
+		if ( isset( $input['properties']['play-of'] ) || isset( $input['properties']['play'] ) ) {
+			set_post_kind( $wp_args['ID'], 'play' );
+			return;
+		}
+
 
 		if ( isset( $input['properties']['in-reply-to'] ) ) {
 			set_post_kind( $wp_args['ID'], 'reply' );
