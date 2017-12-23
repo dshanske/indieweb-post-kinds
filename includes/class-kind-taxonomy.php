@@ -343,7 +343,7 @@ class Kind_Taxonomy {
 				'name'            => __( 'Watches', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Watched', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
 				'property'        => 'watch', // microformats 2 property
-				'format'          => 'video-of', // Post Format that maps to this
+				'format'          => 'watch-of', // Post Format that maps to this
 				'description'     => __( 'watching a movie, television show, online video, play or other visual-based event', 'indieweb-post-kinds' ),
 				'description-url' => 'http://indieweb.org/watch',
 				'show'            => true, // Show in Settings
@@ -372,7 +372,7 @@ class Kind_Taxonomy {
 				'singular_name'   => __( 'Play', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Playing', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Played', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
-				'property'        => 'play', // microformats 2 property
+				'property'        => 'play-of', // microformats 2 property
 				'format'          => 'status', // Post Format that maps to this
 				'description'     => __( 'playing a game', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/game_play',

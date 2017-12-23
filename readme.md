@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like  
-**Stable tag:** 2.7.5  
+**Stable tag:** 2.7.6  
 **Requires at least:** 4.7  
 **Requires PHP:** 5.3  
 **Tested up to:** 4.9.1  
@@ -189,6 +189,14 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 
 ## Changelog ##
+
+### 2.7.6 ( 2017-12-23 ) ###
+* Add audio kind view template
+* Amend video kind template to include u-video
+* Bypass micropub enhancements if micropub query as was generating error
+* Add photo capability to checkin template
+* Add safety check to Micropub filter to ensure not corrupting data
+
 
 ### 2.7.5 ( 2017-12-14 ) ###
 * Remove support for showing settings in REST API due issue with array property
