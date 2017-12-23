@@ -45,10 +45,6 @@ class Kind_Plugins {
 			set_post_kind( $wp_args['ID'], 'checkin' );
 			return;
 		}
-		if ( isset( $input['properties']['in-reply-to'] ) ) {
-			set_post_kind( $wp_args['ID'], 'reply' );
-			return;
-		}
 
 		if ( isset( $input['properties']['repost-of'] ) ) {
 			set_post_kind( $wp_args['ID'], 'repost' );
@@ -60,14 +56,19 @@ class Kind_Plugins {
 			return;
 		}
 
-		// Video & audio come before photo, because either of these could contain a photo
-		if ( isset( $input['properties']['video'] ) || isset( $_FILES['video'] ) ) {
-			set_post_kind( $wp_args['ID'], 'video' );
+		if ( isset( $input['properties']['bookmark-of'] ) || isset( $input['properties']['bookmark'] ) ) {
+			set_post_kind( $wp_args['ID'], 'bookmark' );
 			return;
 		}
 
-		if ( isset( $input['properties']['audio'] ) || isset( $_FILES['audio'] ) ) {
-			set_post_kind( $wp_args['ID'], 'audio' );
+		if ( isset( $input['properties']['in-reply-to'] ) ) {
+			set_post_kind( $wp_args['ID'], 'reply' );
+			return;
+		}
+
+		// Video & audio come before photo, because either of these could contain a photo
+		if ( isset( $input['properties']['video'] ) || isset( $_FILES['video'] ) ) {
+			set_post_kind( $wp_args['ID'], 'video' );
 			return;
 		}
 
@@ -76,8 +77,8 @@ class Kind_Plugins {
 			return;
 		}
 
-		if ( isset( $input['properties']['bookmark-of'] ) || isset( $input['properties']['bookmark'] ) ) {
-			set_post_kind( $wp_args['ID'], 'bookmark' );
+		if ( isset( $input['properties']['audio'] ) || isset( $_FILES['audio'] ) ) {
+			set_post_kind( $wp_args['ID'], 'audio' );
 			return;
 		}
 
@@ -92,6 +93,7 @@ class Kind_Plugins {
 				return;
 			}
 		}
+
 		if ( ! empty( $input['properties']['name'] ) ) {
 			$name    = trim( $input['properties']['name'] );
 			$content = trim( $input['properties']['content'] );
