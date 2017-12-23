@@ -45,13 +45,13 @@ if ( $cite ) {
 
 <?php
 if ( $photos && ! has_post_thumbnail( get_the_ID() ) ) {
-        echo gallery_shortcode(
-                array(
-                        'id'      => get_the_ID(),
-                        'size'    => 'large',
-                        'columns' => 1,
-                        'link'    => 'file',
-                )
-	);
+		echo gallery_shortcode(
+			array(
+				'id'      => get_the_ID(),
+				'size'    => 'large',
+				'columns' => 1,
+				'link'    => 'file',
+			)
+		);
 }
 

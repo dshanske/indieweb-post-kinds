@@ -4,9 +4,9 @@
  *
  */
 
-$mf2_post    = new MF2_Post( get_the_ID() );
-$audios      = get_attached_media( 'audio', get_the_ID() );
-$cite        = $mf2_post->fetch();
+$mf2_post = new MF2_Post( get_the_ID() );
+$audios   = get_attached_media( 'audio', get_the_ID() );
+$cite     = $mf2_post->fetch();
 if ( ! $cite ) {
 	$cite = array();
 }

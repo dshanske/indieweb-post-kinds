@@ -36,7 +36,7 @@ if ( $videos && ! has_post_thumbnail( get_the_ID() ) ) {
 	echo wp_video_shortcode(
 		array(
 			'poster' => $poster,
-			'class' => 'wp-video-shortcode u-video'
+			'class'  => 'wp-video-shortcode u-video',
 		)
 	);
 } else {
