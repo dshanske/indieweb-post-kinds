@@ -20,7 +20,6 @@ class Kind_Config {
 	 */
 	public static function init() {
 		add_action( 'admin_init', array( 'Kind_Config', 'admin_init' ) );
-		add_action( 'after_setup_theme', array( 'Kind_Config', 'remove_post_formats' ), 11 );
 		add_action( 'admin_menu', array( 'Kind_Config', 'admin_menu' ), 11 );
 		// Add post help tab
 		add_action( 'load-post.php', array( 'Kind_Config', 'add_post_help_tab' ), 20 );
