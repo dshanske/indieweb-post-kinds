@@ -30,28 +30,28 @@ class Kind_Tabmeta {
 
 			wp_enqueue_script(
 				'jquery-ui-timepicker',
-				plugins_url( 'indieweb-post-kinds/includes/tabs/jquery.timepicker.min.js' ),
+				plugins_url( '/includes/tabs/jquery.timepicker.min.js', dirname( __FILE__ ) ),
 				array( 'jquery' ),
 				self::$version
 			);
 
 			wp_enqueue_script(
 				'kindmeta-time',
-				plugins_url( 'indieweb-post-kinds/includes/tabs/time.js' ),
+				plugins_url( '/includes/tabs/time.js', dirname( __FILE__ ) ),
 				array( 'jquery' ),
 				self::$version
 			);
 
 			wp_enqueue_script(
 				'kindmeta-tabs',
-				plugins_url( 'indieweb-post-kinds/includes/tabs/tabs.js' ),
+				plugins_url( '/includes/tabs/tabs.js', dirname( __FILE__ ) ),
 				array( 'jquery' ),
 				self::$version
 			);
 
 			wp_enqueue_script(
 				'kindmeta-response',
-				plugins_url( 'indieweb-post-kinds/includes/tabs/retrieve.js' ),
+				plugins_url( '/includes/tabs/retrieve.js', dirname( __FILE__ ) ),
 				array( 'jquery' ),
 				self::$version
 			);
