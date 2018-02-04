@@ -1,9 +1,9 @@
-(function( $ ) {
+( function( $ ) {
 	'use strict';
-	$(function() {
+	$( function() {
 
 		// Grab the wrapper for the Navigation Tabs
-		var navTabs = $( '#kindproperties-navigation').children( '.nav-tab-wrapper' ),
+		var navTabs = $( '#kindproperties-navigation' ).children( '.nav-tab-wrapper' ),
 			tabIndex = null;
 
 		/* Whenever each of the navigation tabs is clicked, check to see if it has the 'nav-tab-active'
@@ -13,7 +13,7 @@
 		 * Next, when a new tab is marked as active, the corresponding child view needs to be marked
 		 * as visible. We do this by toggling the 'hidden' class attribute of the corresponding variables.
 		 */
-		navTabs.children().each(function() {
+		navTabs.children().each( function() {
 
 			$( this ).on( 'click', function( evt ) {
 
@@ -52,4 +52,4 @@
 
 	});
 
-})( jQuery );
+}( jQuery ) );

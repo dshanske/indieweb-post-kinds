@@ -4,7 +4,7 @@ module.exports = function(grunt) {
   grunt.initConfig({
 	  eslint: {
           	retrieve: {
-		              src: ['includes/tabs/retrieve.js']
+		              src: ['js/retrieve.js', 'js/time.js', 'js/tabs.js' ]
 	          }
  	   },
     checktextdomain: {

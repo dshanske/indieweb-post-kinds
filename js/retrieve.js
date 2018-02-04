@@ -1,4 +1,19 @@
-jQuery( document ).on( 'click', '.kind-retrieve-button', function( $ ) {
+jQuery( document ).ready( function( $ ) {
+
+function clearPostProperties() {
+	var fieldIds = [
+		'url'
+	];
+		if ( ! confirm( 'Are you sure you want to clear post propertie?' ) ) {
+			return;
+		}
+		$.each( fieldIds, function( count, val ) {
+			document.getElementById( val ).value = '';
+		});
+}
+
+
+function getLinkPreview() {
 	jQuery.ajax({
 		type: 'GET',
 
@@ -75,5 +90,11 @@ jQuery( document ).on( 'click', '.kind-retrieve-button', function( $ ) {
 			alert( textStatus );
 			console.log( jqXHR );
 		}
+	});
+}
+
+jQuery( document )
+	.on( 'click', '.kind-retrieve-button', function( $ ) {
+		getLinkPreview();
 	});
 });
