@@ -86,7 +86,6 @@ class Kind_Plugins {
 			return;
 		}
 
-
 		if ( isset( $input['properties']['in-reply-to'] ) ) {
 			set_post_kind( $wp_args['ID'], 'reply' );
 			return;
@@ -143,7 +142,7 @@ class Kind_Plugins {
 			return $input;
 		}
 		// q indicates a get query
-		if ( isset ( $input['q'] ) ) {
+		if ( isset( $input['q'] ) ) {
 			return $input;
 		}
 		$parsed = array( 'bookmark-of', 'like-of', 'favorite-of' );

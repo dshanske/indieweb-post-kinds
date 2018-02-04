@@ -8,11 +8,17 @@
 class Kind_Tabmeta {
 	public static $version;
 	public static function init() {
+		add_action( 'edit_form_after_title', array( 'Kind_Tabmeta', 'after_title_metabox' ) );
 		// Add meta box to new post/post pages only
 		add_action( 'load-post.php', array( 'Kind_Tabmeta', 'kindbox_setup' ) );
 		add_action( 'load-post-new.php', array( 'Kind_Tabmeta', 'kindbox_setup' ) );
 		add_action( 'save_post', array( 'Kind_Tabmeta', 'save_post' ), 8, 2 );
 		add_action( 'transition_post_status', array( 'Kind_Tabmeta', 'transition_post_status' ), 5, 3 );
+	}
+
+	public static function after_title_metabox( $post ) {
+
+			do_meta_boxes( null, 'kind_after_title', $post );
 	}
 
 	/* Meta box setup function. */
@@ -195,7 +201,7 @@ class Kind_Tabmeta {
 			esc_html__( 'Post Properties', 'indieweb-post-kinds' ),    // Title
 			array( 'Kind_Tabmeta', 'display_metabox' ),   // Callback function
 			'post',         // Admin page (or post type)
-			'normal',         // Context
+			'kind_after_title',         // Context
 			'default'         // Priority
 		);
 	}

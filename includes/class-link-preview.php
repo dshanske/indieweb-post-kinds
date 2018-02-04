@@ -178,6 +178,11 @@ class Link_Preview {
 		return $ret;
 	}
 
+	public static function addscheme( $url, $scheme = 'http://' ) {
+		return wp_parse_url( $url, PHP_URL_SCHEME ) === null ? $scheme . $url : $url;
+	}
+
+
 	public static function parse( $url ) {
 		if ( ! self::is_valid_url( $url ) ) {
 			return new WP_Error(
