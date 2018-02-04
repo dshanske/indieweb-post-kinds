@@ -18,7 +18,7 @@ class Kind_Tabmeta {
 
 	public static function after_title_metabox( $post ) {
 
-			do_meta_boxes( null, 'kind_after_title', $post );
+			do_meta_boxes( get_current_screen(), 'kind_after_title', $post );
 	}
 
 	/* Meta box setup function. */
@@ -36,28 +36,28 @@ class Kind_Tabmeta {
 
 			wp_enqueue_script(
 				'jquery-ui-timepicker',
-				plugins_url( '/includes/tabs/jquery.timepicker.min.js', dirname( __FILE__ ) ),
+				plugins_url( 'js/jquery.timepicker.min.js', dirname( __FILE__ ) ),
 				array( 'jquery' ),
 				self::$version
 			);
 
 			wp_enqueue_script(
 				'kindmeta-time',
-				plugins_url( '/includes/tabs/time.js', dirname( __FILE__ ) ),
+				plugins_url( 'js/time.js', dirname( __FILE__ ) ),
 				array( 'jquery' ),
 				self::$version
 			);
 
 			wp_enqueue_script(
 				'kindmeta-tabs',
-				plugins_url( '/includes/tabs/tabs.js', dirname( __FILE__ ) ),
+				plugins_url( 'js/tabs.js', dirname( __FILE__ ) ),
 				array( 'jquery' ),
 				self::$version
 			);
 
 			wp_enqueue_script(
 				'kindmeta-response',
-				plugins_url( '/includes/tabs/retrieve.js', dirname( __FILE__ ) ),
+				plugins_url( 'js/retrieve.js', dirname( __FILE__ ) ),
 				array( 'jquery' ),
 				self::$version
 			);
