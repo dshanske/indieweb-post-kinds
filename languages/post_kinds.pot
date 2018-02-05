@@ -1,52 +1,52 @@
-# Copyright (C) 2017 David Shanske
+# Copyright (C) 2018 David Shanske
 # This file is distributed under the same license as the Post Kinds package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Kinds 2.7.6\n"
+"Project-Id-Version: Post Kinds 2.8.0\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2017-12-23 18:49:01+00:00\n"
+"POT-Creation-Date: 2018-02-05 01:43:57+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2018-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "X-Generator: grunt-wp-i18n 0.4.9\n"
 
-#: includes/class-kind-config.php:73
+#: includes/class-kind-config.php:72
 msgid "Content Options"
 msgstr ""
 
-#: includes/class-kind-config.php:82
+#: includes/class-kind-config.php:81
 msgid "Select All Kinds You Wish to Use"
 msgstr ""
 
-#: includes/class-kind-config.php:89
+#: includes/class-kind-config.php:88
 msgid "Default Kind for New Posts"
 msgstr ""
 
-#: includes/class-kind-config.php:97
+#: includes/class-kind-config.php:96
 msgid "Embed Sites into your Response"
 msgstr ""
 
-#: includes/class-kind-config.php:106
+#: includes/class-kind-config.php:105
 msgid "Display Before Kind"
 msgstr ""
 
-#: includes/class-kind-config.php:113
+#: includes/class-kind-config.php:112
 msgid "Show Icon"
 msgstr ""
 
-#: includes/class-kind-config.php:114
+#: includes/class-kind-config.php:113
 msgid "Show Text"
 msgstr ""
 
-#: includes/class-kind-config.php:115
+#: includes/class-kind-config.php:114
 msgid "Display Nothing"
 msgstr ""
 
-#: includes/class-kind-config.php:123
+#: includes/class-kind-config.php:122
 msgid "Response Content Allowed Html Elements"
 msgstr ""
 
@@ -54,19 +54,19 @@ msgstr ""
 msgid "Post Kinds"
 msgstr ""
 
-#: includes/class-kind-config.php:261
+#: includes/class-kind-config.php:260
 msgid "Indieweb Post Kinds"
 msgstr ""
 
-#: includes/class-kind-config.php:263
+#: includes/class-kind-config.php:262
 msgid "Adds support for responding and interacting with other sites."
 msgstr ""
 
-#: includes/class-kind-config.php:276 includes/class-kind-tabmeta.php:195
+#: includes/class-kind-config.php:275
 msgid "Post Properties"
 msgstr ""
 
-#: includes/class-kind-config.php:277
+#: includes/class-kind-config.php:276
 msgid ""
 "\n"
 " \t\t\t\t\t\t\t<p> The Post Properties tab represents the Microformats "
@@ -110,28 +110,32 @@ msgid ""
 " \t\t\t\t\t\t"
 msgstr ""
 
-#: includes/class-kind-tabmeta.php:66
+#: includes/class-kind-metabox.php:72
 msgid "Your URL has been successfully retrieved and parsed"
 msgstr ""
 
-#: includes/class-kind-tabmeta.php:146
+#: includes/class-kind-metabox.php:153
 msgid "Yes"
 msgstr ""
 
-#: includes/class-kind-tabmeta.php:147
+#: includes/class-kind-metabox.php:154
 msgid "No"
 msgstr ""
 
-#: includes/class-kind-tabmeta.php:148
+#: includes/class-kind-metabox.php:155
 msgid "Maybe"
 msgstr ""
 
-#: includes/class-kind-tabmeta.php:149
+#: includes/class-kind-metabox.php:156
 msgid "Interested"
 msgstr ""
 
-#: includes/class-kind-tabmeta.php:151 includes/class-kind-taxonomy.php:322
+#: includes/class-kind-metabox.php:158 includes/class-kind-taxonomy.php:322
 msgid "RSVP"
+msgstr ""
+
+#: includes/class-kind-metabox.php:188
+msgid "Response Properties"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:211
@@ -679,7 +683,7 @@ msgid_plural " %d seconds"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-link-preview.php:129 includes/class-link-preview.php:184
+#: includes/class-link-preview.php:129 includes/class-link-preview.php:189
 msgid "Missing or Invalid URL"
 msgstr ""
 
@@ -715,84 +719,6 @@ msgstr ""
 msgid "Unknown Retrieval Error: Response Code "
 msgstr ""
 
-#: includes/tabs/tab-author.php:12
-msgid "Information on the Author or Artist of the Piece"
-msgstr ""
-
-#: includes/tabs/tab-author.php:13
-msgid "(Multiple Entries separated by semicolon)"
-msgstr ""
-
-#: includes/tabs/tab-author.php:14
-msgid "Author/Artist Name"
-msgstr ""
-
-#: includes/tabs/tab-author.php:16
-msgid "Author/Artist URL"
-msgstr ""
-
-#: includes/tabs/tab-author.php:18
-msgid "Author/Artist Photo"
-msgstr ""
-
-#: includes/tabs/tab-details.php:11
-msgid "Information on what you are responding to"
-msgstr ""
-
-#: includes/tabs/tab-details.php:13
-msgid "Site Name/Publication/Album"
-msgstr ""
-
-#: includes/tabs/tab-details.php:16
-msgid "Featured Image/Site Icon"
-msgstr ""
-
-#: includes/tabs/tab-details.php:19
-msgid "Published/Released"
-msgstr ""
-
-#: includes/tabs/tab-details.php:22
-msgid "Updated"
-msgstr ""
-
-#: includes/tabs/tab-main.php:25
-msgid ""
-"Add the URL and/or the Name/Summary You Wish to Respond To. The Retrieve "
-"button will retrieve the URL and attempt to set the values."
-msgstr ""
-
-#: includes/tabs/tab-main.php:27
-msgid "URL"
-msgstr ""
-
-#: includes/tabs/tab-main.php:33
-msgid "Name/Title"
-msgstr ""
-
-#: includes/tabs/tab-main.php:36
-msgid "Summary/Quote"
-msgstr ""
-
-#: includes/tabs/tab-main.php:39
-msgid "Tags (semicolon separated)"
-msgstr ""
-
-#: includes/tabs/tab-other.php:11
-msgid "Other Properties"
-msgstr ""
-
-#: includes/tabs/tab-other.php:14
-msgid "Start Time and End Time will be Used to Calculate Duration"
-msgstr ""
-
-#: includes/tabs/tab-other.php:15
-msgid "Start Time"
-msgstr ""
-
-#: includes/tabs/tab-other.php:17
-msgid "End Time"
-msgstr ""
-
 #: includes/views/kind-bookmark.php:32 includes/views/kind-favorite.php:33
 #: includes/views/kind-jam.php:33 includes/views/kind-like.php:32
 #: includes/views/kind-listen.php:34 includes/views/kind-watch.php:34
@@ -803,6 +729,82 @@ msgstr ""
 #: includes/views/kind-jam.php:36 includes/views/kind-listen.php:37
 #: includes/views/kind-watch.php:37
 msgid " from "
+msgstr ""
+
+#: templates/reply-metabox.php:32
+msgid "URL"
+msgstr ""
+
+#: templates/reply-metabox.php:38
+msgid "Name"
+msgstr ""
+
+#: templates/reply-metabox.php:42
+msgid "Clear"
+msgstr ""
+
+#: templates/reply-metabox.php:48
+msgid "Show Additional Details"
+msgstr ""
+
+#: templates/reply-metabox.php:52
+msgid "Summary/Quote"
+msgstr ""
+
+#: templates/reply-metabox.php:56
+msgid "Tags (semicolon separated)"
+msgstr ""
+
+#: templates/reply-metabox.php:59
+msgid "Information on the Author or Artist of the Piece"
+msgstr ""
+
+#: templates/reply-metabox.php:60
+msgid "(Multiple Entries separated by semicolon)"
+msgstr ""
+
+#: templates/reply-metabox.php:63
+msgid "Author"
+msgstr ""
+
+#: templates/reply-metabox.php:69
+msgid "Author URL"
+msgstr ""
+
+#: templates/reply-metabox.php:75
+msgid "Author Photo URL"
+msgstr ""
+
+#: templates/reply-metabox.php:79
+msgid "Information on what you are responding to"
+msgstr ""
+
+#: templates/reply-metabox.php:82
+msgid "Site Name/Publication/Album"
+msgstr ""
+
+#: templates/reply-metabox.php:88
+msgid "Featured Image"
+msgstr ""
+
+#: templates/reply-metabox.php:92
+msgid "Published/Released"
+msgstr ""
+
+#: templates/reply-metabox.php:93
+msgid "Updated"
+msgstr ""
+
+#: templates/reply-metabox.php:95
+msgid "Start Time and End Time will be Used to Calculate Duration"
+msgstr ""
+
+#: templates/reply-metabox.php:97
+msgid "Start Time"
+msgstr ""
+
+#: templates/reply-metabox.php:98
+msgid "End Time"
 msgstr ""
 
 #. Plugin URI of the plugin/theme

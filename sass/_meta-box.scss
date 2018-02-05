@@ -1,0 +1,55 @@
+#replybox-meta.is-loading .loading {
+	visibility: visible;
+}
+
+#replybox-meta, #tabbox-meta {
+	label {
+		display: block;
+	}
+	.field-row {
+		overflow: auto;
+		height: 100%;
+	}
+	.half {
+		float: left;
+		width: 46%;
+		margin: 0 1%;
+	}
+	.half:first-of-type {
+		margin-left: 0;
+		width: 48%;
+	}
+	.half:last-of-type {
+		margin-right: 0;
+		width: 49%;
+	}
+	.quarter {
+		float: left;
+		margin-left: 2%;
+		width: 12%;
+	}
+	.three-quarters {
+		float: left;
+		width: 85%;
+	}
+	.is-loading .loading {
+		visibility: visible;
+	}
+	.loading {
+		visibility: hidden;
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 10;
+		background-color: #000;
+		background-color: rgba( 0, 0, 0, 0.4 );
+	}
+	.loading-spinner {
+		margin: 0 auto;
+		display: block;
+		position: relative;
+		top: 2em;
+	}
+}

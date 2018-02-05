@@ -1,10 +1,10 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like  
-**Stable tag:** 2.7.6  
+**Stable tag:** 2.8.0  
 **Requires at least:** 4.7  
 **Requires PHP:** 5.3  
-**Tested up to:** 4.9.1  
+**Tested up to:** 4.9.2  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -197,6 +197,13 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 * Add photo capability to checkin template
 * Add safety check to Micropub filter to ensure not corrupting data
 
+### 2.8.0 ( 2018-02-?? ) ###
+* Redo metabox into new more dynamic function
+* Move metabox to default above editor
+* Hide metabox when note or article is selected
+* Show RSVP only when RSVP option is selected
+* Automatically retrieve details when URL box is updated allowing button to be removed
+* Validate URL in box client-side
 
 ### 2.7.5 ( 2017-12-14 ) ###
 * Remove support for showing settings in REST API due issue with array property

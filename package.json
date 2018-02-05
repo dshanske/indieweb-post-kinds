@@ -3,7 +3,7 @@
     "node": ">= 0.10.0"
   },
   "devDependencies": {
-    "eslint": "^4.13.1",
+    "eslint": "^4.17.0",
     "eslint-config-grunt": "^2.0.1",
     "eslint-config-wordpress": "^2.0.0",
     "eslint-plugin-pabigot": "^1.1.0",
@@ -16,6 +16,7 @@
     "grunt-git": "~0.3.3",
     "grunt-svgstore": "~1.0.0",
     "grunt-wp-i18n": "~0.4.9",
-    "grunt-wp-readme-to-markdown": "~0.8.0"
+    "grunt-wp-readme-to-markdown": "~0.8.0",
+    "timepicker": "^1.11.12"
   }
 }
