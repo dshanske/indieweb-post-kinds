@@ -52,9 +52,9 @@ class Post_Kinds_Plugin {
 		add_filter( 'plugin_action_links_$plugin', array( 'Post_Kinds_Plugin', 'settings_link' ) );
 
 		// Add Kind Post UI Configuration
-		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-tabmeta.php';
-		add_action( 'init', array( 'Kind_Tabmeta', 'init' ) );
-		Kind_Tabmeta::$version = self::$version;
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-metabox.php';
+		add_action( 'init', array( 'Kind_Metabox', 'init' ) );
+		Kind_Metabox::$version = self::$version;
 
 		// Add Kind Display Functions.
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-view.php';

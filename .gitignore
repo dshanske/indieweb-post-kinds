@@ -1,5 +1,8 @@
 build/*
 node_modules/*
+!/node_modules/timepicker
+/node_modules/timepicker/*
+!/node_modules/timepicker/jquery.timepicker.min.js
 sass/.sass-cache/*
 sass/svg/intermediate/*
 sass/symbol/*

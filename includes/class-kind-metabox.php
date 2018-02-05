@@ -1,19 +1,19 @@
 <?php
 /**
- * Post Kind Post Tabbed MetaBox Class
+ * Post Kind Post MetaBox Class
  *
  * Sets Up Tabbed Metabox in the Posting UI for Kind data.
  */
 
-class Kind_Tabmeta {
+class Kind_Metabox {
 	public static $version;
 	public static function init() {
-		add_action( 'edit_form_after_title', array( 'Kind_Tabmeta', 'after_title_metabox' ) );
+		add_action( 'edit_form_after_title', array( 'Kind_Metabox', 'after_title_metabox' ) );
 		// Add meta box to new post/post pages only
-		add_action( 'load-post.php', array( 'Kind_Tabmeta', 'kindbox_setup' ) );
-		add_action( 'load-post-new.php', array( 'Kind_Tabmeta', 'kindbox_setup' ) );
-		add_action( 'save_post', array( 'Kind_Tabmeta', 'save_post' ), 8, 2 );
-		add_action( 'transition_post_status', array( 'Kind_Tabmeta', 'transition_post_status' ), 5, 3 );
+		add_action( 'load-post.php', array( 'Kind_Metabox', 'kindbox_setup' ) );
+		add_action( 'load-post-new.php', array( 'Kind_Metabox', 'kindbox_setup' ) );
+		add_action( 'save_post', array( 'Kind_Metabox', 'save_post' ), 8, 2 );
+		add_action( 'transition_post_status', array( 'Kind_Metabox', 'transition_post_status' ), 5, 3 );
 	}
 
 	public static function after_title_metabox( $post ) {
@@ -24,8 +24,8 @@ class Kind_Tabmeta {
 	/* Meta box setup function. */
 	public static function kindbox_setup() {
 		/* Add meta boxes on the 'add_meta_boxes' hook. */
-		add_action( 'add_meta_boxes', array( 'Kind_Tabmeta', 'add_meta_boxes' ) );
-		add_action( 'admin_enqueue_scripts', array( 'Kind_Tabmeta', 'enqueue_admin_scripts' ) );
+		add_action( 'add_meta_boxes', array( 'Kind_Metabox', 'add_meta_boxes' ) );
+		add_action( 'admin_enqueue_scripts', array( 'Kind_Metabox', 'enqueue_admin_scripts' ) );
 
 	}
 
@@ -36,7 +36,7 @@ class Kind_Tabmeta {
 
 			wp_enqueue_script(
 				'jquery-ui-timepicker',
-				plugins_url( 'js/jquery.timepicker.min.js', dirname( __FILE__ ) ),
+				plugins_url( 'node_modules/timepicker/jquery.timepicker.min.js', dirname( __FILE__ ) ),
 				array( 'jquery' ),
 				self::$version
 			);
@@ -56,8 +56,8 @@ class Kind_Tabmeta {
 			);
 
 			wp_enqueue_script(
-				'kindmeta-response',
-				plugins_url( 'js/retrieve.js', dirname( __FILE__ ) ),
+				'kindmeta',
+				plugins_url( 'js/kind.js', dirname( __FILE__ ) ),
 				array( 'jquery' ),
 				self::$version
 			);
@@ -65,7 +65,7 @@ class Kind_Tabmeta {
 			// Provide a global object to our JS file containing our REST API endpoint, and API nonce
 			// Nonce must be 'wp_rest'
 			wp_localize_script(
-				'kindmeta-response', 'PKAPI',
+				'kindmeta', 'PKAPI',
 				array(
 					'api_nonce'       => wp_create_nonce( 'wp_rest' ),
 					'api_url'         => rest_url( '/link-preview/1.0/' ),
@@ -125,10 +125,11 @@ class Kind_Tabmeta {
 		if ( isset( $time['offset'] ) ) {
 			$offset = $time['offset'];
 		}
-		$string  = '<label for="' . $prefix . '">' . $label . '</label><br/>';
+		$string  = '<label class="half" for="' . $prefix . '">' . $label . '<br/>';
 		$string .= '<input type="date" name="' . $prefix . '_date" id="' . $prefix . '_date" value="' . ifset( $time['date'] ) . '"/>';
 		$string .= '<input type="time" name="' . $prefix . '_time" id="' . $prefix . '_time" step="1" value="' . ifset( $time['time'] ) . '"/>';
 		$string .= self::select_offset( $prefix, $offset );
+		$string .= '</label>';
 		return $string;
 	}
 
@@ -167,20 +168,6 @@ class Kind_Tabmeta {
 		return $string;
 	}
 
-	// Echos a Standard Formbox Box - Defaulting to Text
-	public static function metabox_text( $property, $label, $default = '', $type = 'text' ) {
-		$string = '<label for="' . $property . '">' . $label . '</label><br/>';
-		if ( 'textarea' === $type ) {
-			$string .= '<textarea name="' . $property . '" id="' . $property . '" data-role="none" class="widefat">' . $default . '</textarea>';
-			return $string;
-		}
-		$string .= '<input type="' . $type . '" name="' . $property . '" id="' . $property . '" class="widefat" value="' . $default . '" />';
-		return $string;
-
-	}
-
-
-
 	public static function tz_seconds_to_offset( $seconds ) {
 		return ( $seconds < 0 ? '-' : '+' ) . sprintf( '%02d:%02d', abs( $seconds / 60 / 60 ), abs( $seconds / 60 ) % 60 );
 	}
@@ -197,29 +184,17 @@ class Kind_Tabmeta {
 	/* Create one or more meta boxes to be displayed on the post editor screen. */
 	public static function add_meta_boxes() {
 		add_meta_box(
-			'tabbox-meta',      // Unique ID
-			esc_html__( 'Post Properties', 'indieweb-post-kinds' ),    // Title
-			array( 'Kind_Tabmeta', 'display_metabox' ),   // Callback function
-			'post',         // Admin page (or post type)
-			'kind_after_title',         // Context
-			'default'         // Priority
+			'replybox-meta', // Unique ID
+			esc_html__( 'Response Properties', 'indieweb-post-kinds' ), // Title
+			array( 'Kind_Metabox', 'reply_metabox' ), // Callback function
+			'post',
+			'kind_after_title', // Context
+			'default' // Priority
 		);
 	}
 
-	public static function display_metabox( $object, $box ) {
-		wp_nonce_field( 'tabkind_metabox', 'tabkind_metabox_nonce' );
-		$mf2_post = new MF2_Post( $object->ID );
-		$cite     = $mf2_post->fetch();
-		$author   = ifset( $cite['author'], array() );
-		if ( ! isset( $cite['url'] ) ) {
-			if ( array_key_exists( 'kindurl', $_GET ) && Link_Preview::is_valid_url( $_GET['kindurl'] ) ) {
-				$cite   = Link_Preview::parse( $_GET['kindurl'] );
-				$author = ifset( $cite['author'], array() );
-			}
-		}
-
-		$time = array();
-		include_once 'tabs/tab-navigation.php';
+	public static function reply_metabox( $object, $box ) {
+		load_template( plugin_dir_path( __DIR__ ) . 'templates/reply-metabox.php' );
 	}
 
 	public static function change_title( $data, $postarr ) {
