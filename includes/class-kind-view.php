@@ -50,8 +50,8 @@ class Kind_View {
 				break;
 			}
 			// Look in the views subdirectory.
-			if ( file_exists( plugin_dir_path( __FILE__ ) . 'views/' . $template_name ) ) {
-				$located = plugin_dir_path( __FILE__ ) . 'views/' . $template_name;
+			if ( file_exists( plugin_dir_path( __DIR__ ) . 'views/' . $template_name ) ) {
+				$located = plugin_dir_path( __DIR__ ) . 'views/' . $template_name;
 				break;
 			}
 		}
