@@ -140,6 +140,7 @@ interface at this time.
  * **Issue** - Issue is a special kind of article post that is a reply to typically some source code, though potentially anything at a source control repository.
  * **Event** - An event is a type of post that in addition to a post name (event title) has a start datetime (likely end datetime), and a location.
  * **Sleep** - Sleep is a passive metrics post type that indicates how much time (and often a graph of how deeply) a person has slept.
+ * **Question** - Question is a post type for soliciting answer replies, which are then typically up/down voted by others and then displayed underneath the question post ordered by highest positive vote count rather than time ordered.
 
 = Can I create archives for each kind? ==
 
@@ -187,13 +188,6 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 == Changelog ==
 
-= 2.7.6 ( 2017-12-23 ) =
-* Add audio kind view template
-* Amend video kind template to include u-video
-* Bypass micropub enhancements if micropub query as was generating error
-* Add photo capability to checkin template
-* Add safety check to Micropub filter to ensure not corrupting data
-
 = 2.8.0 ( 2018-02-?? ) =
 * Redo metabox into new more dynamic function
 * Move metabox to default above editor
@@ -201,6 +195,14 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 * Show RSVP only when RSVP option is selected
 * Automatically retrieve details when URL box is updated allowing button to be removed
 * Validate URL in box client-side
+* Reserve question and sleep kind
+
+= 2.7.6 ( 2017-12-23 ) =
+* Add audio kind view template
+* Amend video kind template to include u-video
+* Bypass micropub enhancements if micropub query as was generating error
+* Add photo capability to checkin template
+* Add safety check to Micropub filter to ensure not corrupting data
 
 = 2.7.5 ( 2017-12-14 ) =
 * Remove support for showing settings in REST API due issue with array property

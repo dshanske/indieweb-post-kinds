@@ -508,6 +508,16 @@ class Kind_Taxonomy {
 				'description-url' => 'https://indieweb.org/issue',
 				'show'            => false, // Show in Settings
 			),
+			'question'     => array(
+				'singular_name'   => __( 'Question', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name'            => __( 'Questions', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb'            => __( 'Asked a question', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property'        => 'u-question', // microformats 2 property
+				'format'          => '', // Post Format that maps to this
+				'description'     => __( 'Question is a post type for soliciting answer replies, which are then typically up/down voted by others and then displayed underneath the question post ordered by highest positive vote count rather than time ordered.', 'indieweb-post-kinds' ),
+				'description-url' => 'https://indieweb.org/question',
+				'show'            => false, // Show in Settings
+			),
 			'sleep'     => array(
 				'singular_name'   => __( 'Sleep', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Sleeps', 'indieweb-post-kinds' ), // General name for the kind plural
