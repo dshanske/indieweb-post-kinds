@@ -508,6 +508,16 @@ class Kind_Taxonomy {
 				'description-url' => 'https://indieweb.org/issue',
 				'show'            => false, // Show in Settings
 			),
+			'sleep'     => array(
+				'singular_name'   => __( 'Sleep', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name'            => __( 'Sleeps', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb'            => __( 'Slept', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property'        => 'p-sleep', // microformats 2 property
+				'format'          => '', // Post Format that maps to this
+				'description'     => __( 'Sleep is a passive metrics post type that indicates how much time (and often a graph of how deeply) a person has slept.', 'indieweb-post-kinds' ),
+				'description-url' => 'https://indieweb.org/sleep',
+				'show'            => false, // Show in Settings
+			),
 			'event'     => array(
 				'singular_name'   => __( 'Event', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Events', 'indieweb-post-kinds' ), // General name for the kind plural

@@ -143,6 +143,7 @@ interface at this time.
  * **Recipe** - Recipe
  * **Issue** - Issue is a special kind of article post that is a reply to typically some source code, though potentially anything at a source control repository.
  * **Event** - An event is a type of post that in addition to a post name (event title) has a start datetime (likely end datetime), and a location.
+ * **Sleep** - Sleep is a passive metrics post type that indicates how much time (and often a graph of how deeply) a person has slept.
 
 ### Can I create archives for each kind? ###
 
