@@ -6,6 +6,7 @@
 
 $mf2_post = new MF2_Post( get_the_ID() );
 $photos   = get_attached_media( 'image', get_the_ID() );
+$urls = wp_extract_urls( get_the_content() );
 $cite     = $mf2_post->fetch();
 if ( ! $cite ) {
 	$cite = array();
@@ -25,7 +26,7 @@ if ( isset( $cite['name'] ) ) {
 </header>
 </section>
 <?php
-if ( $photos && ! has_post_thumbnail( get_the_ID() ) ) {
+if ( $photos && ! has_post_thumbnail( get_the_ID() ) && ! array_intersect( $urls, $photos ) )  {
 	echo gallery_shortcode(
 		array(
 			'id'      => get_the_ID(),
