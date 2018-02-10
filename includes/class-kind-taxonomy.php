@@ -506,7 +506,7 @@ class Kind_Taxonomy {
 				'format'          => '', // Post Format that maps to this
 				'description'     => __( 'Issue is a special kind of article post that is a reply to typically some source code, though potentially anything at a source control repository.', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/issue',
-				'show'            => false, // Show in Settings
+				'show'            => true, // Show in Settings
 			),
 			'question'     => array(
 				'singular_name'   => __( 'Question', 'indieweb-post-kinds' ), // Name for one instance of the kind

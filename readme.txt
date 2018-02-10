@@ -107,7 +107,9 @@ The Response Kinds
  * **Quote** - Quoted Content
  * **RSVP** - A specific type of Reply regarding an event
  * **Check-In** - Identifying you are at a place. There is currently only limited support for this.
- 
+ * **Issue** - Issue is a special kind of article post that is a reply to typically some source code, though potentially anything at a source control repository.
+
+
 The Passive Kinds
 
 To "Scrobble" a song is when listening to it, you would make it a post on
@@ -137,7 +139,6 @@ interface at this time.
  * **Follow** - A post indicating you are now following someone's activities
  * **Mood** - Mood - Feeling
  * **Recipe** - Recipe
- * **Issue** - Issue is a special kind of article post that is a reply to typically some source code, though potentially anything at a source control repository.
  * **Event** - An event is a type of post that in addition to a post name (event title) has a start datetime (likely end datetime), and a location.
  * **Sleep** - Sleep is a passive metrics post type that indicates how much time (and often a graph of how deeply) a person has slept.
  * **Question** - Question is a post type for soliciting answer replies, which are then typically up/down voted by others and then displayed underneath the question post ordered by highest positive vote count rather than time ordered.
@@ -196,6 +197,7 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 * Automatically retrieve details when URL box is updated allowing button to be removed
 * Validate URL in box client-side
 * Reserve question and sleep kind
+* Activate Issue Kind due Github publish support added to Bridgy
 
 = 2.7.6 ( 2017-12-23 ) =
 * Add audio kind view template

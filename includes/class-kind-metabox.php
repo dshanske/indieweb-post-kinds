@@ -253,12 +253,12 @@ class Kind_Metabox {
 		 */
 
 		// Check if our nonce is set.
-		if ( ! isset( $_POST['tabkind_metabox_nonce'] ) ) {
+		if ( ! isset( $_POST['replykind_metabox_nonce'] ) ) {
 			return;
 		}
 
 		// Verify that the nonce is valid.
-		if ( ! wp_verify_nonce( $_POST['tabkind_metabox_nonce'], 'tabkind_metabox' ) ) {
+		if ( ! wp_verify_nonce( $_POST['replykind_metabox_nonce'], 'replykind_metabox' ) ) {
 			return;
 		}
 

@@ -162,6 +162,11 @@ function changeSettings() {
 			hideReply();
 			hideRSVP();
 			break;
+		case 'issue':
+			showTitle();
+			showReply();
+			hideRSVP();
+			break;
 		case 'rsvp':
 			showReply();
 			hideTitle();
