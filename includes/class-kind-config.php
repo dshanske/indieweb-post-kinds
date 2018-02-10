@@ -111,6 +111,7 @@ class Kind_Config {
 				'options' => array(
 					'icon' => __( 'Show Icon', 'indieweb-post-kinds' ),
 					'text' => __( 'Show Text', 'indieweb-post-kinds' ),
+					'both' => __( 'Show Icon and Text', 'indieweb-post-kinds' ),
 					'hide' => __( 'Display Nothing', 'indieweb-post-kinds' ),
 				),
 			)

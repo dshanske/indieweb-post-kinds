@@ -508,7 +508,7 @@ class Kind_Taxonomy {
 				'description-url' => 'https://indieweb.org/issue',
 				'show'            => true, // Show in Settings
 			),
-			'question'     => array(
+			'question'  => array(
 				'singular_name'   => __( 'Question', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Questions', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Asked a question', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -713,13 +713,18 @@ class Kind_Taxonomy {
 			return '';
 		}
 		$display = get_option( 'kind_display' );
-		if ( 'hide' === $display ) {
-			return '';
+		$text    = '<span class="kind-display-text">' . self::get_kind_info( $kind, 'verb' ) . '</span> ';
+		$icon    = self::get_icon( $kind );
+		switch ( $display ) {
+			case 'both':
+				return $icon . $text;
+			case 'icon':
+				return $icon;
+			case 'text':
+				return $text;
+			default:
+				return '';
 		}
-		if ( 'text' === $display ) {
-			return '<span class="kind-display-text">' . self::get_kind_info( $kind, 'verb' ) . '</span> ';
-		}
-		return self::get_icon( $kind );
 	}
 
 	public static function get_icon( $kind ) {
@@ -729,7 +734,7 @@ class Kind_Taxonomy {
 			return '';
 		}
 		$name = self::get_kind_info( $kind, 'singular_name' );
-		return '<svg class="svg-icon svg-' . $kind . '" aria-hidden="true" aria-label="' . $name . '"><use xlink:href="' . $sprite . '#' . $kind . '"></use></svg>';
+		return '<svg class="svg-icon svg-' . $kind . '" aria-hidden="true" aria-label="' . $name . ' title="' . $name . '"><use xlink:href="' . $sprite . '#' . $kind . '"></use></svg>';
 	}
 } // End Class Kind_Taxonomy
 
