@@ -3,6 +3,7 @@
     "node": ">= 0.10.0"
   },
   "devDependencies": {
+    "datepair.js": "^0.4.16",
     "eslint": "^4.17.0",
     "eslint-config-grunt": "^2.0.1",
     "eslint-config-wordpress": "^2.0.0",

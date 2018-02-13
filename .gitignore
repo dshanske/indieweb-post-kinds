@@ -3,6 +3,9 @@ node_modules/*
 !/node_modules/timepicker
 /node_modules/timepicker/*
 !/node_modules/timepicker/jquery.timepicker.min.js
+!/node_modules/datetime.js
+/node_modules/datetime.js/*
+!/node_modules/datepair.js/dist/jquery.datepair.min.js
 sass/.sass-cache/*
 sass/svg/intermediate/*
 sass/symbol/*

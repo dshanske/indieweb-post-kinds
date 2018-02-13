@@ -42,15 +42,8 @@ class Kind_Metabox {
 			);
 
 			wp_enqueue_script(
-				'kindmeta-time',
-				plugins_url( 'js/time.js', dirname( __FILE__ ) ),
-				array( 'jquery' ),
-				self::$version
-			);
-
-			wp_enqueue_script(
-				'kindmeta-tabs',
-				plugins_url( 'js/tabs.js', dirname( __FILE__ ) ),
+				'jquery-datepair',
+				plugins_url( 'node_modules/datepair.js/dist/jquery.datepair.min.js', dirname( __FILE__ ) ),
 				array( 'jquery' ),
 				self::$version
 			);
@@ -119,15 +112,15 @@ class Kind_Metabox {
 		return $o;
 	}
 
-	public static function kind_the_time( $prefix, $label, $time ) {
+	public static function kind_the_time( $prefix, $label, $time, $class ) {
 		$tz_seconds = get_option( 'gmt_offset' ) * 3600;
 		$offset     = self::tz_seconds_to_offset( $tz_seconds );
 		if ( isset( $time['offset'] ) ) {
 			$offset = $time['offset'];
 		}
-		$string  = '<label class="half" for="' . $prefix . '">' . $label . '<br/>';
-		$string .= '<input type="date" name="' . $prefix . '_date" id="' . $prefix . '_date" value="' . ifset( $time['date'] ) . '"/>';
-		$string .= '<input type="time" name="' . $prefix . '_time" id="' . $prefix . '_time" step="1" value="' . ifset( $time['time'] ) . '"/>';
+		$string  = '<label class="half ' . $class . '" for="' . $prefix . '">' . $label . '<br/>';
+		$string .= '<input class="date" type="text" name="' . $prefix . '_date" id="' . $prefix . '_date" value="' . ifset( $time['date'] ) . '"/>';
+		$string .= '<input class="time" type="text" name="' . $prefix . '_time" id="' . $prefix . '_time" step="1" value="' . ifset( $time['time'] ) . '"/>';
 		$string .= self::select_offset( $prefix, $offset );
 		$string .= '</label>';
 		return $string;
