@@ -1,5 +1,45 @@
 jQuery( document ).ready( function( $ ) {
+        var elem = document.createElement( 'input' );
+
+        // elem.setAttribute( 'type', 'date' );
+        // if ( 'text' === elem.type ) {
+                        $( '#mf2_start_date' ).datepicker({
+                                dateFormat: 'yy-mm-dd'
+                        });
+                        $( '#mf2_end_date' ).datepicker({
+                                dateFormat: 'yy-mm-dd'
+                        });
+                        $( '#cite_published_date' ).datepicker({
+                                dateFormat: 'yy-mm-dd'
+                        });
+                        $( '#cite_updated_date' ).datepicker({
+                                dateFormat: 'yy-mm-dd'
+                        });
+
+          //      }
+          //      elem.setAttribute( 'type', 'time' );
+            //    if ( 'text' === elem.type ) {
+                                $( '#mf2_start_time' ).timepicker({
+                                        timeFormat: 'H:i:s',
+                                        step: 15
+                                });
+                                $( '#mf2_end_time' ).timepicker({
+                                        timeFormat: 'H:i:s',
+                                        step: 15
+                                });
+                                $( '#cite_published_time' ).timepicker({
+                                        timeFormat: 'H:i:s',
+                                        step: 15
+                                });
+                                $( '#cite_updated_time' ).timepicker({
+                                        timeFormat: 'H:i:s',
+                                        step: 15
+                                });
+
+            //    }
+	$( '#duration' ).datepair();
 	changeSettings();
+
 
 function clearPostProperties() {
 	var fieldIds = [
@@ -109,24 +149,21 @@ function getLinkPreview() {
 				if ( 'name' in response.author ) {
 					if ( 'string' === typeof response.author.name ) {
 						$( '#cite_author_name' ).val( response.author.name );
-					}
-					else {
+					} else {
 						$( '#cite_author_name' ).val( response.author.name.join( ';' ) ) ;
 					}
 				}
 				if ( 'photo' in response.author ) {
 					if ( 'string' === typeof response.author.name ) {
 						$( '#cite_author_photo' ).val( response.author.photo );
-					}
-					else { 
+					} else {
 						$( '#cite_author_photo' ).val( response.author.photo.join( ';' ) ) ;
 					}
 				}
 				if ( 'url' in response.author ) {
 					if ( 'string' === typeof response.author.url ) {
 						$( '#cite_author_url' ).val( response.author.url );
-					}
-					else {
+					} else {
 						$( '#cite_author_url' ).val( response.author.url.join( ';' ) ) ;
 					}
 				}
@@ -227,6 +264,14 @@ jQuery( document )
 			$( '#kind-details' ).slideDown( 'fast' ).siblings( 'a.hide-kind-details' ).show().focus();
 		} else {
 			$( '#kind-details' ).slideUp( 'fast' ).siblings( 'a.show-kind-details' ).focus();
+		}
+		event.preventDefault();
+	})
+	.on( 'click', 'a.show-kind-author-details', function( event ) {
+		if ( $( '#kind-author' ).is( ':hidden' ) ) {
+			$( '#kind-author' ).slideDown( 'fast' ).siblings( 'a.hide-kind-author' ).show().focus();
+		} else {
+			$( '#kind-author' ).slideUp( 'fast' ).siblings( 'a.show-kind-author' ).focus();
 		}
 		event.preventDefault();
 	});
