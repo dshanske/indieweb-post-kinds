@@ -1,8 +1,8 @@
 jQuery( document ).ready( function( $ ) {
         var elem = document.createElement( 'input' );
 
-        // elem.setAttribute( 'type', 'date' );
-        // if ( 'text' === elem.type ) {
+         elem.setAttribute( 'type', 'date' );
+         if ( 'text' === elem.type ) {
                         $( '#mf2_start_date' ).datepicker({
                                 dateFormat: 'yy-mm-dd'
                         });
@@ -16,9 +16,9 @@ jQuery( document ).ready( function( $ ) {
                                 dateFormat: 'yy-mm-dd'
                         });
 
-          //      }
-          //      elem.setAttribute( 'type', 'time' );
-            //    if ( 'text' === elem.type ) {
+                }
+                elem.setAttribute( 'type', 'time' );
+                if ( 'text' === elem.type ) {
                                 $( '#mf2_start_time' ).timepicker({
                                         timeFormat: 'H:i:s',
                                         step: 15
@@ -36,7 +36,7 @@ jQuery( document ).ready( function( $ ) {
                                         step: 15
                                 });
 
-            //    }
+                }
 	$( '#duration' ).datepair();
 	changeSettings();
 
@@ -54,7 +54,7 @@ function clearPostProperties() {
 		'cite_publication',
 		'mf2_rsvp'
 	];
-		if ( ! confirm( 'Are you sure you want to clear post propertie?' ) ) {
+		if ( ! confirm( 'Are you sure you want to clear post properties?' ) ) {
 			return;
 		}
 		$.each( fieldIds, function( count, val ) {
@@ -139,6 +139,15 @@ function getLinkPreview() {
 				$( '#cite_updated_time' ).val( updated.format( 'HH:mm:ss' ) ) ;
 				$( '#cite_updated_offset' ).val( updated.format( 'Z' ) );
 			}
+			if ( 'duration' in response ) {
+				$( '#duration_years' ).val( moment.duration( response.duration ) ).years();
+				$( '#duration_months' ).val( moment.duration( response.duration ) ).months();
+				$( '#duration_days' ).val( moment.duration( response.duration ) ).days();
+				$( '#duration_hours' ).val( moment.duration( response.duration ) ).hours();
+				$( '#duration_minutes' ).val( moment.duration( response.duration ) ).minutes();
+				$( '#duration_seconds' ).val( moment.duration( response.duration ) ).seconds();
+			}
+
 			if ( 'summary' in response ) {
 				$( '#cite_summary' ).val( response.summary ) ;
 			}
@@ -261,6 +270,7 @@ jQuery( document )
 	})
 	.on( 'click', 'a.show-kind-details', function( event ) {
 		if ( $( '#kind-details' ).is( ':hidden' ) ) {
+			$( '#kind-author' ).slideUp( 'fast' ).siblings( 'a.show-kind-author' ).focus();
 			$( '#kind-details' ).slideDown( 'fast' ).siblings( 'a.hide-kind-details' ).show().focus();
 		} else {
 			$( '#kind-details' ).slideUp( 'fast' ).siblings( 'a.show-kind-details' ).focus();
@@ -269,6 +279,7 @@ jQuery( document )
 	})
 	.on( 'click', 'a.show-kind-author-details', function( event ) {
 		if ( $( '#kind-author' ).is( ':hidden' ) ) {
+			$( '#kind-details' ).slideUp( 'fast' ).siblings( 'a.show-kind-details' ).focus();
 			$( '#kind-author' ).slideDown( 'fast' ).siblings( 'a.hide-kind-author' ).show().focus();
 		} else {
 			$( '#kind-author' ).slideUp( 'fast' ).siblings( 'a.show-kind-author' ).focus();

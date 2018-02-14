@@ -27,6 +27,9 @@ if ( isset( $cite['url'] ) && is_array( $cite['url'] ) ) {
 }
 
 ?>
+<a href="#kind-details" class="show-kind-details button hide-if-no-js"><?php _e( 'Details', 'indieweb-post-kinds' ); ?></a>
+<a href="#kind-author" class="show-kind-author-details button hide-if-no-js"><?php _e( 'Author', 'indieweb-post-kinds' ); ?></a>
+<button class="clear-kindmeta-button button hide-if-no-js"><?php _e( 'Clear', 'indieweb-post-kinds' ); ?></button>
 <p class="field-row">
 	<label for="cite_url" class="three-quarters">
 		<?php _e( 'URL', 'indieweb-post-kinds' ); ?>
@@ -44,9 +47,6 @@ if ( isset( $cite['url'] ) && is_array( $cite['url'] ) ) {
 </p>
 
 
-<a href="#kind-details" class="button show-kind-details hide-if-no-js"><?php _e( 'Details', 'indieweb-post-kinds' ); ?></a>
-<a href="#kind-author" class="button show-kind-author-details hide-if-no-js"><?php _e( 'Author', 'indieweb-post-kinds' ); ?></a>
-<button class="clear-kindmeta-button button hide-if-no-js"><?php _e( 'Clear', 'indieweb-post-kinds' ); ?></button>
 <?php require_once( 'reply-details.php' ); ?>
 <?php require_once( 'reply-author.php' ); ?>
 

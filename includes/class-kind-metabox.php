@@ -68,9 +68,9 @@ class Kind_Metabox {
 
 			wp_enqueue_script(
 				'moment',
-				'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js',
+				plugins_url( 'node_modules/moment/min/moment.min.js', dirname( __FILE__ ) ),
 				array( 'jquery' ),
-				'2.10.6'
+				'2.20.1'
 			);
 		}
 	}
@@ -119,8 +119,8 @@ class Kind_Metabox {
 			$offset = $time['offset'];
 		}
 		$string  = '<label class="half ' . $class . '" for="' . $prefix . '">' . $label . '<br/>';
-		$string .= '<input class="date" type="text" name="' . $prefix . '_date" id="' . $prefix . '_date" value="' . ifset( $time['date'] ) . '"/>';
-		$string .= '<input class="time" type="text" name="' . $prefix . '_time" id="' . $prefix . '_time" step="1" value="' . ifset( $time['time'] ) . '"/>';
+		$string .= '<input class="date" type="date" name="' . $prefix . '_date" id="' . $prefix . '_date" value="' . ifset( $time['date'] ) . '"/>';
+		$string .= '<input class="time" type="time" name="' . $prefix . '_time" id="' . $prefix . '_time" step="1" value="' . ifset( $time['time'] ) . '"/>';
 		$string .= self::select_offset( $prefix, $offset );
 		$string .= '</label>';
 		return $string;
