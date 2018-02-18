@@ -148,10 +148,6 @@ class Kind_Plugins {
 		if ( ! isset( $input['properties'] ) ) {
 			return $input;
 		}
-		if ( ! isset( $input['properties']['summary'] ) ) {
-			$input['properties']['summary'] = array();
-			$input['properties']['summary'][] = ' ';
-		}
 		$parsed = array( 'bookmark-of', 'like-of', 'favorite-of' );
 		foreach ( $input['properties'] as $property => $value ) {
 			if ( ! wp_is_numeric_array( $value ) ) {

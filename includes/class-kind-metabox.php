@@ -14,6 +14,33 @@ class Kind_Metabox {
 		add_action( 'load-post-new.php', array( 'Kind_Metabox', 'kindbox_setup' ) );
 		add_action( 'save_post', array( 'Kind_Metabox', 'save_post' ), 8, 2 );
 		add_action( 'transition_post_status', array( 'Kind_Metabox', 'transition_post_status' ), 5, 3 );
+		add_filter( 'wp_insert_post_empty_content', array( 'Kind_Metabox', 'wp_insert_post_empty_content' ), 11, 2 );
+	}
+
+	public static function wp_insert_post_empty_content( $maybe_empty, $postarr ) {
+		// Always let updates to trash posts through
+		if ( 'trash' === $postarr['post_status'] ) {
+			return false;
+		}
+		// Let All Micropub Posts through
+		if ( isset( $postarr['meta_input'] ) && isset( $postarr['meta_input']['micropub_auth_response'] ) ) {
+			return false;
+		}
+		if ( ! isset( $postarr['tax_input'] ) && ! isset( $postarr['tax_input']['kind'] ) ) {
+			return $maybe_empty;
+		}
+		$kind = get_term_by( 'id', $postarr['tax_input']['kind'][0], 'kind' );
+		$kind = ( $kind instanceof WP_Term ) ? $kind->slug : '';
+		// Use traditional rules for articles
+		if ( 'article' === $kind || ! $kind ) {
+			return $maybe_empty;
+		}
+		$keys = array( 'cite_url', 'cite_name', 'cite_summary' );
+		$keys = array_flip( $keys );
+		if ( ! empty( array_filter( array_intersect_key( $_POST, $keys ) ) ) ) {
+			return false;
+		}
+		return $maybe_empty;
 	}
 
 	public static function after_title_metabox( $post ) {
