@@ -134,7 +134,7 @@ function divide_iso8601_duration( $interval ) {
 
 
 // Given two ISO8601 time strings return a DateInterval Object
-function calculate_duration_( $start_string, $end_string ) {
+function calculate_duration( $start_string, $end_string ) {
 		$start = array();
 		$end   = array();
 	if ( ! is_string( $start_string ) || ! is_string( $end_string ) ) {
