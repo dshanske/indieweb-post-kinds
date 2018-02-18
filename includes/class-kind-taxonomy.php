@@ -502,7 +502,7 @@ class Kind_Taxonomy {
 				'singular_name'   => __( 'Issue', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Issues', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Filed an Issue', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
-				'property'        => 'u-in-reply-to', // microformats 2 property
+				'property'        => 'in-reply-to', // microformats 2 property
 				'format'          => '', // Post Format that maps to this
 				'description'     => __( 'Issue is a special kind of article post that is a reply to typically some source code, though potentially anything at a source control repository.', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/issue',
@@ -512,7 +512,7 @@ class Kind_Taxonomy {
 				'singular_name'   => __( 'Question', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Questions', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Asked a question', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
-				'property'        => 'u-question', // microformats 2 property
+				'property'        => 'question', // microformats 2 property
 				'format'          => '', // Post Format that maps to this
 				'description'     => __( 'Question is a post type for soliciting answer replies, which are then typically up/down voted by others and then displayed underneath the question post ordered by highest positive vote count rather than time ordered.', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/question',
@@ -522,7 +522,7 @@ class Kind_Taxonomy {
 				'singular_name'   => __( 'Sleep', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Sleeps', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Slept', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
-				'property'        => 'p-sleep', // microformats 2 property
+				'property'        => 'sleep', // microformats 2 property
 				'format'          => '', // Post Format that maps to this
 				'description'     => __( 'Sleep is a passive metrics post type that indicates how much time (and often a graph of how deeply) a person has slept.', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/sleep',
@@ -532,7 +532,7 @@ class Kind_Taxonomy {
 				'singular_name'   => __( 'Event', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Events', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Planned', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
-				'property'        => 'h-event', // microformats 2 property
+				'property'        => 'event', // microformats 2 property
 				'format'          => '', // Post Format that maps to this
 				'description'     => __( 'An event is a type of post that in addition to a post name (event title) has a start datetime (likely end datetime), and a location.', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/event',
