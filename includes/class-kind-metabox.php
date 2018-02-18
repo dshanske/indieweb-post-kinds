@@ -37,7 +37,8 @@ class Kind_Metabox {
 		}
 		$keys = array( 'cite_url', 'cite_name', 'cite_summary' );
 		$keys = array_flip( $keys );
-		if ( ! empty( array_filter( array_intersect_key( $_POST, $keys ) ) ) ) {
+		$diff = array_filter( array_intersect_key( $_POST, $keys ) );
+		if ( ! empty( $diff ) ) {
 			return false;
 		}
 		return $maybe_empty;
