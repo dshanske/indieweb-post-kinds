@@ -10,6 +10,10 @@
 			<input type="text" name="cite_publication" id="cite_publication" class="widefat" value="<?php echo ifset( $cite['publication'] ); ?>" />
 	</label>
 	</p>
+	<p class="field-row">
+			<?php echo Kind_Metabox::kind_the_time( 'cite_published', __( 'Published/Released', 'indieweb-post-kinds' ), divide_iso8601_time( ifset( $cite['published'] ) ), 'published' ); ?>
+		<?php echo Kind_Metabox::kind_the_time( 'cite_updated', __( 'Updated', 'indieweb-post-kinds' ), divide_iso8601_time( ifset( $cite['updated'] ) ), 'updated' ); ?>
+	</p>
 	<label for="cite_tags">
 		<?php _e( 'Tags (semicolon separated)', 'indieweb-post-kinds' ); ?>
 	<textarea name="cite_tags" id="cite_tags" data-role="none" class="widefat"><?php echo ifset( $tags ); ?></textarea>
@@ -21,10 +25,6 @@
 	</label>
 	</p>
 	<?php require_once 'reply-duration.php'; ?>
-	<p class="field-row">
-			<?php echo Kind_Metabox::kind_the_time( 'cite_published', __( 'Published/Released', 'indieweb-post-kinds' ), divide_iso8601_time( ifset( $cite['published'] ) ), 'published' ); ?>
-		<?php echo Kind_Metabox::kind_the_time( 'cite_updated', __( 'Updated', 'indieweb-post-kinds' ), divide_iso8601_time( ifset( $cite['updated'] ) ), 'updated' ); ?>
-	</p>
 		<h4> <?php _e( 'Start Time and End Time will be Used to Calculate Duration', 'indieweb-post-kinds' ); ?> </h4>
 	<p class="field-row">
 		<?php echo Kind_Metabox::kind_the_time( 'mf2_start', __( 'Start Time', 'indieweb-post-kinds' ), divide_iso8601_time( $mf2_post->get( 'dt-start', true ) ), 'start' ); ?>

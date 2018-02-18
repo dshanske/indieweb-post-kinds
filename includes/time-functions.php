@@ -109,6 +109,9 @@ function build_iso8601_duration( $values ) {
 
 // Given an ISO8601 duration return an array with the pieces {
 function divide_iso8601_duration( $interval ) {
+	if ( ! $interval ) {
+		return array();
+	}
 	if ( is_string( $interval ) && ! empty( $interval ) ) {
 		try {
 			$interval = new DateInterval( $interval );
