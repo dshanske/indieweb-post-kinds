@@ -16,7 +16,7 @@ $title     = Kind_View::get_cite_title( $cite, $url );
 $embed     = self::get_embed( $url );
 $duration  = $mf2_post->get( 'duration', true );
 if ( ! $duration ) {
-		$duration = $mf2_post->calculate_duration( $mf2_post->get( 'dt-start' ), $mf2_post->get( 'dt-end' ) );
+		$duration = calculate_duration( $mf2_post->get( 'dt-start' ), $mf2_post->get( 'dt-end' ) );
 }
 
 
