@@ -39,6 +39,9 @@ class Post_Kinds_Plugin {
 		// Add Kind Global Functions.
 		require_once plugin_dir_path( __FILE__ ) . '/includes/kind-functions.php';
 
+		// Add Time Global Functions.
+		require_once plugin_dir_path( __FILE__ ) . '/includes/time-functions.php';
+
 		// Plugin Specific Kind Customizations
 		require_once plugin_dir_path( __FILE__ ) . '/includes/class-kind-plugins.php';
 		add_action( 'init', array( 'Kind_Plugins', 'init' ) );

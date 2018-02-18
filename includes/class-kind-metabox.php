@@ -63,6 +63,7 @@ class Kind_Metabox {
 					'api_nonce'       => wp_create_nonce( 'wp_rest' ),
 					'api_url'         => rest_url( '/link-preview/1.0/' ),
 					'success_message' => __( 'Your URL has been successfully retrieved and parsed', 'indieweb-post-kinds' ),
+					'clear_message'   => __( 'Are you sure you want to clear post properties?', 'indieweb-post-kinds' ),
 				)
 			);
 
@@ -90,31 +91,9 @@ class Kind_Metabox {
 			return kind_flatten_array( explode( ';', $string ) );
 	}
 
-	public static function kind_get_timezones() {
-		$o       = array();
-		$t_zones = timezone_identifiers_list();
-
-		foreach ( $t_zones as $a ) {
-			$t = '';
-			try {
-				// this throws exception for 'US/Pacific-New'
-				$zone    = new DateTimeZone( $a );
-				$seconds = $zone->getOffset( new DateTime( 'now', $zone ) );
-				$o[]     = self::tz_seconds_to_offset( $seconds );
-			} // exceptions must be catched, else a blank page
-			catch ( Exception $e ) {
-				die( 'Exception : ' . $e->getMessage() . '<br />' );
-				// what to do in catch ? , nothing just relax
-			}
-		}
-			$o = array_unique( $o );
-			asort( $o );
-		return $o;
-	}
-
 	public static function kind_the_time( $prefix, $label, $time, $class ) {
 		$tz_seconds = get_option( 'gmt_offset' ) * 3600;
-		$offset     = self::tz_seconds_to_offset( $tz_seconds );
+		$offset     = tz_seconds_to_offset( $tz_seconds );
 		if ( isset( $time['offset'] ) ) {
 			$offset = $time['offset'];
 		}
@@ -127,8 +106,15 @@ class Kind_Metabox {
 	}
 
 	public static function select_offset( $prefix, $select ) {
-		$tzlist = self::kind_get_timezones();
-		$string = '<select name="' . $prefix . '_offset" id="' . $prefix . '_offset">';
+		$string  = '<select name="' . $prefix . '_offset" id="' . $prefix . '_offset">';
+		$string .= self::timezone_offset_choice( $select );
+		$string .= '</select>';
+		return $string;
+	}
+
+	public static function timezone_offset_choice( $select ) {
+		$tzlist = get_gmt_offsets();
+		$string = '';
 		foreach ( $tzlist as $key => $value ) {
 			$string .= '<option value="' . $value . '"';
 			if ( $select === $value ) {
@@ -136,20 +122,18 @@ class Kind_Metabox {
 			}
 			$string .= '>GMT' . $value . '</option>';
 		}
-		$string .= '</select>';
 		return $string;
 	}
 
-	public static function rsvp_select( $selected ) {
-		$rsvps   = array(
+	public static function rsvp_choice( $selected ) {
+		$rsvps  = array(
 			''           => false,
 			'yes'        => __( 'Yes', 'indieweb-post-kinds' ),
 			'no'         => __( 'No', 'indieweb-post-kinds' ),
 			'maybe'      => __( 'Maybe', 'indieweb-post-kinds' ),
 			'interested' => __( 'Interested', 'indieweb-post-kinds' ),
 		);
-		$string  = '<label for="mf2_rsvp">' . __( 'RSVP', 'indieweb-post-kinds' ) . '</label><br/>';
-		$string .= '<select name="mf2_rsvp" id="mf2_rsvp">';
+		$string = '';
 		foreach ( $rsvps as $key => $value ) {
 			$string .= '<option value="' . $key . '"';
 			if ( $selected === $key ) {
@@ -157,21 +141,15 @@ class Kind_Metabox {
 			}
 			$string .= '>' . $value . '</option>';
 		}
-		$string .= '</select>';
 		return $string;
 	}
 
-	public static function tz_seconds_to_offset( $seconds ) {
-		return ( $seconds < 0 ? '-' : '+' ) . sprintf( '%02d:%02d', abs( $seconds / 60 / 60 ), abs( $seconds / 60 ) % 60 );
-	}
-
-	public static function tz_offset_to_seconds( $offset ) {
-		if ( preg_match( '/([+-])(\d{2}):?(\d{2})/', $offset, $match ) ) {
-			$sign = ( '-' ? -1 : 1 === $match[1] );
-			return ( ( $match[2] * 60 * 60 ) + ( $match[3] * 60 ) ) * $sign;
-		} else {
-			return 0;
-		}
+	public static function rsvp_select( $selected ) {
+		$string  = '<label for="mf2_rsvp">' . __( 'RSVP', 'indieweb-post-kinds' ) . '</label><br/>';
+		$string .= '<select name="mf2_rsvp" id="mf2_rsvp">';
+		$string .= self::rsvp_choice( $selected );
+		$string .= '</select>';
+		return $string;
 	}
 
 	/* Create one or more meta boxes to be displayed on the post editor screen. */
@@ -188,54 +166,6 @@ class Kind_Metabox {
 
 	public static function reply_metabox( $object, $box ) {
 		load_template( plugin_dir_path( __DIR__ ) . 'templates/reply-metabox.php' );
-	}
-
-	public static function change_title( $data, $postarr ) {
-
-		// If it is our form has not been submitted, so we dont want to do anything
-		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-			return; }
-		if ( ! empty( $data['post_title'] ) ) {
-			return $data;
-		}
-		$kind_strings = Kind_Taxonomy::get_strings();
-		$kind         = get_term_by( taxonomy_id, $_POST['tax_input']['kind'], 'kind' );
-		$title        = $kind_strings[ $kind->slug ];
-		if ( ! empty( $_POST['cite_name'] ) ) {
-				$title .= ' - ' . $_POST['cite_name'];
-		}
-		$data['post_title'] = $title;
-		$data['post_name']  = sanitize_title( $data['post_title'] );
-		return $data;
-	}
-
-
-	public static function build_time( $date, $time, $offset ) {
-		if ( empty( $date ) && empty( $time ) ) {
-			return '';
-		}
-		if ( empty( $date ) ) {
-			$date = '0000-01-01';
-		}
-		if ( empty( $time ) ) {
-			$time = '00:00:00';
-		}
-		return $date . 'T' . $time . $offset;
-	}
-
-	public static function divide_time( $time_string ) {
-			$time     = array();
-			$datetime = date_create_from_format( 'Y-m-d\TH:i:sP', $time_string );
-		if ( ! $datetime ) {
-				return;
-		}
-			$time['date'] = $datetime->format( 'Y-m-d' );
-		if ( '0000-01-01' === $time['date'] ) {
-				$time['date'] = '';
-		}
-			$time['time']   = $datetime->format( 'H:i:s' );
-			$time['offset'] = $datetime->format( 'P' );
-			return $time;
 	}
 
 	/* Save the meta box's post metadata. */
@@ -276,7 +206,7 @@ class Kind_Metabox {
 		$end      = '';
 
 		if ( isset( $_POST['mf2_start_date'] ) || isset( $_POST['mf2_start_time'] ) ) {
-			$start = self::build_time( $_POST['mf2_start_date'], $_POST['mf2_start_time'], $_POST['mf2_start_offset'] );
+			$start = build_iso8601_time( $_POST['mf2_start_date'], $_POST['mf2_start_time'], $_POST['mf2_start_offset'] );
 			if ( ! $start ) {
 				$mf2_post->delete( 'dt-start' );
 			}
@@ -284,7 +214,7 @@ class Kind_Metabox {
 			$mf2_post->delete( 'dt-start' );
 		}
 		if ( isset( $_POST['mf2_end_date'] ) || isset( $_POST['mf2_end_time'] ) ) {
-			$end = self::build_time( $_POST['mf2_end_date'], $_POST['mf2_end_time'], $_POST['mf2_end_offset'] );
+			$end = build_iso8601_time( $_POST['mf2_end_date'], $_POST['mf2_end_time'], $_POST['mf2_end_offset'] );
 			if ( ! $end ) {
 				$mf2_post->delete( 'dt-end' );
 			}
@@ -295,19 +225,42 @@ class Kind_Metabox {
 			$mf2_post->set( 'dt-start', $start );
 			$mf2_post->set( 'dt-end', $end );
 		}
-		$duration = $mf2_post->calculate_duration( $start, $end );
-		if ( $duration && ! isset( $_POST['cite_duration'] ) ) {
+		$duration_keys = array(
+			'duration_years'   => '',
+			'duration_months'  => '',
+			'duration_days'    => '',
+			'duration_hours'   => '',
+			'duration_minutes' => '',
+			'duration_seconds' => '',
+		);
+		if ( array_intersect_key( $duration_keys, $_POST ) ) {
+			$durations = array(
+				'Y' => ifset( $_POST['duration_years'] ),
+				'M' => ifset( $_POST['duration_months'] ),
+				'D' => ifset( $_POST['duration_days'] ),
+				'H' => ifset( $_POST['duration_hours'] ),
+				'I' => ifset( $_POST['duration_minutes'] ),
+				'S' => ifset( $_POST['duration_seconds'] ),
+			);
+			$durations = array_filter( $durations );
+			$duration  = build_iso8601_duration( $durations );
+
+		} else {
+			$duration = calculate_duration( $start, $end );
+		}
+		if ( $duration ) {
 			$mf2_post->set( 'duration', $duration );
 		} else {
 			$mf2_post->delete( 'duration' );
 		}
+
 		$mf2_post->set( 'rsvp', $_POST['mf2_rsvp'] );
 
 		if ( isset( $_POST['cite_published_date'] ) || isset( $_POST['published_time'] ) ) {
-			$cite['published'] = self::build_time( $_POST['cite_published_date'], $_POST['cite_published_time'], $_POST['cite_published_offset'] );
+			$cite['published'] = build_iso8601_time( $_POST['cite_published_date'], $_POST['cite_published_time'], $_POST['cite_published_offset'] );
 		}
 		if ( isset( $_POST['cite_updated_date'] ) || isset( $_POST['cite_updated_time'] ) ) {
-			$cite['updated'] = self::build_time( $_POST['cite_updated_date'], $_POST['cite_updated_time'], $_POST['cite_updated_offset'] );
+			$cite['updated'] = build_iso8601_time( $_POST['cite_updated_date'], $_POST['cite_updated_time'], $_POST['cite_updated_offset'] );
 		}
 		$cite['summary'] = ifset( $_POST['cite_summary'] );
 		$cite['name']    = ifset( $_POST['cite_name'] );

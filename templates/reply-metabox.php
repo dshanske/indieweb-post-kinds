@@ -2,6 +2,7 @@
 wp_nonce_field( 'replykind_metabox', 'replykind_metabox_nonce' );
 $mf2_post = new MF2_Post( get_post() );
 $cite     = $mf2_post->fetch();
+$duration = divide_iso8601_duration( $mf2_post->get( 'duration', true ) );
 
 if ( ! isset( $cite['url'] ) ) {
 	if ( array_key_exists( 'kindurl', $_GET ) && Link_Preview::is_valid_url( $_GET['kindurl'] ) ) {
@@ -9,15 +10,15 @@ if ( ! isset( $cite['url'] ) ) {
 		$author = ifset( $cite['author'], array() );
 	}
 }
-$author   = ifset( $cite['author'], array() );
-$time = array();
+$author = ifset( $cite['author'], array() );
+$time   = array();
 if ( isset( $cite['category'] ) ) {
-        $tags = $cite['category'];
-        if ( is_array( $tags ) ) {
-                $tags = implode( ';', $tags );
-        }
+		$tags = $cite['category'];
+	if ( is_array( $tags ) ) {
+			$tags = implode( ';', $tags );
+	}
 } else {
-        $tags = '';
+		$tags = '';
 }
 
 
@@ -33,13 +34,13 @@ if ( isset( $cite['url'] ) && is_array( $cite['url'] ) ) {
 <p class="field-row">
 	<label for="cite_url" class="three-quarters">
 		<?php _e( 'URL', 'indieweb-post-kinds' ); ?>
-        	<input type="text" name="cite_url" id="cite_url" class="widefat" value="<?php echo ifset( $cite['url'] ); ?>" />
+			<input type="text" name="cite_url" id="cite_url" class="widefat" value="<?php echo ifset( $cite['url'] ); ?>" />
 	</label>
 </p>
 <p class="field-row">
 	<label for="cite_name" class="three-quarters">
 		<?php _e( 'Name', 'indieweb-post-kinds' ); ?>
-        	<input type="text" name="cite_name" id="cite_name" class="widefat" value="<?php echo ifset( $cite['name'] ); ?>" />
+			<input type="text" name="cite_name" id="cite_name" class="widefat" value="<?php echo ifset( $cite['name'] ); ?>" />
 	</label>
 </p>
 <p class="field-row hide-if-js" id="rsvp-option">
@@ -47,8 +48,8 @@ if ( isset( $cite['url'] ) && is_array( $cite['url'] ) ) {
 </p>
 
 
-<?php require_once( 'reply-details.php' ); ?>
-<?php require_once( 'reply-author.php' ); ?>
+<?php require_once 'reply-details.php'; ?>
+<?php require_once 'reply-author.php'; ?>
 
 	<div class="loading">
 		<img src="<?php echo esc_url( includes_url( '/images/wpspin-2x.gif' ) ); ?>" class="loading-spinner" />

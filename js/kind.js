@@ -52,9 +52,23 @@ function clearPostProperties() {
 		'cite_author_photo',
 		'cite_featured',
 		'cite_publication',
-		'mf2_rsvp'
+		'mf2_rsvp',
+		'mf2_start_time',
+		'mf2_start_date',
+		'mf2_end_time',
+		'mf2_end_date',
+		'cite_published_time',
+		'cite_published_date',
+		'cite_updated_time',
+		'cite_updated_date',
+		'duration_years',
+		'duration_months',
+		'duration_days',
+		'duration_hours',
+		'duration_minutes',
+		'duration_seconds'
 	];
-		if ( ! confirm( 'Are you sure you want to clear post properties?' ) ) {
+		if ( ! confirm( PKAPI.clear_message ) ) {
 			return;
 		}
 		$.each( fieldIds, function( count, val ) {
@@ -120,9 +134,6 @@ function getLinkPreview() {
 			}
 			if ( 'name' in response ) {
 				$( '#cite_name' ).val( response.name );
-				if ( '' === $( '#title' ).val() ) {
-					$( '#title' ).val( response.name );
-				}
 			}
 			if ( 'publication' in response ) {
 				$( '#cite_publication' ).val( response.publication ) ;
