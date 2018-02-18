@@ -230,7 +230,7 @@ class Kind_Taxonomy {
 			'reply'     => array(
 				'singular_name'   => __( 'Reply', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Replies', 'indieweb-post-kinds' ), // General name for the kind plural
-				'verb'            => __( 'Replied', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'verb'            => __( 'Replied to', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
 				'property'        => 'in-reply-to', // microformats 2 property
 				'format'          => 'link', // Post Format that maps to this
 				'description'     => __( 'a reply to content typically on another site', 'indieweb-post-kinds' ),

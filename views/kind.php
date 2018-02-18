@@ -29,49 +29,9 @@ if ( ! $kind ) {
 }
 
 // Add in the appropriate type
-switch ( $kind ) {
-	case 'like':
-		$type = 'p-like-of';
-		break;
-	case 'favorite':
-		$type = 'p-favorite-of';
-		break;
-	case 'repost':
-		$type = 'p-repost-of';
-		break;
-	case 'reply':
-	case 'rsvp':
-		$type = 'p-in-reply-to';
-		break;
-	case 'tag':
-		$type = 'p-tag-of';
-		break;
-	case 'bookmark':
-		$type = 'p-bookmark-of';
-		break;
-	case 'listen':
-		$type = 'p-listen';
-		break;
-	case 'watch':
-		$type = 'p-watch';
-		break;
-	case 'game':
-		$type = 'p-play';
-		break;
-	case 'wish':
-		$type = 'p-wish';
-		break;
-	case 'read':
-		$type = 'p-read-of';
-		break;
-	case 'quote':
-		$type = 'u-quotation-of';
-		break;
-	case 'checkin':
-		$type = 'p-checkin';
-		break;
-	default:
-		return;
+$type = Kind_Taxonomy::get_kind_info( $kind, 'property' );
+if ( ! empty( $type ) ) {
+	$type = 'p-' . $type;
 }
 ?>
 

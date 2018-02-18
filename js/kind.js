@@ -260,11 +260,13 @@ function hideReply() {
 }
 
 function showTitle() {
-	$( '#titlediv' ).removeClass( 'hidden' );
+	var titlediv = $( '#titlediv' ).detach();
+	titlediv.prependTo( '#post-body-content' );
 }
 
 function hideTitle() {
-	$( '#titlediv' ).addClass( 'hidden' );
+	var titlediv = $( '#titlediv' ).detach();
+	titlediv.insertAfter( '#postdivrich' );
 }
 
 function showRSVP() {
