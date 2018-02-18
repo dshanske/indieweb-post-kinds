@@ -304,7 +304,7 @@ jQuery( document )
 	})
 	.on( 'click', 'a.show-kind-details', function( event ) {
 		if ( $( '#kind-details' ).is( ':hidden' ) ) {
-			$( '#kind-author' ).slideUp( 'fast' ).siblings( 'a.show-kind-author' ).focus();
+			$( '#kind-author' ).slideUp( 'fast' ).siblings( 'a.show-kind-author' );
 			$( '#kind-details' ).slideDown( 'fast' ).siblings( 'a.hide-kind-details' ).show().focus();
 		} else {
 			$( '#kind-details' ).slideUp( 'fast' ).siblings( 'a.show-kind-details' ).focus();
@@ -313,7 +313,7 @@ jQuery( document )
 	})
 	.on( 'click', 'a.show-kind-author-details', function( event ) {
 		if ( $( '#kind-author' ).is( ':hidden' ) ) {
-			$( '#kind-details' ).slideUp( 'fast' ).siblings( 'a.show-kind-details' ).focus();
+			$( '#kind-details' ).slideUp( 'fast' ).siblings( 'a.show-kind-details' );
 			$( '#kind-author' ).slideDown( 'fast' ).siblings( 'a.hide-kind-author' ).show().focus();
 		} else {
 			$( '#kind-author' ).slideUp( 'fast' ).siblings( 'a.show-kind-author' ).focus();
