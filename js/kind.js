@@ -213,24 +213,39 @@ function changeSettings() {
 			hideTitle();
 			hideReply();
 			hideRSVP();
+			hideTime();
 			break;
 		case 'article':
 			showTitle();
 			hideReply();
 			hideRSVP();
+			hideTime();
 			break;
 		case 'issue':
 			showTitle();
 			showReply();
 			hideRSVP();
+			hideTime();
+			break;
+		case 'listen':
+		case 'jam':
+		case 'watch':
+		case 'video':
+		case 'audio':
+			hideTitle();
+			showReply();
+			hideRSVP();
+			showTime();
 			break;
 		case 'rsvp':
 			showReply();
 			hideTitle();
+			hideTime();
 			showRSVP();
 			break;
 		default:
 			showReply();
+			hideTime();
 			hideTitle();
 			hideRSVP();
 	}
@@ -258,6 +273,14 @@ function showRSVP() {
 
 function hideRSVP() {
 	$( '#rsvp-option' ).addClass( 'hide-if-js' );
+}
+
+function showTime() {
+	$( '#kind-time' ).removeClass( 'hide-if-js' );
+}
+
+function hideTime() {
+	$( '#kind-time' ).addClass( 'hide-if-js' );
 }
 
 

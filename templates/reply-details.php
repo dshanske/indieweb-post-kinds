@@ -24,10 +24,5 @@
 			<input type="text" name="cite_featured" id="cite_featured" class="widefat" value="<?php echo ifset( $cite['featured'] ); ?>" />
 	</label>
 	</p>
-	<?php require_once 'reply-duration.php'; ?>
-		<h4> <?php _e( 'Start Time and End Time will be Used to Calculate Duration', 'indieweb-post-kinds' ); ?> </h4>
-	<p class="field-row">
-		<?php echo Kind_Metabox::kind_the_time( 'mf2_start', __( 'Start Time', 'indieweb-post-kinds' ), divide_iso8601_time( $mf2_post->get( 'dt-start', true ) ), 'start' ); ?>
-		<?php echo Kind_Metabox::kind_the_time( 'mf2_end', __( 'End Time', 'indieweb-post-kinds' ), divide_iso8601_time( $mf2_post->get( 'dt-end', true ) ), 'end' ); ?>
-	</p>
+	<?php require_once 'reply-time.php'; ?>
 </div>

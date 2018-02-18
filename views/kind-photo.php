@@ -40,5 +40,3 @@ if ( $photos && ! has_post_thumbnail( get_the_ID() ) && ! array_intersect( $urls
 		echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
 	}
 }
-?>
-<?php
