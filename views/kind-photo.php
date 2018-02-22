@@ -26,7 +26,7 @@ if ( isset( $cite['name'] ) ) {
 </header>
 </section>
 <?php
-if ( $photos && ! has_post_thumbnail( get_the_ID() ) && ! array_intersect( $urls, $photos ) )  {
+if ( $photos && ! has_post_thumbnail( get_the_ID() ) )  {
 	echo gallery_shortcode(
 		array(
 			'id'      => get_the_ID(),
