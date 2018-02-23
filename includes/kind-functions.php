@@ -121,3 +121,13 @@ function kind_flatten_array( $array ) {
 	return array_map( 'kind_flatten_array', $array );
 }
 
+// Return any sort of src urls in content
+function kind_src_url_in_content( $content ) {
+	if ( ! $content ) {
+		return 0;
+	}
+	if ( preg_match_all( '@src="([^"]+)"@', $content, $output ) ) {
+		return array_pop( $output );
+	}
+	return 0;
+}

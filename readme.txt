@@ -37,6 +37,10 @@ The plugin requires the [webmention](https://wordpress.org/plugins/webmention/) 
 
 == Upgrade Notice ==
 
+= 3.0.0 = 
+
+Major refactoring of the plugin. The interface has been completely changed to improve simplicity. Please submit all bugs to our Github page.
+
 = 2.7.0 = 
 
 Storage locations have now changed as part of the nested properties settings and things should migrate automatically but pleasse backup before upgrade.
@@ -189,15 +193,22 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 == Changelog ==
 
-= 2.8.0 ( 2018-02-?? ) =
+= 3.0.0 ( 2018-02-?? ) =
 * Redo metabox into new more dynamic function
 * Move metabox to default above editor
 * Hide metabox when note or article is selected
 * Show RSVP only when RSVP option is selected
+* Show Duration and Start End only on appropriate kinds
+* Add Duration selection
 * Automatically retrieve details when URL box is updated allowing button to be removed
 * Validate URL in box client-side
 * Reserve question and sleep kind
 * Activate Issue Kind due Github publish support added to Bridgy
+* Override WordPress functionality to protect against empty posts if kind metadata is present
+* Split time related functions into their own global function file
+* Remove old tab templtes and replace with new templates for dynamic functioning
+* Switch to dependency management for JS includes with npm
+* Remove/consolidate admin JS
 
 = 2.7.6 ( 2017-12-23 ) =
 * Add audio kind view template
