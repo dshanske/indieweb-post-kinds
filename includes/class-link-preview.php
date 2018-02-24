@@ -25,6 +25,9 @@ class Link_Preview {
 							'validate_callback' => array( 'Link_Preview', 'is_valid_url' ),
 							'sanitize_callback' => 'esc_url_raw',
 						),
+						'kind' => array(
+							'sanitize_callback' => 'sanitize_key'
+						)
 					),
 					'permission_callback' => function () {
 						return current_user_can( 'publish_posts' );
@@ -76,7 +79,7 @@ class Link_Preview {
 	 *
 	 * @param string $content HTML marked up content.
 	 */
-	private static function mergeparse( $content, $url ) {
+	private static function mergeparse( $content, $url, $kind ) {
 		if ( empty( $content ) || empty( $url ) ) {
 			return array();
 		}
@@ -122,8 +125,9 @@ class Link_Preview {
 	public static function read( $request ) {
 		// We don't need to specifically check the nonce like with admin-ajax. It is handled by the API.
 		$params = $request->get_params();
+		$kind = ifset( $params['kind'] );
 		if ( isset( $params['kindurl'] ) && ! empty( $params['kindurl'] ) ) {
-			return self::parse( $params['kindurl'] );
+			return self::parse( $params['kindurl'], $kind );
 		}
 		return new WP_Error(
 			'invalid_url', __( 'Missing or Invalid URL', 'indieweb-post-kinds' ), array(
@@ -183,7 +187,7 @@ class Link_Preview {
 	}
 
 
-	public static function parse( $url ) {
+	public static function parse( $url, $kind = null ) {
 		if ( ! self::is_valid_url( $url ) ) {
 			return new WP_Error(
 				'invalid_url', __( 'Missing or Invalid URL', 'indieweb-post-kinds' ), array(
@@ -195,11 +199,11 @@ class Link_Preview {
 		if ( is_wp_error( $content ) ) {
 			return $content;
 		}
-		return self::mergeparse( $content, $url );
+		return self::mergeparse( $content, $url, $kind );
 	}
 
-	public static function simple_parse( $url ) {
-		$parse = self::parse( $url );
+	public static function simple_parse( $url, $kind = null ) {
+		$parse = self::parse( $url, $kind );
 		if ( is_wp_error( $parse ) ) {
 			return $parse;
 		}

@@ -15,7 +15,7 @@ $embed  = self::get_embed( $url );
 
 ?>
 
-<section class="response h-cite p-in-reply-to">
+<section class="response h-cite u-in-reply-to">
 <header>
 <?php
 echo Kind_Taxonomy::get_before_kind( 'issue' );

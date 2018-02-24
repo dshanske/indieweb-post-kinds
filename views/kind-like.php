@@ -15,7 +15,7 @@ $embed  = self::get_embed( $url );
 
 ?>
 
-<section class="response p-like-of h-cite">
+<section class="response u-like-of h-cite">
 <header>
 <?php
 echo Kind_Taxonomy::get_before_kind( 'like' );

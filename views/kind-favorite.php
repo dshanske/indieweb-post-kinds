@@ -16,7 +16,7 @@ $embed  = self::get_embed( $url );
 
 ?>
 
-<section class="response p-favorite-of h-cite">
+<section class="response u-favorite-of h-cite">
 <header>
 <?php
 echo Kind_Taxonomy::get_before_kind( 'favorite' );
