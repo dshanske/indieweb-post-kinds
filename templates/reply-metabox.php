@@ -11,6 +11,13 @@ if ( ! isset( $cite['url'] ) ) {
 	}
 }
 $author = ifset( $cite['author'], array() );
+if ( isset( $author['name'] ) && is_array( $author['name'] ) ) {
+	$author['name'] = implode( ';', $author['name'] );
+}
+if ( isset( $author['url'] ) && is_array( $author['url'] ) ) {
+	$author['url'] = implode( ';', $author['url'] );
+}
+
 $time   = array();
 if ( isset( $cite['category'] ) ) {
 		$tags = $cite['category'];
