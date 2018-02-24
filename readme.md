@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like  
-**Stable tag:** 3.0.1  
+**Stable tag:** 3.0.2  
 **Requires at least:** 4.7  
 **Requires PHP:** 5.3  
 **Tested up to:** 4.9.2  
@@ -197,7 +197,7 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 ## Changelog ##
 
-### 3.0.1 ( 2018-02-24 ) ###
+### 3.0.1/3.0.2 ( 2018-02-24 ) ###
 * Forgot to include a JS dependency
 
 ### 3.0.0 ( 2018-02-24 ) ###
