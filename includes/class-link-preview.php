@@ -25,9 +25,9 @@ class Link_Preview {
 							'validate_callback' => array( 'Link_Preview', 'is_valid_url' ),
 							'sanitize_callback' => 'esc_url_raw',
 						),
-						'kind' => array(
-							'sanitize_callback' => 'sanitize_key'
-						)
+						'kind'    => array(
+							'sanitize_callback' => 'sanitize_key',
+						),
 					),
 					'permission_callback' => function () {
 						return current_user_can( 'publish_posts' );
@@ -125,7 +125,7 @@ class Link_Preview {
 	public static function read( $request ) {
 		// We don't need to specifically check the nonce like with admin-ajax. It is handled by the API.
 		$params = $request->get_params();
-		$kind = ifset( $params['kind'] );
+		$kind   = ifset( $params['kind'] );
 		if ( isset( $params['kindurl'] ) && ! empty( $params['kindurl'] ) ) {
 			return self::parse( $params['kindurl'], $kind );
 		}

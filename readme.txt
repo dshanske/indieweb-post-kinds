@@ -193,7 +193,7 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 == Changelog ==
 
-= 3.0.0 ( 2018-02-?? ) =
+= 3.0.0 ( 2018-02-24 ) =
 * Redo metabox into new more dynamic function
 * Move metabox to default above editor
 * Hide metabox when note or article is selected
