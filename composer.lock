@@ -132,12 +132,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/indieweb/php-mf2.git",
-                "reference": "23c5fa626d74cf6627d0ba6c06a9a81d2dac4011"
+                "reference": "bc9de8f2151238a040d4c36a521647f386a4e779"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/indieweb/php-mf2/zipball/23c5fa626d74cf6627d0ba6c06a9a81d2dac4011",
-                "reference": "23c5fa626d74cf6627d0ba6c06a9a81d2dac4011",
+                "url": "https://api.github.com/repos/indieweb/php-mf2/zipball/bc9de8f2151238a040d4c36a521647f386a4e779",
+                "reference": "bc9de8f2151238a040d4c36a521647f386a4e779",
                 "shasum": ""
             },
             "require": {
@@ -163,7 +163,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "CC0"
+                "CC0-1.0"
             ],
             "authors": [
                 {
@@ -179,7 +179,7 @@
                 "parser",
                 "semantic"
             ],
-            "time": "2018-01-12T17:37:36+00:00"
+            "time": "2018-03-04T23:07:49+00:00"
         }
     ],
     "packages-dev": [
@@ -308,12 +308,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/wimg/PHPCompatibility.git",
-                "reference": "fd2e0d0adaaacd83f02631a4e5c445f47055649d"
+                "reference": "0a687f555697d9d0d6908abc03dc5fbed776e5b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wimg/PHPCompatibility/zipball/fd2e0d0adaaacd83f02631a4e5c445f47055649d",
-                "reference": "fd2e0d0adaaacd83f02631a4e5c445f47055649d",
+                "url": "https://api.github.com/repos/wimg/PHPCompatibility/zipball/0a687f555697d9d0d6908abc03dc5fbed776e5b8",
+                "reference": "0a687f555697d9d0d6908abc03dc5fbed776e5b8",
                 "shasum": ""
             },
             "require": {
@@ -352,7 +352,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2018-02-22T11:04:25+00:00"
+            "time": "2018-02-26T23:40:32+00:00"
         },
         {
             "name": "wp-coding-standards/wpcs",

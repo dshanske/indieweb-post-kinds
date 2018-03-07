@@ -302,6 +302,9 @@ class Parser {
 	/** @var SplObjectStorage */
 	protected $parsed;
 
+	/**
+	 * @var bool
+	 */
 	public $jsonMode;
 
 	/** @var boolean Whether to include experimental language parsing in the result */
@@ -316,6 +319,11 @@ class Parser {
 	 */
 	protected $upgraded;
 
+	/**
+	 * Whether to convert classic microformats
+	 * @var bool
+	 */
+	public $convertClassic;
 
 	/**
 	 * Constructor
@@ -623,12 +631,12 @@ class Parser {
 		}
 
 		$this->resolveChildUrls($p);
-		
+
 		if ($p->tagName == 'img' and $p->hasAttribute('alt')) {
 			$pValue = $p->getAttribute('alt');
 		} elseif ($p->tagName == 'area' and $p->hasAttribute('alt')) {
 			$pValue = $p->getAttribute('alt');
-		} elseif ($p->tagName == 'abbr' and $p->hasAttribute('title')) {
+		} elseif (($p->tagName == 'abbr' or $p->tagName == 'link') and $p->hasAttribute('title')) {
 			$pValue = $p->getAttribute('title');
 		} elseif (in_array($p->tagName, array('data', 'input')) and $p->hasAttribute('value')) {
 			$pValue = $p->getAttribute('value');
@@ -647,7 +655,7 @@ class Parser {
 	 * @todo make this adhere to value-class
 	 */
 	public function parseU(\DOMElement $u) {
-		if (($u->tagName == 'a' or $u->tagName == 'area') and $u->hasAttribute('href')) {
+		if (($u->tagName == 'a' or $u->tagName == 'area' or $u->tagName == 'link') and $u->hasAttribute('href')) {
 			$uValue = $u->getAttribute('href');
 		} elseif (in_array($u->tagName, array('img', 'audio', 'video', 'source')) and $u->hasAttribute('src')) {
 			$uValue = $u->getAttribute('src');
@@ -665,7 +673,7 @@ class Parser {
 
 		if ($classTitle !== null) {
 			return $classTitle;
-		} elseif ($u->tagName == 'abbr' and $u->hasAttribute('title')) {
+		} elseif (($u->tagName == 'abbr' or $u->tagName == 'link') and $u->hasAttribute('title')) {
 			return $u->getAttribute('title');
 		} elseif (in_array($u->tagName, array('data', 'input')) and $u->hasAttribute('value')) {
 			return $u->getAttribute('value');
@@ -887,7 +895,7 @@ class Parser {
 		}
 
 		$return = array(
-			'html' => $html,
+			'html' => unicodeTrim($html),
 			'value' => unicodeTrim($this->innerText($e)),
 		);
 
@@ -912,9 +920,10 @@ class Parser {
 	 *
 	 * @param DOMElement $e The element to parse
 	 * @param bool $is_backcompat Whether using backcompat parsing or not
+	 * @param bool $has_nested_mf Whether this microformat has a nested microformat
 	 * @return array A representation of the values contained within microformat $e
 	 */
-	public function parseH(\DOMElement $e, $is_backcompat = false) {
+	public function parseH(\DOMElement $e, $is_backcompat = false, $has_nested_mf = false) {
 		// If it’s already been parsed (e.g. is a child mf), skip
 		if ($this->parsed->contains($e)) {
 			return null;
@@ -931,64 +940,8 @@ class Parser {
 		$return = array();
 		$children = array();
 		$dates = array();
+		$prefixes = array();
 		$impliedTimezone = null;
-
-		// each rel-bookmark with an href attribute
-		foreach ( $this->xpath->query('.//a[contains(concat(" ",normalize-space(@rel)," ")," bookmark ") and @href]', $e) as $el )
-		{
-			$class = 'u-url';
-			// rel-bookmark already has class attribute; append current value
-			if ($el->hasAttribute('class')) {
-				$class .= ' ' . $el->getAttribute('class');
-			}
-			$el->setAttribute('class', $class);
-		}
-
-		$subMFs = $this->getRootMF($e);
-
-		// Handle nested microformats (h-*)
-		foreach ( $subMFs as $subMF ) {
-
-			// Parse
-			$result = $this->parseH($subMF);
-
-			// If result was already parsed, skip it
-			if (null === $result) {
-				continue;
-			}
-
-			// Does this µf have any property names other than h-*?
-			$properties = nestedMfPropertyNamesFromElement($subMF);
-
-			if (!empty($properties)) {
-				// Yes! It’s a nested property µf
-				foreach ($properties as $property => $prefixes) {
-					// Note: handling microformat nesting under multiple conflicting prefixes is not currently specified by the mf2 parsing spec.
-					$prefixSpecificResult = $result;
-					if (in_array('p-', $prefixes)) {
-						$prefixSpecificResult['value'] = $prefixSpecificResult['properties']['name'][0];
-					} elseif (in_array('e-', $prefixes)) {
-						$eParsedResult = $this->parseE($subMF);
-						$prefixSpecificResult['html'] = $eParsedResult['html'];
-						$prefixSpecificResult['value'] = $eParsedResult['value'];
-					} elseif (in_array('u-', $prefixes)) {
-						$prefixSpecificResult['value'] = (empty($result['properties']['url'])) ? $this->parseU($subMF) : reset($result['properties']['url']);
-					}
-					$return[$property][] = $prefixSpecificResult;
-				}
-			} else {
-				// No, it’s a child µf
-				$children[] = $result;
-			}
-
-			// Make sure this sub-mf won’t get parsed as a µf or property
-			// TODO: Determine if clearing this is required?
-			$this->elementPrefixParsed($subMF, 'h');
-			$this->elementPrefixParsed($subMF, 'p');
-			$this->elementPrefixParsed($subMF, 'u');
-			$this->elementPrefixParsed($subMF, 'dt');
-			$this->elementPrefixParsed($subMF, 'e');
-		}
 
 		if($e->tagName == 'area') {
 			$coords = $e->getAttribute('coords');
@@ -997,10 +950,16 @@ class Parser {
 
 		// Handle p-*
 		foreach ($this->xpath->query('.//*[contains(concat(" ", @class) ," p-")]', $e) as $p) {
+			// element is already parsed 
 			if ($this->isElementParsed($p, 'p')) {
+				continue;
+			// backcompat parsing and element was not upgraded; skip it
+			} else if ( $is_backcompat && empty($this->upgraded[$p]) ) {
+				$this->elementPrefixParsed($p, 'p');
 				continue;
 			}
 
+			$prefixes[] = 'p-';
 			$pValue = $this->parseP($p);
 
 			// Add the value to the array for it’s p- properties
@@ -1016,10 +975,16 @@ class Parser {
 
 		// Handle u-*
 		foreach ($this->xpath->query('.//*[contains(concat(" ",  @class)," u-")]', $e) as $u) {
+			// element is already parsed
 			if ($this->isElementParsed($u, 'u')) {
+				continue;
+			// backcompat parsing and element was not upgraded; skip it
+			} else if ( $is_backcompat && empty($this->upgraded[$u]) ) {
+				$this->elementPrefixParsed($u, 'u');
 				continue;
 			}
 
+			$prefixes[] = 'u-';
 			$uValue = $this->parseU($u);
 
 			// Add the value to the array for it’s property types
@@ -1035,10 +1000,16 @@ class Parser {
 
 		// Handle dt-*
 		foreach ($this->xpath->query('.//*[contains(concat(" ", @class), " dt-")]', $e) as $dt) {
+			// element is already parsed
 			if ($this->isElementParsed($dt, 'dt')) {
+				continue;
+			// backcompat parsing and element was not upgraded; skip it
+			} else if ( $is_backcompat && empty($this->upgraded[$dt]) ) {
+				$this->elementPrefixParsed($dt, 'dt');
 				continue;
 			}
 
+			$prefixes[] = 'dt-';
 			$dtValue = $this->parseDT($dt, $dates, $impliedTimezone);
 
 			if ($dtValue) {
@@ -1064,10 +1035,16 @@ class Parser {
 
 		// Handle e-*
 		foreach ($this->xpath->query('.//*[contains(concat(" ", @class)," e-")]', $e) as $em) {
+			// element is already parsed
 			if ($this->isElementParsed($em, 'e')) {
+				continue;
+			// backcompat parsing and element was not upgraded; skip it
+			} else if ( $is_backcompat && empty($this->upgraded[$em]) ) {
+				$this->elementPrefixParsed($em, 'e');
 				continue;
 			}
 
+			$prefixes[] = 'e-';
 			$eValue = $this->parseE($em);
 
 			if ($eValue) {
@@ -1080,9 +1057,10 @@ class Parser {
 			$this->elementPrefixParsed($em, 'e');
 		}
 
-		// Implied Properties
-		// Check for p-name
-		if (!array_key_exists('name', $return) && !$is_backcompat) {
+		// Imply 'name' only under specific conditions
+		$imply_name = (!$has_nested_mf && !array_key_exists('name', $return) && !$is_backcompat && !in_array('p-', $prefixes) && !in_array('e-', $prefixes));
+
+		if ($imply_name) {
 			try {
 				// Look for img @alt
 				if (($e->tagName == 'img' or $e->tagName == 'area') and $e->getAttribute('alt') != '') {
@@ -1333,32 +1311,16 @@ class Parser {
 		return array($rels, $rel_urls, $alternates);
 	}
 
+
 	/**
 	 * Kicks off the parsing routine
-	 *
-	 * If `$htmlSafe` is set, any angle brackets in the results from non e-* properties
-	 * will be HTML-encoded, bringing all output to the same level of encoding.
-	 *
-	 * If a DOMElement is set as the $context, only descendants of that element will
-	 * be parsed for microformats.
-	 *
-	 * @param bool $htmlSafe whether or not to html-encode non e-* properties. Defaults to false
-	 * @param DOMElement $context optionally an element from which to parse microformats
-	 * @return array An array containing all the µfs found in the current document
+	 * @param bool $convertClassic whether to do backcompat parsing on microformats1. Defaults to true.
+	 * @param DOMElement $context optionally specify an element from which to parse microformats
+	 * @return array An array containing all the microformats found in the current document
 	 */
 	public function parse($convertClassic = true, DOMElement $context = null) {
-		$mfs = array();
-		$mfElements = $this->getRootMF($context);
-
-		foreach ($mfElements as $node) {
-			$is_backcompat = !$this->hasRootMf2($node);
-
-			if ( $convertClassic && $is_backcompat ) {
-				$this->backcompat($node);
-			}
-
-			$mfs[] = $this->parseH($node, $is_backcompat);
-		}
+		$this->convertClassic = $convertClassic;
+		$mfs = $this->parse_recursive($context);
 
 		// Parse rels
 		list($rels, $rel_urls, $alternates) = $this->parseRelsAndAlternates();
@@ -1375,6 +1337,125 @@ class Parser {
 
 		return $top;
 	}
+
+
+	/**
+	 * Parse microformats recursively
+	 * Keeps track of whether inside a backcompat root or not
+	 * @param DOMElement $context: node to start with
+	 * @param int $depth: recursion depth
+	 * @return array
+	 */
+	public function parse_recursive(DOMElement $context = null, $depth = 0) {
+		$mfs = array();
+		$children = array();
+		$properties = array();
+		$mfElements = $this->getRootMF($context);
+		$result = array();
+
+		foreach ($mfElements as $node) {
+			$merge_properties = array();
+			$children = array();
+			
+			$is_backcompat = !$this->hasRootMf2($node);
+
+			if ( $this->convertClassic && $is_backcompat ) {
+				$this->backcompat($node);
+			}
+
+			$recurse = $this->parse_recursive($node, ++$depth);
+
+			// recursion returned parsed result
+			if ( !empty($recurse) ) {
+
+				// parsed result is an mf root
+				if ( is_numeric(key($recurse)) ) {
+
+					// nested mf
+					if ( $depth > 0 ) {
+						$children = $recurse;
+					// top-level mf
+					} else {
+						$mfs = array_merge_recursive($mfs, $recurse);
+					}
+
+				// parsed result is an mf property
+				} else {
+					$merge_properties = $recurse;
+				}
+
+			}
+
+			// set bool flag for nested mf
+			$has_nested_mf = ($children || $merge_properties);
+
+			// parse for root mf
+			$result = $this->parseH($node, $is_backcompat, $has_nested_mf);
+
+			// merge nested mf properties
+			if ( $merge_properties && isset($result['properties']) ) {
+				$result['properties'] = array_merge($result['properties'], $merge_properties);
+			}
+
+			// parseH returned a parsed result
+			if ( $result ) {
+
+				// currently a nested mf; check if node is an mf property of parent
+				if ( $depth > 0 ) {
+					$temp_properties = nestedMfPropertyNamesFromElement($node);
+
+					// properties found; set up parsed result in $properties
+					if ( !empty($temp_properties) ) {
+
+						foreach ($temp_properties as $property => $prefixes) {
+							// Note: handling microformat nesting under multiple conflicting prefixes is not currently specified by the mf2 parsing spec.
+							$prefixSpecificResult = $result;
+							if (in_array('p-', $prefixes)) {
+								$prefixSpecificResult['value'] = (empty($prefixSpecificResult['properties']['name'][0])) ? '' : $prefixSpecificResult['properties']['name'][0];
+							} elseif (in_array('e-', $prefixes)) {
+								$eParsedResult = $this->parseE($node);
+								$prefixSpecificResult['html'] = $eParsedResult['html'];
+								$prefixSpecificResult['value'] = $eParsedResult['value'];
+							} elseif (in_array('u-', $prefixes)) {
+								$prefixSpecificResult['value'] = (empty($result['properties']['url'])) ? $this->parseU($node) : reset($result['properties']['url']);
+							}
+
+							if ( $children ) {
+								$prefixSpecificResult['children'] = $children;
+							}
+
+							$properties[$property][] = $prefixSpecificResult;
+						}
+
+					}
+
+					// TODO: Determine if clearing this is required?
+					$this->elementPrefixParsed($node, 'h');
+					$this->elementPrefixParsed($node, 'p');
+					$this->elementPrefixParsed($node, 'u');
+					$this->elementPrefixParsed($node, 'dt');
+					$this->elementPrefixParsed($node, 'e');
+				}
+
+				// add children mf from recursion
+				if ( $children ) {
+					$result['children'] = $children;
+				}
+
+				$mfs[] = $result;
+			}
+			
+		}
+
+		// node is an mf property of parent, return $properties which has property name(s) as array indices
+		if ( $properties && ($depth > 1) ) {
+			return $properties;
+		}
+		
+		// otherwise, return $mfs which has numeric array indices
+		return $mfs;
+	}
+
 
 	/**
 	 * Parse From ID
@@ -1413,7 +1494,7 @@ class Parser {
 
 		// add mf1 root class names
 		foreach ( $this->classicRootMap as $old => $new ) {
-			$xpaths[] = '( contains(concat(" ",normalize-space(@class), " "), " ' . $old . ' ") and not(ancestor::*[contains(concat(" ",normalize-space(@class)), " h-")]) )';
+			$xpaths[] = '( contains(concat(" ",normalize-space(@class), " "), " ' . $old . ' ") )';
 		}
 
 		// final xpath with OR
@@ -1448,6 +1529,17 @@ class Parser {
 			// special handling for specific properties
 			switch ( $classname )
 			{
+				case 'hentry':
+					$rel_bookmark = $this->xpath->query('.//a[contains(concat(" ",normalize-space(@rel)," ")," bookmark ") and @href]', $el);
+
+					if ( $rel_bookmark->length ) {
+						foreach ( $rel_bookmark as $tempEl ) {
+							$this->addMfClasses($tempEl, 'u-url');
+							$this->addUpgraded($tempEl, array('bookmark'));
+						}
+					}
+				break;
+
 				case 'hreview':
 					$item_and_vcard = $this->xpath->query('.//*[contains(concat(" ", normalize-space(@class), " "), " item ") and contains(concat(" ", normalize-space(@class), " "), " vcard ")]', $el);
 
