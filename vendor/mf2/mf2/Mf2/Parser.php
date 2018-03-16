@@ -244,11 +244,13 @@ function convertTimeFormat($time) {
  * @return string isolated, normalized TZ offset for implied TZ for other dt- properties
  */
 function normalizeTimezoneOffset(&$dtValue) {
-	preg_match('/Z|[+-]\d{1,2}:?(\d{2})?$/i', $dtValue, $matches);	
+	preg_match('/Z|[+-]\d{1,2}:?(\d{2})?$/i', $dtValue, $matches);
 
 	if (empty($matches)) {
 		return null;
 	}
+
+	$timezoneOffset = null;
 
 	if ( $matches[0] != 'Z' ) {
 		$timezoneString = str_replace(':', '', $matches[0]);
@@ -760,9 +762,10 @@ class Parser {
 						if (!$impliedTimezone && $timezoneOffset) {
 							$impliedTimezone = $timezoneOffset;
 						}
+					// Is the current part a valid date AND no other date representation has been found?
 					} elseif (preg_match('/^\d{4}-\d{2}-\d{2}$/', $part) and empty($datePart)) {
-						// Is the current part a valid date AND no other date representation has been found?
 						$datePart = $part;
+					// Is the current part a valid timezone offset AND no other timezone part has been found?
 					} elseif (preg_match('/^(Z|[+-]\d{1,2}:?(\d{2})?)$/', $part) and empty($timezonePart)) {
 						$timezonePart = $part;
 
@@ -770,6 +773,9 @@ class Parser {
 						if (!$impliedTimezone && $timezoneOffset) {
 							$impliedTimezone = $timezoneOffset;
 						}
+					// Current part already represented by other VCP parts; do nothing with it
+					} else {
+						continue;
 					}
 
 					if ( !empty($datePart) && !in_array($datePart, $dates) ) {
@@ -839,16 +845,18 @@ class Parser {
 				$dtValue = $this->textContent($dt);
 			}
 
-			// if the dtValue is not just YYYY-MM-DD, normalize the timezone offset
+			// if the dtValue is not just YYYY-MM-DD
 			if (!preg_match('/^(\d{4}-\d{2}-\d{2})$/', $dtValue)) {
-				$timezoneOffset = normalizeTimezoneOffset($dtValue);
-				if (!$impliedTimezone && $timezoneOffset) {
-					$impliedTimezone = $timezoneOffset;
+				// no implied timezone set and dtValue has a TZ offset, use un-normalized TZ offset
+				preg_match('/Z|[+-]\d{1,2}:?(\d{2})?$/i', $dtValue, $matches);
+				if (!$impliedTimezone && !empty($matches[0])) {
+					$impliedTimezone = $matches[0];
 				}
 			}
 
 			$dtValue = unicodeTrim($dtValue);
 
+      // Store the date part so that we can use it when assembling the final timestamp if the next one is missing a date part
 			if (preg_match('/(\d{4}-\d{2}-\d{2})/', $dtValue, $matches)) {
 				$dates[] = $matches[0];
 			}
@@ -1025,7 +1033,7 @@ class Parser {
 		foreach ($temp_dates as $propName => $data) {
 			foreach ( $data as $dtValue ) {
 				// var_dump(preg_match('/[+-]\d{2}(\d{2})?$/i', $dtValue));
-				if ( $impliedTimezone && preg_match('/[+-]\d{2}(\d{2})?$/i', $dtValue, $matches) == 0 ) {
+				if ( $impliedTimezone && preg_match('/(Z|[+-]\d{2}:?(\d{2})?)$/i', $dtValue, $matches) == 0 ) {
 					$dtValue .= $impliedTimezone;
 				}
 
@@ -1348,111 +1356,75 @@ class Parser {
 	 */
 	public function parse_recursive(DOMElement $context = null, $depth = 0) {
 		$mfs = array();
-		$children = array();
-		$properties = array();
 		$mfElements = $this->getRootMF($context);
-		$result = array();
 
 		foreach ($mfElements as $node) {
-			$merge_properties = array();
-			$children = array();
-			
 			$is_backcompat = !$this->hasRootMf2($node);
 
-			if ( $this->convertClassic && $is_backcompat ) {
+			if ($this->convertClassic && $is_backcompat) {
 				$this->backcompat($node);
 			}
 
-			$recurse = $this->parse_recursive($node, ++$depth);
-
-			// recursion returned parsed result
-			if ( !empty($recurse) ) {
-
-				// parsed result is an mf root
-				if ( is_numeric(key($recurse)) ) {
-
-					// nested mf
-					if ( $depth > 0 ) {
-						$children = $recurse;
-					// top-level mf
-					} else {
-						$mfs = array_merge_recursive($mfs, $recurse);
-					}
-
-				// parsed result is an mf property
-				} else {
-					$merge_properties = $recurse;
-				}
-
-			}
+			$recurse = $this->parse_recursive($node, $depth + 1);
 
 			// set bool flag for nested mf
-			$has_nested_mf = ($children || $merge_properties);
+			$has_nested_mf = ($recurse);
 
 			// parse for root mf
 			$result = $this->parseH($node, $is_backcompat, $has_nested_mf);
 
-			// merge nested mf properties
-			if ( $merge_properties && isset($result['properties']) ) {
-				$result['properties'] = array_merge($result['properties'], $merge_properties);
-			}
+			// TODO: Determine if clearing this is required?
+			$this->elementPrefixParsed($node, 'h');
+			$this->elementPrefixParsed($node, 'p');
+			$this->elementPrefixParsed($node, 'u');
+			$this->elementPrefixParsed($node, 'dt');
+			$this->elementPrefixParsed($node, 'e');
 
 			// parseH returned a parsed result
-			if ( $result ) {
+			if ($result) {
+
+				// merge recursive results into current results
+				if ($recurse) {
+					$result = array_merge_recursive($result, $recurse);
+				}
 
 				// currently a nested mf; check if node is an mf property of parent
-				if ( $depth > 0 ) {
+				if ($depth > 0) {
 					$temp_properties = nestedMfPropertyNamesFromElement($node);
 
-					// properties found; set up parsed result in $properties
-					if ( !empty($temp_properties) ) {
+					// properties found; set up parsed result in 'properties'
+					if (!empty($temp_properties)) {
 
 						foreach ($temp_properties as $property => $prefixes) {
 							// Note: handling microformat nesting under multiple conflicting prefixes is not currently specified by the mf2 parsing spec.
 							$prefixSpecificResult = $result;
 							if (in_array('p-', $prefixes)) {
-								$prefixSpecificResult['value'] = (empty($prefixSpecificResult['properties']['name'][0])) ? '' : $prefixSpecificResult['properties']['name'][0];
+								$prefixSpecificResult['value'] = (empty($prefixSpecificResult['properties']['name'][0])) ? $this->parseP($node) : $prefixSpecificResult['properties']['name'][0];
 							} elseif (in_array('e-', $prefixes)) {
 								$eParsedResult = $this->parseE($node);
 								$prefixSpecificResult['html'] = $eParsedResult['html'];
 								$prefixSpecificResult['value'] = $eParsedResult['value'];
 							} elseif (in_array('u-', $prefixes)) {
 								$prefixSpecificResult['value'] = (empty($result['properties']['url'])) ? $this->parseU($node) : reset($result['properties']['url']);
+							} elseif (in_array('dt-', $prefixes)) {
+								$parsed_property = $this->parseDT($node);
+								$prefixSpecificResult['value'] = ($parsed_property) ? $parsed_property : '';
 							}
 
-							if ( $children ) {
-								$prefixSpecificResult['children'] = $children;
-							}
-
-							$properties[$property][] = $prefixSpecificResult;
+							$mfs['properties'][$property][] = $prefixSpecificResult;
 						}
 
+					// otherwise, set up in 'children'
+					} else {
+						$mfs['children'][] = $result;
 					}
-
-					// TODO: Determine if clearing this is required?
-					$this->elementPrefixParsed($node, 'h');
-					$this->elementPrefixParsed($node, 'p');
-					$this->elementPrefixParsed($node, 'u');
-					$this->elementPrefixParsed($node, 'dt');
-					$this->elementPrefixParsed($node, 'e');
+				// otherwise, top-level mf
+				} else {
+					$mfs[] = $result;
 				}
-
-				// add children mf from recursion
-				if ( $children ) {
-					$result['children'] = $children;
-				}
-
-				$mfs[] = $result;
 			}
-			
 		}
 
-		// node is an mf property of parent, return $properties which has property name(s) as array indices
-		if ( $properties && ($depth > 1) ) {
-			return $properties;
-		}
-		
-		// otherwise, return $mfs which has numeric array indices
 		return $mfs;
 	}
 
@@ -1968,7 +1940,7 @@ class Parser {
 		),
 		'hreview' => array(
 			'summary' => array(
-				'replace' => 'p-summary'
+				'replace' => 'p-name'
 			),
 			# fn: see item.fn below
 			# photo: see item.photo below
