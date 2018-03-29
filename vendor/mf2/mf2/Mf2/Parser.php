@@ -130,7 +130,7 @@ function unicodeTrim($str) {
 function mfNamesFromClass($class, $prefix='h-') {
 	$class = str_replace(array(' ', '	', "\n"), ' ', $class);
 	$classes = explode(' ', $class);
-	$classes = preg_grep('#^[a-z\-]+$#', $classes);
+	$classes = preg_grep('#^(h|p|u|dt|e)-([a-z0-9]+-)?[a-z]+(-[a-z]+)*$#', $classes);
 	$matches = array();
 
 	foreach ($classes as $classname) {
@@ -897,10 +897,17 @@ class Parser {
 		// TODO: as it is this is not relative to only children, make this .// and rerun tests
 		$this->resolveChildUrls($e);
 
-		$html = '';
-		foreach ($e->childNodes as $node) {
-			$html .= $node->ownerDocument->saveHTML($node);
+		// Temporarily move all descendants into a separate DocumentFragment.
+		// This way we can DOMDocument::saveHTML on the entire collection at once.
+		// Running DOMDocument::saveHTML per node may add whitespace that isn't in source.
+		// See https://stackoverflow.com/q/38317903
+		$innerNodes = $e->ownerDocument->createDocumentFragment();
+		while ($e->hasChildNodes()) {
+			$innerNodes->appendChild($e->firstChild);
 		}
+		$html = $e->ownerDocument->saveHtml($innerNodes);
+		// Put the nodes back in place.
+		$e->appendChild($innerNodes);
 
 		$return = array(
 			'html' => unicodeTrim($html),
@@ -1159,7 +1166,8 @@ class Parser {
 			}
 		}
 
-		// Make sure things are in alphabetical order
+		// Make sure things are unique and in alphabetical order
+		$mfTypes = array_unique($mfTypes);
 		sort($mfTypes);
 
 		// Phew. Return the final result.
@@ -1250,15 +1258,14 @@ class Parser {
 
 		// Iterate through all a, area and link elements with rel attributes
 		foreach ($this->xpath->query('//a[@rel and @href] | //link[@rel and @href] | //area[@rel and @href]') as $hyperlink) {
-			if ($hyperlink->getAttribute('rel') == '') {
+			// Parse the set of rels for the current link
+			$linkRels = array_unique(array_filter(preg_split('/[\t\n\f\r ]/', $hyperlink->getAttribute('rel'))));
+			if (count($linkRels) === 0) {
 				continue;
 			}
 
 			// Resolve the href
 			$href = $this->resolveUrl($hyperlink->getAttribute('href'));
-
-			// Split up the rel into space-separated values
-			$linkRels = array_filter(explode(' ', $hyperlink->getAttribute('rel')));
 
 			$rel_attributes = array();
 
@@ -1278,8 +1285,8 @@ class Parser {
 				$rel_attributes['type'] = $hyperlink->getAttribute('type');
 			}
 
-			if ($hyperlink->nodeValue) {
-				$rel_attributes['text'] = $hyperlink->nodeValue;
+			if (strlen($hyperlink->textContent) > 0) {
+				$rel_attributes['text'] = $hyperlink->textContent;
 			}
 
 			if ($this->enableAlternates) {
@@ -1296,16 +1303,34 @@ class Parser {
 			}
 
 			foreach ($linkRels as $rel) {
-				$rels[$rel][] = $href;
+				if (!array_key_exists($rel, $rels)) {
+					$rels[$rel] = array($href);
+				} elseif (!in_array($href, $rels[$rel])) {
+					$rels[$rel][] = $href;
+				}
 			}
 
-			if (!in_array($href, $rel_urls)) {
-				$rel_urls[$href] = array_merge(
-					$rel_attributes, 
-					array('rels' => $linkRels)
-				);
+			if (!array_key_exists($href, $rel_urls)) {
+				$rel_urls[$href] = array('rels' => array());
 			}
 
+			// Add the attributes collected only if they were not already set
+			$rel_urls[$href] = array_merge(
+				$rel_attributes,
+				$rel_urls[$href]
+			);
+
+			// Merge current rels with those already set
+			$rel_urls[$href]['rels'] = array_merge(
+				$rel_urls[$href]['rels'],
+				$linkRels
+			);
+		}
+
+		// Alphabetically sort the rels arrays after removing duplicates
+		foreach ($rel_urls as $href => $object) {
+			$rel_urls[$href]['rels'] = array_unique($rel_urls[$href]['rels']);
+			sort($rel_urls[$href]['rels']);
 		}
 
 		if (empty($rels) and $this->jsonMode) {
@@ -1314,11 +1339,37 @@ class Parser {
 
 		if (empty($rel_urls) and $this->jsonMode) {
 			$rel_urls = new stdClass();
-		}		
-		
+		}
+
 		return array($rels, $rel_urls, $alternates);
 	}
 
+	/**
+	 * Find rel=tag elements that don't have class=category and have an href.
+	 * For each element, get the last non-empty URL segment. Append a <data> 
+	 * element with that value as the category. Uses the mf1 class 'category'
+	 * which will then be upgraded to p-category during backcompat.
+	 * @param DOMElement $el
+	 */
+	public function upgradeRelTagToCategory(DOMElement $el) {
+		$rel_tag = $this->xpath->query('.//a[contains(concat(" ",normalize-space(@rel)," ")," tag ") and not(contains(concat(" ", normalize-space(@class), " "), " category ")) and @href]', $el);
+
+		if ( $rel_tag->length ) {
+			foreach ( $rel_tag as $tempEl ) {
+				$path = trim(parse_url($tempEl->getAttribute('href'), PHP_URL_PATH), ' /');
+				$segments = explode('/', $path);
+				$value = array_pop($segments);
+
+				# build the <data> element
+				$dataEl = $tempEl->ownerDocument->createElement('data');
+				$dataEl->setAttribute('class', 'category');
+				$dataEl->setAttribute('value', $value);
+
+				# append as child of input element. this should ensure added element does get parsed inside e-*
+				$el->appendChild($dataEl);
+			}
+		}
+	}
 
 	/**
 	 * Kicks off the parsing routine
@@ -1502,6 +1553,8 @@ class Parser {
 			switch ( $classname )
 			{
 				case 'hentry':
+					$this->upgradeRelTagToCategory($el);
+
 					$rel_bookmark = $this->xpath->query('.//a[contains(concat(" ",normalize-space(@rel)," ")," bookmark ") and @href]', $el);
 
 					if ( $rel_bookmark->length ) {
@@ -1548,6 +1601,8 @@ class Parser {
 							}
 						}
 					}
+
+					$this->upgradeRelTagToCategory($el);
 				break;
 
 				case 'vevent':
@@ -1967,6 +2022,9 @@ class Parser {
 			),
 			'description' => array(
 				'replace' => 'e-content'
+			),
+			'category' => array(
+				'replace' => 'p-category'
 			),
 		),
 		'hproduct' => array(

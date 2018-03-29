@@ -132,12 +132,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/indieweb/php-mf2.git",
-                "reference": "e044330550a16d1a512248a5b9f663736538da44"
+                "reference": "347d301df90505ab05d55b58f325082ddc31aa6e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/indieweb/php-mf2/zipball/e044330550a16d1a512248a5b9f663736538da44",
-                "reference": "e044330550a16d1a512248a5b9f663736538da44",
+                "url": "https://api.github.com/repos/indieweb/php-mf2/zipball/347d301df90505ab05d55b58f325082ddc31aa6e",
+                "reference": "347d301df90505ab05d55b58f325082ddc31aa6e",
                 "shasum": ""
             },
             "require": {
@@ -179,7 +179,7 @@
                 "parser",
                 "semantic"
             ],
-            "time": "2018-03-15T16:51:15+00:00"
+            "time": "2018-03-26T16:19:47+00:00"
         }
     ],
     "packages-dev": [
@@ -308,12 +308,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/wimg/PHPCompatibility.git",
-                "reference": "2ef6c50bed2816a796ce36fc8d07c8a515fe6b94"
+                "reference": "129afa00eb391c550094ff044a5e0d65788903ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wimg/PHPCompatibility/zipball/2ef6c50bed2816a796ce36fc8d07c8a515fe6b94",
-                "reference": "2ef6c50bed2816a796ce36fc8d07c8a515fe6b94",
+                "url": "https://api.github.com/repos/wimg/PHPCompatibility/zipball/129afa00eb391c550094ff044a5e0d65788903ff",
+                "reference": "129afa00eb391c550094ff044a5e0d65788903ff",
                 "shasum": ""
             },
             "require": {
@@ -324,10 +324,11 @@
                 "squizlabs/php_codesniffer": "2.6.2"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.0 || ^5.0 || ^6.0"
+                "phpunit/phpunit": "~4.5 || ^5.0 || ^6.0 || ^7.0"
             },
             "suggest": {
-                "dealerdirect/phpcodesniffer-composer-installer": "^0.4.3"
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.4.3",
+                "roave/security-advisories": "dev-master"
             },
             "type": "phpcodesniffer-standard",
             "autoload": {
@@ -352,7 +353,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2018-03-13T21:45:51+00:00"
+            "time": "2018-03-23T10:21:09+00:00"
         },
         {
             "name": "wp-coding-standards/wpcs",
