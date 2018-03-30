@@ -414,7 +414,6 @@ class Parse_This {
 				break;
 			case 'og:description':
 			case 'twitter:description':
-			case 'description':
 				$this->_set_meta_entry( 'description', $meta_value );
 				break;
 			case 'article:published_time':
