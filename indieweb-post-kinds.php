@@ -67,10 +67,7 @@ class Post_Kinds_Plugin {
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-meta.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-mf2-post.php';
 
-		// Add an MF2 Parser
-		if ( ! class_exists( 'Mf2\Parser' ) ) {
-			require_once plugin_dir_path( __FILE__ ) . '/vendor/mf2/mf2/Mf2/Parser.php';
-		}
+		require_once 'vendor/autoload.php';
 
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-parse-mf2.php';
 
