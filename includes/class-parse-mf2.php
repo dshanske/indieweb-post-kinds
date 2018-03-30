@@ -793,7 +793,7 @@ class Parse_MF2 {
 
 	private static function parse_hentry( $entry, $mf ) {
 		// Array Values
-		$properties        = array( 'checkin', 'category', 'invitee', 'photo', 'video', 'audio', 'syndication', 'in-reply-to', 'like-of', 'repost-of', 'bookmark-of', 'tag-of', 'location', 'featured', 'swarm-coins' );
+		$properties        = array( 'checkin', 'category', 'invitee', 'photo', 'video', 'audio', 'syndication', 'in-reply-to', 'like-of', 'repost-of', 'bookmark-of', 'tag-of', 'location', 'featured', 'swarm-coins', 'checked-in-by' );
 		$data              = self::get_prop_array( $entry, $properties );
 		$data['type']      = 'entry';
 		$data['published'] = self::get_published( $entry );
