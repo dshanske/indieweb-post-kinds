@@ -696,6 +696,20 @@ class Parse_This {
 			}
 		}
 
+
+		if ( preg_match_all( '/<figure [^>]+>/', $source_content, $matches ) ) {
+			$items = $this->_limit_array( $matches[0] );
+
+			foreach ( $items as $value ) {
+				if ( preg_match( '/data-audio-url=(\'|")([^\'"]+)\\1/i', $value, $new_matches ) ) {
+					$src = $new_matches[2];
+					if ( ! empty( $src ) && ! in_array( $src, $this->audio, true ) ) {
+						$this->audio[] = $src;
+					}
+				}
+			}
+		}
+
 		// Fetch and gather <iframe> data.
 		if ( empty( $this->embeds ) ) {
 			$this->embeds = array();
