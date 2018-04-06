@@ -696,7 +696,6 @@ class Parse_This {
 			}
 		}
 
-
 		if ( preg_match_all( '/<figure [^>]+>/', $source_content, $matches ) ) {
 			$items = $this->_limit_array( $matches[0] );
 

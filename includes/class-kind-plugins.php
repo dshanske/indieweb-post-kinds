@@ -107,7 +107,7 @@ class Kind_Plugins {
 			return;
 		}
 
-		// This basically adds Teacup support
+		// This basically adds legacy Teacup support
 		if ( isset( $input['properties']['p3k-food'] ) ) {
 			if ( isset( $input['properties']['p3k-type'] ) ) {
 				if ( 'drink' === $input['properties']['p3k-type'] ) {
@@ -117,6 +117,16 @@ class Kind_Plugins {
 				set_post_kind( $wp_args['ID'], 'eat' );
 				return;
 			}
+		}
+
+		if ( isset( $input['properties']['ate'] ) ) {
+			set_post_kind( $wp_args['ID'], 'eat' );
+			return;
+		}
+
+		if ( isset( $input['properties']['drank'] ) ) {
+			set_post_kind( $wp_args['ID'], 'drink' );
+			return;
 		}
 
 		if ( ! empty( $input['properties']['name'] ) ) {
