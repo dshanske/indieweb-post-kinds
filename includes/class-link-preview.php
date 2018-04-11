@@ -197,9 +197,37 @@ class Link_Preview {
 		}
 		$content = Parse_Mf2::fetch( $url );
 		if ( is_wp_error( $content ) ) {
-			return $content;
+			if ( 'content-type' === $content->get_error_code() ) {
+				return self::media( $url );
+			} else {
+				return $content;
+			}
 		}
 		return self::mergeparse( $content, $url, $kind );
+	}
+
+	public static function media( $url ) {
+		require_once ABSPATH . 'wp-admin/includes/image.php';
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+		require_once ABSPATH . 'wp-admin/includes/media.php';
+
+		if ( wp_parse_url( $url, PHP_URL_HOST ) !== wp_parse_url( home_url(), PHP_URL_HOST ) ) {
+			return new WP_Error(
+				'not_local_media', __( 'At this time you can only use a local media file when entering the URL of a media file', 'indieweb-post-kinds' ), array( 'status' => 400 )
+			);
+		}
+		$id   = attachment_url_to_postid( $url );
+		$meta = wp_get_attachment_metadata( $id );
+		if ( ! $meta ) {
+			$meta = wp_generate_attachment_metadata( $id, get_attached_file( $id ) );
+			wp_update_attachment_metadata( $id, $meta );
+		}
+		$return                = array();
+		$return['raw']         = $meta;
+		$return['publication'] = ifset( $meta['album'] );
+		$return['author']      = ifset( $meta['artist'] );
+		$return['title']       = ifset( $meta['title'] );
+		return array_filter( $return );
 	}
 
 	public static function simple_parse( $url, $kind = null ) {

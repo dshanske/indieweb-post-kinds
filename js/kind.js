@@ -200,7 +200,7 @@ function getLinkPreview() {
 			alert( response.message );
 		},
 		error: function( jqXHR, textStatus, errorThrown ) {
-			alert( textStatus );
+			alert( jqXHR.responseJSON.message );
 			console.log( jqXHR );
 		},
 		always: hideLoadingSpinner()
