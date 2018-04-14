@@ -124,18 +124,41 @@ class Kind_Taxonomy {
 		return str_replace( '%kind%', $taxonomy_slug, $permalink );
 	}
 
+	public static function get_terms_from_query() {
+		global $wp_query;
+		$terms = array();
+		$slugs = $wp_query->tax_query->queried_terms['kind']['terms'];
+		foreach ( $slugs as $slug ) {
+			$terms[] = get_term_by( 'slug', $slug, 'kind' );
+		}
+		return $terms;
+	}
+
+
 	public static function kind_archive_title( $title ) {
+		$return = array();
 		if ( is_tax( 'kind' ) ) {
-			$term = get_queried_object();
-			return self::get_kind_info( $term->slug, 'name' );
+			$terms = self::get_terms_from_query();
+			foreach ( $terms as $term ) {
+				$return[] = self::get_kind_info( $term->slug, 'name' );
+			}
+			if ( $return ) {
+				return join( ', ', $return );
+			}
 		}
 		return $title;
 	}
 
 	public static function kind_archive_description( $title ) {
+		$return = array();
 		if ( is_tax( 'kind' ) ) {
-			$term = get_queried_object();
-			return self::get_kind_info( $term->slug, 'description' );
+			$terms = self::get_terms_from_query();
+			foreach ( $terms as $term ) {
+				$return[] = self::get_kind_info( $term->slug, 'description' );
+			}
+			if ( $return ) {
+				return join( '<br />', $return );
+			}
 		}
 		return $title;
 	}

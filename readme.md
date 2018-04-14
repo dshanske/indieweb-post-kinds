@@ -202,6 +202,7 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 * Add support for checkedin-by property to parser
 * Add ate and drank properties to post kind discovery
 * Initial support for media files locally
+* Update Kind Archive and Description Display to support multiple terms passed through( example.com/kind/checkin,photo ) See notes on unsupported WordPress status( https://core.trac.wordpress.org/ticket/34587 )
 
 ### 3.0.1/3.0.2 ( 2018-02-24 ) ###
 * Forgot to include a JS dependency
