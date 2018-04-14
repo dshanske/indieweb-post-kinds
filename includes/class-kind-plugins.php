@@ -28,6 +28,7 @@ class Kind_Plugins {
 
 	/**
 	 * Take mf2 properties and set a post kind
+	 * Implements Post Type Discovery https://www.w3.org/TR/post-type-discovery/
 	 *
 	 * @param array $input Micropub Request in JSON
 	 * @param array $wp_args Arguments passed to insert or update posts
@@ -137,9 +138,7 @@ class Kind_Plugins {
 				return;
 			}
 		}
-
-		// Doing this as a temporary measure until there is further troubleshooting
-		set_post_kind( $wp_args['ID'], get_option( 'kind_default' ) );
+		set_post_kind( $wp_args['ID'], 'note' );
 	}
 
 	public static function post_formats( $input, $wp_args ) {
