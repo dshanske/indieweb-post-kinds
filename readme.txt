@@ -202,6 +202,7 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 * Update Kind Archive and Description Display to support multiple terms passed through( example.com/kind/checkin,photo ) See notes on unsupported WordPress status( https://core.trac.wordpress.org/ticket/34587 )
 * Restore post type discovery behavior to note as testing seems to work now
 * Reserve acquisition kind per request @chrisaldrich and assign icon
+* Add hidden link with u-url to rich embeds in order to parse correctly
 
 = 3.0.1/3.0.2 ( 2018-02-24 ) =
 * Forgot to include a JS dependency

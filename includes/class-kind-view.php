@@ -182,7 +182,7 @@ class Kind_View {
 		if ( 0 === strcmp( $embed, $url ) ) {
 			$embed = '';
 		} else {
-			$embed = '<div class="kind-embed">' . $embed . '</div>';
+			$embed = sprintf( '<div class="kind-embed">%1$s<a class="u-url" href="%2$s"></a></div>', $embed, $url );
 		}
 			return $embed;
 	}
