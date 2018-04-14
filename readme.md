@@ -149,6 +149,7 @@ interface at this time.
  * **Recipe** - Recipe
  * **Event** - An event is a type of post that in addition to a post name (event title) has a start datetime (likely end datetime), and a location.
  * **Sleep** - Sleep is a passive metrics post type that indicates how much time (and often a graph of how deeply) a person has slept.
+ * **Acquisition** - Purchased, Donated, or otherwise acquired an object
  * **Question** - Question is a post type for soliciting answer replies, which are then typically up/down voted by others and then displayed underneath the question post ordered by highest positive vote count rather than time ordered.
 
 ### Can I create archives for each kind? ###
@@ -203,6 +204,8 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 * Add ate and drank properties to post kind discovery
 * Initial support for media files locally
 * Update Kind Archive and Description Display to support multiple terms passed through( example.com/kind/checkin,photo ) See notes on unsupported WordPress status( https://core.trac.wordpress.org/ticket/34587 )
+* Restore post type discovery behavior to note as testing seems to work now
+* Reserve acquisition kind per request @chrisaldrich and assign icon
 
 ### 3.0.1/3.0.2 ( 2018-02-24 ) ###
 * Forgot to include a JS dependency

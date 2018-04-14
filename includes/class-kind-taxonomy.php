@@ -561,6 +561,16 @@ class Kind_Taxonomy {
 				'description-url' => 'https://indieweb.org/event',
 				'show'            => false, // Show in Settings
 			),
+			'acquisition'  => array(
+				'singular_name'   => __( 'Acquisition', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name'            => __( 'Acquisitions', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb'            => __( 'Acquired', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property'        => 'acquired-of', // microformats 2 property
+				'format'          => 'status', // Post Format that maps to this
+				'description'     => __( 'Purchases, gifts, found things, or objects donated', 'indieweb-post-kinds' ),
+				'description-url' => 'http://indieweb.org/acquisition',
+				'show'            => false, // Show in Settings
+			),
 		);
 		$kinds = apply_filters( 'kind_info', $kinds );
 		ksort( $kinds );
