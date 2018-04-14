@@ -1,10 +1,10 @@
 # Post Kinds #
 **Contributors:** dshanske  
-**Tags:** indieweb, interaction, posts, webmention, share, like  
-**Stable tag:** 3.0.2  
+**Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
+**Stable tag:** 3.0.3  
 **Requires at least:** 4.7  
 **Requires PHP:** 5.3  
-**Tested up to:** 4.9.2  
+**Tested up to:** 4.9.5  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -79,10 +79,20 @@ first as a precaution.
 
 ### How does it work? ###
 
+Kinds, like Post Formats built into WordPress, allow you to specify that a post contains a certain type of content. It also, based
+on you classifying it that way, displays it appropriately and marks it up accordingly so outside sites can identify it. Kinds are
+either a response to something, such as a URL, or a more passive type of post where you are recording/logging something you did, for 
+example, watched a movie. 
+
+### How do I interact with other sites? ###
+
+This is added by webmention support.
+
 1. Bob wants to reply to Sue on his own website.
 2. Sue enables webmentions(separate plugin) on her site.
 3. Bob creates a post and sets it as a reply to or a like of Sue's post.
-4. A webmention is sent to Sue's site, and stored as a comment on Sue's post.
+4. A webmention is sent to Sue's site, and Sue's site uses the markup added by this plugin to determine what kind of post it is.
+5. Sue's site stores and displays data from the post as a comment on Sue's post.
 
 ### How do I learn more? ###
 
@@ -198,7 +208,7 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 ## Changelog ##
 
-### 3.x.x ( 2018-xx-xx ) ###
+### 3.0.3 ( 2018-04-14 ) ###
 * Update PHP-MF2 and add HTML5 parser
 * Add support for checkedin-by property to parser
 * Add ate and drank properties to post kind discovery
