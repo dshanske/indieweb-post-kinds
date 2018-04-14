@@ -193,6 +193,12 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 == Changelog ==
 
+= 3.x.x ( 2018-xx-xx ) =
+* Update PHP-MF2 and add HTML5 parser
+* Add support for checkedin-by property to parser
+* Add ate and drank properties to post kind discovery
+* Initial support for media files locally
+
 = 3.0.1/3.0.2 ( 2018-02-24 ) =
 * Forgot to include a JS dependency
 

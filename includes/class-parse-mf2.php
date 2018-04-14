@@ -15,7 +15,7 @@ class Parse_MF2 {
 		$args = array(
 			'timeout'             => 10,
 			'limit_response_size' => 1048576,
-			'redirection'         => 20,
+			'redirection'         => 0,
 			// Use an explicit user-agent for Post Kinds
 			'user-agent'          => 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:57.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36 Post Kinds/WP' . get_bloginfo( 'version' ) . '(' . get_bloginfo( 'url' ) . ')',
 		);
