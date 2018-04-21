@@ -465,7 +465,7 @@ class Kind_Taxonomy {
 				'singular_name'   => __( 'Follow', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Follows', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Followed', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
-				'property'        => 'follow', // microformats 2 property
+				'property'        => 'follow-of', // microformats 2 property
 				'format'          => '', // Post Format that maps to this
 				'description'     => __( 'indicating you are now following or subscribing to another person`s activities online', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/follow',
