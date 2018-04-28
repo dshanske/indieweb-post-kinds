@@ -24,6 +24,9 @@ class Kind_Taxonomy {
 		// Add Links to Ping to the Webmention Sender.
 		add_filter( 'webmention_links', array( 'Kind_Taxonomy', 'webmention_links' ), 11, 2 );
 
+		// Add Links to Enclosures if Appropriate
+		add_filter( 'enclosure_links', array( 'Kind_Taxonomy', 'enclosure_links' ), 11, 2 );
+
 		// Add Classes to Post.
 		add_filter( 'post_class', array( 'Kind_Taxonomy', 'post_class' ) );
 
@@ -230,7 +233,7 @@ class Kind_Taxonomy {
 			return false;
 		}
 		$kinds = array(
-			'article'   => array(
+			'article'     => array(
 				'singular_name'   => __( 'Article', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Articles', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( ' ', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -240,7 +243,7 @@ class Kind_Taxonomy {
 				'description-url' => 'http://indieweb.org/article',
 				'show'            => true, // Show in Settings
 			),
-			'note'      => array(
+			'note'        => array(
 				'singular_name'   => __( 'Note', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Notes', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( ' ', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -250,7 +253,7 @@ class Kind_Taxonomy {
 				'description-url' => 'http://indieweb.org/note',
 				'show'            => false, // Show in Settings
 			),
-			'reply'     => array(
+			'reply'       => array(
 				'singular_name'   => __( 'Reply', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Replies', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Replied to', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -260,7 +263,7 @@ class Kind_Taxonomy {
 				'description-url' => 'http://indieweb.org/reply',
 				'show'            => true, // Show in Settings
 			),
-			'repost'    => array(
+			'repost'      => array(
 				'singular_name'   => __( 'Repost', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Reposts', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Reposted', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -270,7 +273,7 @@ class Kind_Taxonomy {
 				'description-url' => 'http://indieweb.org/repost',
 				'show'            => true, // Show in Settings
 			),
-			'like'      => array(
+			'like'        => array(
 				'singular_name'   => __( 'Like', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Likes', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Liked', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -280,7 +283,7 @@ class Kind_Taxonomy {
 				'description-url' => 'http://indieweb.org/like',
 				'show'            => true, // Show in Settings
 			),
-			'favorite'  => array(
+			'favorite'    => array(
 				'singular_name'   => __( 'Favorite', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Favorites', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Favorited', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -290,7 +293,7 @@ class Kind_Taxonomy {
 				'description-url' => 'http://indieweb.org/favorite',
 				'show'            => true, // Show in Settings
 			),
-			'bookmark'  => array(
+			'bookmark'    => array(
 				'singular_name'   => __( 'Bookmark', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Bookmarks', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Bookmarked', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -300,7 +303,7 @@ class Kind_Taxonomy {
 				'description-url' => 'http://indieweb.org/bookmark',
 				'show'            => true, // Show in Settings
 			),
-			'photo'     => array(
+			'photo'       => array(
 				'singular_name'   => __( 'Photo', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Photos', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( ' ', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -310,7 +313,7 @@ class Kind_Taxonomy {
 				'description-url' => 'http://indieweb.org/photo',
 				'show'            => true, // Show in Settings
 			),
-			'video'     => array(
+			'video'       => array(
 				'singular_name'   => __( 'Video', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Videos', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( ' ', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -320,7 +323,7 @@ class Kind_Taxonomy {
 				'description-url' => 'http://indieweb.org/video',
 				'show'            => true, // Show in Settings
 			),
-			'audio'     => array(
+			'audio'       => array(
 				'singular_name'   => __( 'Audio', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Audios', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( ' ', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -331,7 +334,7 @@ class Kind_Taxonomy {
 				'show'            => true, // Show in Settings
 			),
 
-			'tag'       => array(
+			'tag'         => array(
 				'singular_name'   => __( 'Tag', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Tags', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Tagged', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -341,7 +344,7 @@ class Kind_Taxonomy {
 				'description-url' => 'http://indieweb.org/tag',
 				'show'            => false, // Show in Settings
 			),
-			'rsvp'      => array(
+			'rsvp'        => array(
 				'singular_name'   => __( 'RSVP', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'RSVPs', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'RSVPed', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -351,7 +354,7 @@ class Kind_Taxonomy {
 				'description-url' => 'http://indieweb.org/rsvp',
 				'show'            => true, // Show in Settings
 			),
-			'listen'    => array(
+			'listen'      => array(
 				'singular_name'   => __( 'Listen', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Listens', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Listened', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -361,7 +364,7 @@ class Kind_Taxonomy {
 				'description-url' => 'http://indieweb.org/listen',
 				'show'            => true, // Show in Settings
 			),
-			'watch'     => array(
+			'watch'       => array(
 				'singular_name'   => __( 'Watch', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Watches', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Watched', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -371,7 +374,7 @@ class Kind_Taxonomy {
 				'description-url' => 'http://indieweb.org/watch',
 				'show'            => true, // Show in Settings
 			),
-			'checkin'   => array(
+			'checkin'     => array(
 				'singular_name'   => __( 'Checkin', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Checkins', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Checked into', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -381,7 +384,7 @@ class Kind_Taxonomy {
 				'description-url' => 'http://indieweb.org/checkin',
 				'show'            => true, // Show in Settings
 			),
-			'wish'      => array(
+			'wish'        => array(
 				'singular_name'   => __( 'Wish', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Wishes', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Wished', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -391,7 +394,7 @@ class Kind_Taxonomy {
 				'description-url' => '',
 				'show'            => false, // Show in Settings
 			),
-			'play'      => array(
+			'play'        => array(
 				'singular_name'   => __( 'Play', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Playing', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Played', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -401,7 +404,7 @@ class Kind_Taxonomy {
 				'description-url' => 'https://indieweb.org/game_play',
 				'show'            => true, // Show in Settings
 			),
-			'weather'   => array(
+			'weather'     => array(
 				'singular_name'   => __( 'Weather', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Weather', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( ' ', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -411,7 +414,7 @@ class Kind_Taxonomy {
 				'description-url' => 'https://indieweb.org/weather',
 				'show'            => false, // Show in Settings
 			),
-			'exercise'  => array(
+			'exercise'    => array(
 				'singular_name'   => __( 'Exercise', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Exercise', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Exercised', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -421,7 +424,7 @@ class Kind_Taxonomy {
 				'description-url' => 'https://indieweb.org/exercise',
 				'show'            => false, // Show in Settings
 			),
-			'trip'      => array(
+			'trip'        => array(
 				'singular_name'   => __( 'Trip', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Trips', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Travelled', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -431,7 +434,7 @@ class Kind_Taxonomy {
 				'description-url' => 'https://indieweb.org/trip',
 				'show'            => false, // Show in Settings
 			),
-			'itinerary' => array(
+			'itinerary'   => array(
 				'singular_name'   => __( 'Itinerary', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Itineraries', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Travelled', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -441,7 +444,7 @@ class Kind_Taxonomy {
 				'description-url' => 'https://indieweb.org/trip',
 				'show'            => false, // Show in Settings
 			),
-			'eat'       => array(
+			'eat'         => array(
 				'singular_name'   => __( 'Eat', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Eat', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Ate', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -451,7 +454,7 @@ class Kind_Taxonomy {
 				'description-url' => 'https://indieweb.org/food',
 				'show'            => false, // Show in Settings
 			),
-			'drink'     => array(
+			'drink'       => array(
 				'singular_name'   => __( 'Drink', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Drinks', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Drank', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -461,7 +464,7 @@ class Kind_Taxonomy {
 				'description-url' => 'https://indieweb.org/food',
 				'show'            => false, // Show in Settings
 			),
-			'follow'    => array(
+			'follow'      => array(
 				'singular_name'   => __( 'Follow', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Follows', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Followed', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -471,7 +474,7 @@ class Kind_Taxonomy {
 				'description-url' => 'https://indieweb.org/follow',
 				'show'            => false, // Show in Settings
 			),
-			'jam'       => array(
+			'jam'         => array(
 				'singular_name'   => __( 'Jam', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Jams', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Listened to', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -481,7 +484,7 @@ class Kind_Taxonomy {
 				'description-url' => 'https://indieweb.org/jam',
 				'show'            => true, // Show in Settings
 			),
-			'read'      => array(
+			'read'        => array(
 				'singular_name'   => __( 'Read', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Reads', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Read', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -491,7 +494,7 @@ class Kind_Taxonomy {
 				'description-url' => 'https://indieweb.org/read',
 				'show'            => true, // Show in Settings
 			),
-			'quote'     => array(
+			'quote'       => array(
 				'singular_name'   => __( 'Quote', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Quotes', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Quoted', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -501,7 +504,7 @@ class Kind_Taxonomy {
 				'description-url' => 'https://indieweb.org/quote',
 				'show'            => true, // Show in Settings
 			),
-			'mood'      => array(
+			'mood'        => array(
 				'singular_name'   => __( 'Mood', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Moods', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Felt', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -511,7 +514,7 @@ class Kind_Taxonomy {
 				'description-url' => 'https://indieweb.org/mood',
 				'show'            => false, // Show in Settings
 			),
-			'recipe'    => array(
+			'recipe'      => array(
 				'singular_name'   => __( 'Recipe', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Recipes', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Cooked', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -521,7 +524,7 @@ class Kind_Taxonomy {
 				'description-url' => 'https://indieweb.org/recipe',
 				'show'            => false, // Show in Settings
 			),
-			'issue'     => array(
+			'issue'       => array(
 				'singular_name'   => __( 'Issue', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Issues', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Filed an Issue', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -531,7 +534,7 @@ class Kind_Taxonomy {
 				'description-url' => 'https://indieweb.org/issue',
 				'show'            => true, // Show in Settings
 			),
-			'question'  => array(
+			'question'    => array(
 				'singular_name'   => __( 'Question', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Questions', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Asked a question', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -541,7 +544,7 @@ class Kind_Taxonomy {
 				'description-url' => 'https://indieweb.org/question',
 				'show'            => false, // Show in Settings
 			),
-			'sleep'     => array(
+			'sleep'       => array(
 				'singular_name'   => __( 'Sleep', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Sleeps', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Slept', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -551,7 +554,7 @@ class Kind_Taxonomy {
 				'description-url' => 'https://indieweb.org/sleep',
 				'show'            => false, // Show in Settings
 			),
-			'event'     => array(
+			'event'       => array(
 				'singular_name'   => __( 'Event', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Events', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Planned', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -561,7 +564,7 @@ class Kind_Taxonomy {
 				'description-url' => 'https://indieweb.org/event',
 				'show'            => false, // Show in Settings
 			),
-			'acquisition'  => array(
+			'acquisition' => array(
 				'singular_name'   => __( 'Acquisition', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Acquisitions', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Acquired', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
@@ -598,8 +601,24 @@ class Kind_Taxonomy {
 			$links[] = $cites;
 		}
 		if ( is_array( $cites ) ) {
-			$links = array_merge( $links, $cite );
+			$links = array_merge( $links, $cites );
 			$links = array_unique( $links );
+		}
+		return $links;
+	}
+
+	public static function enclosure_links( $links, $post_id ) {
+		$mf2_post = new MF2_Post( $post_id );
+		if ( in_array( $mf2_post->kind, array( 'photo', 'video', 'audio' ), true ) ) {
+			$cite  = $mf2_post->fetch();
+			$cites = ifset( $cite['url'] );
+			if ( is_string( $cites ) ) {
+				$links[] = $cites;
+			}
+			if ( is_array( $cites ) ) {
+				$links = array_merge( $links, $cites );
+				$links = array_unique( $links );
+			}
 		}
 		return $links;
 	}
