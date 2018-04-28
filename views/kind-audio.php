@@ -12,6 +12,14 @@ if ( ! $cite ) {
 }
 $url   = ifset( $cite['url'] );
 $embed = self::get_embed( $url );
+if ( ! $audios && ! $embed ) {
+	$embed = wp_audio_shortcode( 
+		array(
+			'class' => 'wp_audio-shortcode u-audio',
+			'src' => $url,
+		)
+	);
+}
 
 ?>
 <section class="response">

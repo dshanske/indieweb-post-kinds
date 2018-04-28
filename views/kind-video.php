@@ -14,6 +14,15 @@ if ( ! $cite ) {
 }
 $url   = ifset( $cite['url'] );
 $embed = self::get_embed( $url );
+if ( ! $videos && ! $embed ) {
+        $embed = wp_video_shortcode(
+                array(
+                        'class' => 'wp_video-shortcode u-video',
+                        'src' => $url,
+                )
+        );
+}
+
 
 ?>
 <section class="response">
