@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.0.3  
+**Stable tag:** 3.0.4  
 **Requires at least:** 4.7  
 **Requires PHP:** 5.3  
 **Tested up to:** 4.9.5  
@@ -207,6 +207,10 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 
 ## Changelog ##
+
+### 3.0.4 ( 2018-04-28 ) ###
+* Add support to automatically generate enclosures on photo, video, and audio kind
+* Add player to audio and video template for provided URLs if not attached or not a known embed
 
 ### 3.0.3 ( 2018-04-14 ) ###
 * Update PHP-MF2 and add HTML5 parser
