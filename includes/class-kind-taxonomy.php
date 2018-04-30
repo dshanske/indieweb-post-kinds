@@ -488,7 +488,7 @@ class Kind_Taxonomy {
 				'singular_name'   => __( 'Read', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Reads', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Read', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
-				'property'        => 'read', // microformats 2 property
+				'property'        => 'read-of', // microformats 2 property
 				'format'          => 'status', // Post Format that maps to this
 				'description'     => __( 'reading a book, magazine, newspaper, other physical document, or online post', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/read',
