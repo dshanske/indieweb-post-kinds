@@ -338,7 +338,7 @@ class Kind_Taxonomy {
 				'singular_name'   => __( 'Tag', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Tags', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Tagged', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
-				'property'        => 'tag', // microformats 2 property
+				'property'        => 'tag-of', // microformats 2 property
 				'format'          => '', // Post Format that maps to this
 				'description'     => __( 'allows you to tag a post as being of a specific category or tag, or for person tagging', 'indieweb-post-kinds' ),
 				'description-url' => 'http://indieweb.org/tag',
@@ -368,8 +368,8 @@ class Kind_Taxonomy {
 				'singular_name'   => __( 'Watch', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Watches', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Watched', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
-				'property'        => 'watch', // microformats 2 property
-				'format'          => 'watch-of', // Post Format that maps to this
+				'property'        => 'watch-of', // microformats 2 property
+				'format'          => 'video', // Post Format that maps to this
 				'description'     => __( 'watching a movie, television show, online video, play or other visual-based event', 'indieweb-post-kinds' ),
 				'description-url' => 'http://indieweb.org/watch',
 				'show'            => true, // Show in Settings
@@ -388,7 +388,7 @@ class Kind_Taxonomy {
 				'singular_name'   => __( 'Wish', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Wishes', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Wished', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
-				'property'        => 'wish', // microformats 2 property
+				'property'        => 'wish-of', // microformats 2 property
 				'format'          => '', // Post Format that maps to this
 				'description'     => __( 'a post indicating a desire/wish. The archive of which would be a wishlist, such as a gift registry or similar', 'indieweb-post-kinds' ),
 				'description-url' => '',
