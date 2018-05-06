@@ -122,9 +122,9 @@ class Post_Kinds_Plugin {
 				citation. Items such as author name and image, summary of the text, embed provided by third-party site, etc may be stored and are solely to provide this 
 				context. We will remove any of this on request.', 'indieweb-post-kinds'
 			);
-			 wp_add_privacy_policy_content(
-				 'Post Kinds',
-				 wp_kses_post( wpautop( $content, false ) )
+			wp_add_privacy_policy_content(
+				'Post Kinds',
+				wp_kses_post( wpautop( $content, false ) )
 			 );
 		}
 	}
