@@ -116,7 +116,7 @@ class Kind_View {
 	public static function json_feed_item( $feed_item, $post ) {
 		$jf2 = get_post_jf2meta( $post, false );
 		// blacklist properties duplicated by JSONFeed spec
-		$blacklist = array( 'published', 'updated' );
+		$blacklist = array( 'published', 'updated', 'type' );
 		foreach ( $blacklist as $b ) {
 			unset( $jf2[ $b ] );
 		}
