@@ -172,7 +172,11 @@ class MF2_Post {
 				unset( $meta[ $key ] );
 			} else {
 				unset( $meta[ $key ] );
-				$key   = str_replace( 'mf2_', '', $key );
+				$key = str_replace( 'mf2_', '', $key );
+				// Do not save microput prefixed instructions
+				if ( self::str_prefix( $key, 'mp-' ) ) {
+					continue;
+				}
 				$value = array_map( 'maybe_unserialize', $value );
 				if ( 1 === count( $value ) ) {
 					$value = array_shift( $value );
@@ -191,6 +195,9 @@ class MF2_Post {
 	 * @return boolean|string|array The result or false if does not exist.
 	 */
 	public function get( $key = null, $single = false ) {
+		if ( 'mf2' === $key ) {
+			return $this->mf2;
+		}
 		if ( null === $key ) {
 			$return = array_merge( get_object_vars( $this ), $this->mf2 );
 			unset( $return['mf2'] );

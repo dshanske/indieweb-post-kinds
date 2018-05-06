@@ -7,7 +7,7 @@
  * Plugin Name: Post Kinds
  * Plugin URI: https://wordpress.org/plugins/indieweb-post-kinds/
  * Description: Ever want to reply to someone else's post with a post on your own site? Or to "like" someone else's post, but with your own site?
- * Version: 3.0.4
+ * Version: 3.0.5
  * Author: David Shanske
  * Author URI: https://david.shanske.com
  * Text Domain: indieweb-post-kinds
@@ -24,7 +24,7 @@ add_action( 'plugins_loaded', array( 'Post_Kinds_Plugin', 'plugins_loaded' ) );
 add_action( 'init', array( 'Post_Kinds_Plugin', 'init' ) );
 
 class Post_Kinds_Plugin {
-	public static $version = '3.0.4';
+	public static $version = '3.0.5';
 	public static function init() {
 		// Add Kind Taxonomy.
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-taxonomy.php';
@@ -114,6 +114,21 @@ class Post_Kinds_Plugin {
 	public static function admin_style_load() {
 		wp_enqueue_style( 'kind-admin', plugin_dir_url( __FILE__ ) . 'css/kind.admin.min.css', array(), self::$version );
 	}
+
+	public static function privacy_declaration() {
+		if ( function_exists( 'wp_add_privacy_policy_content' ) ) {
+			$content = __(
+				'For responses to URLs, such as responding to a post or article, this site allows the storage of data around the post/article in order to generate a rich
+				citation. Items such as author name and image, summary of the text, embed provided by third-party site, etc may be stored and are solely to provide this 
+				context. We will remove any of this on request.', 'indieweb-post-kinds'
+			);
+			 wp_add_privacy_policy_content(
+				 'Post Kinds',
+				 wp_kses_post( wpautop( $content, false ) )
+			 );
+		}
+	}
+
 }
 
 if ( ! function_exists( 'ifset' ) ) {

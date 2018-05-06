@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.0.4  
+**Stable tag:** 3.0.5  
 **Requires at least:** 4.7  
 **Requires PHP:** 5.3  
 **Tested up to:** 4.9.5  
@@ -33,6 +33,11 @@ Many sites will not need all of the kinds set up. What kinds of posts you wish t
 ## Installation ##
 
 The plugin requires the [webmention](https://wordpress.org/plugins/webmention/) plugin to support sending/receiving notice of a reply/like to another site which will appear as a comment. The [Semantic Linkbacks](https://wordpress.org/plugins/semantic-linkbacks/) plugin is available to more richly display the comment.
+
+## Privacy and Data Storage Notice ##
+
+Post Kinds stores extra data in a post indicating what you are resopnding to. This data is either hand-added or can be parsed from the source URL if provided. This means you have additional
+responsibilities to responsibly use this data, and to remove information on request.
 
 ##  Credits ##
 
@@ -207,6 +212,12 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 
 ## Changelog ##
+
+### 3.0.5 ( 2018-05-06 ) ###
+* Add privacy policy
+* Change read property to read-of
+* Add mf2 data to JSONFeed
+* Improve feed handling of context in general
 
 ### 3.0.4 ( 2018-04-28 ) ###
 * Add support to automatically generate enclosures on photo, video, and audio kind

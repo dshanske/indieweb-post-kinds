@@ -9,6 +9,8 @@
 class Kind_View {
 	public static function init() {
 		add_filter( 'the_content', array( 'Kind_View', 'content_response' ), 20 );
+		add_filter( 'the_content_feed', array( 'Kind_View', 'content_feed_response' ), 20, 2 );
+		add_filter( 'json_feed_item', array( 'Kind_View', 'json_feed_item' ), 10, 2 );
 		add_filter( 'the_excerpt', array( 'Kind_View', 'excerpt_response' ), 20 );
 		add_filter( 'wp_get_attachment_image_attributes', array( 'Kind_View', 'wp_get_attachment_image_attributes' ), 10, 2 );
 	}
@@ -81,7 +83,44 @@ class Kind_View {
 	}
 
 	public static function content_response( $content ) {
+		if ( ( is_admin() ) && ! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
+			return $content;
+		}
+
+		if ( is_feed() ) {
+			return $content;
+		}
+		global $wp_current_filter;
+		// Don't allow to be added to the_content more than once (prevent infinite loops)
+		$done = false;
+		foreach ( $wp_current_filter as $filter ) {
+			if ( 'the_content' === $filter ) {
+				if ( $done ) {
+					return $content;
+				} else {
+					$done = true;
+				}
+			}
+		}
+
 		return self::get_display() . $content;
+	}
+
+	public static function content_feed_response( $content, $feed_type ) {
+		if ( 'json' === $feed_type ) {
+			return $content;
+		}
+		return self::get_display() . $content;
+	}
+
+	public static function json_feed_item( $feed_item, $post ) {
+		$jf2 = get_post_jf2meta( $post, false );
+		// blacklist properties duplicated by JSONFeed spec
+		$blacklist = array( 'published', 'updated' );
+		foreach ( $blacklist as $b ) {
+			unset( $jf2[ $b ] );
+		}
+		return array_merge( $feed_item, $jf2 );
 	}
 
 

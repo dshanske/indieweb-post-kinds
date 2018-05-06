@@ -21,6 +21,11 @@ if ( ! $audios && ! $embed ) {
 	);
 }
 
+$duration  = $mf2_post->get( 'duration', true );
+if ( ! $duration ) {
+	$duration = calculate_duration( $mf2_post->get( 'dt-start' ), $mf2_post->get( 'dt-end' ) );
+}
+
 ?>
 <section class="response">
 <header>
@@ -28,6 +33,10 @@ if ( ! $audios && ! $embed ) {
 echo Kind_Taxonomy::get_before_kind( 'audio' );
 if ( isset( $cite['name'] ) ) {
 	echo sprintf( '<span class="p-name">%1s</a>', $cite['name'] );
+}
+
+if ( $duration ) {
+	echo '(<data class="p-duration" value="' . $duration . '">' . Kind_View::display_duration( $duration ) . '</data>)';
 }
 
 ?>

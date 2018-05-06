@@ -8,11 +8,11 @@
  */
 
 /**
- * Retrieves an array of post kind slugs.
+ * Retrieves an array of mf2 data from a post.
  *
  * @param int|WP_Post $post A Post.
- * @param string      $key Meta Key to Retrieve. If empty, retrieve all.
- * @return array The array of post kind slugs.
+ * @param string      $key Meta Key to Retrieve. If empty, retrieve all. If 'mf2' retrieve only mf2 not WordPress properties.
+ * @return array|Unknown The array of post kind slugs.
  */
 function get_post_mf2meta( $post, $key = '' ) {
 	$mf2_post = new MF2_Post( $post );
@@ -21,6 +21,22 @@ function get_post_mf2meta( $post, $key = '' ) {
 	}
 	return $mf2_post->get( $key );
 }
+
+/**
+ * Retrieves jf2 data from a post.
+ *
+ * @param int|WP_Post $post A Post.
+ * @param boolean $wordpress Include WordPress properties or not.
+ * @return array The array of post kind slugs.
+ */
+function get_post_jf2meta( $post, $wordpress = true ) {
+	$mf2_post  = new MF2_Post( $post );
+	$wordpress = $wordpress ? 'all' : 'mf2';
+	$mf2       = $mf2_post->get( $wordpress );
+	return $mf2_post->mf2_to_jf2( $mf2 );
+}
+
+
 
 /**
  * Retrieves an array of post kind slugs.
