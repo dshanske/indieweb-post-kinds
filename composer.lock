@@ -197,12 +197,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/indieweb/php-mf2.git",
-                "reference": "e8da04f93d548d26287a8980eca4216639cbc61d"
+                "reference": "ae499288ae5286e3a14471de85f6d908512d0c3b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/indieweb/php-mf2/zipball/e8da04f93d548d26287a8980eca4216639cbc61d",
-                "reference": "e8da04f93d548d26287a8980eca4216639cbc61d",
+                "url": "https://api.github.com/repos/indieweb/php-mf2/zipball/ae499288ae5286e3a14471de85f6d908512d0c3b",
+                "reference": "ae499288ae5286e3a14471de85f6d908512d0c3b",
                 "shasum": ""
             },
             "require": {
@@ -245,7 +245,7 @@
                 "parser",
                 "semantic"
             ],
-            "time": "2018-03-29T20:48:28+00:00"
+            "time": "2018-04-28T17:40:54+00:00"
         }
     ],
     "packages-dev": [
@@ -374,12 +374,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/wimg/PHPCompatibility.git",
-                "reference": "129afa00eb391c550094ff044a5e0d65788903ff"
+                "reference": "b100a1ea9099c6f8f0599342035f5e0e07aee15e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wimg/PHPCompatibility/zipball/129afa00eb391c550094ff044a5e0d65788903ff",
-                "reference": "129afa00eb391c550094ff044a5e0d65788903ff",
+                "url": "https://api.github.com/repos/wimg/PHPCompatibility/zipball/b100a1ea9099c6f8f0599342035f5e0e07aee15e",
+                "reference": "b100a1ea9099c6f8f0599342035f5e0e07aee15e",
                 "shasum": ""
             },
             "require": {
@@ -419,7 +419,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2018-03-23T10:21:09+00:00"
+            "time": "2018-04-24T22:20:19+00:00"
         },
         {
             "name": "wp-coding-standards/wpcs",
