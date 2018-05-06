@@ -125,7 +125,7 @@ class Post_Kinds_Plugin {
 			wp_add_privacy_policy_content(
 				'Post Kinds',
 				wp_kses_post( wpautop( $content, false ) )
-			 );
+			);
 		}
 	}
 
