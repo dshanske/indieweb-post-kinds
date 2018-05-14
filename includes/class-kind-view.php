@@ -102,14 +102,13 @@ class Kind_View {
 				}
 			}
 		}
-
+		if ( 1 === (int) get_option( 'kind_bottom' ) ) {
+			return $content . self::get_display();
+		}
 		return self::get_display() . $content;
 	}
 
 	public static function content_feed_response( $content, $feed_type ) {
-		if ( 'json' === $feed_type ) {
-			return $content;
-		}
 		return self::get_display() . $content;
 	}
 

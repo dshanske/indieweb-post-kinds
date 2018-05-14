@@ -46,6 +46,13 @@ class Kind_Config {
 		);
 		register_setting( 'iwt_options', 'kind_embeds', $args );
 		$args = array(
+			'type'         => 'boolean',
+			'description'  => 'Response Information Should Be After Content',
+			'show_in_rest' => false,
+			'default'      => 0,
+		);
+		register_setting( 'iwt_options', 'kind_bottom', $args );
+		$args = array(
 			'type'         => 'string',
 			'description'  => 'Display Preferences for Before Kind',
 			'show_in_rest' => false,
@@ -97,6 +104,15 @@ class Kind_Config {
 			array( 'Kind_Config', 'checkbox_callback' ),
 			'iwt_options', 'iwt-content', array(
 				'name' => 'kind_embeds',
+			)
+		);
+
+		add_settings_field(
+			'bottom',
+			__( 'Move Response to Bottom of Content', 'indieweb-post-kinds' ),
+			array( 'Kind_Config', 'checkbox_callback' ),
+			'iwt_options', 'iwt-content', array(
+				'name' => 'kind_bottom',
 			)
 		);
 

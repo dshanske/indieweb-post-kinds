@@ -758,15 +758,22 @@ class Kind_Taxonomy {
 	 * Display before Kind - either icon text or no display
 	 *
 	 * @param string $kind The slug for the kind of the current post
+	 * @param string $display Override display
 	 * @return string Marked up kind information
 	 */
-	public static function get_before_kind( $kind ) {
+	public static function get_before_kind( $kind, $display = null ) {
 		if ( ! self::before_kind() ) {
 			return '';
 		}
-		$display = get_option( 'kind_display' );
-		$text    = '<span class="kind-display-text">' . self::get_kind_info( $kind, 'verb' ) . '</span> ';
-		$icon    = self::get_icon( $kind );
+		if ( ! $display ) {
+			$display = get_option( 'kind_display' );
+		}
+		$text = '<span class="kind-display-text">' . self::get_kind_info( $kind, 'verb' ) . '</span> ';
+		$icon = self::get_icon( $kind );
+		// Hide Icon in Feed View
+		if ( 'text' !== $display && is_feed() ) {
+			$icon = '';
+		}
 		switch ( $display ) {
 			case 'both':
 				return $icon . $text;
