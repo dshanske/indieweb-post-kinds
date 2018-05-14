@@ -115,8 +115,9 @@ module.exports = function(grunt) {
 
 				shape				: {
 					dimension		: {			// Set maximum dimensions
-						maxWidth	: 64,
-						maxHeight	: 64
+						maxWidth	: 32,
+						maxHeight	: 32,
+						attributes      : true
 					},
 					spacing			: {			// Add padding
 						padding		: 10
