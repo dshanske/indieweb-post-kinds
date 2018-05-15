@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like, scrobble
-Stable tag: 3.0.5
+Stable tag: 3.0.6
 Requires at least: 4.7
 Requires PHP: 5.3
 Tested up to: 4.9.5
@@ -208,6 +208,11 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 
 == Changelog ==
+
+= 3.0.6 ( 2018-05-14 ) =
+* Add option to move response to bottom
+* Restore response to jsonFEED
+* Only show text on feeds not icon
 
 = 3.0.5 ( 2018-05-06 ) =
 * Add privacy policy

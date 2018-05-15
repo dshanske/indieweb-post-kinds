@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the Post Kinds package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Kinds 3.0.5\n"
+"Project-Id-Version: Post Kinds 3.0.6\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2018-05-14 04:18:55+00:00\n"
+"POT-Creation-Date: 2018-05-15 02:18:29+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -14,43 +14,47 @@ msgstr ""
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "X-Generator: grunt-wp-i18n 0.4.9\n"
 
-#: includes/class-kind-config.php:72
+#: includes/class-kind-config.php:79
 msgid "Content Options"
 msgstr ""
 
-#: includes/class-kind-config.php:81
+#: includes/class-kind-config.php:88
 msgid "Select All Kinds You Wish to Use"
 msgstr ""
 
-#: includes/class-kind-config.php:88
+#: includes/class-kind-config.php:95
 msgid "Default Kind for New Posts"
 msgstr ""
 
-#: includes/class-kind-config.php:96
+#: includes/class-kind-config.php:103
 msgid "Embed Sites into your Response"
 msgstr ""
 
-#: includes/class-kind-config.php:105
+#: includes/class-kind-config.php:112
+msgid "Move Response to Bottom of Content"
+msgstr ""
+
+#: includes/class-kind-config.php:121
 msgid "Display Before Kind"
 msgstr ""
 
-#: includes/class-kind-config.php:112
+#: includes/class-kind-config.php:128
 msgid "Show Icon"
 msgstr ""
 
-#: includes/class-kind-config.php:113
+#: includes/class-kind-config.php:129
 msgid "Show Text"
 msgstr ""
 
-#: includes/class-kind-config.php:114
+#: includes/class-kind-config.php:130
 msgid "Show Icon and Text"
 msgstr ""
 
-#: includes/class-kind-config.php:115
+#: includes/class-kind-config.php:131
 msgid "Display Nothing"
 msgstr ""
 
-#: includes/class-kind-config.php:123
+#: includes/class-kind-config.php:139
 msgid "Response Content Allowed Html Elements"
 msgstr ""
 
@@ -58,19 +62,19 @@ msgstr ""
 msgid "Post Kinds"
 msgstr ""
 
-#: includes/class-kind-config.php:261
+#: includes/class-kind-config.php:277
 msgid "Indieweb Post Kinds"
 msgstr ""
 
-#: includes/class-kind-config.php:263
+#: includes/class-kind-config.php:279
 msgid "Adds support for responding and interacting with other sites."
 msgstr ""
 
-#: includes/class-kind-config.php:276
+#: includes/class-kind-config.php:292
 msgid "Post Properties"
 msgstr ""
 
-#: includes/class-kind-config.php:277
+#: includes/class-kind-config.php:293
 msgid ""
 "\n"
 " \t\t\t\t\t\t\t<p> The Post Properties tab represents the Microformats "
@@ -683,62 +687,62 @@ msgstr ""
 msgid "Invalid Kind"
 msgstr ""
 
-#: includes/class-kind-view.php:373
+#: includes/class-kind-view.php:372
 #. translators: URL for link to event and name of event
 msgid "Attending <a href=\"%1$1s\" class=\"u-in-reply-to\">%2$2s</a>"
 msgstr ""
 
-#: includes/class-kind-view.php:375
+#: includes/class-kind-view.php:374
 #. translators: URL for link to event and name of event
 msgid "Might be attending <a href=\"%1$1s\" class=\"u-in-reply-to\">%2$2s</a>"
 msgstr ""
 
-#: includes/class-kind-view.php:377
+#: includes/class-kind-view.php:376
 #. translators: URL for link to event and name of event
 msgid "Unable to Attend <a href=\"%1$1s\" class=\"u-in-reply-to\">%2$2s</a>"
 msgstr ""
 
-#: includes/class-kind-view.php:379
+#: includes/class-kind-view.php:378
 #. translators: URL for link to event and name of event
 msgid "Interested in Attending %s"
 msgstr ""
 
-#: includes/class-kind-view.php:400
+#: includes/class-kind-view.php:399
 #. translators: singular and plural
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-kind-view.php:404
+#: includes/class-kind-view.php:403
 #. translators: singular and plural
 msgid " %d month"
 msgid_plural " %d months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-kind-view.php:408
+#: includes/class-kind-view.php:407
 #. translators: singular and plural
 msgid " %d day"
 msgid_plural " %d days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-kind-view.php:412
+#: includes/class-kind-view.php:411
 #. translators: singular and plural
 msgid " %d hour"
 msgid_plural " %d hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-kind-view.php:416
+#: includes/class-kind-view.php:415
 #. translators: singular and plural
 msgid " %d minute"
 msgid_plural " %d minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-kind-view.php:420
+#: includes/class-kind-view.php:419
 #. translators: singular and plural
 msgid " %d second"
 msgid_plural " %d seconds"
@@ -1022,27 +1026,27 @@ msgctxt "no kinds"
 msgid "No kinds"
 msgstr ""
 
-#: includes/class-kind-view.php:239
+#: includes/class-kind-view.php:238
 msgctxt "singular Twitter"
 msgid "a tweet"
 msgstr ""
 
-#: includes/class-kind-view.php:240
+#: includes/class-kind-view.php:239
 msgctxt "singular Vimeo"
 msgid "a video"
 msgstr ""
 
-#: includes/class-kind-view.php:241
+#: includes/class-kind-view.php:240
 msgctxt "singular Youtube"
 msgid "a video"
 msgstr ""
 
-#: includes/class-kind-view.php:242
+#: includes/class-kind-view.php:241
 msgctxt "singular Intagram"
 msgid "an image"
 msgstr ""
 
-#: includes/class-kind-view.php:248
+#: includes/class-kind-view.php:247
 msgctxt "singular post"
 msgid "a post"
 msgstr ""
