@@ -86,6 +86,10 @@ class Post_Kinds_Plugin {
 		// Load stylesheets.
 		add_action( 'wp_enqueue_scripts', array( 'Post_Kinds_Plugin', 'style_load' ) );
 		add_action( 'admin_enqueue_scripts', array( 'Post_Kinds_Plugin', 'admin_style_load' ) );
+
+		// Load Privacy Declaration
+		add_action( 'admin_init', array( 'Post_Kinds_Plugin', 'privacy_declaration' ) );
+
 	}
 
 	/**
