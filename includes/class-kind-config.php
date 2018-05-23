@@ -66,6 +66,22 @@ class Kind_Config {
 			'default'      => str_replace( '},"', "},\r\n\"", wp_json_encode( wp_kses_allowed_html( 'post' ), 128 ) ),
 		);
 		register_setting( 'iwt_options', 'kind_kses', $args );
+
+		$args = array(
+			'type'         => 'boolean',
+			'description'  => 'Videos should autoplay',
+			'show_in_rest' => false,
+			'default'      => 0,
+		);
+		register_setting( 'iwt_options', 'kind_video_autoplay', $args );
+
+		$args = array(
+			'type'         => 'boolean',
+			'description'  => 'Videos should loop',
+			'show_in_rest' => false,
+			'default'      => 0,
+		);
+		register_setting( 'iwt_options', 'kind_video_loop', $args );
 	}
 
 	/**
@@ -113,6 +129,24 @@ class Kind_Config {
 			array( 'Kind_Config', 'checkbox_callback' ),
 			'iwt_options', 'iwt-content', array(
 				'name' => 'kind_bottom',
+			)
+		);
+
+		add_settings_field(
+			'video_autoplay',
+			__( 'Post Kind video should autoplay videos', 'indieweb-post-kinds' ),
+			array( 'Kind_Config', 'checkbox_callback' ),
+			'iwt_options', 'iwt-content', array(
+				'name' => 'kind_video_autoplay',
+			)
+		);
+
+		add_settings_field(
+			'video_loop',
+			__( 'Post Kind video should loop videos', 'indieweb-post-kinds' ),
+			array( 'Kind_Config', 'checkbox_callback' ),
+			'iwt_options', 'iwt-content', array(
+				'name' => 'kind_video_loop',
 			)
 		);
 
@@ -314,8 +348,8 @@ class Kind_Config {
  							<ul><strong>Other</strong>
  			              				<li><strong>Start Time</strong></li>
  			              				<li><strong>End Time</strong></li>
- 								<li><strong>Duration</strong> - Duration is calculated based on the difference between start and end time. You may just use the time field, 
- 								omitting date and timezone and setting start time to 0:00:00 to set a simple duration.</li> 
+ 								<li><strong>Duration</strong> - Duration is calculated based on the difference between start and end time. You may just use the time field,
+ 								omitting date and timezone and setting start time to 0:00:00 to set a simple duration.</li>
  								<li><strong>RSVP</strong> - For RSVP posts, you can specify whether you are attending, not attending, unsure, or simply interested.</li>
  			            			</ul>
  						', 'indieweb-post-kinds'
@@ -325,5 +359,3 @@ class Kind_Config {
 	}
 
 } // End Class
-
-

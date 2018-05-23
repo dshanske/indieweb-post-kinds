@@ -23,7 +23,6 @@ if ( ! $videos && ! $embed ) {
         );
 }
 
-
 ?>
 <section class="response">
 <header>
@@ -46,6 +45,8 @@ if ( $videos && ! has_post_thumbnail( get_the_ID() ) ) {
 		array(
 			'poster' => $poster,
 			'class'  => 'wp-video-shortcode u-video',
+			'autoplay' => get_option('kind_video_autoplay',false),
+			'loop' => get_option('kind_video_loop',false),
 		)
 	);
 } else {
