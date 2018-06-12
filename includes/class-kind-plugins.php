@@ -87,6 +87,13 @@ class Kind_Plugins {
 			return;
 		}
 
+		if ( isset( $input['properties']['read-of'] ) || isset( $input['properties']['read'] ) ) {
+			set_post_kind( $wp_args['ID'], 'read' );
+			return;
+		}
+
+		
+
 		if ( isset( $input['properties']['in-reply-to'] ) ) {
 			set_post_kind( $wp_args['ID'], 'reply' );
 			return;
