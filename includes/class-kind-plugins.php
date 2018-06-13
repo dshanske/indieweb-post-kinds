@@ -82,6 +82,11 @@ class Kind_Plugins {
 			return;
 		}
 
+		if ( isset( $input['properties']['read-of'] ) || isset( $input['properties']['read'] ) ) {
+			set_post_kind( $wp_args['ID'], 'read' );
+			return;
+		}
+
 		if ( isset( $input['properties']['play-of'] ) || isset( $input['properties']['play'] ) ) {
 			set_post_kind( $wp_args['ID'], 'play' );
 			return;
