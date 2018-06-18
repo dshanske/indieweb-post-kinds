@@ -74,6 +74,8 @@ class Kind_Config {
 	 * @access public
 	 */
 	public static function admin_init() {
+		add_action( 'admin_bar_menu', array( 'Kind_Config', 'dashbar_links' ), 20 );
+		add_action( 'admin_bar_menu', array( 'Kind_Config', 'remove_dashbar_post' ), 200 );
 		add_settings_section(
 			'iwt-content',
 			__(
@@ -153,6 +155,24 @@ class Kind_Config {
 	public static function query_var( $vars ) {
 		$vars[] = 'kindurl';
 		return $vars;
+	}
+
+	public static function remove_dashbar_post( $wp_admin_bar ) {
+		$wp_admin_bar->remove_menu( 'new-post' );
+	}
+
+	public static function dashbar_links( $wp_admin_bar ) {
+		$termslist = get_option( 'kind_termslist' );
+		foreach ( $termslist as $term ) {
+			$wp_admin_bar->add_menu(
+				array(
+					'parent' => 'new-content',
+					'id'     => $term,
+					'title'  => Kind_Taxonomy::get_kind_info( $term, 'singular_name' ),
+					'href'   => add_query_arg( 'kind', $term, admin_url( 'post-new.php' ) ),
+				)
+			);
+		}
 	}
 
 	/**

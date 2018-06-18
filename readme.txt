@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like, scrobble
-Stable tag: 3.0.6
+Stable tag: 3.0.7
 Requires at least: 4.7
 Requires PHP: 5.3
 Tested up to: 4.9.5
@@ -208,6 +208,11 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 
 == Changelog ==
+
+= 3.0.7 ( 2018-06-17 ) =
+* Add support for read-of property in micropub code
+* Add direct links to post a new kind
+* Add title property to kind info array
 
 = 3.0.6 ( 2018-05-14 ) =
 * Add option to move response to bottom

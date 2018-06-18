@@ -380,6 +380,19 @@ class Kind_View {
 		return $rsvp[ $type ];
 	}
 
+	public static function read_text( $type ) {
+		if ( ! $type ) {
+			return '';
+		}
+		$rread = array(
+			'to-read'        => __( 'Want to Read: ', 'indieweb-post-kinds' ),
+			'reading'      => __( 'Reading: ', 'indieweb-post-kinds' ),
+			'finished'         => __( 'Finished Reading: ', 'indieweb-post-kinds' ),
+		);
+		return $read[ $type ];
+	}
+
+
 	public static function display_duration( $duration ) {
 		if ( ! $duration ) {
 			return '';
