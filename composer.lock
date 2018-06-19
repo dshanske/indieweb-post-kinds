@@ -319,16 +319,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "3.2.3",
+            "version": "3.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "4842476c434e375f9d3182ff7b89059583aa8b27"
+                "reference": "d86873af43b4aa9d1f39a3601cc0cfcf02b25266"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/4842476c434e375f9d3182ff7b89059583aa8b27",
-                "reference": "4842476c434e375f9d3182ff7b89059583aa8b27",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/d86873af43b4aa9d1f39a3601cc0cfcf02b25266",
+                "reference": "d86873af43b4aa9d1f39a3601cc0cfcf02b25266",
                 "shasum": ""
             },
             "require": {
@@ -366,7 +366,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2018-02-20T21:35:23+00:00"
+            "time": "2018-06-06T23:58:19+00:00"
         },
         {
             "name": "wimg/php-compatibility",
@@ -374,12 +374,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/wimg/PHPCompatibility.git",
-                "reference": "b100a1ea9099c6f8f0599342035f5e0e07aee15e"
+                "reference": "609be5c55d92baa3350dc621b348a91b1667bd13"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wimg/PHPCompatibility/zipball/b100a1ea9099c6f8f0599342035f5e0e07aee15e",
-                "reference": "b100a1ea9099c6f8f0599342035f5e0e07aee15e",
+                "url": "https://api.github.com/repos/wimg/PHPCompatibility/zipball/609be5c55d92baa3350dc621b348a91b1667bd13",
+                "reference": "609be5c55d92baa3350dc621b348a91b1667bd13",
                 "shasum": ""
             },
             "require": {
@@ -393,8 +393,8 @@
                 "phpunit/phpunit": "~4.5 || ^5.0 || ^6.0 || ^7.0"
             },
             "suggest": {
-                "dealerdirect/phpcodesniffer-composer-installer": "^0.4.3",
-                "roave/security-advisories": "dev-master"
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.4.3 || This Composer plugin will sort out the PHPCS 'installed_paths' automatically.",
+                "roave/security-advisories": "dev-master || Helps prevent installing dependencies with known security issues."
             },
             "type": "phpcodesniffer-standard",
             "autoload": {
@@ -419,7 +419,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2018-04-24T22:20:19+00:00"
+            "time": "2018-06-17T21:14:43+00:00"
         },
         {
             "name": "wp-coding-standards/wpcs",
