@@ -34,8 +34,20 @@ class Kind_Taxonomy {
 		add_filter( 'transition_post_status', array( 'Kind_Taxonomy', 'transition' ), 10, 3 );
 		// On Post Save Set Post Format
 		add_action( 'save_post', array( 'Kind_Taxonomy', 'post_formats' ), 99, 3 );
+
+		// Create hook triggered by change of kind
+		add_action( 'set_object_terms', array( 'Kind_Taxonomy', 'set_object_terms' ), 10, 6 );
+
 	}
 
+	public static function set_object_terms( $object_id, $terms, $tt_ids, $taxonomy, $append, $old_tt_ids ) {
+		if ( 'kind' === $taxonomy ) {
+			$old_term = get_term_by( 'term_taxonomy_id', $old_tt_ids[0], 'kind' );
+			$new_term = get_term_by( 'term_taxonomy_id', $tt_ids[0], 'kind' );
+			// Trigger a hook on a changed kind identifying old and new so actions can be performed
+			do_action( 'change_kind', $object_id, $old_term->slug, $new_term->slug );
+		}
+	}
 
 	/**
 	 * To Be Run on Plugin Activation.
