@@ -41,11 +41,16 @@ class Kind_Taxonomy {
 	}
 
 	public static function set_object_terms( $object_id, $terms, $tt_ids, $taxonomy, $append, $old_tt_ids ) {
+		if ( empty( $tt_ids ) && empty( $old_tt_ids ) ) {
+			return;
+		}
 		if ( 'kind' === $taxonomy ) {
-			$old_term = get_term_by( 'term_taxonomy_id', $old_tt_ids[0], 'kind' );
-			$new_term = get_term_by( 'term_taxonomy_id', $tt_ids[0], 'kind' );
+			$old_term = get_term_by( 'term_taxonomy_id', array_pop( $old_tt_ids ), 'kind' );
+			$old_term = $old_term instanceof WP_Term ? $old_term->slug : '';
+			$new_term = get_term_by( 'term_taxonomy_id', array_pop( $tt_ids ), 'kind' );
+			$new_term = $new_term instanceof WP_Term ? $new_term->slug : '';
 			// Trigger a hook on a changed kind identifying old and new so actions can be performed
-			do_action( 'change_kind', $object_id, $old_term->slug, $new_term->slug );
+			do_action( 'change_kind', $object_id, $old_term, $new_term );
 		}
 	}
 
