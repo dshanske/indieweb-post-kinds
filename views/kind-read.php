@@ -12,7 +12,7 @@ if ( ! $cite ) {
 $author = Kind_View::get_hcard( ifset( $cite['author'] ) );
 $url    = ifset( $cite['url'] );
 $embed  = self::get_embed( $url );
-$read = $mf2_post->get( 'read-of' );
+$read = $mf2_post->get( 'read-status', true );
 
 ?>
 
@@ -25,7 +25,7 @@ if ( ! $embed ) {
 		$cite['name'] = self::get_post_type_string( $url );
 	}
 	if ( $read ) {
-		echo sprintf( '<span class="p-read-status">%1s</span>', $read );
+		echo sprintf( ' - <span class="p-read-status">%1s</span>', Kind_View::read_text( $read ) );
 	}
 	if ( isset( $url ) ) {
 		echo sprintf( '<a href="%1s" class="p-name u-url">%2s</a>', $url, $cite['name'] );

@@ -384,7 +384,7 @@ class Kind_View {
 		if ( ! $type ) {
 			return '';
 		}
-		$rread = array(
+		$read = array(
 			'to-read'        => __( 'Want to Read: ', 'indieweb-post-kinds' ),
 			'reading'      => __( 'Reading: ', 'indieweb-post-kinds' ),
 			'finished'         => __( 'Finished Reading: ', 'indieweb-post-kinds' ),
