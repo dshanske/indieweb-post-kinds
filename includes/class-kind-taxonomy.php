@@ -64,6 +64,7 @@ class Kind_Taxonomy {
 		}
 		self::register();
 		self::kind_defaultterms();
+		flush_rewrite_rules();
 	}
 
 	/**
