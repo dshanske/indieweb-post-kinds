@@ -11,6 +11,13 @@ if ( ! isset( $cite['url'] ) ) {
 	}
 }
 $author = ifset( $cite['author'], array() );
+if ( 1 === count( $author ) && wp_is_numeric_array( $author ) ) {
+	$author = array_pop( $author );
+}
+if ( is_string( $author ) ) {
+	$author = array( 'name' => $author );
+}
+
 if ( isset( $author['name'] ) && is_array( $author['name'] ) ) {
 	$author['name'] = implode( ';', $author['name'] );
 }
