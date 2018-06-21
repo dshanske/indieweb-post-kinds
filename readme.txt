@@ -209,7 +209,7 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 == Changelog ==
 
-= 3.0.8 ( 2018-06-xx ) =
+= 3.0.8 ( 2018-06-20 ) =
 * Fix read template
 * Add `change_kind` hook that triggers when a the kind on a post is changed
 * Flush rewrite rules on plugin activation
