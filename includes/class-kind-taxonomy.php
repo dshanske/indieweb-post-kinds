@@ -38,6 +38,15 @@ class Kind_Taxonomy {
 		// Create hook triggered by change of kind
 		add_action( 'set_object_terms', array( 'Kind_Taxonomy', 'set_object_terms' ), 10, 6 );
 
+		add_filter( 'the_title', array( 'Kind_Taxonomy', 'the_title' ), 9, 2 );
+
+	}
+
+	public static function the_title( $title, $post_id ) {
+		if ( ! $title && is_admin() ) {
+			echo mb_strimwidth( wp_strip_all_tags( get_the_excerpt( $post_id ) ), 0, 40, '...' );
+		}
+		return $title;
 	}
 
 	public static function set_object_terms( $object_id, $terms, $tt_ids, $taxonomy, $append, $old_tt_ids ) {
