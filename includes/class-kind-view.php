@@ -385,9 +385,9 @@ class Kind_View {
 			return '';
 		}
 		$read = array(
-			'to-read'        => __( 'Want to Read: ', 'indieweb-post-kinds' ),
-			'reading'      => __( 'Reading: ', 'indieweb-post-kinds' ),
-			'finished'         => __( 'Finished Reading: ', 'indieweb-post-kinds' ),
+			'to-read'  => __( 'Want to Read: ', 'indieweb-post-kinds' ),
+			'reading'  => __( 'Reading: ', 'indieweb-post-kinds' ),
+			'finished' => __( 'Finished Reading: ', 'indieweb-post-kinds' ),
 		);
 		return $read[ $type ];
 	}
