@@ -640,6 +640,16 @@ class Kind_Taxonomy {
 				'title'           => false, // Should this kind have an explicit title
 				'show'            => false, // Show in Settings
 			),
+                        'chicken'    => array(
+				'singular_name'   => __( 'Chicken', 'indieweb-post-kinds' ), // Name for one instance of the kind
+				'name'            => __( 'Chickens', 'indieweb-post-kinds' ), // General name for the kind plural
+				'verb'            => __( 'Chickened', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'property'        => 'chicken-of', // microformats 2 property
+				'format'          => 'image', // Post Format that maps to this
+				'description'     => __( 'Owning all the chickens. Welcome to my chicken feed.', 'indieweb-post-kinds' ),
+				'description-url' => 'https://indieweb.org/chicken',
+				'show'            => true, // Show in Settings
+			),
 		);
 		$kinds = apply_filters( 'kind_info', $kinds );
 		ksort( $kinds );
