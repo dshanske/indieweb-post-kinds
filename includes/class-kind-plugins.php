@@ -170,7 +170,10 @@ class Kind_Plugins {
 			if ( in_array( $property, $parsed, true ) ) {
 				foreach ( $value as $i => $v ) {
 					if ( Link_Preview::is_valid_url( $v ) ) {
-						$input['properties'][ $property ][ $i ] = Link_Preview::simple_parse( $v );
+						$parse = Link_Preview::simple_parse( $v );
+						if ( ! is_wp_error( $parse ) ) {
+							$input['properties'][ $property ][ $i ] = $parse;
+						}
 					}
 				}
 			}
