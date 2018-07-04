@@ -47,6 +47,11 @@ class Kind_Plugins {
 			return;
 		}
 
+		if ( isset( $input['properties']['itinerary'] ) ) {
+			set_post_kind( $wp_args['ID'], 'itinerary' );
+			return;
+		}
+
 		if ( isset( $input['properties']['repost-of'] ) ) {
 			set_post_kind( $wp_args['ID'], 'repost' );
 			return;
