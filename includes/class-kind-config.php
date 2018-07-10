@@ -163,6 +163,8 @@ class Kind_Config {
 
 	public static function dashbar_links( $wp_admin_bar ) {
 		$termslist = get_option( 'kind_termslist' );
+		// Note can never be removed
+		array_unshift( $termslist, 'note' );
 		foreach ( $termslist as $term ) {
 			$wp_admin_bar->add_menu(
 				array(
