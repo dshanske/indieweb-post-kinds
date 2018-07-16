@@ -859,7 +859,7 @@ class Kind_Taxonomy {
 			return '';
 		}
 		$name = self::get_kind_info( $kind, 'singular_name' );
-		return '<svg class="svg-icon svg-' . $kind . '" aria-hidden="true" aria-label="' . $name . ' title="' . $name . '"><use xlink:href="' . $sprite . '#' . $kind . '"></use></svg>';
+		return '<svg class="svg-icon svg-' . $kind . '" aria-hidden="true" aria-label="' . $name . '" title="' . $name . '"><use xlink:href="' . $sprite . '#' . $kind . '"></use></svg>';
 	}
 } // End Class Kind_Taxonomy
 
