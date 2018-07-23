@@ -36,11 +36,12 @@ class Kind_View {
 	}
 
 	// This mirrors get_template_part but for views and locates the correct file and returns the output
-	public static function get_view_part( $slug, $name = null ) {
+	public static function get_view_part( $slug, $name ) {
 		$name = (string) $name;
-		if ( '' !== $name ) {
-			$templates[] = "{$slug}-{$name}.php";
+		if ( empty( $name ) ) {
+			return '';
 		}
+		$templates[] = "{$slug}-{$name}.php";
 		$templates[] = "{$slug}.php";
 		foreach ( (array) $templates as $template_name ) {
 			if ( ! $template_name ) {
