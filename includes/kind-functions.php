@@ -124,7 +124,7 @@ function get_kind_view_part( $slug, $name = null ) {
 }
 
 function kind_display( $post_id = null ) {
-		echo Kind_View::get_display( $post_id );
+		echo Kind_View::get_display( $post_id ); // phpcs:ignore
 }
 
 function kind_flatten_array( $array ) {

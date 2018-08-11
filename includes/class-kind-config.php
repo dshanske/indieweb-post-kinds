@@ -217,9 +217,9 @@ class Kind_Config {
 	 */
 	public static function checkbox_callback( array $args ) {
 		$option  = get_option( $args['name'] );
-		$checked = ifset( $option );
-		echo "<input name='" . $args['name'] . "' type='hidden' value='0' />";
-		echo "<input name='" . $args['name'] . "' type='checkbox' value='1' " . checked( 1, $checked, false ) . ' /> ';
+		$checked = (int) ifset( $option );
+		printf( '<input name="%1$s" type="hidden" value="0" />', esc_attr( $args['name'] ) ); // phpcs:ignore
+		printf( '<input name="%1$s" type="checkbox" value="1" %2$s />', esc_attr( $args['name'] ), checked( 1, $checked, false) ); // phpcs:ignore
 	}
 
 	/**
@@ -236,7 +236,7 @@ class Kind_Config {
 		if ( is_array( $option ) ) {
 			$option = print_r( $option, true );
 		}
-		echo "<textarea rows='10' cols='50' class='large-text code' name='" . $args['name'] . "'>" . $option . '</textarea> ';
+		echo "<textarea rows='10' cols='50' class='large-text code' name='" . esc_attr( $args['name'] ) . "'>" . $option . '</textarea> '; // phpcs:ignore
 	}
 
 	/**
@@ -251,7 +251,8 @@ class Kind_Config {
 		echo '<div id="kind-all">';
 		foreach ( $terms as $key => $value ) {
 			if ( $value['show'] ) {
-				echo "<input name='kind_termslist[]' type='checkbox' value='" . $key . "' " . checked( in_array( $key, $termslist, true ), true, false ) . ' />' . Kind_Taxonomy::get_icon( $key ) . '<strong>' . $value['singular_name'] . '</strong> - ' . $value['description'] . '<br />';
+				printf( '<input name="kind_termslist[]" type="checkbox" value="%1$s" %2$s />', esc_attr( $key ), checked( in_array( $key, $termslist, true ), true, false ) ); // phpcs:ignore
+				printf( '%1$s<strong>%2$s</strong> - %3$s<br />', Kind_Taxonomy::get_icon( $key ), sanitize_text_field( $value['singular_name'] ), sanitize_text_field( $value['description'] ) );  // phpcs:ignore
 			}
 		}
 		echo '</div>';
@@ -270,7 +271,7 @@ class Kind_Config {
 		$defaultkind = get_option( 'kind_default' );
 
 		foreach ( $terms as $term ) {
-			echo '<input id="kind_default" name="kind_default" type="radio" value="' . $term . '" ' . checked( $term, $defaultkind, false ) . ' />' . Kind_Taxonomy::get_kind_info( $term, 'singular_name' ) . '<br />';
+			printf( '<input id="kind_default" name="kind_default" type="radio" value="%1$s" %2$s />%3$s<br />', esc_attr($term), checked( $term, $defaultkind, false ), sanitize_text_field( Kind_Taxonomy::get_kind_info( $term, 'singular_name' ) ) );  // phpcs:ignore
 		}
 	}
 
@@ -282,7 +283,7 @@ class Kind_Config {
 	public static function radio_callback( array $args ) {
 		$display = get_option( 'kind_display' );
 		foreach ( $args['options'] as $key => $value ) {
-			echo '<input id="' . $args['name'] . '" name="' . $args['name'] . '" type="radio" value="' . $key . '" ' . checked( $key, $display, false ) . ' class="' . $args['class'] . '" />' . $value . '<br />';
+			printf( '<input id="%1$s" name="%1$s" type="radio" value="%2$s" class="%3$s" %4$s />%5$s<br />', esc_attr( $args['name'] ), esc_attr( $key ), esc_attr( $args['class'] ), checked( $key, $display, false ), sanitize_text_field( $value ) ); // phpcs:ignore
 		}
 	}
 
@@ -295,16 +296,21 @@ class Kind_Config {
 	 */
 	public static function options_form() {
 		Kind_Taxonomy::kind_defaultterms();
-		echo '<div class="wrap">';
-		echo '<h2>' . esc_html__( 'Indieweb Post Kinds', 'indieweb-post-kinds' ) . '</h2>';
-		echo '<p>';
-		esc_html_e( 'Adds support for responding and interacting with other sites.', 'indieweb-post-kinds' );
-		echo '</p><hr />';
-		echo '<form method="post" action="options.php">';
+		?>
+		<div class="wrap">
+			<h2> <?php esc_html_e( 'Indieweb Post Kinds', 'indieweb-post-kinds' ); ?> </h2>
+			<p> <?php esc_html_e( 'Adds support for responding and interacting with other sites.', 'indieweb-post-kinds' ); ?>
+			</p>
+			<hr />
+			<form method="post" action="options.php">
+			<?php
 			settings_fields( 'iwt_options' );
-		do_settings_sections( 'iwt_options' );
-		submit_button();
-		echo '</form></div>';
+			do_settings_sections( 'iwt_options' );
+			submit_button();
+			?>
+			</form>
+		</div>
+		<?php
 	}
 
 	public static function add_post_help_tab() {

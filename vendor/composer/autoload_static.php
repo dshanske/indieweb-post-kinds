@@ -32,7 +32,7 @@ class ComposerStaticInitbf87e4ad54ac57eaff075548d13557d0
     public static $prefixDirsPsr4 = array (
         'PHPCompatibility\\' => 
         array (
-            0 => __DIR__ . '/..' . '/wimg/php-compatibility/PHPCompatibility',
+            0 => __DIR__ . '/..' . '/phpcompatibility/php-compatibility/PHPCompatibility',
         ),
         'Masterminds\\' => 
         array (

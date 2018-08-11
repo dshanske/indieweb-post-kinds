@@ -80,7 +80,7 @@ class Kind_View {
 
 	// Echo the output of get_display
 	public static function display( $post_id = null ) {
-		echo self::get_display( $post_id );
+		echo self::get_display( $post_id ); // phpcs:ignore
 	}
 
 	public static function content_response( $content ) {

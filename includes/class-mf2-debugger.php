@@ -40,7 +40,7 @@ class MF2_Debugger {
 				exit;
 			}
 			status_header( 400 );
-			_e( 'The URL is Invalid', 'indieweb-post-kinds' );
+			esc_html_e( 'The URL is Invalid', 'indieweb-post-kinds' );
 			exit;
 		} else {
 			// generate response to URL
@@ -65,14 +65,14 @@ class MF2_Debugger {
 		<meta charset="<?php bloginfo( 'charset' ); ?>">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="profile" href="http://gmpg.org/xfn/11">
-		<title><?php echo get_bloginfo( 'name' ); ?>  - <?php _e( 'Indieweb Post Kinds Debugger', 'indieweb-post-kinds' ); ?></title> 
+		<title><?php echo esc_html( get_bloginfo( 'name' ) ); ?>  - <?php esc_html_e( 'Indieweb Post Kinds Debugger', 'indieweb-post-kinds' ); ?></title> 
 	   </head>
 		<body>
 		<header> 
-		   <h3><a href="<?php echo site_url(); ?>"><?php echo get_bloginfo( 'name' ); ?></a>
-		   <a href="<?php echo admin_url(); ?>">(<?php _e( 'Dashboard', 'indieweb-post-kinds' ); ?>)</a></h3>
+		   <h3><a href="<?php echo esc_url_raw( site_url() ); ?>"><?php echo esc_html( get_bloginfo( 'name' ) ); ?></a>
+		   <a href="<?php echo esc_url_raw( admin_url() ); ?>">(<?php esc_html_e( 'Dashboard', 'indieweb-post-kinds' ); ?>)</a></h3>
 		   <hr />
-		   <h1> <?php _e( 'Indieweb Post Kinds Debugger', 'indieweb-post-kinds' ); ?></h1>
+		   <h1> <?php esc_html_e( 'Indieweb Post Kinds Debugger', 'indieweb-post-kinds' ); ?></h1>
 		</header>
 		<?php
 	}
@@ -87,15 +87,15 @@ class MF2_Debugger {
 	public static function post_form() {
 		?>
 	  <div>
-		<form action="<?php echo site_url(); ?>/?pkdebug=<?php echo $action; ?>" method="post" enctype="multipart/form-data">
+		<form action="<?php echo esc_url_raw( site_url() ); ?>/?pkdebug=<?php echo esc_attr( $action ); ?>" method="post" enctype="multipart/form-data">
 		<p>
-			<?php _e( 'URL:', 'indieweb-post-kinds' ); ?>
+			<?php esc_html_e( 'URL:', 'indieweb-post-kinds' ); ?>
 		<input type="text" name="pkdebug" size="70" />
 		</p>
 			<input type="submit" />
 	  </form>
 	</div>
-	<?php
+		<?php
 	}
 
 }

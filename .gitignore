@@ -12,3 +12,4 @@ vendor/*
 !/vendor/masterminds
 /vendor/masterminds/html5/*
 !/vendor/masterminds/html5/src
+composer.lock

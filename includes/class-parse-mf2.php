@@ -12,7 +12,7 @@ class Parse_MF2 {
 		if ( ! isset( $url ) || ! self::is_url( $url ) ) {
 			return new WP_Error( 'invalid-url', __( 'A valid URL was not provided.', 'indieweb-post-kinds' ) );
 		}
-		$args = array(
+		$args     = array(
 			'timeout'             => 10,
 			'limit_response_size' => 1048576,
 			'redirection'         => 0,

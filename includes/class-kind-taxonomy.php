@@ -44,7 +44,7 @@ class Kind_Taxonomy {
 
 	public static function the_title( $title, $post_id ) {
 		if ( ! $title && is_admin() ) {
-			echo mb_strimwidth( wp_strip_all_tags( get_the_excerpt( $post_id ) ), 0, 40, '...' );
+			echo mb_strimwidth( wp_strip_all_tags( get_the_excerpt( $post_id ) ), 0, 40, '...' ); // phpcs:ignore
 		}
 		return $title;
 	}
@@ -241,10 +241,10 @@ class Kind_Taxonomy {
 			$id   = 'kind-' . $term->term_id;
 			$slug = $term->slug;
 			if ( in_array( $slug, $include, true ) ) {
-				echo "<li id='$id' class='kind-$slug'><label class='selectit'>";
-				echo "<input type='radio' id='in-$id' name='tax_input[kind]'" . checked( $current, $term->term_id, false ) . "value='$slug' />";
-				echo self::get_icon( $slug );
-				echo self::get_kind_info( $slug, 'singular_name' );
+				printf( '<li id="%1$s" class="kind-%2$s"><label class="selectit">', esc_attr( $id ), esc_attr( $slug ) );
+				printf( '<input type="radio" id="in-%1$s" name="tax_input[kind]" value="%2$s" %3$s />', esc_attr( $id ), esc_attr( $slug ), checked( $current, $term->term_id, false ) );
+				self::get_icon( $slug, true );
+				echo esc_html( self::get_kind_info( $slug, 'singular_name' ) );
 				echo '<br />';
 				echo '</label></li>';
 
@@ -268,7 +268,7 @@ class Kind_Taxonomy {
 			'article'     => array(
 				'singular_name'   => __( 'Article', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Articles', 'indieweb-post-kinds' ), // General name for the kind plural
-				'verb'            => __( ' ', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'verb'            => ' ', // The string for the verb or action (liked this)
 				'property'        => '', // microformats 2 property
 				'format'          => '', // Post Format that maps to this
 				'description'     => __( 'traditional long form content: a post with an explicit title and body', 'indieweb-post-kinds' ),
@@ -279,7 +279,7 @@ class Kind_Taxonomy {
 			'note'        => array(
 				'singular_name'   => __( 'Note', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Notes', 'indieweb-post-kinds' ), // General name for the kind plural
-				'verb'            => __( ' ', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'verb'            => ' ', // The string for the verb or action (liked this)
 				'property'        => '', // microformats 2 property
 				'format'          => 'aside', // Post Format that maps to this
 				'description'     => __( 'short content: a post or status update with just plain content and typically without a title', 'indieweb-post-kinds' ),
@@ -345,7 +345,7 @@ class Kind_Taxonomy {
 			'photo'       => array(
 				'singular_name'   => __( 'Photo', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Photos', 'indieweb-post-kinds' ), // General name for the kind plural
-				'verb'            => __( ' ', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'verb'            => ' ', // The string for the verb or action (liked this)
 				'property'        => 'photo', // microformats 2 property
 				'format'          => 'image', // Post Format that maps to this
 				'description'     => __( 'a post with an embedded image/photo as its primary focus', 'indieweb-post-kinds' ),
@@ -356,7 +356,7 @@ class Kind_Taxonomy {
 			'video'       => array(
 				'singular_name'   => __( 'Video', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Videos', 'indieweb-post-kinds' ), // General name for the kind plural
-				'verb'            => __( ' ', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'verb'            => ' ', // The string for the verb or action (liked this)
 				'property'        => 'video', // microformats 2 property
 				'format'          => 'video', // Post Format that maps to this
 				'description'     => __( 'a post with an embedded video as its primary focus', 'indieweb-post-kinds' ),
@@ -367,7 +367,7 @@ class Kind_Taxonomy {
 			'audio'       => array(
 				'singular_name'   => __( 'Audio', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Audios', 'indieweb-post-kinds' ), // General name for the kind plural
-				'verb'            => __( ' ', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'verb'            => ' ', // The string for the verb or action (liked this)
 				'property'        => 'audio', // microformats 2 property
 				'format'          => 'audio', // Post Format that maps to this
 				'description'     => __( 'a post with an embedded audio file as its primary focus', 'indieweb-post-kinds' ),
@@ -456,7 +456,7 @@ class Kind_Taxonomy {
 			'weather'     => array(
 				'singular_name'   => __( 'Weather', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Weather', 'indieweb-post-kinds' ), // General name for the kind plural
-				'verb'            => __( ' ', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+				'verb'            => ' ', // The string for the verb or action (liked this)
 				'property'        => 'weather', // microformats 2 property
 				'format'          => 'status', // Post Format that maps to this
 				'description'     => __( 'current weather conditions', 'indieweb-post-kinds' ),
@@ -852,14 +852,18 @@ class Kind_Taxonomy {
 		}
 	}
 
-	public static function get_icon( $kind ) {
+	public static function get_icon( $kind, $echo = false ) {
 		// Substitute another svg sprite file
 		$sprite = apply_filters( 'kind_icon_sprite', plugins_url( 'kinds.svg', dirname( __FILE__ ) ), $kind );
 		if ( '' === $sprite ) {
 			return '';
 		}
-		$name = self::get_kind_info( $kind, 'singular_name' );
-		return '<svg class="svg-icon svg-' . $kind . '" aria-hidden="true" aria-label="' . $name . ' title="' . $name . '"><use xlink:href="' . $sprite . '#' . $kind . '"></use></svg>';
+		$name   = self::get_kind_info( $kind, 'singular_name' );
+		$return = sprintf( '<svg class="svg-icon svg-%1$s" aria-hidden="true" aria-label="%2$s" title="%2$s" ><use xlink:href="%3$s#%1$s"></use></svg>', esc_attr( $kind ), esc_attr( $name ), esc_url_raw( $sprite ) );
+		if ( $echo ) {
+			echo $return; // phpcs:ignore
+		}
+		return $return;
 	}
 } // End Class Kind_Taxonomy
 

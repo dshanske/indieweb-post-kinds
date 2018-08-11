@@ -66,21 +66,24 @@ class Kind_Metabox {
 				'jquery-ui-timepicker',
 				plugins_url( 'node_modules/timepicker/jquery.timepicker.min.js', dirname( __FILE__ ) ),
 				array( 'jquery' ),
-				self::$version
+				self::$version,
+				true
 			);
 
 			wp_enqueue_script(
 				'jquery-datepair',
 				plugins_url( 'node_modules/datepair.js/dist/jquery.datepair.min.js', dirname( __FILE__ ) ),
 				array( 'jquery' ),
-				self::$version
+				self::$version,
+				true
 			);
 
 			wp_enqueue_script(
 				'kindmeta',
 				plugins_url( 'js/kind.js', dirname( __FILE__ ) ),
 				array( 'jquery' ),
-				self::$version
+				self::$version,
+				true
 			);
 
 			// Provide a global object to our JS file containing our REST API endpoint, and API nonce
@@ -99,7 +102,8 @@ class Kind_Metabox {
 				'moment',
 				plugins_url( 'node_modules/moment/min/moment.min.js', dirname( __FILE__ ) ),
 				array( 'jquery' ),
-				'2.20.1'
+				'2.20.1',
+				true
 			);
 		}
 	}

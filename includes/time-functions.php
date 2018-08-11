@@ -35,9 +35,8 @@ function get_gmt_offsets() {
 			$zone    = new DateTimeZone( $a );
 			$seconds = $zone->getOffset( new DateTime( 'now', $zone ) );
 			$o[]     = tz_seconds_to_offset( $seconds );
-		} // exceptions must be catched, else a blank page
-		catch ( Exception $e ) {
-			die( 'Exception : ' . $e->getMessage() . '<br />' );
+		} catch ( Exception $e ) {
+			die( 'Exception : ' . esc_html( $e->getMessage() ) . '<br />' );
 			// what to do in catch ? , nothing just relax
 		}
 	}

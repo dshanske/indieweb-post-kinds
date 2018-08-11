@@ -126,7 +126,7 @@ class Parse_This {
 			return new WP_Error( 'invalid-url', __( 'A valid URL was not provided.', 'indieweb-post-kinds' ) );
 		}
 
-		$args = array(
+		$args          = array(
 			'timeout'             => 30,
 			'limit_response_size' => 1048576,
 			'redirection'         => 5,

@@ -19,10 +19,11 @@
       "masterminds/html5": "^2.3"
     },
     "require-dev": {
-        "dealerdirect/phpcodesniffer-composer-installer": "^0.4",
-	"squizlabs/php_codesniffer": "^2.2 || ^3.0.2",
-        "wimg/php-compatibility": "dev-master",
-        "wp-coding-standards/wpcs": "dev-master"
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.4.3",
+	"squizlabs/php_codesniffer": "*",
+        "phpcompatibility/php-compatibility": "*",
+        "wp-coding-standards/wpcs": "*",
+      "phpcompatibility/phpcompatibility-wp": "^1.0"
     },
     "prefer-stable" : true,
     "scripts": {
