@@ -209,6 +209,11 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 == Changelog ==
 
+= 3.1.0 ( 2018-xx-xx ) =
+* Missing Add New Note in Dashbar
+* Add itinerary to post type discovery
+* Do not return a failed attempt to parse a URL
+
 = 3.0.9 ( 2018-06-23 ) =
 * If title is empty show start of excerpt in admin only
 * Set default to article if post is a published post as opposed oto the default.
