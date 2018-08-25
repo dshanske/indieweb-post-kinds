@@ -245,14 +245,15 @@ class Kind_Config {
 	 * @access public
 	 */
 	public static function termcheck_callback() {
-		$terms = Kind_Taxonomy::get_kind_info( 'all', 'all' );
+		$terms = Kind_Taxonomy::get_kind_list();
 		// Hide these terms until ready for use for now.
 		$termslist = get_option( 'kind_termslist' );
 		echo '<div id="kind-all">';
-		foreach ( $terms as $key => $value ) {
-			if ( $value['show'] ) {
-				printf( '<input name="kind_termslist[]" type="checkbox" value="%1$s" %2$s />', esc_attr( $key ), checked( in_array( $key, $termslist, true ), true, false ) ); // phpcs:ignore
-				printf( '%1$s<strong>%2$s</strong> - %3$s<br />', Kind_Taxonomy::get_icon( $key ), sanitize_text_field( $value['singular_name'] ), sanitize_text_field( $value['description'] ) );  // phpcs:ignore
+		foreach ( $terms as $term ) {
+			$value = Kind_Taxonomy::get_post_kind_info( $term );
+			if ( $value->show ) {
+				printf( '<input name="kind_termslist[]" type="checkbox" value="%1$s" %2$s />', esc_attr( $term ), checked( in_array( $term, $termslist, true ), true, false ) ); // phpcs:ignore
+				printf( '%1$s<strong>%2$s</strong> - %3$s<br />', Kind_Taxonomy::get_icon( $term ), sanitize_text_field( $value->singular_name ), sanitize_text_field( $value->description ) );  // phpcs:ignore
 			}
 		}
 		echo '</div>';
@@ -267,11 +268,13 @@ class Kind_Config {
 	public static function defaultkind_callback() {
 		$terms   = get_option( 'kind_termslist' );
 		$terms[] = 'note';
+		sort( $terms, SORT_STRING );
 
 		$defaultkind = get_option( 'kind_default' );
 
 		foreach ( $terms as $term ) {
-			printf( '<input id="kind_default" name="kind_default" type="radio" value="%1$s" %2$s />%3$s<br />', esc_attr($term), checked( $term, $defaultkind, false ), sanitize_text_field( Kind_Taxonomy::get_kind_info( $term, 'singular_name' ) ) );  // phpcs:ignore
+			$value = Kind_Taxonomy::get_post_kind_info( $term );
+			printf( '<input id="kind_default" name="kind_default" type="radio" value="%1$s" %2$s />%3$s<br />', esc_attr($term), checked( $term, $defaultkind, false ), sanitize_text_field( $value->singular_name ) );  // phpcs:ignore
 		}
 	}
 

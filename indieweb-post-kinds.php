@@ -27,6 +27,7 @@ class Post_Kinds_Plugin {
 	public static $version = '3.0.9';
 	public static function init() {
 		// Add Kind Taxonomy.
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class-post-kind.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-taxonomy.php';
 		Kind_Taxonomy::init();
 		Kind_Taxonomy::register();

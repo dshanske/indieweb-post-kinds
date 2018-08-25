@@ -8,6 +8,13 @@
  */
 
 /**
+ *
+ */
+function register_post_kind( $slug, $args ) {
+	Kind_Taxonomy::register_post_kind( $slug, $args );
+}
+
+/**
  * Retrieves an array of mf2 data from a post.
  *
  * @param int|WP_Post $post A Post.
