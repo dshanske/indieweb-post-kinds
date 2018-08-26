@@ -129,7 +129,7 @@ final class Kind_Taxonomy {
 	public static function kind_defaultterms() {
 		$terms = self::get_kind_list();
 		foreach ( $terms as $term ) {
-			if ( ! term_exists( $key, 'kind' ) ) {
+			if ( ! term_exists( $term, 'kind' ) ) {
 				self::create_post_kind( $term );
 			}
 		}
@@ -268,6 +268,7 @@ final class Kind_Taxonomy {
 
 	public static function register_post_kind( $slug, $args ) {
 		$kind = new Post_Kind( $slug, $args );
+		// Do not allow reregistering existing kinds
 		if ( isset( static::$kinds[ $slug ] ) ) {
 			return false;
 		}
@@ -278,6 +279,15 @@ final class Kind_Taxonomy {
 	public static function get_post_kind_info( $slug ) {
 		if ( isset( static::$kinds[ $slug ] ) ) {
 			return static::$kinds[ $slug ];
+		}
+		return false;
+	}
+
+	// Enable a hidden post kind
+	public static function set_post_kind_visibility( $slug, $show = true ) {
+		if ( isset( static::$kinds[ $slug ] ) ) {
+			static::$kinds[ $slug ]->show = ( $show ? true : false );
+			return true;
 		}
 		return false;
 	}
@@ -767,7 +777,6 @@ final class Kind_Taxonomy {
 				'show'            => false, // Show in Settings
 			)
 		);
-		// $kinds = apply_filters( 'kind_info', $kinds );
 	}
 
 	/**
@@ -991,13 +1000,18 @@ final class Kind_Taxonomy {
 	}
 
 	public static function get_icon( $kind, $echo = false ) {
-		// Substitute another svg sprite file
-		$sprite = apply_filters( 'kind_icon_sprite', plugins_url( 'kinds.svg', dirname( __FILE__ ) ), $kind );
-		if ( '' === $sprite ) {
-			return '';
+		$icon = self::get_kind_info( $kind, 'icon' );
+		// Use a sprite otherwise use passed URL
+		if ( ! wp_http_validate_url( $icon ) ) {
+			// Substitute another svg sprite file
+			$sprite = apply_filters( 'kind_icon_sprite', plugins_url( 'kinds.svg', dirname( __FILE__ ) ), $kind );
+			if ( '' === $sprite ) {
+				return '';
+			}
+			$sprite = $sprite . '#' . $kind;
 		}
 		$name   = self::get_kind_info( $kind, 'singular_name' );
-		$return = sprintf( '<svg class="svg-icon svg-%1$s" aria-hidden="true" aria-label="%2$s" title="%2$s" ><use xlink:href="%3$s#%1$s"></use></svg>', esc_attr( $kind ), esc_attr( $name ), esc_url_raw( $sprite ) );
+		$return = sprintf( '<svg class="svg-icon svg-%1$s" aria-hidden="true" aria-label="%2$s" title="%2$s" ><use xlink:href="%3$s"></use></svg>', esc_attr( $kind ), esc_attr( $name ), esc_url_raw( $sprite ) );
 		if ( $echo ) {
 			echo $return; // phpcs:ignore
 		}
