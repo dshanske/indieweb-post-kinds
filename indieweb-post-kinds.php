@@ -27,6 +27,7 @@ class Post_Kinds_Plugin {
 	public static $version = '3.0.9';
 	public static function init() {
 		// Add Kind Taxonomy.
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class-post-kind.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-taxonomy.php';
 		Kind_Taxonomy::init();
 		Kind_Taxonomy::register();
@@ -63,8 +64,8 @@ class Post_Kinds_Plugin {
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-view.php';
 		add_action( 'init', array( 'Kind_View', 'init' ) );
 
-		// Add Kind Meta Storage and Retrieval Functions.
-		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-meta.php';
+		// Add Kind Meta Storage and Retrieval Functions. Meta was superseded by MF2_Post. Will be removed entirely in next version
+		// require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-meta.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-mf2-post.php';
 
 		require_once 'vendor/autoload.php';
