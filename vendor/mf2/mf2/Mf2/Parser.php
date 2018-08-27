@@ -239,6 +239,26 @@ function convertTimeFormat($time) {
 }
 
 /**
+ * Normalize an ordinal date to YYYY-MM-DD
+ * This function should only be called after validating the $dtValue
+ * matches regex \d{4}-\d{2}
+ * @param string $dtValue
+ * @return string
+ */
+function normalizeOrdinalDate($dtValue) {
+	list($year, $day) = explode('-', $dtValue, 2);
+	$day = intval($day);
+	if ($day < 367 && $day > 0) {
+		$date = \DateTime::createFromFormat('Y-z', $dtValue);
+		$date->modify('-1 day'); # 'z' format is zero-based so need to adjust
+		if ($date->format('Y') === $year) {
+			return $date->format('Y-m-d');
+		}
+	}
+	return '';
+}
+
+/**
  * If a date value has a timezone offset, normalize it.
  * @param string $dtValue
  * @return string isolated, normalized TZ offset for implied TZ for other dt- properties
@@ -443,19 +463,21 @@ class Parser {
 		}
 	}
 
-		/**
-		 * The following two methods implements plain text parsing.
-		 * @see https://wiki.zegnat.net/media/textparsing.html
-		 **/
-	public function textContent(DOMElement $element)
+	/**
+	 * The following two methods implements plain text parsing.
+	 * @param DOMElement $element
+	 * @param bool $implied
+	 * @see https://wiki.zegnat.net/media/textparsing.html
+	 **/
+	public function textContent(DOMElement $element, $implied=false)
 	{
 				return preg_replace(
 						'/(^[\t\n\f\r ]+| +(?=\n)|(?<=\n) +| +(?= )|[\t\n\f\r ]+$)/',
 						'',
-						$this->elementToString($element)
+						$this->elementToString($element, $implied)
 				);
 	}
-	private function elementToString(DOMElement $input)
+	private function elementToString(DOMElement $input, $implied=false)
 	{
 			$output = '';
 			foreach ($input->childNodes as $child) {
@@ -468,7 +490,7 @@ class Parser {
 							} else if ($tagName === 'IMG') {
 									if ($child->hasAttribute('alt')) {
 											$output .= ' ' . trim($child->getAttribute('alt'), "\t\n\f\r ") . ' ';
-									} else if ($child->hasAttribute('src')) {
+									} else if (!$implied && $child->hasAttribute('src')) {
 											$output .= ' ' . $this->resolveUrl(trim($child->getAttribute('src'), "\t\n\f\r ")) . ' ';
 									}
 							} else if ($tagName === 'BR') {
@@ -711,6 +733,9 @@ class Parser {
 					// Is the current part a valid date AND no other date representation has been found?
 					} elseif (preg_match('/^\d{4}-\d{2}-\d{2}$/', $part) and empty($datePart)) {
 						$datePart = $part;
+					// Is the current part a valid ordinal date AND no other date representation has been found?
+					} elseif (preg_match('/^\d{4}-\d{3}$/', $part) and empty($datePart)) {
+						$datePart = normalizeOrdinalDate($part);
 					// Is the current part a valid timezone offset AND no other timezone part has been found?
 					} elseif (preg_match('/^(Z|[+-]\d{1,2}:?(\d{2})?)$/', $part) and empty($timezonePart)) {
 						$timezonePart = $part;
@@ -1020,56 +1045,48 @@ class Parser {
 			$this->elementPrefixParsed($em, 'e');
 		}
 
-		// Imply 'name' only under specific conditions
-		$imply_name = (!$has_nested_mf && !array_key_exists('name', $return) && !$is_backcompat && !in_array('p-', $prefixes) && !in_array('e-', $prefixes));
-
-		if ($imply_name) {
-			try {
-				// Look for img @alt
-				if (($e->tagName == 'img' or $e->tagName == 'area') and $e->getAttribute('alt') != '') {
-					throw new Exception($e->getAttribute('alt'));
-				}
-
-				if ($e->tagName == 'abbr' and $e->hasAttribute('title')) {
-					throw new Exception($e->getAttribute('title'));
-				}
-
-				// Look for nested img @alt
-				foreach ($this->xpath->query('./img[count(preceding-sibling::*)+count(following-sibling::*)=0]', $e) as $em) {
-					$emNames = mfNamesFromElement($em, 'h-');
-					if (empty($emNames) && $em->getAttribute('alt') != '') {
-						throw new Exception($em->getAttribute('alt'));
+		// Do we need to imply a name property?
+		// if no explicit "name" property, and no other p-* or e-* properties, and no nested microformats,
+		if (!array_key_exists('name', $return) && !in_array('p-', $prefixes) && !in_array('e-', $prefixes) && !$has_nested_mf && !$is_backcompat) {
+			$name = false;
+			// img.h-x[alt] or area.h-x[alt]
+			if (($e->tagName === 'img' || $e->tagName === 'area') && $e->hasAttribute('alt')) {
+				$name = $e->getAttribute('alt');
+			// abbr.h-x[title]
+			} elseif ($e->tagName === 'abbr' && $e->hasAttribute('title')) {
+				$name = $e->getAttribute('title');
+			} else {
+				$xpaths = array(
+					// .h-x>img:only-child[alt]:not([alt=""]):not[.h-*]
+					'./img[not(contains(concat(" ", @class), " h-")) and count(../*) = 1 and @alt and string-length(@alt) != 0]',
+					// .h-x>area:only-child[alt]:not([alt=""]):not[.h-*]
+					'./area[not(contains(concat(" ", @class), " h-")) and count(../*) = 1 and @alt and string-length(@alt) != 0]',
+					// .h-x>abbr:only-child[title]:not([title=""]):not[.h-*]
+					'./abbr[not(contains(concat(" ", @class), " h-")) and count(../*) = 1 and @title and string-length(@title) != 0]',
+					// .h-x>:only-child:not[.h-*]>img:only-child[alt]:not([alt=""]):not[.h-*]
+					'./*[not(contains(concat(" ", @class), " h-")) and count(../*) = 1 and count(*) = 1]/img[not(contains(concat(" ", @class), " h-")) and @alt and string-length(@alt) != 0]',
+					// .h-x>:only-child:not[.h-*]>area:only-child[alt]:not([alt=""]):not[.h-*]
+					'./*[not(contains(concat(" ", @class), " h-")) and count(../*) = 1 and count(*) = 1]/area[not(contains(concat(" ", @class), " h-")) and @alt and string-length(@alt) != 0]',
+					// .h-x>:only-child:not[.h-*]>abbr:only-child[title]:not([title=""]):not[.h-*]
+					'./*[not(contains(concat(" ", @class), " h-")) and count(../*) = 1 and count(*) = 1]/abbr[not(contains(concat(" ", @class), " h-")) and @title and string-length(@title) != 0]'
+				);
+				foreach ($xpaths as $xpath) {
+					$nameElement = $this->xpath->query($xpath, $e);
+					if ($nameElement !== false && $nameElement->length === 1) {
+						$nameElement = $nameElement->item(0);
+						if ($nameElement->tagName === 'img' || $nameElement->tagName === 'area') {
+							$name = $nameElement->getAttribute('alt');
+						} else {
+							$name = $nameElement->getAttribute('title');
+						}
+						break;
 					}
 				}
-
-				// Look for nested area @alt
-				foreach ($this->xpath->query('./area[count(preceding-sibling::*)+count(following-sibling::*)=0]', $e) as $em) {
-					$emNames = mfNamesFromElement($em, 'h-');
-					if (empty($emNames) && $em->getAttribute('alt') != '') {
-						throw new Exception($em->getAttribute('alt'));
-					}
-				}
-
-				// Look for double nested img @alt
-				foreach ($this->xpath->query('./*[count(preceding-sibling::*)+count(following-sibling::*)=0]/img[count(preceding-sibling::*)+count(following-sibling::*)=0]', $e) as $em) {
-					$emNames = mfNamesFromElement($em, 'h-');
-					if (empty($emNames) && $em->getAttribute('alt') != '') {
-						throw new Exception($em->getAttribute('alt'));
-					}
-				}
-
-				// Look for double nested img @alt
-				foreach ($this->xpath->query('./*[count(preceding-sibling::*)+count(following-sibling::*)=0]/area[count(preceding-sibling::*)+count(following-sibling::*)=0]', $e) as $em) {
-					$emNames = mfNamesFromElement($em, 'h-');
-					if (empty($emNames) && $em->getAttribute('alt') != '') {
-						throw new Exception($em->getAttribute('alt'));
-					}
-				}
-
-				throw new Exception($this->textContent($e, true));
-			} catch (Exception $exc) {
-				$return['name'][] = unicodeTrim($exc->getMessage());
 			}
+			if ($name === false) {
+				$name = $this->textContent($e, true);
+			}
+			$return['name'][] = unicodeTrim($name);
 		}
 
 		// Check for u-photo
@@ -1078,39 +1095,35 @@ class Parser {
 			$photo = $this->parseImpliedPhoto($e);
 
 			if ($photo !== false) {
-				$return['photo'][] = $this->resolveUrl($photo);
+				$return['photo'][] = $photo;
 			}
 
 		}
 
-		// Check for u-url
-		if (!array_key_exists('url', $return) && !$is_backcompat) {
-			$url = null;
-			// Look for img @src
-			if ($e->tagName == 'a' or $e->tagName == 'area') {
-				$url = $e->getAttribute('href');
-			}
-
-			// Look for nested a @href
-			foreach ($this->xpath->query('./a[count(preceding-sibling::a)+count(following-sibling::a)=0]', $e) as $em) {
-				$emNames = mfNamesFromElement($em, 'h-');
-				if (empty($emNames)) {
-					$url = $em->getAttribute('href');
-					break;
+		// Do we need to imply a url property?
+		// if no explicit "url" property, and no other explicit u-* properties, and no nested microformats
+		if (!array_key_exists('url', $return) && !in_array('u-', $prefixes) && !$has_nested_mf && !$is_backcompat) {
+			// a.h-x[href] or area.h-x[href]
+			if (($e->tagName === 'a' || $e->tagName === 'area') && $e->hasAttribute('href')) {
+				$return['url'][] = $this->resolveUrl($e->getAttribute('href'));
+			} else {
+				$xpaths = array(
+					// .h-x>a[href]:only-of-type:not[.h-*]
+					'./a[not(contains(concat(" ", @class), " h-")) and count(../a) = 1 and @href]',
+					// .h-x>area[href]:only-of-type:not[.h-*]
+					'./area[not(contains(concat(" ", @class), " h-")) and count(../area) = 1 and @href]',
+					// .h-x>:only-child:not[.h-*]>a[href]:only-of-type:not[.h-*]
+					'./*[not(contains(concat(" ", @class), " h-")) and count(../*) = 1 and count(a) = 1]/a[not(contains(concat(" ", @class), " h-")) and @href]',
+					// .h-x>:only-child:not[.h-*]>area[href]:only-of-type:not[.h-*]
+					'./*[not(contains(concat(" ", @class), " h-")) and count(../*) = 1 and count(area) = 1]/area[not(contains(concat(" ", @class), " h-")) and @href]'
+				);
+				foreach ($xpaths as $xpath) {
+					$url = $this->xpath->query($xpath, $e);
+					if ($url !== false && $url->length === 1) {
+						$return['url'][] = $this->resolveUrl($url->item(0)->getAttribute('href'));
+						break;
+					}
 				}
-			}
-
-			// Look for nested area @src
-			foreach ($this->xpath->query('./area[count(preceding-sibling::area)+count(following-sibling::area)=0]', $e) as $em) {
-				$emNames = mfNamesFromElement($em, 'h-');
-				if (empty($emNames)) {
-					$url = $em->getAttribute('href');
-					break;
-				}
-			}
-
-			if (!is_null($url)) {
-				$return['url'][] = $this->resolveUrl($url);
 			}
 		}
 
@@ -1155,38 +1168,37 @@ class Parser {
 	 */
 	public function parseImpliedPhoto(\DOMElement $e) {
 
+		// img.h-x[src]
 		if ($e->tagName == 'img') {
-			return $e->getAttribute('src');
+			return $this->resolveUrl($e->getAttribute('src'));
 		}
 
+		// object.h-x[data]
 		if ($e->tagName == 'object' && $e->hasAttribute('data')) {
-			return $e->getAttribute('data');
+			return $this->resolveUrl($e->getAttribute('data'));
 		}
 
 		$xpaths = array(
-			'./img',
-			'./object',
-			'./*[not(contains(concat(" ", @class), " h-"))]/img[count(preceding-sibling::img)+count(following-sibling::img)=0]',
-			'./*[not(contains(concat(" ", @class), " h-"))]/object[count(preceding-sibling::object)+count(following-sibling::object)=0]',
+			// .h-x>img[src]:only-of-type:not[.h-*]
+			'./img[not(contains(concat(" ", @class), " h-")) and count(../img) = 1 and @src]',
+			// .h-x>object[data]:only-of-type:not[.h-*]
+			'./object[not(contains(concat(" ", @class), " h-")) and count(../object) = 1 and @data]',
+			// .h-x>:only-child:not[.h-*]>img[src]:only-of-type:not[.h-*]
+			'./*[not(contains(concat(" ", @class), " h-")) and count(../*) = 1 and count(img) = 1]/img[not(contains(concat(" ", @class), " h-")) and @src]',
+			// .h-x>:only-child:not[.h-*]>object[data]:only-of-type:not[.h-*]
+			'./*[not(contains(concat(" ", @class), " h-")) and count(../*) = 1 and count(object) = 1]/object[not(contains(concat(" ", @class), " h-")) and @data]',
 		);
 
 		foreach ($xpaths as $path) {
 			$els = $this->xpath->query($path, $e);
 
-			if ($els->length == 1) {
+			if ($els !== false && $els->length === 1) {
 				$el = $els->item(0);
-				$hClasses = mfNamesFromElement($el, 'h-');
-
-				// no nested h-
-				if (empty($hClasses)) {
-
-					if ($el->tagName == 'img') {
-						return $el->getAttribute('src');
-					} else if ($el->tagName == 'object' && $el->hasAttribute('data')) {
-						return $el->getAttribute('data');
-					}
-
-				} // no nested h-
+				if ($el->tagName == 'img') {
+					return $this->resolveUrl($el->getAttribute('src'));
+				} else if ($el->tagName == 'object') {
+					return $this->resolveUrl($el->getAttribute('data'));
+				}
 			}
 		}
 
@@ -1403,13 +1415,13 @@ class Parser {
 							// Note: handling microformat nesting under multiple conflicting prefixes is not currently specified by the mf2 parsing spec.
 							$prefixSpecificResult = $result;
 							if (in_array('p-', $prefixes)) {
-								$prefixSpecificResult['value'] = (empty($prefixSpecificResult['properties']['name'][0])) ? $this->parseP($node) : $prefixSpecificResult['properties']['name'][0];
+								$prefixSpecificResult['value'] = (!is_array($prefixSpecificResult['properties']) || empty($prefixSpecificResult['properties']['name'][0])) ? $this->parseP($node) : $prefixSpecificResult['properties']['name'][0];
 							} elseif (in_array('e-', $prefixes)) {
 								$eParsedResult = $this->parseE($node);
 								$prefixSpecificResult['html'] = $eParsedResult['html'];
 								$prefixSpecificResult['value'] = $eParsedResult['value'];
 							} elseif (in_array('u-', $prefixes)) {
-								$prefixSpecificResult['value'] = (empty($result['properties']['url'])) ? $this->parseU($node) : reset($result['properties']['url']);
+								$prefixSpecificResult['value'] = (!is_array($result['properties']) || empty($result['properties']['url'])) ? $this->parseU($node) : reset($result['properties']['url']);
 							} elseif (in_array('dt-', $prefixes)) {
 								$parsed_property = $this->parseDT($node);
 								$prefixSpecificResult['value'] = ($parsed_property) ? $parsed_property : '';
