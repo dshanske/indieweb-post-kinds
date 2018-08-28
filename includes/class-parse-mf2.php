@@ -9,7 +9,7 @@
 class Parse_MF2 {
 
 	public static function fetch( $url ) {
-		if ( ! isset( $url ) || ! self::is_url( $url ) ) {
+		if ( ! isset( $url ) || ! wp_http_validate_url( $url ) ) {
 			return new WP_Error( 'invalid-url', __( 'A valid URL was not provided.', 'indieweb-post-kinds' ) );
 		}
 		$args     = array(
@@ -42,56 +42,17 @@ class Parse_MF2 {
 		return $body;
 	}
 
-	/**
-	 * Is string a URL.
-	 *
-	 * @param array $string
-	 * @return bool
-	 */
-	public static function is_url( $string ) {
-		return preg_match( '/^https?:\/\/.+\..+$/', $string );
-	}
 
 	/**
-	 * Is this an h-card.
+	 * is this what type
 	 *
-	 * @param array $mf Parsed Microformats Array.
+	 * @param array $mf Parsed Microformats Array
+	 * @param string $type Type
 	 * @return bool
 	 */
-	public static function is_hcard( $mf ) {
-		return is_array( $mf ) && ! empty( $mf['type'] ) && is_array( $mf['type'] ) && in_array( 'h-card', $mf['type'], true );
+	public static function is_type( $mf, $type ) {
+		return is_array( $mf ) && ! empty( $mf['type'] ) && is_array( $mf['type'] ) && in_array( $type, $mf['type'], true );
 	}
-
-	/**
-	 * Is this an h-adr.
-	 *
-	 * @param array $mf Parsed Microformats Array.
-	 * @return bool
-	 */
-	public static function is_hadr( $mf ) {
-		return is_array( $mf ) && ! empty( $mf['type'] ) && is_array( $mf['type'] ) && in_array( 'h-adr', $mf['type'], true );
-	}
-
-	/**
-	 * Is this an h-cite.
-	 *
-	 * @param array $mf Parsed Microformats Array.
-	 * @return bool
-	 */
-	public static function is_hcite( $mf ) {
-		return is_array( $mf ) && ! empty( $mf['type'] ) && is_array( $mf['type'] ) && in_array( 'h-cite', $mf['type'], true );
-	}
-
-	/**
-	 * Is this an h-event.
-	 *
-	 * @param array $mf Parsed Microformats Array.
-	 * @return bool
-	 */
-	public static function is_hevent( $mf ) {
-		return is_array( $mf ) && ! empty( $mf['type'] ) && is_array( $mf['type'] ) && in_array( 'h-event', $mf['type'], true );
-	}
-
 
 	/**
 	 * Parse Content
@@ -254,13 +215,13 @@ class Parse_MF2 {
 						}
 						$data[ $p ][] = $v;
 					} elseif ( self::is_microformat( $v ) ) {
-						if ( self::is_hcard( $v, $mf ) ) {
+						if ( self::is_type( $v, 'h-card' ) ) {
 							$data[ $p ] = self::parse_hcard( $v, $mf );
-						} elseif ( self::is_hadr( $v, $mf ) ) {
+						} elseif ( self::is_type( $v, 'h-adr' ) ) {
 							$data[ $p ] = self::parse_hadr( $v, $mf );
 						} else {
 							$u = self::get_plaintext( $v, 'url' );
-							if ( ( $u ) && self::is_URL( $u ) ) {
+							if ( ( $u ) && wp_http_validate_url( $u ) ) {
 								if ( ! array_key_exists( $p, $data ) ) {
 									$data[ $p ] = array();
 								}
@@ -481,11 +442,11 @@ class Parse_MF2 {
 		if ( array_key_exists( 'author', $item['properties'] ) ) {
 			// Check if any of the values of the author property are an h-card
 			foreach ( $item['properties']['author'] as $a ) {
-				if ( self::is_hcard( $a ) ) {
+				if ( self::is_type( $a, 'h-card' ) ) {
 					// 5.1 "if it has an h-card, use it, exit."
 					return $a;
 				} elseif ( is_string( $a ) ) {
-					if ( self::is_url( $a ) ) {
+					if ( wp_http_validate_url( $a ) ) {
 						// 5.2 "otherwise if author property is an http(s) URL, let the author-page have that URL"
 						$authorpage = $a;
 					} else {
@@ -869,20 +830,20 @@ class Parse_MF2 {
 				// If there is a matching author URL, use that one
 				$found = false;
 				foreach ( $hcard['properties']['url'] as $url ) {
-					if ( self::is_url( $url ) ) {
+					if ( wp_http_validate_url( $url ) ) {
 						if ( $url === $authorurl ) {
 							$data['url'] = $url;
 							$found       = true;
 						}
 					}
 				}
-				if ( ! $found && self::is_url( $hcard['properties']['url'][0] ) ) {
+				if ( ! $found && wp_http_validate_url( $hcard['properties']['url'][0] ) ) {
 					$data['url'] = $hcard['properties']['url'][0];
 				}
 			} elseif ( null !== $v ) {
 				// Make sure the URL property is actually a URL
 				if ( 'url' === $p || 'photo' === $p ) {
-					if ( self::is_url( $v ) ) {
+					if ( wp_http_validate_url( $v ) ) {
 						$data[ $p ] = $v;
 					}
 				} else {
@@ -905,7 +866,7 @@ class Parse_MF2 {
 			if ( null !== $v ) {
 				// Make sure the URL property is actually a URL
 				if ( 'url' === $p || 'photo' === $p ) {
-					if ( self::is_url( $v ) ) {
+					if ( wp_http_validate_url( $v ) ) {
 						$data[ $p ] = $v;
 					}
 				} else {
