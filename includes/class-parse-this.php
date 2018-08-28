@@ -41,7 +41,7 @@ class Parse_This {
 	 * @access public
 	 */
 	public function __construct( $url = null ) {
-		if ( $this->is_url( $url ) ) {
+		if ( wp_http_validate_url( $url ) ) {
 			$this->url = $url;
 			$return    = $this->fetch_source_html( $url );
 			if ( is_wp_error( $return ) ) {
@@ -105,7 +105,7 @@ class Parse_This {
 		if ( is_string( $source_content ) ) {
 			$this->content = $source_content;
 		}
-		if ( $this->is_url( $url ) ) {
+		if ( wp_http_validate_url( $url ) ) {
 			$this->url    = $url;
 			$this->domain = wp_parse_url( $url, PHP_URL_HOST );
 		}
@@ -157,16 +157,6 @@ class Parse_This {
 	}
 
 	/**
-	 * Is string a URL.
-	 *
-	 * @param array $url
-	 * @return bool
-	 */
-	public function is_url( $url ) {
-		return preg_match( '/^([!#$&-;=?-\[\]_a-z~]|%[0-9a-fA-F]{2})+$/', $url );
-	}
-
-	/**
 	 * Utility method to limit an array to 100 values.
 	 * Originally set to 50 but some sites are very detailed in their meta.
 	 *
@@ -176,7 +166,7 @@ class Parse_This {
 	 * @param array $value Array to limit.
 	 * @return array Original array if fewer than 100 values, limited array, empty array otherwise.
 	 */
-	private function _limit_array( $value ) {
+	private function limit_array( $value ) {
 		if ( is_array( $value ) ) {
 			if ( count( $value ) > 100 ) {
 				return array_slice( $value, 0, 100 );
@@ -199,7 +189,7 @@ class Parse_This {
 	 *                         if fewer than 5,000 characters, a truncated version, otherwise an
 	 *                         empty string.
 	 */
-	private function _limit_string( $value ) {
+	private function limit_string( $value ) {
 		$return = '';
 
 		if ( is_numeric( $value ) || is_bool( $value ) ) {
@@ -227,7 +217,7 @@ class Parse_This {
 	 * @param string $url URL to check for length and validity.
 	 * @return string Escaped URL if of valid length (< 2048) and makeup. Empty string otherwise.
 	 */
-	private function _limit_url( $url ) {
+	private function limit_url( $url ) {
 		if ( ! is_string( $url ) ) {
 			return '';
 		}
@@ -238,7 +228,7 @@ class Parse_This {
 		}
 
 		// Does not look like a URL.
-		if ( ! $this->is_url( $url ) ) {
+		if ( ! wp_http_validate_url( $url ) ) {
 			return '';
 		}
 
@@ -267,8 +257,8 @@ class Parse_This {
 	 * @param string $src Image source URL.
 	 * @return string If not matched an excluded URL type, the original URL, empty string otherwise.
 	 */
-	private function _limit_img( $src ) {
-		$src = $this->_limit_url( $src );
+	private function limit_img( $src ) {
+		$src = $this->limit_url( $src );
 
 		if ( preg_match( '!/ad[sx]?/!i', $src ) ) {
 			// Ads
@@ -320,8 +310,8 @@ class Parse_This {
 	 * @param string $src Embed source URL.
 	 * @return string If not from a supported provider, an empty string. Otherwise, a reformatted embed URL.
 	 */
-	private function _limit_embed( $src ) {
-		$src = $this->_limit_url( $src );
+	private function limit_embed( $src ) {
+		$src = $this->limit_url( $src );
 
 		if ( empty( $src ) ) {
 			return '';
@@ -364,7 +354,7 @@ class Parse_This {
 	 * @param mixed   $meta_value  Meta value.
 	 * @param boolean $single Single Value
 	 */
-	private function _set_meta_entry( $meta_name, $meta_value, $single = true ) {
+	private function set_meta_entry( $meta_name, $meta_value, $single = true ) {
 		// If the key does not exist set it.
 		if ( ! isset( $this->meta[ $meta_name ] ) ) {
 			$this->meta[ $meta_name ] = $meta_value;
@@ -397,7 +387,7 @@ class Parse_This {
 	 * @param string $meta_name  Meta key name.
 	 * @param mixed  $meta_value Meta value.
 	 */
-	private function _process_meta_entry( $meta_name, $meta_value ) {
+	private function process_meta_entry( $meta_name, $meta_value ) {
 		switch ( $meta_name ) {
 			// og:url is the canonical URL so it should be set appropriately
 			case 'og:url':
@@ -410,11 +400,11 @@ class Parse_This {
 			// The Title
 			case 'og:title':
 			case 'twitter:title':
-				$this->_set_meta_entry( 'title', $meta_value );
+				$this->set_meta_entry( 'title', $meta_value );
 				break;
 			case 'og:description':
 			case 'twitter:description':
-				$this->_set_meta_entry( 'description', $meta_value );
+				$this->set_meta_entry( 'description', $meta_value );
 				break;
 			case 'article:published_time':
 			case 'article:published':
@@ -425,7 +415,7 @@ class Parse_This {
 				if ( $datetime ) {
 					$meta_value = $datetime->format( DATE_W3C );
 				}
-				$this->_set_meta_entry( 'published', $meta_value );
+				$this->set_meta_entry( 'published', $meta_value );
 				break;
 			case 'article:modified_time':
 			case 'article:modified':
@@ -435,81 +425,81 @@ class Parse_This {
 				if ( $datetime ) {
 					$meta_value = $datetime->format( DATE_W3C );
 				}
-				$this->_set_meta_entry( 'modified', $meta_value );
+				$this->set_meta_entry( 'modified', $meta_value );
 				break;
 			case 'article:expiration_time':
-				$this->_set_meta_entry( 'expiration', $meta_value );
+				$this->set_meta_entry( 'expiration', $meta_value );
 				break;
 			case 'og:author':
 			case 'book:author':
 			case 'article:author':
 			case 'good_reads:author':
 			case 'author':
-				$this->_set_meta_entry( 'author', $meta_value, false );
+				$this->set_meta_entry( 'author', $meta_value, false );
 				break;
 
 			// The locale it is marked up in
 			case 'og:locale':
-				$this->_set_meta_entry( 'locale', $meta_value );
+				$this->set_meta_entry( 'locale', $meta_value );
 				break;
 			// Alternate Locales
 			case 'og:locale:alternate':
-				$this->_set_meta_entry( 'locale:alternate', $meta_value, false );
+				$this->set_meta_entry( 'locale:alternate', $meta_value, false );
 				break;
 			case 'og:site_name':
-				$this->_set_meta_entry( 'site_name', $meta_value );
+				$this->set_meta_entry( 'site_name', $meta_value );
 				break;
 			case 'music:duration':
 			case 'video:duration':
-				$this->_set_meta_entry( 'duration', $meta_value );
+				$this->set_meta_entry( 'duration', $meta_value );
 				break;
 			case 'music:album:disc':
-				$this->_set_meta_entry( 'disc', $meta_value );
+				$this->set_meta_entry( 'disc', $meta_value );
 				break;
 			case 'playfoursquare:location:latitude':
 			case 'place:location:latitude':
 			case 'og:latitude':
-				$this->_set_meta_entry( 'latitude', $meta_value );
+				$this->set_meta_entry( 'latitude', $meta_value );
 				break;
 			case 'playfoursquare:location:longitude':
 			case 'place:location:longitude':
 			case 'og:longitude':
-				$this->_set_meta_entry( 'longitude', $meta_value );
+				$this->set_meta_entry( 'longitude', $meta_value );
 				break;
 			case 'business:contact_data:street_address':
 			case 'og:street_address':
-				$this->_set_meta_entry( 'street_address', $meta_value );
+				$this->set_meta_entry( 'street_address', $meta_value );
 				break;
 			case 'business:contact_data:locality':
 			case 'og:locality':
-				$this->_set_meta_entry( 'locality', $meta_value );
+				$this->set_meta_entry( 'locality', $meta_value );
 				break;
 			case 'business:contact_data:postal_code':
 			case 'og:postal_code':
-				$this->_set_meta_entry( 'postal_code', $meta_value );
+				$this->set_meta_entry( 'postal_code', $meta_value );
 				break;
 			case 'business:contact_data:country-name':
 			case 'og:country-name':
-				$this->_set_meta_entry( 'country-name', $meta_value );
+				$this->set_meta_entry( 'country-name', $meta_value );
 				break;
 			case 'business:contact_data:region':
 			case 'og:region':
-				$this->_set_meta_entry( 'region', $meta_value );
+				$this->set_meta_entry( 'region', $meta_value );
 				break;
 			case 'music:album:track':
-				$this->_set_meta_entry( 'track', $meta_value );
+				$this->set_meta_entry( 'track', $meta_value );
 				break;
 			case 'video:series':
-				$this->_set_meta_entry( 'series', $meta_value );
+				$this->set_meta_entry( 'series', $meta_value );
 				break;
 			case 'book:release_date':
 			case 'music:release_date':
-				$this->_set_meta_entry( 'release_date', $meta_value );
+				$this->set_meta_entry( 'release_date', $meta_value );
 				break;
 			case 'og:video':
 			case 'og:video:secure_url':
 			case 'og:audio':
-				$meta_value = $this->_limit_embed( $meta_value );
+				$meta_value = $this->limit_embed( $meta_value );
 				if ( ! isset( $this->embeds ) ) {
 					$this->embeds = array();
 				}
@@ -521,11 +511,11 @@ class Parse_This {
 				return;
 
 			case 'article:section':
-				$this->_set_meta_entry( 'section', $meta_value, false );
+				$this->set_meta_entry( 'section', $meta_value, false );
 				break;
 			case 'book:isbn':
 			case 'good_reads:isbn':
-				$this->_set_meta_entry( 'isbn', $meta_value );
+				$this->set_meta_entry( 'isbn', $meta_value );
 				break;
 			case 'og:image':
 			case 'og:image:secure_url':
@@ -534,8 +524,8 @@ class Parse_This {
 			case 'twitter:image:src':
 			case 'twitter:image':
 				// The image will join the list of images but also be declared the featured image
-				$this->_set_meta_entry( 'featured', $meta_value );
-				$meta_value = $this->_limit_img( $meta_value );
+				$this->set_meta_entry( 'featured', $meta_value );
+				$meta_value = $this->limit_img( $meta_value );
 				if ( ! isset( $this->images ) ) {
 					$this->images = array();
 				}
@@ -550,9 +540,9 @@ class Parse_This {
 			case 'article:tag':
 			case 'book:tag':
 				if ( 1 < substr_count( $meta_value, ',' ) ) {
-					$this->_set_meta_entry( 'tag', explode( ',', $meta_value ), false );
+					$this->set_meta_entry( 'tag', explode( ',', $meta_value ), false );
 				} else {
-					$this->_set_meta_entry( 'tag', $meta_value, false );
+					$this->set_meta_entry( 'tag', $meta_value, false );
 				}
 				break;
 		}
@@ -574,66 +564,36 @@ class Parse_This {
 			return false;
 		}
 
-		// Strip the content to only the elements being looked at
-		$allowed_elements = array(
-			'img'    => array(
-				'src'    => true,
-				'width'  => true,
-				'height' => true,
-			),
-			'iframe' => array(
-				'src' => true,
-			),
-			'link'   => array(
-				'rel'      => true,
-				'itemprop' => true,
-				'href'     => true,
-			),
-			'title'  => array(),
-			'meta'   => array(
-				'property' => true,
-				'name'     => true,
-				'content'  => true,
-			),
-		);
-		$source_content   = wp_kses( $this->content, $allowed_elements );
-
 		// Fetch and gather <meta> data first, so discovered media is offered 1st to user.
 		if ( empty( $this->meta ) ) {
 			$this->meta = array();
 		}
-		if ( preg_match_all( '/<meta [^>]+>/', $source_content, $matches ) ) {
-			$items = $this->_limit_array( $matches[0] );
-			// For Debugging Purposes Generate an Entire Unfiltered Array
-			$unfiltered = array();
-			foreach ( $items as $value ) {
-				if ( preg_match( '/(property|name)=[\'"]([^"]+)[\'"][^>]+content=[\'"]([^"]+)[\'"]/', $value, $new_matches ) ) {
-					$meta_name  = $this->_limit_string( $new_matches[2] );
-					$meta_value = $this->_limit_string( $new_matches[3] );
+		if ( class_exists( 'Masterminds\\HTML5' ) ) {
+			$doc = new \Masterminds\HTML5( array( 'disable_html_ns' => true ) );
+			$doc = $doc->loadHTML( $this->content );
+		} else {
+			$doc = new DOMDocument();
+			$doc->loadHTML( mb_convert_encoding( $this->content, 'HTML-ENTITIES', mb_detect_encoding( $this->content ) ) );
+		}
 
-					// Sanity check. $key is usually things like 'title', 'description', 'keywords', etc.
-					if ( strlen( $meta_name ) > 200 ) {
-						continue;
-					}
-					$unfiltered[ $meta_name ] = $meta_value;
-					$this->_process_meta_entry( $meta_name, $meta_value );
-				}
-				if ( preg_match( '/content=[\'"]([^"]+)[\'"][^>]+(property|name)=[\'"]([^"]+)[\'"]/', $value, $new_matches ) ) {
-					$meta_name  = $this->_limit_string( $new_matches[3] );
-					$meta_value = $this->_limit_string( $new_matches[1] );
+		$xpath = new DOMXPath( $doc );
+		foreach ( $xpath->query( '//meta[(@name or @property) and @content]' ) as $meta ) {
+			$meta_name = $this->limit_string( $meta->getAttribute( 'property' ) );
+			if ( ! $meta_name ) {
+				$meta_name = $this->limit_string( $meta->getAttribute( 'name' ) );
+			}
+			$meta_value = $meta->getAttribute( 'content' );
 
-					// Sanity check. $key is usually things like 'title', 'description', 'keywords', etc.
-					if ( strlen( $meta_name ) > 200 ) {
-						continue;
-					}
-					$unfiltered[ $meta_name ] = $meta_value;
-					$this->_process_meta_entry( $meta_name, $meta_value );
-				}
+			// Sanity check. $key is usually things like 'title', 'description', 'keywords', etc.
+			if ( strlen( $meta_name ) > 200 ) {
+				continue;
 			}
-			// For debugging pass through unfiltered parameters
-			if ( WP_DEBUG ) {
-				$this->_set_meta_entry( 'unfiltered', $unfiltered );
-			}
+			$unfiltered[ $meta_name ] = $meta_value;
+			$this->process_meta_entry( $meta_name, $meta_value );
+		}
+		// For debugging pass through unfiltered parameters
+		if ( WP_DEBUG ) {
+			$this->set_meta_entry( 'unfiltered', $unfiltered );
 		}
 
 		// Fetch and gather <img> data.
@@ -641,22 +601,13 @@ class Parse_This {
 			$this->images = array();
 		}
 
-		if ( preg_match_all( '/<img [^>]+>/', $source_content, $matches ) ) {
-			$items = $this->_limit_array( $matches[0] );
-
-			foreach ( $items as $value ) {
-				if ( ( preg_match( '/width=(\'|")(\d+)\\1/i', $value, $new_matches ) && $new_matches[2] < 256 ) ||
-					( preg_match( '/height=(\'|")(\d+)\\1/i', $value, $new_matches ) && $new_matches[2] < 128 ) ) {
-
+		foreach ( $xpath->query( '//img[@src]' ) as $image ) {
+			if ( ( $image->getAttribute( 'width' ) < 256 ) || ( $image->getAttribute( 'height' ) < 128 ) ) {
 					continue;
-				}
-
-				if ( preg_match( '/src=(\'|")([^\'"]+)\\1/i', $value, $new_matches ) ) {
-					$src = $this->_limit_img( $new_matches[2] );
-					if ( ! empty( $src ) && ! in_array( $src, $this->images, true ) ) {
-						$this->images[] = $src;
-					}
-				}
+			}
+			$src = $this->limit_img( $image->getAttribute( 'src' ) );
+			if ( ! empty( $src ) && ! in_array( $src, $this->images, true ) ) {
+				$this->images[] = $src;
 			}
 		}
 
@@ -664,17 +615,10 @@ class Parse_This {
 		if ( empty( $this->video ) ) {
 			$this->video = array();
 		}
-
-		if ( preg_match_all( '/<video [^>]+>/', $source_content, $matches ) ) {
-			$items = $this->_limit_array( $matches[0] );
-
-			foreach ( $items as $value ) {
-				if ( preg_match( '/src=(\'|")([^\'"]+)\\1/i', $value, $new_matches ) ) {
-					$src = $new_matches[2];
-					if ( ! empty( $src ) && ! in_array( $src, $this->video, true ) ) {
-						$this->video[] = $src;
-					}
-				}
+		foreach ( $xpath->query( '//video' ) as $video ) {
+			$src = $video->getAttribute( 'src' );
+			if ( ! empty( $src ) && ! in_array( $src, $this->video, true ) ) {
+				$this->video[] = $src;
 			}
 		}
 
@@ -683,29 +627,16 @@ class Parse_This {
 			$this->audio = array();
 		}
 
-		if ( preg_match_all( '/<audio [^>]+>/', $source_content, $matches ) ) {
-			$items = $this->_limit_array( $matches[0] );
-
-			foreach ( $items as $value ) {
-				if ( preg_match( '/src=(\'|")([^\'"]+)\\1/i', $value, $new_matches ) ) {
-					$src = $new_matches[2];
-					if ( ! empty( $src ) && ! in_array( $src, $this->audio, true ) ) {
-						$this->audio[] = $src;
-					}
-				}
+		foreach ( $xpath->query( '//audio' ) as $audio ) {
+			$src = $audio->getAttribute( 'src' );
+			if ( ! empty( $src ) && ! in_array( $src, $this->audio, true ) ) {
+				$this->audio[] = $src;
 			}
 		}
-
-		if ( preg_match_all( '/<figure [^>]+>/', $source_content, $matches ) ) {
-			$items = $this->_limit_array( $matches[0] );
-
-			foreach ( $items as $value ) {
-				if ( preg_match( '/data-audio-url=(\'|")([^\'"]+)\\1/i', $value, $new_matches ) ) {
-					$src = $new_matches[2];
-					if ( ! empty( $src ) && ! in_array( $src, $this->audio, true ) ) {
-						$this->audio[] = $src;
-					}
-				}
+		foreach ( $xpath->query( '//figure' ) as $audio ) {
+			$src = $audio->getAttribute( 'data-audio-url' );
+			if ( ! empty( $src ) && ! in_array( $src, $this->audio, true ) ) {
+				$this->audio[] = $src;
 			}
 		}
 
@@ -714,17 +645,10 @@ class Parse_This {
 			$this->embeds = array();
 		}
 
-		if ( preg_match_all( '/<iframe [^>]+>/', $source_content, $matches ) ) {
-			$items = $this->_limit_array( $matches[0] );
-
-			foreach ( $items as $value ) {
-				if ( preg_match( '/src=(\'|")([^\'"]+)\\1/', $value, $new_matches ) ) {
-					$src = $this->_limit_embed( $new_matches[2] );
-
-					if ( ! empty( $src ) && ! in_array( $src, $this->embeds, true ) ) {
-						$this->embeds[] = $src;
-					}
-				}
+		foreach ( $xpath->query( '//iframe[@src]' ) as $embed ) {
+			$src = $this->limit_embed( $embed->getAttribute( 'src' ) );
+			if ( ! empty( $src ) && ! in_array( $src, $this->embeds, true ) ) {
+				$this->embeds[] = $src;
 			}
 		}
 
@@ -733,39 +657,22 @@ class Parse_This {
 			$this->links = array();
 		}
 
-		if ( preg_match_all( '/<link [^>]+>/', $source_content, $matches ) ) {
-			$items = $this->_limit_array( $matches[0] );
-
-			foreach ( $items as $value ) {
-				if ( preg_match( '/rel=["\'](canonical|shortlink|icon)["\']/i', $value, $matches_rel ) && preg_match( '/href=[\'"]([^\'" ]+)[\'"]/i', $value, $matches_url ) ) {
-					$rel = $matches_rel[1];
-					$url = $this->_limit_url( $matches_url[1] );
-
-					if ( ! empty( $url ) && empty( $this->links[ $rel ] ) ) {
-						$this->links[ $rel ] = $url;
-					}
-				}
+		foreach ( $xpath->query( '//link[@rel and @href]' ) as $link ) {
+			$rel = $link->getAttribute( 'rel' );
+			$url = $this->limit_url( $link->getAttribute( 'href' ) );
+			if ( ! empty( $url ) && empty( $this->links[ $rel ] ) ) {
+				$this->links[ $rel ] = $url;
 			}
 		}
 
 		// If Title is Not Set Use Title Tag
 		if ( ! isset( $this->meta['title'] ) ) {
-			preg_match( '/<title>(.+)<\/title>/i', $this->content, $match );
-			$this->meta['title'] = trim( $match[1] );
+			$this->meta['title'] = trim( $xpath->query( '//title' )->item( 0 )->textContent );
 		}
 		// If Site Name is not set use domain name less www
 		if ( ! isset( $this->meta['site_name'] ) ) {
 			$this->meta['site_name'] = preg_replace( '/^www\./', '', $this->domain );
 		}
-
-		$allowed_elements = array(
-			'a' => array(
-				'href' => true,
-			),
-		);
-		// Only hunt for links that are actual links
-		$source_content = wp_kses( $this->content, $allowed_elements );
-		$this->urls     = wp_extract_urls( $source_content );
 
 		$video_extensions = array(
 			'mp4',
@@ -784,9 +691,13 @@ class Parse_This {
 			'flac',
 			'aac',
 		);
-
-		foreach ( $this->urls as $url ) {
-			$extension = pathinfo( wp_parse_url( $url, PHP_URL_PATH ), PATHINFO_EXTENSION );
+		if ( ! isset( $this->urls ) ) {
+			$this->urls = array();
+		}
+		foreach ( $xpath->query( '//a' ) as $link ) {
+			$url          = WP_Http::make_absolute_url( $link->getAttribute( 'href' ), $this->url );
+			$this->urls[] = wp_http_validate_url( $url );
+			$extension    = pathinfo( wp_parse_url( $url, PHP_URL_PATH ), PATHINFO_EXTENSION );
 			if ( in_array( $extension, $audio_extensions, true ) ) {
 				$this->audio[] = $url;
 			}
@@ -795,6 +706,9 @@ class Parse_This {
 			}
 		}
 
+		foreach ( array( 'images', 'embeds', 'urls', 'audio', 'video' ) as $var ) {
+			$this->$var = array_unique( $this->$var );
+		}
 	}
 
 		/**
@@ -837,7 +751,7 @@ class Parse_This {
 				'name' => array(),
 			);
 			foreach ( $data['author'] as $a ) {
-				if ( self::is_url( $a ) ) {
+				if ( wp_http_validate_url( $a ) ) {
 					$author['url'][] = $a;
 				} else {
 					$author['name'][] = $a;
