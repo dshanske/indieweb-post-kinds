@@ -68,10 +68,7 @@ class Link_Preview {
 	 * @return boolean
 	 */
 	public static function is_valid_url( $url, $request = null, $key = null ) {
-		if ( ! is_string( $url ) || empty( $url ) ) {
-			return false;
-		}
-		return filter_var( $url, FILTER_VALIDATE_URL );
+		return wp_http_validate_url( $url );
 	}
 
 	/**
