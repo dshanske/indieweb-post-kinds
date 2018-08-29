@@ -70,10 +70,11 @@ class Post_Kinds_Plugin {
 
 		require_once 'vendor/autoload.php';
 
-		require_once plugin_dir_path( __FILE__ ) . 'includes/class-parse-mf2.php';
+		// Parse Pages
+		require_once plugin_dir_path( __FILE__ ) . 'parse-this/class-parse-mf2.php';
+		require_once plugin_dir_path( __FILE__ ) . 'parse-this/class-parse-this.php';
 
 		// Add Link Preview Parsing
-		require_once plugin_dir_path( __FILE__ ) . 'includes/class-parse-this.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-link-preview.php';
 
 		// Add Debugger
