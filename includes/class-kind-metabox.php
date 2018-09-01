@@ -92,7 +92,7 @@ class Kind_Metabox {
 				'kindmeta', 'PKAPI',
 				array(
 					'api_nonce'       => wp_create_nonce( 'wp_rest' ),
-					'api_url'         => rest_url( '/link-preview/1.0/' ),
+					'api_url'         => rest_url( '/parse-this/1.0/' ),
 					'success_message' => __( 'Your URL has been successfully retrieved and parsed', 'indieweb-post-kinds' ),
 					'clear_message'   => __( 'Are you sure you want to clear post properties?', 'indieweb-post-kinds' ),
 				)

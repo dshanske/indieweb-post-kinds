@@ -88,7 +88,7 @@ class Parse_This {
 			// Use an explicit user-agent for Parse This
 			'user-agent'          => 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:57.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36 Parse This/WP',
 		);
-		$response    = wp_safe_remote_head( $url, $args );
+		$response      = wp_safe_remote_head( $url, $args );
 		$response_code = wp_remote_retrieve_response_code( $response );
 		$content_type  = wp_remote_retrieve_header( $response, 'content-type' );
 		if ( is_wp_error( $response ) ) {
@@ -106,7 +106,7 @@ class Parse_This {
 		}
 
 		$response = wp_safe_remote_get( $url, $args );
-		$content    = wp_remote_retrieve_body( $response );
+		$content  = wp_remote_retrieve_body( $response );
 		if ( in_array( $content_type, array( 'application/mf2+json', 'application/jf2+json' ), true ) ) {
 			$content = json_decode( $content, true );
 		}

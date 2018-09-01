@@ -665,10 +665,10 @@ class Parse_This_MF2 {
 		if ( is_string( $input ) || is_a( $input, 'DOMDocument' ) ) {
 			$input = Mf2\parse( $input, $url );
 			// Check for rel-alternate jf2 or mf2 feed
-			if( isset( $input['rel-urls'] ) ) { 
-				foreach( $input['rel-urls'] as $rel => $info ) {
-					if( isset( $info['rels'] ) && in_array( 'alternate', $info['rels'] ) ) {
-						if( isset($info['type'] ) ) {
+			if ( isset( $input['rel-urls'] ) ) {
+				foreach ( $input['rel-urls'] as $rel => $info ) {
+					if ( isset( $info['rels'] ) && in_array( 'alternate', $info['rels'], true ) ) {
+						if ( isset( $info['type'] ) ) {
 							if ( 'application/jf2+json' === $info['type'] ) {
 								$parse = new Parse_This( $rel );
 								$parse->fetch();

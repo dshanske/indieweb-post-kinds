@@ -187,11 +187,11 @@ class Parse_This_HTML {
 	}
 
 	public static function set( $array, $key, $value ) {
-		if ( ! isset( $array[$key] ) ) {
+		if ( ! isset( $array[ $key ] ) ) {
 			$array[ $key ] = $value;
-		} else if ( is_string( $array[$key] ) ) { 
-			$array[ $key ] = array( $array[$key], $value );
-		} else if ( is_array( $array[$key] ) ) {
+		} elseif ( is_string( $array[ $key ] ) ) {
+			$array[ $key ] = array( $array[ $key ], $value );
+		} elseif ( is_array( $array[ $key ] ) ) {
 			$array[ $key ][] = $value;
 		}
 		return $array;
@@ -277,9 +277,8 @@ class Parse_This_HTML {
 			}
 		}
 
-		
 		$meta['title'] = trim( $xpath->query( '//title' )->item( 0 )->textContent );
-		$meta = self::parse_meta( $meta );
+		$meta          = self::parse_meta( $meta );
 
 		$video_extensions = array(
 			'mp4',
@@ -298,11 +297,11 @@ class Parse_This_HTML {
 			'flac',
 			'aac',
 		);
-		$urls = array();
+		$urls             = array();
 		foreach ( $xpath->query( '//a' ) as $link ) {
-			$url          = WP_Http::make_absolute_url( $link->getAttribute( 'href' ), $url );
-			$urls[] = wp_http_validate_url( $url );
-			$extension    = pathinfo( wp_parse_url( $url, PHP_URL_PATH ), PATHINFO_EXTENSION );
+			$url       = WP_Http::make_absolute_url( $link->getAttribute( 'href' ), $url );
+			$urls[]    = wp_http_validate_url( $url );
+			$extension = pathinfo( wp_parse_url( $url, PHP_URL_PATH ), PATHINFO_EXTENSION );
 			if ( in_array( $extension, $audio_extensions, true ) ) {
 				$audios[] = $url;
 			}
@@ -318,9 +317,9 @@ class Parse_This_HTML {
 		$videos = array_unique( $videos );
 		$images = array_unique( $images );
 		$return = compact( 'meta', 'images', 'embeds', 'audios', 'videos', 'links', 'content' );
-		$jf2 = self::raw_to_jf2( $return );
+		$jf2    = self::raw_to_jf2( $return );
 		if ( WP_DEBUG ) {
-			$jf2['_raw'] = $return ;
+			$jf2['_raw'] = $return;
 		}
 		return $jf2;
 	}
@@ -329,7 +328,7 @@ class Parse_This_HTML {
 		if ( empty( $raw ) ) {
 			return array();
 		}
-		$jf2 = array();
+		$jf2  = array();
 		$meta = isset( $raw['meta'] ) ? $raw['meta'] : array();
 		if ( isset( $meta['og'] ) ) {
 			if ( isset( $meta['og']['url'] ) ) {
@@ -350,7 +349,7 @@ class Parse_This_HTML {
 			if ( isset( $meta['og']['video'] ) ) {
 				$jf2['video'] = $meta['og']['video'];
 			}
-			if( isset( $meta['og']['audio'] ) ) {
+			if ( isset( $meta['og']['audio'] ) ) {
 				$jf2['audio'] = $meta['og']['audio'];
 			}
 			if ( isset( $meta['og']['locale'] ) ) {
@@ -359,7 +358,7 @@ class Parse_This_HTML {
 			if ( isset( $meta['og']['longitude'] ) ) {
 				$jf2['location'] = array(
 					'longitude' => $meta['og']['longitude'],
-					'latitude' => $meta['og']['longitude'],
+					'latitude'  => $meta['og']['longitude'],
 				);
 			}
 			if ( isset( $meta['og']['type'] ) ) {
@@ -380,11 +379,11 @@ class Parse_This_HTML {
 					}
 					if ( isset( $meta['article']['modified_time'] ) ) {
 						$datetime = new DateTime( $meta['article']['modified_time'] );
-						if( $datetime ) {
+						if ( $datetime ) {
 							$jf2['updated'] = $datetime->format( DATE_W3C );
 						}
 					}
-					if( isset( $meta['article']['published'] ) ) {
+					if ( isset( $meta['article']['published'] ) ) {
 						$datetime = new DateTime( $meta['article']['published'] );
 						if ( $datetime ) {
 							$jf2['published'] = $datetime->format( DATE_W3C );
@@ -392,11 +391,10 @@ class Parse_This_HTML {
 					}
 					if ( isset( $meta['article']['modified'] ) ) {
 						$datetime = new DateTime( $meta['article']['modified'] );
-						if( $datetime ) {
+						if ( $datetime ) {
 							$jf2['updated'] = $datetime->format( DATE_W3C );
 						}
 					}
-					
 				}
 				if ( 'book' === $type ) {
 					$jf2['type'] = 'cite';
@@ -406,14 +404,13 @@ class Parse_This_HTML {
 					if ( isset( $meta['release_date'] ) ) {
 						$jf2['release_date'] = $meta['book']['release_date'];
 					}
-
 				}
 				if ( 'profile' === $type ) {
 					$jf2['type'] = 'card';
 				}
 				if ( 'music.song' === $type ) {
 					$jf2['type'] = 'cite';
-					if( isset( $meta['music']['musician'] ) ) {
+					if ( isset( $meta['music']['musician'] ) ) {
 						$jf2['author'] = $meta['music']['musician'];
 					}
 					if ( isset( $meta['music']['duration'] ) ) {
@@ -443,21 +440,20 @@ class Parse_This_HTML {
 		if ( ! isset( $jf2['author'] ) && isset( $meta['author'] ) ) {
 			$jf2['author'] = $meta['author'];
 		}
-		if ( ! empty( $raw['audios'] ) && ! isset( $jf2['audio' ] ) ) {
+		if ( ! empty( $raw['audios'] ) && ! isset( $jf2['audio'] ) ) {
 			$jf2['audio'] = $raw['audios'];
 		}
 		if ( ! empty( $raw['videos'] ) && ! isset( $jf2['video'] ) ) {
 			$jf2['video'] = $raw['videos'];
 		}
-		//  If Site Name is not set use domain name less www 
-		if ( ! isset( $jf2['publication'] ) ) { 
-			$jf2['publication'] = preg_replace( '/^www\./', '', wp_parse_url( $jf2['url'], PHP_URL_HOST ) ); 
+		//  If Site Name is not set use domain name less www
+		if ( ! isset( $jf2['publication'] ) ) {
+			$jf2['publication'] = preg_replace( '/^www\./', '', wp_parse_url( $jf2['url'], PHP_URL_HOST ) );
 		}
 
 		if ( ! isset( $jf2['name'] ) ) {
 			$jf2['name'] = $meta['title'];
 		}
-
 
 		return $jf2;
 	}
@@ -465,11 +461,11 @@ class Parse_This_HTML {
 	public static function parse_meta( $meta ) {
 		$return = array();
 		if ( isset( $meta ) && is_array( $meta ) ) {
-			foreach( $meta as $key => $value ) {
+			foreach ( $meta as $key => $value ) {
 				$name = explode( ':', $key );
 				if ( 1 < count( $name ) ) {
-					$key = str_replace( $name[0] . ':', '', $key );
-					$return[ $name[0] ][ $key ]  = $value;
+					$key                        = str_replace( $name[0] . ':', '', $key );
+					$return[ $name[0] ][ $key ] = $value;
 				} else {
 					$return[ $key ] = $value;
 				}

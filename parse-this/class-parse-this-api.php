@@ -32,26 +32,26 @@ class Parse_This_API {
 		}
 	}
 
-       /**
-         * Generate Debug Tool
-         *
-         * @access public
-         */
-        public static function debug() {
-                ?>
-                <div class="wrap">
-                        <h2> <?php esc_html_e( 'Parse This Debugger', 'indieweb-post-kinds' ); ?> </h2>
-                        <p> <?php esc_html_e( 'Test the Parse Tools Debugger. You can report sites to the developer for possibly improvement in future', 'indieweb-post-kinds' ); ?>
-                        </p>
-                        <hr />
-			<form method="get" action="<?php echo rest_url( '/parse-this/1.0/parse/' ); ?> ">
-			<label for="url"><?php _e( 'URL', 'indieweb-post-kinds' ); ?></label><input type="url" class="widefat" name="url" id="url" />
+	/**
+	 * Generate Debug Tool
+	 *
+	 * @access public
+	 */
+	public static function debug() {
+		?>
+				<div class="wrap">
+						<h2> <?php esc_html_e( 'Parse This Debugger', 'indieweb-post-kinds' ); ?> </h2>
+						<p> <?php esc_html_e( 'Test the Parse Tools Debugger. You can report sites to the developer for possibly improvement in future', 'indieweb-post-kinds' ); ?>
+						</p>
+						<hr />
+			<form method="get" action="<?php echo esc_url( rest_url( '/parse-this/1.0/parse/' ) ); ?> ">
+			<label for="url"><?php esc_html_e( 'URL', 'indieweb-post-kinds' ); ?></label><input type="url" class="widefat" name="url" id="url" />
 			<?php wp_nonce_field( 'wp_rest' ); ?>
 			<?php submit_button( __( 'Parse', 'indieweb-post-kinds' ) ); ?>
-                        </form>
-                </div>
-                <?php
-        } 
+						</form>
+				</div>
+				<?php
+	}
 
 
 	/**
@@ -79,7 +79,7 @@ class Parse_This_API {
 	}
 
 	public static function read( $request ) {
-		$url = $request->get_param( 'url' );
+		$url   = $request->get_param( 'url' );
 		$parse = new Parse_This( $url );
 		$parse->fetch();
 		$parse->parse();

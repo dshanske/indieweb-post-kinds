@@ -36,7 +36,7 @@ The plugin requires the [webmention](https://wordpress.org/plugins/webmention/) 
 
 ## Privacy and Data Storage Notice ##
 
-Post Kinds stores extra data in a post indicating what you are resopnding to. This data is either hand-added or can be parsed from the source URL if provided. This means you have additional
+Post Kinds stores extra data in a post indicating what you are responding to. This data is either hand-added or can be parsed from the source URL if provided. This means you have additional
 responsibilities to responsibly use this data, and to remove information on request.
 
 ##  Credits ##
@@ -45,6 +45,13 @@ responsibilities to responsibly use this data, and to remove information on requ
 2. [Chris Aldrich](http://boffosocko.com) always receives a credit on my plugins due his regular feedback, input, and usage.
 
 ## Upgrade Notice ##
+
+### 3.1.0 ###
+
+Custom post kind registration, previously done by filter, is now done by registration. This will cause issues who had been using the filter. Due to a particular
+user who created many custom kinds, decided to create a better way to do this. 
+
+Posting capability via custom REST API endpoint has been removed.
 
 ### 3.0.0 ###
 
@@ -212,6 +219,17 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 
 ## Changelog ##
+
+### 3.1.0 ( 2018-xx-xx ) ###
+* Missing Add New Note in Dashbar
+* Add itinerary to post type discovery
+* Do not return a failed attempt to parse a URL
+* New post kind registration function and classes replaces the previous filter and array.
+* Parse This split into a more independent library.
+* MF2 Debugger removed in favor of test parser inside admin
+* Link Preview endpoint moved to Parse This and posting capability removed due improvements in Micropub
+* Parse This now uses DOMDocument and XPath over regex. To avoid high overhead, since MF2 parsing also uses this, shift to generate DOMDocument only once.
+
 
 ### 3.0.9 ( 2018-06-23 ) ###
 * If title is empty show start of excerpt in admin only
