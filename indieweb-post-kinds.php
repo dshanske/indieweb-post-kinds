@@ -70,20 +70,8 @@ class Post_Kinds_Plugin {
 
 		require_once 'vendor/autoload.php';
 
-		// Parse Pages
-		require_once plugin_dir_path( __FILE__ ) . 'parse-this/class-parse-mf2.php';
-		require_once plugin_dir_path( __FILE__ ) . 'parse-this/class-parse-this.php';
-
-		// Add Link Preview Parsing
-		require_once plugin_dir_path( __FILE__ ) . 'includes/class-link-preview.php';
-
-		// Add Debugger
-		if ( WP_DEBUG ) {
-			require_once plugin_dir_path( __FILE__ ) . 'includes/class-mf2-debugger.php';
-			add_action( 'init', array( 'MF2_Debugger', 'init' ) );
-		}
-
-		add_action( 'init', array( 'Link_Preview', 'init' ) );
+		// Parse This
+		require_once plugin_dir_path( __FILE__ ) . 'parse-this/parse-this.php';
 
 		// Load stylesheets.
 		add_action( 'wp_enqueue_scripts', array( 'Post_Kinds_Plugin', 'style_load' ) );

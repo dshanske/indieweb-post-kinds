@@ -4,6 +4,7 @@
 
 	<file>./indieweb-post-kinds.php</file>
 	<file>./includes/</file>
+	<file>./parse-this/</file>
 	<exclude-pattern>*/includes/*\.(inc|css|js|svg)</exclude-pattern>
 	<exclude-pattern>*/includes/Mf2/*</exclude-pattern>
 	<rule ref="PHPCompatibility"/>

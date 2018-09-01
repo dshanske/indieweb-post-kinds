@@ -6,42 +6,7 @@
  * and https://github.com/pfefferle/wordpress-semantic-linkbacks/blob/master/includes/class-linkbacks-mf2-handler.php
  **/
 
-class Parse_MF2 {
-
-	public static function fetch( $url ) {
-		if ( ! isset( $url ) || ! wp_http_validate_url( $url ) ) {
-			return new WP_Error( 'invalid-url', __( 'A valid URL was not provided.', 'indieweb-post-kinds' ) );
-		}
-		$args     = array(
-			'timeout'             => 10,
-			'limit_response_size' => 1048576,
-			'redirection'         => 0,
-			// Use an explicit user-agent for Post Kinds
-			'user-agent'          => 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:57.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36 Post Kinds/WP' . get_bloginfo( 'version' ) . '(' . get_bloginfo( 'url' ) . ')',
-		);
-		$response = wp_safe_remote_head( $url, $args );
-		if ( is_wp_error( $response ) ) {
-			return $response;
-		}
-		$response_code = wp_remote_retrieve_response_code( $response );
-		if ( preg_match( '#(image|audio|video|model)/#is', wp_remote_retrieve_header( $response, 'content-type' ) ) ) {
-			return new WP_Error( 'content-type', 'Content Type is Media' );
-		}
-		$response = wp_safe_remote_get( $url, $args );
-		switch ( $response_code ) {
-			case 200:
-				break;
-			default:
-				$message = wp_remote_retrieve_response_message( $response );
-				if ( empty( $message ) ) {
-					$message = __( 'Unknown Retrieval Error: Response Code ', 'indieweb-post-kinds' ) . $response_code;
-				}
-				return new WP_Error( 'source_error', $message, array( 'status' => $response_code ) );
-		}
-		$body = wp_remote_retrieve_body( $response );
-		return $body;
-	}
-
+class Parse_This_MF2 {
 
 	/**
 	 * is this what type
@@ -692,51 +657,70 @@ class Parse_MF2 {
 	}
 
 	/*
-	 * Parses marked up HTML using MF2.
+	 * Parse MF2 into JF2
 	 *
-	 * @param string $content HTML marked up content.
+	 * @param string|DOMDocument|array $input HTML marked up content, HTML in DOMDocument, or array of already parsed MF2 JSON
 	 */
-	public static function mf2parse( $content, $url ) {
-		$host = wp_parse_url( $url, PHP_URL_HOST );
-		switch ( $host ) {
-			default:
-				$parsed = Mf2\parse( $content, $url );
+	public static function parse( $input, $url ) {
+		if ( is_string( $input ) || is_a( $input, 'DOMDocument' ) ) {
+			$input = Mf2\parse( $input, $url );
+			// Check for rel-alternate jf2 or mf2 feed
+			if( isset( $input['rel-urls'] ) ) { 
+				foreach( $input['rel-urls'] as $rel => $info ) {
+					if( isset( $info['rels'] ) && in_array( 'alternate', $info['rels'] ) ) {
+						if( isset($info['type'] ) ) {
+							if ( 'application/jf2+json' === $info['type'] ) {
+								$parse = new Parse_This( $rel );
+								$parse->fetch();
+								return $parse->get();
+							}
+							if ( 'application/mf2+json' === $info['type'] ) {
+								$parse = new Parse_This( $rel );
+								$parse->fetch();
+								$input = $parse->get( 'content' );
+								break;
+							}
+						}
+					}
+				}
+			}
 		}
-		if ( ! is_array( $parsed ) ) {
+		if ( ! is_array( $input ) ) {
 			return array();
 		}
-		$count = count( $parsed['items'] );
+
+		$count = count( $input['items'] );
 		if ( 0 === $count ) {
 			return array();
 		}
 		if ( 1 === $count ) {
-			$item = $parsed['items'][0];
+			$item = $input['items'][0];
 			if ( in_array( 'h-feed', $item['type'], true ) ) {
 				return array(
 					'type' => 'feed',
 				);
 			}
 			if ( in_array( 'h-card', $item['type'], true ) ) {
-				return self::parse_hcard( $item, $parsed, $url );
+				return self::parse_hcard( $item, $input, $url );
 			} elseif ( in_array( 'h-entry', $item['type'], true ) || in_array( 'h-cite', $item['type'], true ) ) {
-				return self::parse_hentry( $item, $parsed );
+				return self::parse_hentry( $item, $input );
 			}
 		}
 
-		foreach ( $parsed['items'] as $item ) {
+		foreach ( $input['items'] as $item ) {
 			if ( array_key_exists( 'url', $item['properties'] ) ) {
 				$urls = $item['properties']['url'];
 				if ( in_array( $url, $urls, true ) ) {
 					if ( in_array( 'h-card', $item['type'], true ) ) {
-						return self::parse_hcard( $item, $parsed, $url );
+						return self::parse_hcard( $item, $input, $url );
 					} elseif ( in_array( 'h-entry', $item['type'], true ) || in_array( 'h-cite', $item['type'], true ) ) {
-						return self::parse_hentry( $item, $parsed );
+						return self::parse_hentry( $item, $input );
 					}
 				}
 			}
 		}
 		// No matching URLs so assume the first h-entry
-		foreach ( $parsed['items'] as $item ) {
+		foreach ( $input['items'] as $item ) {
 			if ( in_array( 'h-feed', $item['type'], true ) ) {
 				if ( in_array( 'children', $item, true ) ) {
 					return array(
@@ -745,7 +729,7 @@ class Parse_MF2 {
 				}
 			}
 			if ( in_array( 'h-entry', $item['type'], true ) || in_array( 'h-cite', $item['type'], true ) ) {
-				return self::parse_hentry( $item, $parsed );
+				return self::parse_hentry( $item, $input );
 			}
 		}
 
@@ -781,7 +765,7 @@ class Parse_MF2 {
 				$data['author'] = self::parse_hcard( $author, $mf );
 			} else {
 				$author = array_filter( $author );
-				if ( ! isset( $author['name'] ) && isset( $author['url'] ) ) {
+				/* if ( ! isset( $author['name'] ) && isset( $author['url'] ) ) {
 					$content = self::fetch( $author['url'] );
 					if ( is_wp_error( $content ) ) {
 						$content = '';
@@ -792,9 +776,9 @@ class Parse_MF2 {
 						$hcard = $hcard[0];
 					}
 					$data['author'] = self::parse_hcard( $hcard, $parsed, $author['url'] );
-				} else {
+				} else { */
 					$data['author'] = $author;
-				}
+				//}
 			}
 		}
 		$data = array_filter( $data );
