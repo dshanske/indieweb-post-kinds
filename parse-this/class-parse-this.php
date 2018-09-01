@@ -120,9 +120,16 @@ class Parse_This {
 			$this->jf2 = Parse_This_MF2::parse( $this->content, $this->url );
 		}
 		// If No MF2
-		if ( empty( $this->jf2 ) || ( ! isset( $this->jf2['name'] ) ) ) {
+		if ( empty( $this->jf2 ) ) {
 			$this->jf2 = Parse_This_HTML::parse( $this->xpath, $this->url );
+			return;
 		}
+		// If the parsed jf2 is missing any sort of content then try to find it in the HTML
+		$more = array_intersect( array_keys( $this->jf2 ), array( 'name', 'summary', 'content' ) );
+		if ( ! empty( $more ) ) {
+			$this->jf2 = array_merge( $this->jf2, Parse_This_HTML::parse( $this->xpath, $this->url ) );
+		}
+
 	}
 
 }

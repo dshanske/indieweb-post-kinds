@@ -170,15 +170,16 @@ class Parse_This_MF2 {
 	 * @return null|array
 	 */
 	public static function get_prop_array( array $mf, $properties, $fallback = null ) {
+		if ( ! self::is_microformat( $mf ) ) {
+			return array();
+		}
+
 		$data = array();
 		foreach ( $properties as $p ) {
 			if ( array_key_exists( $p, $mf['properties'] ) ) {
 				foreach ( $mf['properties'][ $p ] as $v ) {
 					if ( is_string( $v ) ) {
-						if ( ! array_key_exists( $p, $data ) ) {
-							$data[ $p ] = array();
-						}
-						$data[ $p ][] = $v;
+						$data[ $p ] = $v;
 					} elseif ( self::is_microformat( $v ) ) {
 						if ( self::is_type( $v, 'h-card' ) ) {
 							$data[ $p ] = self::parse_hcard( $v, $mf );
@@ -187,10 +188,7 @@ class Parse_This_MF2 {
 						} else {
 							$u = self::get_plaintext( $v, 'url' );
 							if ( ( $u ) && wp_http_validate_url( $u ) ) {
-								if ( ! array_key_exists( $p, $data ) ) {
-									$data[ $p ] = array();
-								}
-								$data[ $p ][] = $u;
+								$data[ $p ] = $u;
 							}
 						}
 					}
@@ -736,7 +734,7 @@ class Parse_This_MF2 {
 		return array();
 	}
 
-	private static function parse_hentry( $entry, $mf ) {
+	public static function parse_hentry( $entry, $mf ) {
 		// Array Values
 		$properties        = array( 'checkin', 'category', 'invitee', 'photo', 'video', 'audio', 'syndication', 'in-reply-to', 'like-of', 'repost-of', 'bookmark-of', 'tag-of', 'location', 'featured', 'swarm-coins', 'checked-in-by' );
 		$data              = self::get_prop_array( $entry, $properties );
@@ -749,11 +747,12 @@ class Parse_This_MF2 {
 		}
 		$data['content'] = self::parse_html_value( $entry, 'content' );
 		$data['summary'] = self::get_summary( $entry, $data['content'] );
-		if ( isset( $data['name'] ) ) {
-			$data['name'] = trim( preg_replace( '/https?:\/\/([^ ]+|$)/', '', $data['name'] ) );
-		}
+
 		if ( isset( $mf['rels']['syndication'] ) ) {
 			if ( isset( $data['syndication'] ) ) {
+				if ( is_string( $data['syndication'] ) ) {
+					$data['syndication'] = array( $data['syndication'] );
+				}
 				$data['syndication'] = array_unique( array_merge( $data['syndication'], $mf['rels']['syndication'] ) );
 			} else {
 				$data['syndication'] = $mf['rels']['syndication'];
@@ -764,21 +763,7 @@ class Parse_This_MF2 {
 			if ( is_array( $author['type'] ) ) {
 				$data['author'] = self::parse_hcard( $author, $mf );
 			} else {
-				$author = array_filter( $author );
-				/* if ( ! isset( $author['name'] ) && isset( $author['url'] ) ) {
-					$content = self::fetch( $author['url'] );
-					if ( is_wp_error( $content ) ) {
-						$content = '';
-					}
-					$parsed = Mf2\parse( $content, $author['url'] );
-					$hcard  = self::find_microformats_by_type( $parsed, 'h-card' );
-					if ( is_array( $hcard ) && ! empty( $hcard ) ) {
-						$hcard = $hcard[0];
-					}
-					$data['author'] = self::parse_hcard( $hcard, $parsed, $author['url'] );
-				} else { */
-					$data['author'] = $author;
-				//}
+				$data['author'] = $author;
 			}
 		}
 		$data = array_filter( $data );
@@ -795,7 +780,7 @@ class Parse_This_MF2 {
 		return $data;
 	}
 
-	private static function parse_hcard( $hcard, $mf, $authorurl = false ) {
+	public static function parse_hcard( $hcard, $mf, $authorurl = false ) {
 		// If there is a matching author URL, use that one
 		$data = array(
 			'type'  => 'card',
@@ -838,7 +823,7 @@ class Parse_This_MF2 {
 		return array_filter( $data );
 	}
 
-	private static function parse_hadr( $hadr, $mf ) {
+	public static function parse_hadr( $hadr, $mf ) {
 		$data       = array(
 			'type' => 'adr',
 			'name' => null,
