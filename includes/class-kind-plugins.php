@@ -17,7 +17,7 @@ class Kind_Plugins {
 		add_filter( 'semantic_linkbacks_post_type', array( 'Kind_Plugins', 'semantic_post_type' ), 11, 2 );
 
 		// Remove the Automatic Post Generation that the Micropub Plugin Offers
-		remove_filter( 'micropub_post_content', array( 'Micropub_Plugin', 'generate_post_content' ), 1, 2 );
+		remove_filter( 'micropub_post_content', array( 'Micropub_Render', 'generate_post_content' ), 1, 2 );
 
 	}
 
