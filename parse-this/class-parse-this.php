@@ -144,8 +144,8 @@ class Parse_This {
 		}
 		// If the parsed jf2 is missing any sort of content then try to find it in the HTML
 		$more = array_intersect( array_keys( $this->jf2 ), array( 'name', 'summary', 'content' ) );
-		if ( ! empty( $more ) ) {
-			$this->jf2 = array_merge( $this->jf2, Parse_This_HTML::parse( $content, $this->url ) );
+		if ( ! empty( $more ) && $this->doc instanceof DOMDocument ) {
+			$this->jf2 = array_merge( $this->jf2, Parse_This_HTML::parse( $this->doc, $this->url ) );
 		}
 
 	}
