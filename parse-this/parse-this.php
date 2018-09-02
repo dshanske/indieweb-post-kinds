@@ -4,6 +4,10 @@
 
 if ( ! function_exists( 'parse_this_loader' ) ) {
 	function parse_this_loader() {
+
+		// Convert Post to MF2 JSON
+		require_once plugin_dir_path( __FILE__ ) . 'class-mf2-post.php';
+
 		// Core Parse This Class
 		require_once plugin_dir_path( __FILE__ ) . 'class-parse-this.php';
 		// Parse This for OGP and HTML Properties

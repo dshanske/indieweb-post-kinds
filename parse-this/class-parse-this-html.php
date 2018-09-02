@@ -202,11 +202,12 @@ class Parse_This_HTML {
 	 *
 	 * @access public
 	 */
-	public static function parse( $xpath, $url ) {
-		if ( ! $xpath ) {
+	public static function parse( $doc, $url ) {
+		if ( ! $doc ) {
 			return array();
 		}
-		$meta = array();
+		$xpath = new DOMXPath( $doc );
+		$meta  = array();
 		// Look for OGP properties
 		foreach ( $xpath->query( '//meta[(@name or @property) and @content]' ) as $tag ) {
 			$meta_name = self::limit_string( $tag->getAttribute( 'property' ) );

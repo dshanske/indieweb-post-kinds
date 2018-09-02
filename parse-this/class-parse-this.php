@@ -7,7 +7,6 @@
 class Parse_This {
 	private $url = '';
 	private $doc;
-	private $xpath;
 	private $jf2 = array();
 
 	private $domain = '';
@@ -59,7 +58,6 @@ class Parse_This {
 				$this->doc = new DOMDocument();
 				$this->doc->loadHTML( mb_convert_encoding( $this->content, 'HTML-ENTITIES', mb_detect_encoding( $this->content ) ) );
 			}
-			$this->xpath = new DOMXPath( $this->doc );
 		}
 	}
 
@@ -76,6 +74,18 @@ class Parse_This {
 		}
 		if ( empty( $url ) ) {
 			return new WP_Error( 'invalid-url', __( 'A valid URL was not provided.', 'indieweb-post-kinds' ) );
+		}
+		if ( wp_parse_url( home_url(), PHP_URL_HOST ) === wp_parse_url( $url, PHP_URL_HOST ) ) {
+			$post_id = url_to_postid( $url );
+			if ( $post_id ) {
+				$this->set( get_post( $post_id ), $url );
+				return;
+			}
+			$post_id = attachment_url_to_postid( $url );
+			if ( $post_id ) {
+				$this->set( get_post( $post_id ), $url );
+				return;
+			}
 		}
 
 		$args = array(
@@ -115,21 +125,58 @@ class Parse_This {
 	}
 
 	public function parse() {
+		if ( $this->content instanceof WP_Post ) {
+			$this->jf2 = self::wp_post( $this->content );
+			return;
+		} elseif ( $this->doc instanceof DOMDocument ) {
+			$content = $this->doc;
+		} else {
+			$content = $this->content;
+		}
 		// Ensure not already preparsed
 		if ( empty( $this->jf2 ) ) {
-			$this->jf2 = Parse_This_MF2::parse( $this->content, $this->url );
+			$this->jf2 = Parse_This_MF2::parse( $content, $this->url );
 		}
 		// If No MF2
 		if ( empty( $this->jf2 ) ) {
-			$this->jf2 = Parse_This_HTML::parse( $this->xpath, $this->url );
+			$this->jf2 = Parse_This_HTML::parse( $content, $this->url );
 			return;
 		}
 		// If the parsed jf2 is missing any sort of content then try to find it in the HTML
 		$more = array_intersect( array_keys( $this->jf2 ), array( 'name', 'summary', 'content' ) );
 		if ( ! empty( $more ) ) {
-			$this->jf2 = array_merge( $this->jf2, Parse_This_HTML::parse( $this->xpath, $this->url ) );
+			$this->jf2 = array_merge( $this->jf2, Parse_This_HTML::parse( $content, $this->url ) );
 		}
 
 	}
+
+	public static function wp_post( $post ) {
+		$mf2 = new MF2_Post( $post );
+		return $mf2->get();
+	}
+
+	public static function media( $url ) {
+			/* require_once ABSPATH . 'wp-admin/includes/image.php';
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+			require_once ABSPATH . 'wp-admin/includes/media.php'; */
+
+		$id = attachment_url_to_postid( $url );
+		if ( ! $id ) {
+			return;
+		}
+			$meta = wp_get_attachment_metadata( $id );
+		if ( ! $meta ) {
+				$meta = wp_generate_attachment_metadata( $id, get_attached_file( $id ) );
+				wp_update_attachment_metadata( $id, $meta );
+		}
+			$jf2                = array();
+			$jf2['_raw']        = $meta;
+			$jf2['publication'] = ifset( $meta['album'] );
+			$jf2['author']      = ifset( $meta['artist'] );
+			$jf2['name']        = ifset( $meta['title'] );
+			return array_filter( $return );
+	}
+
+
 
 }
