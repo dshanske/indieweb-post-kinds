@@ -135,7 +135,7 @@ class Parse_This {
 		}
 		// Ensure not already preparsed
 		if ( empty( $this->jf2 ) ) {
-			$this->jf2 = Parse_This_MF2::parse( $content, $this->url );
+			$this->jf2 = Parse_This_MF2::parse( $content, $this->url, false );
 		}
 		// If No MF2
 		if ( empty( $this->jf2 ) ) {
@@ -144,7 +144,7 @@ class Parse_This {
 		}
 		// If the parsed jf2 is missing any sort of content then try to find it in the HTML
 		$more = array_intersect( array_keys( $this->jf2 ), array( 'name', 'summary', 'content' ) );
-		if ( ! empty( $more ) && $this->doc instanceof DOMDocument ) {
+		if ( empty( $more ) && $this->doc instanceof DOMDocument ) {
 			$this->jf2 = array_merge( $this->jf2, Parse_This_HTML::parse( $this->doc, $this->url ) );
 		}
 
@@ -154,29 +154,5 @@ class Parse_This {
 		$mf2 = new MF2_Post( $post );
 		return $mf2->get();
 	}
-
-	public static function media( $url ) {
-			/* require_once ABSPATH . 'wp-admin/includes/image.php';
-			require_once ABSPATH . 'wp-admin/includes/file.php';
-			require_once ABSPATH . 'wp-admin/includes/media.php'; */
-
-		$id = attachment_url_to_postid( $url );
-		if ( ! $id ) {
-			return;
-		}
-			$meta = wp_get_attachment_metadata( $id );
-		if ( ! $meta ) {
-				$meta = wp_generate_attachment_metadata( $id, get_attached_file( $id ) );
-				wp_update_attachment_metadata( $id, $meta );
-		}
-			$jf2                = array();
-			$jf2['_raw']        = $meta;
-			$jf2['publication'] = ifset( $meta['album'] );
-			$jf2['author']      = ifset( $meta['artist'] );
-			$jf2['name']        = ifset( $meta['title'] );
-			return array_filter( $return );
-	}
-
-
 
 }

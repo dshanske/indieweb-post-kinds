@@ -185,6 +185,8 @@ class Parse_This_MF2 {
 							$data[ $p ] = self::parse_hcard( $v, $mf );
 						} elseif ( self::is_type( $v, 'h-adr' ) ) {
 							$data[ $p ] = self::parse_hadr( $v, $mf );
+						} elseif ( self::is_type( $v, 'h-cite' ) ) {
+							$data[ $p ] = self::parse_hcite( $v, $mf );
 						} else {
 							$u = self::get_plaintext( $v, 'url' );
 							if ( ( $u ) && wp_http_validate_url( $u ) ) {
@@ -659,24 +661,26 @@ class Parse_This_MF2 {
 	 *
 	 * @param string|DOMDocument|array $input HTML marked up content, HTML in DOMDocument, or array of already parsed MF2 JSON
 	 */
-	public static function parse( $input, $url ) {
+	public static function parse( $input, $url, $alternate = true ) {
 		if ( is_string( $input ) || is_a( $input, 'DOMDocument' ) ) {
 			$input = Mf2\parse( $input, $url );
-			// Check for rel-alternate jf2 or mf2 feed
-			if ( isset( $input['rel-urls'] ) ) {
-				foreach ( $input['rel-urls'] as $rel => $info ) {
-					if ( isset( $info['rels'] ) && in_array( 'alternate', $info['rels'], true ) ) {
-						if ( isset( $info['type'] ) ) {
-							if ( 'application/jf2+json' === $info['type'] ) {
-								$parse = new Parse_This( $rel );
-								$parse->fetch();
-								return $parse->get();
-							}
-							if ( 'application/mf2+json' === $info['type'] ) {
-								$parse = new Parse_This( $rel );
-								$parse->fetch();
-								$input = $parse->get( 'content' );
-								break;
+			if ( $alternate ) {
+				// Check for rel-alternate jf2 or mf2 feed
+				if ( isset( $input['rel-urls'] ) ) {
+					foreach ( $input['rel-urls'] as $rel => $info ) {
+						if ( isset( $info['rels'] ) && in_array( 'alternate', $info['rels'], true ) ) {
+							if ( isset( $info['type'] ) ) {
+								if ( 'application/jf2+json' === $info['type'] ) {
+									$parse = new Parse_This( $rel );
+									$parse->fetch();
+									return $parse->get();
+								}
+								if ( 'application/mf2+json' === $info['type'] ) {
+									$parse = new Parse_This( $rel );
+									$parse->fetch();
+									$input = $parse->get( 'content' );
+									break;
+								}
 							}
 						}
 					}
@@ -734,14 +738,42 @@ class Parse_This_MF2 {
 		return array();
 	}
 
+	public static function parse_hcite( $entry, $mf ) {
+		$data         = self::get_prop_array( $entry, array_keys( $entry['properties'] ) );
+		$data['type'] = 'cite';
+		return $data;
+	}
+
 	public static function parse_hentry( $entry, $mf ) {
 		// Array Values
-		$properties        = array( 'checkin', 'category', 'invitee', 'photo', 'video', 'audio', 'syndication', 'in-reply-to', 'like-of', 'repost-of', 'bookmark-of', 'tag-of', 'location', 'featured', 'swarm-coins', 'checked-in-by' );
+		$properties        = array(
+			'checkin',
+			'category',
+			'invitee',
+			'photo',
+			'video',
+			'audio',
+			'syndication',
+			'in-reply-to',
+			'like-of',
+			'repost-of',
+			'bookmark-of',
+			'favorite-of',
+			'listen-of',
+			'watch-of',
+			'read-of',
+			'play-of',
+			'jam-of',
+			'itinerary',
+			'tag-of',
+			'location',
+			'checked-in-by',
+		);
 		$data              = self::get_prop_array( $entry, $properties );
 		$data['type']      = 'entry';
 		$data['published'] = self::get_published( $entry );
 		$data['updated']   = self::get_updated( $entry );
-		$properties        = array( 'url', 'rsvp', 'featured', 'name' );
+		$properties        = array( 'url', 'rsvp', 'featured', 'name', 'swarm-coins' );
 		foreach ( $properties as $property ) {
 			$data[ $property ] = self::get_plaintext( $entry, $property );
 		}
@@ -851,7 +883,7 @@ class Parse_This_MF2 {
 		if ( ! self::is_microformat( $mf ) ) {
 			return false;
 		}
-		$properties = $mf['properties'];
+		$properties = array_keys( $mf['properties'] );
 		if ( self::is_type( $mf, 'h-entry' ) ) {
 			$map = array(
 				'rsvp'      => array( 'rsvp' ),
@@ -880,9 +912,9 @@ class Parse_This_MF2 {
 				}
 			}
 
-			if ( ! empty( $properties['name'] ) ) {
-				$name    = trim( $properties['name'] );
-				$content = trim( $properties['content'] );
+			if ( ! empty( $mf['properties']['name'] ) ) {
+				$name    = trim( $mf['properties']['name'] );
+				$content = trim( $mf['properties']['content'] );
 				if ( 0 !== strpos( $content, $name ) ) {
 					return 'article';
 				}
