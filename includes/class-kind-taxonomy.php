@@ -350,7 +350,7 @@ final class Kind_Taxonomy {
 				'name'            => __( 'Reposts', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Reposted', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
 				'property'        => 'repost-of', // microformats 2 property
-				'format'          => '', // Post Format that maps to this
+				'format'          => 'link', // Post Format that maps to this
 				'description'     => __( 'a complete reposting of content from another site', 'indieweb-post-kinds' ),
 				'description-url' => 'http://indieweb.org/repost',
 				'title'           => true, // Should this kind have an explicit title
