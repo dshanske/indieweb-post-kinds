@@ -94,7 +94,7 @@ class Parse_This {
 			),
 			'timeout'             => 10,
 			'limit_response_size' => 1048576,
-			'redirection'         => 0,
+			'redirection'         => 1,
 			// Use an explicit user-agent for Parse This
 			'user-agent'          => 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:57.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36 Parse This/WP',
 		);

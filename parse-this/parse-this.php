@@ -5,6 +5,9 @@
 if ( ! function_exists( 'parse_this_loader' ) ) {
 	function parse_this_loader() {
 
+		// Global Functions
+		require_once plugin_dir_path( __FILE__ ) . 'functions.php';
+
 		// Convert Post to MF2 JSON
 		require_once plugin_dir_path( __FILE__ ) . 'class-mf2-post.php';
 

@@ -17,7 +17,7 @@ class Kind_Plugins {
 		add_filter( 'semantic_linkbacks_post_type', array( 'Kind_Plugins', 'semantic_post_type' ), 11, 2 );
 
 		// Remove the Automatic Post Generation that the Micropub Plugin Offers
-		remove_filter( 'micropub_post_content', array( 'Micropub_Plugin', 'generate_post_content' ), 1, 2 );
+		remove_filter( 'micropub_post_content', array( 'Micropub_Render', 'generate_post_content' ), 1, 2 );
 
 	}
 
@@ -60,17 +60,31 @@ class Kind_Plugins {
 		if ( ! isset( $input['properties'] ) ) {
 			return $input;
 		}
-		$parsed = array( 'bookmark-of', 'like-of', 'favorite-of', 'in-reply-to', 'read-of' );
+		$parsed = array( 'bookmark-of', 'like-of', 'favorite-of', 'in-reply-to', 'read-of', 'listen-of', 'watch-of' );
 		foreach ( $input['properties'] as $property => $value ) {
-			if ( ! wp_is_numeric_array( $value ) ) {
-				continue;
-			}
 			if ( in_array( $property, $parsed, true ) ) {
-				foreach ( $value as $i => $v ) {
-					if ( Link_Preview::is_valid_url( $v ) ) {
-						$parse = Link_Preview::simple_parse( $v );
-						if ( ! is_wp_error( $parse ) ) {
-							$input['properties'][ $property ][ $i ] = $parse;
+				if ( wp_is_numeric_array( $value ) ) {
+					foreach ( $value as $i => $v ) {
+						if ( wp_http_validate_url( $v ) ) {
+							$parse = new Parse_This( $v );
+							$fetch = $parse->fetch();
+							if ( ! is_wp_error( $fetch ) ) {
+								$parse->parse();
+								$jf2 = $parse->get();
+								$mf2 = jf2_to_mf2( $jf2 );
+								$input['properties'][ $property ][ $i ] = $mf2;
+							} else {
+								error_log( wp_json_encode( $fetch ) ); // phpcs:ignore
+							}
+						}
+					}
+				} else {
+					if ( isset( $value['url'] ) && wp_http_validate_url( $value['url'] ) ) {
+						$parse = new Parse_this( $value['url'] );
+						$fetch = $parse - fetch();
+						if ( ! is_wp_error( $fetch ) ) {
+							$parse->parse();
+							$input['properties'][ $property ] = array_merge( $value, jf2_to_mf2( $parse->get() ) );
 						}
 					}
 				}
