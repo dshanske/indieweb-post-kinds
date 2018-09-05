@@ -30,3 +30,31 @@ function jf2_to_mf2( $entry ) {
 	}
 	return $return;
 }
+
+function mf2_to_jf2( $entry ) {
+	if ( wp_is_numeric_array( $entry ) || ! isset( $entry['properties'] ) ) {
+		return false;
+	}
+	$jf2         = array();
+	$jf2['type'] = str_replace( 'h-', '', $entry['type'] );
+	if ( isset( $entry['properties'] ) ) {
+		foreach ( $entry['properties'] as $key => $value ) {
+			if ( 1 === count( $value ) ) {
+				$jf2[ $key ] = array_pop( $value );
+			} elseif ( wp_is_numeric_array( $value ) ) {
+				$jf2[ $key ] = $value;
+			} elseif ( isset( $value['type'] ) ) {
+				$jf2[ $key ] = mf2_to_jf2( $value );
+			} else {
+				$jf2[ $key ] = $value;
+			}
+		}
+	} elseif ( isset( $entry['items'] ) ) {
+		$jf2['children'] = array();
+		foreach ( $entry['items'] as $item ) {
+			$jf2['children'][] = mf2_to_jf2( $item );
+		}
+	}
+	return $jf2;
+}
+
