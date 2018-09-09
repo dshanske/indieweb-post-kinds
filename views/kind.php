@@ -31,7 +31,8 @@ if ( ! $kind ) {
 
 // Add in the appropriate type
 if ( ! empty( $type ) ) {
-	$type = 'p-' . $type;
+	$type = empty( $url ) ? 'p-' : 'u-';
+	$type .= $type;
 }
 ?>
 
