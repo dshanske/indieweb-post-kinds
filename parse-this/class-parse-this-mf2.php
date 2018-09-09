@@ -789,6 +789,9 @@ class Parse_This_MF2 {
 			} else {
 				$data['syndication'] = $mf['rels']['syndication'];
 			}
+			if( 1 === count( $data['syndication'] ) ) {
+				$data['syndication'] = array_pop( $data['syndication'] );
+			}
 		}
 		$author = self::find_author( $entry, $mf );
 		if ( $author ) {
