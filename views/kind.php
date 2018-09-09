@@ -5,6 +5,7 @@
  */
 
 $mf2_post = new MF2_Post( get_the_ID() );
+$kind     = $mf2_post->get( 'kind', true );
 $type     = Kind_Taxonomy::get_kind_info( $kind, 'property' );
 $cite     = $mf2_post->fetch( $type );
 $author   = array();
@@ -22,7 +23,6 @@ $duration  = $mf2_post->get( 'duration', true );
 if ( ! $duration ) {
 		$duration = calculate_duration( $mf2_post->get( 'dt-start' ), $mf2_post->get( 'dt-end' ) );
 }
-$kind = get_post_kind_slug( get_the_ID() );
 $rsvp = $mf2_post->get( 'rsvp', true );
 
 if ( ! $kind ) {
@@ -31,8 +31,7 @@ if ( ! $kind ) {
 
 // Add in the appropriate type
 if ( ! empty( $type ) ) {
-	$type = empty( $url ) ? 'p-' : 'u-';
-	$type .= $type;
+	$type = ( empty( $url ) ? 'p-' : 'u-' ) . $type;
 }
 ?>
 
