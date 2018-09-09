@@ -5,7 +5,7 @@
  */
 
 $mf2_post = new MF2_Post( get_the_ID() );
-$kind = $mf2_post->get( 'kind', true );
+$kind     = $mf2_post->get( 'kind', true );
 $type     = Kind_Taxonomy::get_kind_info( $kind, 'property' );
 $cite     = $mf2_post->fetch( $type );
 $author   = array();
@@ -31,8 +31,7 @@ if ( ! $kind ) {
 
 // Add in the appropriate type
 if ( ! empty( $type ) ) {
-	$type = empty( $url ) ? 'p-' : 'u-';
-	$type .= $type;
+	$type = ( empty( $url ) ? 'p-' : 'u-' ) . $type;
 }
 ?>
 
