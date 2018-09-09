@@ -10,7 +10,7 @@ $cite     = $mf2_post->fetch( 'checkin' );
 if ( ! $cite ) {
 	return;
 }
-$url   = $mf2_post->get_single( $cite['url'] );
+$url   = $mf2_post->get_single( ifset( $cite['url'], array() ) );
 $name  = $mf2_post->get_single( $cite['name'] );
 $embed = self::get_embed( $url );
 
