@@ -80,7 +80,7 @@ class Parse_This_API {
 
 	public static function read( $request ) {
 		$url    = $request->get_param( 'url' );
-		$mf2 = $request->get_param( 'mf2' );
+		$mf2    = $request->get_param( 'mf2' );
 		$parse  = new Parse_This( $url );
 		$return = $parse->fetch();
 		if ( is_wp_error( $return ) ) {

@@ -830,7 +830,7 @@ final class Kind_Taxonomy {
 
 	public static function webmention_links( $links, $post_id ) {
 		$mf2_post = new MF2_Post( $post_id );
-		$cite     = $mf2_post->fetch();
+		$cite     = $mf2_post->fetch( self::get_kind_info( $mf2_post->get( 'kind' ), 'property' ) );
 		$cites    = ifset( $cite['url'] );
 		if ( is_string( $cites ) ) {
 			$links[] = $cites;
@@ -845,7 +845,7 @@ final class Kind_Taxonomy {
 	public static function enclosure_links( $links, $post_id ) {
 		$mf2_post = new MF2_Post( $post_id );
 		if ( in_array( $mf2_post->kind, array( 'photo', 'video', 'audio' ), true ) ) {
-			$cite  = $mf2_post->fetch();
+			$cite  = $mf2_post->fetch( self::get_kind_info( $mf2_post->get( 'kind' ), 'property' ) );
 			$cites = ifset( $cite['url'] );
 			if ( is_string( $cites ) ) {
 				$links[] = $cites;

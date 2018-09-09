@@ -6,7 +6,7 @@
 
 $mf2_post = new MF2_Post( get_the_ID() );
 $audios   = get_attached_media( 'audio', get_the_ID() );
-$cite     = $mf2_post->fetch();
+$cite     = $mf2_post->fetch( 'audio' );
 if ( ! $cite ) {
 	$cite = array();
 }

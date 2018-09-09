@@ -33,21 +33,20 @@ function jf2_to_mf2( $entry ) {
 
 function mf2_to_jf2( $entry ) {
 	if ( wp_is_numeric_array( $entry ) || ! isset( $entry['properties'] ) ) {
-		return false;
+		return $entry;
 	}
 	$jf2         = array();
-	$jf2['type'] = str_replace( 'h-', '', $entry['type'] );
+	$type        = is_array( $entry['type'] ) ? array_pop( $entry['type'] ) : $entry['type'];
+	$jf2['type'] = str_replace( 'h-', '', $type );
 	if ( isset( $entry['properties'] ) ) {
 		foreach ( $entry['properties'] as $key => $value ) {
-			if ( 1 === count( $value ) ) {
-				$jf2[ $key ] = array_pop( $value );
-			} elseif ( wp_is_numeric_array( $value ) ) {
-				$jf2[ $key ] = $value;
-			} elseif ( isset( $value['type'] ) ) {
-				$jf2[ $key ] = mf2_to_jf2( $value );
-			} else {
-				$jf2[ $key ] = $value;
+			if ( is_array( $value ) && 1 === count( $value ) ) {
+				$value = array_pop( $value );
 			}
+			if ( ! wp_is_numeric_array( $value ) && isset( $value['type'] ) ) {
+				$value = mf2_to_jf2( $value );
+			}
+			$jf2[ $key ] = $value;
 		}
 	} elseif ( isset( $entry['items'] ) ) {
 		$jf2['children'] = array();

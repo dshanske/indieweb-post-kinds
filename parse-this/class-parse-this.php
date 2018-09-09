@@ -152,7 +152,7 @@ class Parse_This {
 
 	public static function wp_post( $post ) {
 		$mf2 = new MF2_Post( $post );
-		return $mf2->get();
+		return $mf2->get( null, true );
 	}
 
 }

@@ -64,9 +64,6 @@ class Post_Kinds_Plugin {
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-view.php';
 		add_action( 'init', array( 'Kind_View', 'init' ) );
 
-		// Add Kind Meta Storage and Retrieval Functions. Meta was superseded by MF2_Post. Will be removed entirely in next version
-		// require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-meta.php';
-
 		require_once 'vendor/autoload.php';
 
 		// Parse This
