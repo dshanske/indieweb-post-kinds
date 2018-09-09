@@ -1,10 +1,10 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.0.9  
+**Stable tag:** 3.1.0  
 **Requires at least:** 4.7  
 **Requires PHP:** 5.3  
-**Tested up to:** 4.9.6  
+**Tested up to:** 4.9.8  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -51,7 +51,9 @@ responsibilities to responsibly use this data, and to remove information on requ
 Custom post kind registration, previously done by filter, is now done by registration. This will cause issues who had been using the filter. Due to a particular
 user who created many custom kinds, decided to create a better way to do this. 
 
-Posting capability via custom REST API endpoint has been removed.
+Posting capability via custom REST API endpoint has been removed due improved Micropub support
+
+Kind_Meta class deprecated as promised
 
 ### 3.0.0 ###
 
@@ -194,14 +196,7 @@ So - `https://www.example.com/wp-admin/post-new.php?kindurl=URL&kind=like` will 
 
 ### Can I post automatically outside the Post Editor? ###
 
-You can now post using the REST API, with the additional namespace of `link-preview/1.0/parse`. The parameters are:
-* kind - The name of the kind, all lowercase
-* kindurl - The URL being responded to, if any
-* status - Publish Status ( published if not added )
-* content - Post Content
-
-However, you will have to authenticate to the REST API for this to work. There are a few options [here](https://developer.wordpress.org/rest-api/using-the-rest-api/authentication/). Once you have an
-authentication method, you will have to pass it along with your request. Using the [Micropub](https://wordpress.org/plugins/micropub) plugin for WordPress is easier in most ways.
+Using the [Micropub](https://wordpress.org/plugins/micropub) plugin for WordPress is the easiest way to post outside of the Post Editor. This will work with any Micropub client.
 
 ### How do I get support? ###
 
@@ -229,7 +224,12 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 * MF2 Debugger removed in favor of test parser inside admin
 * Link Preview endpoint moved to Parse This and posting capability removed due improvements in Micropub
 * Parse This now uses DOMDocument and XPath over regex. To avoid high overhead, since MF2 parsing also uses this, shift to generate DOMDocument only once.
-
+* Parse This now generates compliant mf2 and jf2
+* Kind_Meta class now removed as promised in prior version
+* Parsing author URLs by making a second call to the URL and parsing that is now disabled by default as making multiple calls was slowing the parsing and therefore should be optional.
+* Name of Kind Terms in Taxonomy adjusted to singular internationalized string per request
+* Descriptions of kinds and names now updated on plugin activation or loading of settings page.
+* For new posts citations should now be stored in compliant mf2 h-cites and will be refreshed on update of old posts.
 
 ### 3.0.9 ( 2018-06-23 ) ###
 * If title is empty show start of excerpt in admin only
