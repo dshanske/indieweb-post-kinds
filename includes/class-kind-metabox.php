@@ -309,8 +309,8 @@ class Kind_Metabox {
 		$author['photo'] = self::explode( ifset( $_POST['cite_author_photo'] ) );
 		$author          = array_filter( $author );
 		$cite['author']  = $author;
-		$kind = $mf2_post->get( 'kind', true );
-		$type = Kind_Taxonomy::get_kind_info( $kind, 'property' );
+		$kind            = $mf2_post->get( 'kind', true );
+		$type            = Kind_Taxonomy::get_kind_info( $kind, 'property' );
 		// Make sure there is no overwrite of properties that might not be handled by the plugin
 		$fetch = $mf2_post->fetch( $type );
 		if ( ! $fetch ) {

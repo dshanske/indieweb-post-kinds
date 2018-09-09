@@ -773,7 +773,7 @@ class Parse_This_MF2 {
 		$data['type']      = 'entry';
 		$data['published'] = self::get_published( $entry );
 		$data['updated']   = self::get_updated( $entry );
-		$properties        = array( 'url', 'rsvp', 'featured', 'name', 'swarm-coins' );
+		$properties        = array( 'url', 'weather', 'temperature', 'rsvp', 'featured', 'name', 'swarm-coins' );
 		foreach ( $properties as $property ) {
 			$data[ $property ] = self::get_plaintext( $entry, $property );
 		}
@@ -789,7 +789,7 @@ class Parse_This_MF2 {
 			} else {
 				$data['syndication'] = $mf['rels']['syndication'];
 			}
-			if( 1 === count( $data['syndication'] ) ) {
+			if ( 1 === count( $data['syndication'] ) ) {
 				$data['syndication'] = array_pop( $data['syndication'] );
 			}
 		}
@@ -884,7 +884,7 @@ class Parse_This_MF2 {
 
 	public static function post_type_discovery( $mf ) {
 		if ( ! self::is_microformat( $mf ) ) {
-			// return false;
+			return false;
 		}
 		$properties = array_keys( $mf['properties'] );
 		if ( self::is_type( $mf, 'h-entry' ) ) {

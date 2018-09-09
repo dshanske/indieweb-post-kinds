@@ -70,8 +70,8 @@ class Kind_Plugins {
 							$fetch = $parse->fetch();
 							if ( ! is_wp_error( $fetch ) ) {
 								$parse->parse();
-								$jf2 = $parse->get();
-								$mf2 = jf2_to_mf2( $jf2 );
+								$jf2                                    = $parse->get();
+								$mf2                                    = jf2_to_mf2( $jf2 );
 								$input['properties'][ $property ][ $i ] = $mf2;
 							} else {
 								error_log( wp_json_encode( $fetch ) ); // phpcs:ignore
