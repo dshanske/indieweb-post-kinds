@@ -916,10 +916,10 @@ class Parse_This_MF2 {
 					return $key;
 				}
 			}
-
-			if ( ! empty( $mf['properties']['name'] ) ) {
-				$name    = trim( $mf['properties']['name'] );
-				$content = trim( $mf['properties']['content'] );
+			$name = static::get_plaintext( $mf, 'name' );
+			if ( ! empty( $name ) ) {
+				$name    = trim( $name );
+				$content = trim( static::get_plaintext( $mf, 'content' ) );
 				if ( 0 !== strpos( $content, $name ) ) {
 					return 'article';
 				}
