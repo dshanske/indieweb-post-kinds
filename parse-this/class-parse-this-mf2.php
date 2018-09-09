@@ -881,7 +881,7 @@ class Parse_This_MF2 {
 
 	public static function post_type_discovery( $mf ) {
 		if ( ! self::is_microformat( $mf ) ) {
-			return false;
+			// return false;
 		}
 		$properties = array_keys( $mf['properties'] );
 		if ( self::is_type( $mf, 'h-entry' ) ) {
@@ -891,6 +891,8 @@ class Parse_This_MF2 {
 				'itinerary' => array( 'itinerary' ),
 				'repost'    => array( 'repost-of' ),
 				'like'      => array( 'like-of' ),
+				'follow'    => array( 'follow-of' ),
+				'tag'       => array( 'tag-of' ),
 				'favorite'  => array( 'favorite-of' ),
 				'bookmark'  => array( 'bookmark-of' ),
 				'watch'     => array( 'watch-of' ),

@@ -33,7 +33,6 @@ class MF2_Post {
 		$this->content     = $post->post_content;
 		$this->summary     = $post->post_excerpt;
 		$this->mf2         = $this->get_mf2meta();
-		$this->kind        = get_post_kind_slug( $this->ID );
 		$this->url         = get_permalink( $this->ID );
 		$this->name        = $post->post_name;
 		// Get a list of categories and extract their names
@@ -52,6 +51,19 @@ class MF2_Post {
 		}
 		if ( has_post_thumbnail( $post ) ) {
 			$this->featured = wp_get_attachment_url( get_post_thumbnail_id( $post ), 'full' );
+		}
+		$this->kind = self::get_post_kind();
+	}
+
+	private function get_post_kind() {
+		if ( function_exists( 'get_post_kind_slug' ) ) {
+			return get_post_kind_slug( $this->ID );
+		} else {
+			$mf2 = array( 
+				'type' => array( 'h-entry' ),
+				'properties' => $this->mf2
+			);
+			return Parse_This_MF2::post_type_discovery( $mf2 );
 		}
 	}
 
