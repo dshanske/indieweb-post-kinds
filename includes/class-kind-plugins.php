@@ -17,6 +17,7 @@ class Kind_Plugins {
 		add_filter( 'semantic_linkbacks_post_type', array( 'Kind_Plugins', 'semantic_post_type' ), 11, 2 );
 
 		// Remove the Automatic Post Generation that the Micropub Plugin Offers
+		remove_filter( 'micropub_post_content', array( 'Micropub_Render', 'generate_post_content' ), 1, 2 );
 		remove_filter( 'micropub_post_content', array( 'Micropub_Plugin', 'generate_post_content' ), 1, 2 );
 
 	}
@@ -38,117 +39,10 @@ class Kind_Plugins {
 		if ( ! $wp_args ) {
 			return;
 		}
-		if ( isset( $input['properties']['rsvp'] ) ) {
-			set_post_kind( $wp_args['ID'], 'rsvp' );
-			return;
+		$type = Parse_This_MF2::post_type_discovery( $input );
+		if ( ! empty( $type ) ) {
+			set_post_kind( $wp_args['ID'], $type );
 		}
-		if ( isset( $input['properties']['checkin'] ) ) {
-			set_post_kind( $wp_args['ID'], 'checkin' );
-			return;
-		}
-
-		if ( isset( $input['properties']['itinerary'] ) ) {
-			set_post_kind( $wp_args['ID'], 'itinerary' );
-			return;
-		}
-
-		if ( isset( $input['properties']['repost-of'] ) ) {
-			set_post_kind( $wp_args['ID'], 'repost' );
-			return;
-		}
-
-		if ( isset( $input['properties']['like-of'] ) ) {
-			set_post_kind( $wp_args['ID'], 'like' );
-			return;
-		}
-
-		if ( isset( $input['properties']['favorite-of'] ) ) {
-			set_post_kind( $wp_args['ID'], 'favorite' );
-			return;
-		}
-
-		if ( isset( $input['properties']['bookmark-of'] ) || isset( $input['properties']['bookmark'] ) ) {
-			set_post_kind( $wp_args['ID'], 'bookmark' );
-			return;
-		}
-
-		if ( isset( $input['properties']['watch-of'] ) || isset( $input['properties']['watch'] ) ) {
-			set_post_kind( $wp_args['ID'], 'watch' );
-			return;
-		}
-
-		if ( isset( $input['properties']['jam-of'] ) || isset( $input['properties']['jam'] ) ) {
-			set_post_kind( $wp_args['ID'], 'jam' );
-			return;
-		}
-
-		if ( isset( $input['properties']['listen-of'] ) || isset( $input['properties']['listen'] ) ) {
-			set_post_kind( $wp_args['ID'], 'listen' );
-			return;
-		}
-
-		if ( isset( $input['properties']['read-of'] ) || isset( $input['properties']['read'] ) ) {
-			set_post_kind( $wp_args['ID'], 'read' );
-			return;
-		}
-
-		if ( isset( $input['properties']['play-of'] ) || isset( $input['properties']['play'] ) ) {
-			set_post_kind( $wp_args['ID'], 'play' );
-			return;
-		}
-
-		if ( isset( $input['properties']['in-reply-to'] ) ) {
-			set_post_kind( $wp_args['ID'], 'reply' );
-			return;
-		}
-
-		// Video & audio come before photo, because either of these could contain a photo
-		if ( isset( $input['properties']['video'] ) || isset( $_FILES['video'] ) ) {
-			set_post_kind( $wp_args['ID'], 'video' );
-			return;
-		}
-
-		if ( isset( $input['properties']['photo'] ) || isset( $_FILES['photo'] ) ) {
-			set_post_kind( $wp_args['ID'], 'photo' );
-			return;
-		}
-
-		if ( isset( $input['properties']['audio'] ) || isset( $_FILES['audio'] ) ) {
-			set_post_kind( $wp_args['ID'], 'audio' );
-			return;
-		}
-
-		// This basically adds legacy Teacup support
-		if ( isset( $input['properties']['p3k-food'] ) ) {
-			if ( isset( $input['properties']['p3k-type'] ) ) {
-				if ( 'drink' === $input['properties']['p3k-type'] ) {
-					set_post_kind( $wp_args['ID'], 'drink' );
-					return;
-				}
-				set_post_kind( $wp_args['ID'], 'eat' );
-				return;
-			}
-		}
-
-		if ( isset( $input['properties']['ate'] ) ) {
-			set_post_kind( $wp_args['ID'], 'eat' );
-			return;
-		}
-
-		if ( isset( $input['properties']['drank'] ) ) {
-			set_post_kind( $wp_args['ID'], 'drink' );
-			return;
-		}
-
-		if ( ! empty( $input['properties']['name'] ) ) {
-			$name    = trim( $input['properties']['name'] );
-			$content = trim( $input['properties']['content'] );
-			if ( 0 !== strpos( $content, $name ) ) {
-				set_post_kind( $wp_args['ID'], 'article' );
-				return;
-			}
-		}
-		set_post_kind( $wp_args['ID'], 'note' );
 	}
 
 	public static function post_formats( $input, $wp_args ) {
@@ -167,17 +61,31 @@ class Kind_Plugins {
 		if ( ! isset( $input['properties'] ) ) {
 			return $input;
 		}
-		$parsed = array( 'bookmark-of', 'like-of', 'favorite-of', 'in-reply-to', 'read-of' );
+		$parsed = array( 'bookmark-of', 'like-of', 'favorite-of', 'in-reply-to', 'read-of', 'listen-of', 'watch-of' );
 		foreach ( $input['properties'] as $property => $value ) {
-			if ( ! wp_is_numeric_array( $value ) ) {
-				continue;
-			}
 			if ( in_array( $property, $parsed, true ) ) {
-				foreach ( $value as $i => $v ) {
-					if ( Link_Preview::is_valid_url( $v ) ) {
-						$parse = Link_Preview::simple_parse( $v );
-						if ( ! is_wp_error( $parse ) ) {
-							$input['properties'][ $property ][ $i ] = $parse;
+				if ( wp_is_numeric_array( $value ) ) {
+					foreach ( $value as $i => $v ) {
+						if ( wp_http_validate_url( $v ) ) {
+							$parse = new Parse_This( $v );
+							$fetch = $parse->fetch();
+							if ( ! is_wp_error( $fetch ) ) {
+								$parse->parse();
+								$jf2                                    = $parse->get();
+								$mf2                                    = jf2_to_mf2( $jf2 );
+								$input['properties'][ $property ][ $i ] = $mf2;
+							} else {
+								error_log( wp_json_encode( $fetch ) ); // phpcs:ignore
+							}
+						}
+					}
+				} else {
+					if ( isset( $value['url'] ) && wp_http_validate_url( $value['url'] ) ) {
+						$parse = new Parse_this( $value['url'] );
+						$fetch = $parse - fetch();
+						if ( ! is_wp_error( $fetch ) ) {
+							$parse->parse();
+							$input['properties'][ $property ] = array_merge( $value, jf2_to_mf2( $parse->get() ) );
 						}
 					}
 				}

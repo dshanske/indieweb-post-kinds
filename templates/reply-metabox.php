@@ -1,8 +1,9 @@
 <?php
 wp_nonce_field( 'replykind_metabox', 'replykind_metabox_nonce' );
 $mf2_post = new MF2_Post( get_post() );
-$cite     = $mf2_post->fetch();
-$duration = divide_iso8601_duration( $mf2_post->get( 'duration', true ) );
+$type = Kind_Taxonomy::get_kind_info( $mf2_post->get( 'kind' ), 'property' );
+$cite     = $mf2_post->fetch( $type );
+$duration = divide_iso8601_duration( $mf2_post->get( 'duration' ) );
 
 if ( ! isset( $cite['url'] ) ) {
 	if ( array_key_exists( 'kindurl', $_GET ) && Link_Preview::is_valid_url( $_GET['kindurl'] ) ) {

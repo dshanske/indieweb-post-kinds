@@ -76,7 +76,7 @@ final class Kind_Taxonomy {
 			wp_die( 'You have Indieweb Taxonomy activated. Post Kinds replaces this plugin. Please disable Taxonomy before activating' );
 		}
 		self::register();
-		// self::kind_defaultterms();
+		self::kind_defaultterms();
 		flush_rewrite_rules();
 	}
 
@@ -129,19 +129,41 @@ final class Kind_Taxonomy {
 	public static function kind_defaultterms() {
 		$terms = self::get_kind_list();
 		foreach ( $terms as $term ) {
-			if ( ! term_exists( $term, 'kind' ) ) {
+			if ( ! get_term_by( 'slug', $term, 'kind' ) ) {
 				self::create_post_kind( $term );
+			} else {
+				self::update_post_kind( $term );
 			}
 		}
 	}
 
+	private static function update_post_kind( $term ) {
+		$t = get_term_by( 'slug', $term, 'kind' );
+		if ( ! $t ) {
+			return self::create_post_kind( $term );
+		}
+		$kind = self::get_post_kind_info( $term );
+		if ( $kind ) {
+			wp_update_term(
+				$t->term_id,
+				'kind',
+				array(
+					'name'        => $kind->singular_name,
+					'description' => $kind->description,
+					'slug'        => $term,
+				)
+			);
+		}
+	}
+
 	private static function create_post_kind( $term ) {
-		$kind = self::get_post_kind( $term );
+		$kind = self::get_post_kind_info( $term );
 		if ( $kind ) {
 			wp_insert_term(
 				$kind->slug,
 				'kind',
 				array(
+					'name'        => $kind->singular_name,
 					'description' => $kind->description,
 					'slug'        => $term,
 				)
@@ -216,7 +238,7 @@ final class Kind_Taxonomy {
 	public static function post_formats( $post_id, $post, $update ) {
 		$kind = get_post_kind_slug( $post_id );
 		if ( ! $update ) {
-			set_post_format( $post_id, self::get_kind_info( $kind, 'property' ) );
+			set_post_format( $post_id, self::get_kind_info( $kind, 'format' ) );
 		}
 	}
 
@@ -448,7 +470,7 @@ final class Kind_Taxonomy {
 				'name'            => __( 'Tags', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Tagged', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
 				'property'        => 'tag-of', // microformats 2 property
-				'format'          => '', // Post Format that maps to this
+				'format'          => 'link', // Post Format that maps to this
 				'description'     => __( 'allows you to tag a post as being of a specific category or tag, or for person tagging', 'indieweb-post-kinds' ),
 				'description-url' => 'http://indieweb.org/tag',
 				'title'           => false, // Should this kind have an explicit title
@@ -462,7 +484,7 @@ final class Kind_Taxonomy {
 				'name'            => __( 'RSVPs', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'RSVPed', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
 				'property'        => 'in-reply-to', // microformats 2 property
-				'format'          => '', // Post Format that maps to this
+				'format'          => 'link', // Post Format that maps to this
 				'description'     => __( 'a specific type of reply regarding attendance of an event', 'indieweb-post-kinds' ),
 				'description-url' => 'http://indieweb.org/rsvp',
 				'title'           => false, // Should this kind have an explicit title
@@ -518,7 +540,7 @@ final class Kind_Taxonomy {
 				'name'            => __( 'Wishes', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Wished', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
 				'property'        => 'wish-of', // microformats 2 property
-				'format'          => '', // Post Format that maps to this
+				'format'          => 'link', // Post Format that maps to this
 				'description'     => __( 'a post indicating a desire/wish. The archive of which would be a wishlist, such as a gift registry or similar', 'indieweb-post-kinds' ),
 				'description-url' => '',
 				'title'           => false, // Should this kind have an explicit title
@@ -808,7 +830,7 @@ final class Kind_Taxonomy {
 
 	public static function webmention_links( $links, $post_id ) {
 		$mf2_post = new MF2_Post( $post_id );
-		$cite     = $mf2_post->fetch();
+		$cite     = $mf2_post->fetch( self::get_kind_info( $mf2_post->get( 'kind' ), 'property' ) );
 		$cites    = ifset( $cite['url'] );
 		if ( is_string( $cites ) ) {
 			$links[] = $cites;
@@ -823,7 +845,7 @@ final class Kind_Taxonomy {
 	public static function enclosure_links( $links, $post_id ) {
 		$mf2_post = new MF2_Post( $post_id );
 		if ( in_array( $mf2_post->kind, array( 'photo', 'video', 'audio' ), true ) ) {
-			$cite  = $mf2_post->fetch();
+			$cite  = $mf2_post->fetch( self::get_kind_info( $mf2_post->get( 'kind' ), 'property' ) );
 			$cites = ifset( $cite['url'] );
 			if ( is_string( $cites ) ) {
 				$links[] = $cites;

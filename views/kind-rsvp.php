@@ -5,7 +5,7 @@
  */
 
 $mf2_post = new MF2_Post( get_the_ID() );
-$cite     = $mf2_post->fetch();
+$cite     = $mf2_post->fetch( 'in-reply-to' );
 if ( ! $cite ) {
 	return;
 }

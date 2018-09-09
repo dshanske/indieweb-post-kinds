@@ -119,7 +119,7 @@ function getLinkPreview() {
 		xhr.setRequestHeader( 'X-WP-Nonce', PKAPI.api_nonce );
 		},
 		data: {
-			kindurl: $( '#cite_url' ).val(),
+			url: $( '#cite_url' ).val(),
 			kind: $( 'input[name=\'tax_input[kind]\']:checked' ).val()
 		},
 		success: function( response ) {
