@@ -72,6 +72,10 @@ class Kind_Plugins {
 							if ( ! is_wp_error( $fetch ) ) {
 								$parse->parse();
 								$jf2                                    = $parse->get();
+								// Entries become citations
+								if ( 'entry' === $jf2['type'] ) {
+									$jf2['type'] = 'cite';
+								}
 								$mf2                                    = jf2_to_mf2( $jf2 );
 								$input['properties'][ $property ][ $i ] = $mf2;
 							} else {
