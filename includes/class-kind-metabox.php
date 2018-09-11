@@ -15,6 +15,17 @@ class Kind_Metabox {
 		add_action( 'save_post', array( 'Kind_Metabox', 'save_post' ), 8, 2 );
 		add_action( 'transition_post_status', array( 'Kind_Metabox', 'transition_post_status' ), 5, 3 );
 		add_filter( 'wp_insert_post_empty_content', array( 'Kind_Metabox', 'wp_insert_post_empty_content' ), 11, 2 );
+		add_action( 'change_kind', array( 'Kind_Metabox', 'change_kind' ), 10, 3 );
+	}
+
+	public static function change_kind( $post_id, $old_kind, $new_kind ) {
+		$mf2_post = new MF2_Post( $post_id );
+		$old_prop = Kind_Taxonomy::get_kind_info( $old_kind, 'property' );
+		$new_prop = Kind_Taxonomy::get_kind_info( $new_kind, 'property' );
+		if ( $mf2_post->has_key( $old_prop ) && ! $mf2_post->has_key( $new_prop ) ) {
+			$mf2_post->set( $new_prop, $mf2_post->get( $old_prop ) );
+		}
+		$mf2_post->delete( $old_prop );
 	}
 
 	public static function wp_insert_post_empty_content( $maybe_empty, $postarr ) {
