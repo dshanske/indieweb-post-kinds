@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Post Kinds 3.1.0\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2018-09-09 18:55:42+00:00\n"
+"POT-Creation-Date: 2018-09-15 14:01:55+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -118,35 +118,35 @@ msgid ""
 " \t\t\t\t\t\t"
 msgstr ""
 
-#: includes/class-kind-metabox.php:96
+#: includes/class-kind-metabox.php:107
 msgid "Your URL has been successfully retrieved and parsed"
 msgstr ""
 
-#: includes/class-kind-metabox.php:97
+#: includes/class-kind-metabox.php:108
 msgid "Are you sure you want to clear post properties?"
 msgstr ""
 
-#: includes/class-kind-metabox.php:163
+#: includes/class-kind-metabox.php:174
 msgid "Yes"
 msgstr ""
 
-#: includes/class-kind-metabox.php:164
+#: includes/class-kind-metabox.php:175
 msgid "No"
 msgstr ""
 
-#: includes/class-kind-metabox.php:165
+#: includes/class-kind-metabox.php:176
 msgid "Maybe"
 msgstr ""
 
-#: includes/class-kind-metabox.php:166
+#: includes/class-kind-metabox.php:177
 msgid "Interested"
 msgstr ""
 
-#: includes/class-kind-metabox.php:180 includes/class-kind-taxonomy.php:483
+#: includes/class-kind-metabox.php:191 includes/class-kind-taxonomy.php:483
 msgid "RSVP"
 msgstr ""
 
-#: includes/class-kind-metabox.php:191
+#: includes/class-kind-metabox.php:202
 msgid "Response Properties"
 msgstr ""
 
@@ -924,7 +924,7 @@ msgstr ""
 msgid "https://david.shanske.com"
 msgstr ""
 
-#: includes/class-kind-plugins.php:26
+#: includes/class-kind-plugins.php:27
 msgctxt "direct article"
 msgid "this"
 msgstr ""

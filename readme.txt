@@ -226,6 +226,7 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 * Name of Kind Terms in Taxonomy adjusted to singular internationalized string per request
 * Descriptions of kinds and names now updated on plugin activation or loading of settings page.
 * For new posts citations should now be stored in compliant mf2 h-cites and will be refreshed on update of old posts.
+* Delete old property when changing kind
 
 = 3.0.9 ( 2018-06-23 ) =
 * If title is empty show start of excerpt in admin only

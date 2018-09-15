@@ -71,7 +71,7 @@ class Kind_Plugins {
 							$fetch = $parse->fetch();
 							if ( ! is_wp_error( $fetch ) ) {
 								$parse->parse();
-								$jf2                                    = $parse->get();
+								$jf2 = $parse->get();
 								// Entries become citations
 								if ( 'entry' === $jf2['type'] ) {
 									$jf2['type'] = 'cite';
