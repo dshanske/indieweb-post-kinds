@@ -4,23 +4,21 @@
  *
  */
 
-$mf2_post    = new MF2_Post( get_the_ID() );
 $videos      = get_attached_media( 'video', get_the_ID() );
 $photos      = get_attached_media( 'image', get_the_ID() );
 $first_photo = array_pop( array_reverse( $photos ) );
-$cite        = $mf2_post->fetch( 'video' );
 if ( ! $cite ) {
 	$cite = array();
 }
 $url   = ifset( $cite['url'] );
 $embed = self::get_embed( $url );
 if ( ! $videos && ! $embed ) {
-        $embed = wp_video_shortcode(
-                array(
-                        'class' => 'wp_video-shortcode u-video',
-                        'src' => $url,
-                )
-        );
+		$embed = wp_video_shortcode(
+			array(
+				'class' => 'wp_video-shortcode u-video',
+				'src'   => $url,
+			)
+		);
 }
 
 

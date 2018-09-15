@@ -4,9 +4,7 @@
  *
  */
 
-$mf2_post = new MF2_Post( get_the_ID() );
-$photos   = get_attached_media( 'image', get_the_ID() );
-$cite     = $mf2_post->fetch( 'checkin' );
+$photos = get_attached_media( 'image', get_the_ID() );
 if ( ! $cite ) {
 	return;
 }

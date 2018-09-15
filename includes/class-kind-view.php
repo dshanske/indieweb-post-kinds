@@ -58,6 +58,10 @@ class Kind_View {
 				break;
 			}
 		}
+		$mf2_post = new MF2_Post( get_the_ID() );
+		$kind     = $mf2_post->get( 'kind', true );
+		$type     = Kind_Taxonomy::get_kind_info( $kind, 'property' );
+		$cite     = $mf2_post->fetch( $type );
 		ob_start();
 		include $located;
 		$return = ob_get_contents();

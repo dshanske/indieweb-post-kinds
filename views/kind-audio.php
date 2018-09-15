@@ -4,24 +4,22 @@
  *
  */
 
-$mf2_post = new MF2_Post( get_the_ID() );
-$audios   = get_attached_media( 'audio', get_the_ID() );
-$cite     = $mf2_post->fetch( 'audio' );
+$audios = get_attached_media( 'audio', get_the_ID() );
 if ( ! $cite ) {
 	$cite = array();
 }
 $url   = ifset( $cite['url'] );
 $embed = self::get_embed( $url );
 if ( ! $audios && ! $embed ) {
-	$embed = wp_audio_shortcode( 
+	$embed = wp_audio_shortcode(
 		array(
 			'class' => 'wp_audio-shortcode u-audio',
-			'src' => $url,
+			'src'   => $url,
 		)
 	);
 }
 
-$duration  = $mf2_post->get( 'duration', true );
+$duration = $mf2_post->get( 'duration', true );
 if ( ! $duration ) {
 	$duration = calculate_duration( $mf2_post->get( 'dt-start' ), $mf2_post->get( 'dt-end' ) );
 }
