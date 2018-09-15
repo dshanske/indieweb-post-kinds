@@ -62,6 +62,8 @@ class Kind_View {
 		$kind     = $mf2_post->get( 'kind', true );
 		$type     = Kind_Taxonomy::get_kind_info( $kind, 'property' );
 		$cite     = $mf2_post->fetch( $type );
+		$url      = null;
+		$embed    = null;
 		ob_start();
 		include $located;
 		$return = ob_get_contents();
