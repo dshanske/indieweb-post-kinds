@@ -23,11 +23,19 @@ class MF2_Post {
 	private $mf2;
 
 	public function __construct( $post ) {
+		if ( is_numeric( $post ) ) {
+			$this->uid = (int) $post;
+		} elseif ( $post instanceof WP_Post ) {
+			$this->uid = $post->ID;
+		}
+		$_mf2_post = wp_cache_get( $this->uid, 'mf2_posts' );
+		if ( $_mf2_post ) {
+			return $_mf2_post;
+		}
 		$post = get_post( $post );
 		if ( ! $post ) {
 			return false;
 		}
-		$this->uid         = $post->ID;
 		$this->post_author = $post->post_author;
 		$this->author      = self::get_author();
 		$this->post_parent = $post->post_parent;
@@ -65,6 +73,7 @@ class MF2_Post {
 			$this->featured = wp_get_attachment_url( get_post_thumbnail_id( $post ), 'full' );
 		}
 		$this->kind = self::get_post_kind();
+		wp_cache_set( $this->uid, $this, 'mf2_posts' );
 	}
 
 	private function get_post_kind() {
@@ -537,4 +546,19 @@ class MF2_Post {
 		return array_filter( array_unique( $att_ids ) );
 	}
 
+	public static function clean_post_cache( $post_id ) {
+		wp_cache_delete( $post_id, 'mf2_posts' );
+		self::cache_last_modified();
+	}
+
+	public static function cache_last_modified() {
+		wp_cache_set( 'last_changed', microtime(), 'mf2_posts' );
+	}
+
 }
+
+
+add_action( 'added_post_meta', array( 'MF2_Post', 'cache_last_modified' ) );
+add_action( 'updated_post_meta', array( 'MF2_Post', 'cache_last_modified' ) );
+add_action( 'deleted_post_meta', array( 'MF2_Post', 'cache_last_modified' ) );
+add_action( 'clean_post_cache', array( 'MF2_Post', 'clean_post_cache' ) );
