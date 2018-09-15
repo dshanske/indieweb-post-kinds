@@ -104,7 +104,9 @@ class Kind_Config {
 			'embeds',
 			__( 'Embed Sites into your Response', 'indieweb-post-kinds' ),
 			array( 'Kind_Config', 'checkbox_callback' ),
-			'iwt_options', 'iwt-content', array(
+			'iwt_options',
+			'iwt-content',
+			array(
 				'name' => 'kind_embeds',
 			)
 		);
@@ -113,7 +115,9 @@ class Kind_Config {
 			'bottom',
 			__( 'Move Response to Bottom of Content', 'indieweb-post-kinds' ),
 			array( 'Kind_Config', 'checkbox_callback' ),
-			'iwt_options', 'iwt-content', array(
+			'iwt_options',
+			'iwt-content',
+			array(
 				'name' => 'kind_bottom',
 			)
 		);
@@ -122,7 +126,8 @@ class Kind_Config {
 			'display',
 			__( 'Display Before Kind', 'indieweb-post-kinds' ),
 			array( 'Kind_Config', 'radio_callback' ),
-			'iwt_options', 'iwt-content',
+			'iwt_options',
+			'iwt-content',
 			array(
 				'name'    => 'kind_display',
 				'class'   => Kind_Taxonomy::before_kind() ? '' : 'hidden',
@@ -349,7 +354,8 @@ class Kind_Config {
  								omitting date and timezone and setting start time to 0:00:00 to set a simple duration.</li> 
  								<li><strong>RSVP</strong> - For RSVP posts, you can specify whether you are attending, not attending, unsure, or simply interested.</li>
  			            			</ul>
- 						', 'indieweb-post-kinds'
+ 						',
+					'indieweb-post-kinds'
 				),
 			)
 		);

@@ -100,7 +100,8 @@ class Kind_Metabox {
 			// Provide a global object to our JS file containing our REST API endpoint, and API nonce
 			// Nonce must be 'wp_rest'
 			wp_localize_script(
-				'kindmeta', 'PKAPI',
+				'kindmeta',
+				'PKAPI',
 				array(
 					'api_nonce'       => wp_create_nonce( 'wp_rest' ),
 					'api_url'         => rest_url( '/parse-this/1.0/' ),

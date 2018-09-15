@@ -376,14 +376,16 @@ class Parse_This_MF2 {
 			// look for h-card with same hostname as $url if given
 			if ( null !== $url && $matchhostname ) {
 				$samehostnamehcards = self::find_microformats_by_callable(
-					$hcards, function ( $mf ) use ( $url ) {
+					$hcards,
+					function ( $mf ) use ( $url ) {
 						if ( ! has_prop( $mf, 'url' ) ) {
 							return false; }
 						foreach ( $mf['properties']['url'] as $u ) {
 							if ( same_hostname( $url, $u ) ) {
 								return true; }
 						}
-					}, false
+					},
+					false
 				);
 				if ( ! empty( $samehostnamehcards ) ) {
 					return current( $samehostnamehcards ); }
@@ -491,12 +493,14 @@ class Parse_This_MF2 {
 	 */
 	public static function get_representative_hcard( array $mfs, $url ) {
 		$hcardsmatchinguidurlpageurl = find_microformats_by_callable(
-			$mfs, function ( $hcard ) use ( $url ) {
+			$mfs,
+			function ( $hcard ) use ( $url ) {
 				return has_prop( $hcard, 'uid' ) && has_prop( $hcard, 'url' )
 				&& urls_match( get_plaintext( $hcard, 'uid' ), $url )
 				&& count(
 					array_filter(
-						$hcard['properties']['url'], function ( $u ) use ( $url ) {
+						$hcard['properties']['url'],
+						function ( $u ) use ( $url ) {
 							return urls_match( $u, $url );
 						}
 					)
@@ -507,7 +511,8 @@ class Parse_This_MF2 {
 			return $hcardsmatchinguidurlpageurl[0]; }
 		if ( ! empty( $mfs['rels']['me'] ) ) {
 			$hcardsmatchingurlrelme = self::find_microformats_by_callable(
-				$mfs, function ( $hcard ) use ( $mfs ) {
+				$mfs,
+				function ( $hcard ) use ( $mfs ) {
 					if ( hasProp( $hcard, 'url' ) ) {
 						foreach ( $mfs['rels']['me'] as $relurl ) {
 							foreach ( $hcard['properties']['url'] as $url ) {
@@ -524,11 +529,13 @@ class Parse_This_MF2 {
 				return $hcardsmatchingurlrelme[0]; }
 		}
 		$hcardsmatchingurlpageurl = find_microformats_by_callable(
-			$mfs, function ( $hcard ) use ( $url ) {
+			$mfs,
+			function ( $hcard ) use ( $url ) {
 				return has_prop( $hcard, 'url' )
 				&& count(
 					array_filter(
-						$hcard['properties']['url'], function ( $u ) use ( $url ) {
+						$hcard['properties']['url'],
+						function ( $u ) use ( $url ) {
 							return urls_match( $u, $url );
 						}
 					)
@@ -604,9 +611,11 @@ class Parse_This_MF2 {
 	 */
 	public static function find_microformats_by_type( array $mfs, $name, $flatten = true ) {
 		return self::find_microformats_by_callable(
-			$mfs, function ( $mf ) use ( $name ) {
+			$mfs,
+			function ( $mf ) use ( $name ) {
 				return in_array( $name, $mf['type'], true );
-			}, $flatten
+			},
+			$flatten
 		);
 	}
 
@@ -623,7 +632,8 @@ class Parse_This_MF2 {
 	 */
 	public static function find_microformats_by_property( array $mfs, $propname, $propvalue, $flatten = true ) {
 		return find_microformats_by_callable(
-			$mfs, function ( $mf ) use ( $propname, $propvalue ) {
+			$mfs,
+			function ( $mf ) use ( $propname, $propvalue ) {
 				if ( ! hasProp( $mf, $propname ) ) {
 					return false; }
 
@@ -631,7 +641,8 @@ class Parse_This_MF2 {
 					return true; }
 
 				return false;
-			}, $flatten
+			},
+			$flatten
 		);
 	}
 
