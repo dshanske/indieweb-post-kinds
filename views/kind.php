@@ -4,11 +4,7 @@
  *	The Goal of this Template is to be a general all-purpose model that will be replaced by customization in other templates
  */
 
-$mf2_post = new MF2_Post( get_the_ID() );
-$kind     = $mf2_post->get( 'kind', true );
-$type     = Kind_Taxonomy::get_kind_info( $kind, 'property' );
-$cite     = $mf2_post->fetch( $type );
-$author   = array();
+$author = array();
 if ( isset( $cite['author'] ) ) {
 	$author = Kind_View::get_hcard( $cite['author'] );
 }

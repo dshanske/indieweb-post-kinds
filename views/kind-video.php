@@ -4,23 +4,21 @@
  *
  */
 
-$mf2_post    = new MF2_Post( get_the_ID() );
-$videos      = get_attached_media( 'video', get_the_ID() );
-$photos      = get_attached_media( 'image', get_the_ID() );
+$videos      = $mf2_post->get_videos();
+$photos      = $mf2_post->get_images();
 $first_photo = array_pop( array_reverse( $photos ) );
-$cite        = $mf2_post->fetch( 'video' );
-if ( ! $cite ) {
-	$cite = array();
-}
-$url   = ifset( $cite['url'] );
-$embed = self::get_embed( $url );
-if ( ! $videos && ! $embed ) {
-        $embed = wp_video_shortcode(
-                array(
-                        'class' => 'wp_video-shortcode u-video',
-                        'src' => $url,
-                )
-        );
+$embed       = null;
+if ( is_array( $cite ) && ! $videos ) {
+	$url   = ifset( $cite['url'] );
+	$embed = self::get_embed( $url );
+	if ( ! $embed ) {
+		$embed = wp_video_shortcode(
+			array(
+				'class' => 'wp_video-shortcode u-video',
+				'src'   => $url,
+			)
+		);
+	}
 }
 
 
@@ -37,21 +35,17 @@ if ( isset( $cite['name'] ) ) {
 </header>
 </section>
 <?php
-if ( $videos && ! has_post_thumbnail( get_the_ID() ) ) {
+if ( $embed ) {
+	printf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
+} elseif ( $videos ) {
 
-	$poster = wp_get_attachment_image_src( $first_photo->ID, 'full' );
-	$poster = $poster[0];
-
+	$poster = wp_get_attachment_image_url( $first_photo, 'full' );
 	echo wp_video_shortcode(
 		array(
 			'poster' => $poster,
 			'class'  => 'wp-video-shortcode u-video',
 		)
 	);
-} else {
-	if ( $embed ) {
-		echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
-	}
 }
 ?>
 <?php
