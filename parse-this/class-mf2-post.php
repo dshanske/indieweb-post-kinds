@@ -29,7 +29,7 @@ class MF2_Post {
 			$this->uid = $post->ID;
 		}
 		$_mf2_post = wp_cache_get( $this->uid, 'mf2_posts' );
-		if ( $_mf2_post ) {
+		if ( is_object( $_mf2_post ) ) {
 			return $_mf2_post;
 		}
 		$post = get_post( $post );
@@ -551,6 +551,10 @@ class MF2_Post {
 		self::cache_last_modified();
 	}
 
+	public static function clean_cache_meta( $empty, $post_id ) {
+		self::clean_post_cache( $post_id );
+	}
+
 	public static function cache_last_modified() {
 		wp_cache_set( 'last_changed', microtime(), 'mf2_posts' );
 	}
@@ -558,7 +562,7 @@ class MF2_Post {
 }
 
 
-add_action( 'added_post_meta', array( 'MF2_Post', 'cache_last_modified' ) );
-add_action( 'updated_post_meta', array( 'MF2_Post', 'cache_last_modified' ) );
-add_action( 'deleted_post_meta', array( 'MF2_Post', 'cache_last_modified' ) );
+add_action( 'added_post_meta', array( 'MF2_Post', 'clean_cache_meta' ), 10, 2 );
+add_action( 'updated_post_meta', array( 'MF2_Post', 'clean_cache_meta' ), 10, 2 );
+add_action( 'deleted_post_meta', array( 'MF2_Post', 'clean_cache_meta' ), 10, 2 );
 add_action( 'clean_post_cache', array( 'MF2_Post', 'clean_post_cache' ) );
