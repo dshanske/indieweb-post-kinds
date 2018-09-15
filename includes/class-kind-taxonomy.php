@@ -263,7 +263,8 @@ final class Kind_Taxonomy {
 			}
 		}
 		$terms     = get_terms(
-			'kind', array(
+			'kind',
+			array(
 				'hide_empty' => 0,
 			)
 		);

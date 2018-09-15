@@ -110,7 +110,8 @@ class Post_Kinds_Plugin {
 			$content = __(
 				'For responses to URLs, such as responding to a post or article, this site allows the storage of data around the post/article in order to generate a rich
 				citation. Items such as author name and image, summary of the text, embed provided by third-party site, etc may be stored and are solely to provide this 
-				context. We will remove any of this on request.', 'indieweb-post-kinds'
+				context. We will remove any of this on request.',
+				'indieweb-post-kinds'
 			);
 			wp_add_privacy_policy_content(
 				'Post Kinds',

@@ -175,7 +175,8 @@ class Parse_This_HTML {
 			$oembed = _wp_oembed_get_object();
 
 			if ( ! $oembed->get_provider(
-				$src, array(
+				$src,
+				array(
 					'discover' => false,
 				)
 			) ) {

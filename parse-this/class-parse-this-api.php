@@ -59,7 +59,9 @@ class Parse_This_API {
 	 */
 	public static function register_routes() {
 		register_rest_route(
-			'parse-this/1.0', '/parse', array(
+			'parse-this/1.0',
+			'/parse',
+			array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'read' ),
