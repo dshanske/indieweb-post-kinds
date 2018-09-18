@@ -8,7 +8,7 @@ if ( ! $cite ) {
 	return;
 }
 $author = Kind_View::get_hcard( ifset( $cite['author'] ) );
-$url    = $cite['url'];
+$url    = ifset( $cite['url'], '' );
 $embed  = self::get_embed( $url );
 
 ?>

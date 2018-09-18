@@ -6,7 +6,9 @@
 
 $videos      = $mf2_post->get_videos();
 $photos      = $mf2_post->get_images();
-$first_photo = array_pop( array_reverse( $photos ) );
+if ( is_array( $photos ) ) {
+	$first_photo = array_pop( array_reverse( $photos ) );
+}	
 $embed       = null;
 if ( is_array( $cite ) && ! $videos ) {
 	$url   = ifset( $cite['url'] );
