@@ -455,12 +455,21 @@ class MF2_Post {
 		return false;
 	}
 
+	public function get_attached_media( $type, $post ) {
+		$posts = get_attached_media( $type, $post );
+		$return = array();
+		foreach( $posts as $post ) {
+			$return[] = $post->post_ID;
+		}
+		return array_filter( $return );
+	}
+
 	public function get_audios() {
 		// Check if the post itself if an audio attachment.
 		if ( wp_attachment_is( 'audio', $this->uid ) ) {
 			return array( $this->uid );
 		}
-		$att_ids = get_attached_media( 'audio', $this->uid );
+		$att_ids = $this->get_attached_media( 'audio', $this->uid );
 		$audios  = $this->get( 'audio' );
 		$att_ids = array_merge( $att_ids, $this->get_attachments_from_urls( $audios ) );
 		if ( ! empty( $att_ids ) ) {
@@ -474,7 +483,7 @@ class MF2_Post {
 		if ( wp_attachment_is( 'video', $this->uid ) ) {
 			return array( $this->uid );
 		}
-		$att_ids = get_attached_media( 'video', $this->uid );
+		$att_ids = $this->get_attached_media( 'video', $this->uid );
 		$videos  = $this->get( 'video' );
 		$att_ids = array_merge( $att_ids, $this->get_attachments_from_urls( $videos ) );
 		if ( ! empty( $att_ids ) ) {
@@ -507,13 +516,34 @@ class MF2_Post {
 		if ( $featured ) {
 			return $featured;
 		}
-		$att_ids = get_attached_media( 'image', $this->uid );
-		$photos  = $this->get( 'photo' );
+		$att_ids = $this->get_attached_media( 'image', $this->uid );
+		$photos  = $this->get( 'photo', false );
+		if ( is_array( $photos ) ) {
+			$newphotos = $this->sideload_images( $photos );
+			if ( ! empty( array_diff( $photos, $newphotos ) ) ) {
+				$this->set( 'photo' );
+			}
+		}
 		$att_ids = array_merge( $att_ids, $this->get_attachments_from_urls( $photos ) );
 		if ( ! empty( $att_ids ) ) {
 			return $att_ids;
 		}
 		return false;
+	}
+
+	private function sideload_images( $photos ) {
+		require_once(ABSPATH . 'wp-admin/includes/media.php');
+		require_once(ABSPATH . 'wp-admin/includes/file.php');
+		require_once(ABSPATH . 'wp-admin/includes/image.php');
+		foreach( $photos as $key => $value ) {
+			if ( ! attachment_url_to_postid( $value ) ) {
+				$id = media_sideload_image( $value, $this->uid, null, 'id' );
+				if ( $id ) {
+					$photos[$key] = wp_get_attachment_url( $id );
+				}
+			}
+		}
+		return $photos;
 	}
 
 	public function get_img_urls_from_content( $content ) {
