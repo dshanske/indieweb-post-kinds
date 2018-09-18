@@ -309,6 +309,8 @@ class Kind_View {
 		}
 		if ( array_key_exists( 'name', $author ) && is_array( $author['name'] ) ) {
 			$author['name'] = $author['name'][0];
+		} else {
+			$author['name'] = __( 'an author', 'indieweb-post-kinds' );
 		}
 
 		// If no filter generated the card, generate the card.
