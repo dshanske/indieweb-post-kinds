@@ -126,7 +126,10 @@ class Kind_View {
 		foreach ( $blacklist as $b ) {
 			unset( $jf2[ $b ] );
 		}
-		return array_merge( $feed_item, $jf2 );
+		if ( ! empty( $jf2 ) ) {
+			return array_merge( $feed_item, $jf2 );
+		}
+		return $feed_item;
 	}
 
 

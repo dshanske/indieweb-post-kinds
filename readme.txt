@@ -231,6 +231,7 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 * An instance of the MF2_Post class($mf2_post), the kind($kind), the mf2 property associated with that kind($type), as well as initializing $embed and $url are available to all views 
 rather than having them instantiate them individually. This means some overhead.
 * The MF2_Post class now caches the generated data in the event it is requested multiple times in a pageload.
+* The MF2 post class now checks the photo property only for remote URLs and sideloads them.
 
 = 3.0.9 ( 2018-06-23 ) =
 * If title is empty show start of excerpt in admin only
