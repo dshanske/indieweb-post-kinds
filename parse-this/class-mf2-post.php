@@ -456,9 +456,9 @@ class MF2_Post {
 	}
 
 	public function get_attached_media( $type, $post ) {
-		$posts = get_attached_media( $type, $post );
+		$posts  = get_attached_media( $type, $post );
 		$return = array();
-		foreach( $posts as $post ) {
+		foreach ( $posts as $post ) {
 			$return[] = $post->post_ID;
 		}
 		return array_filter( $return );
@@ -520,7 +520,8 @@ class MF2_Post {
 		$photos  = $this->get( 'photo', false );
 		if ( is_array( $photos ) ) {
 			$newphotos = $this->sideload_images( $photos );
-			if ( ! empty( array_diff( $photos, $newphotos ) ) ) {
+			$diff      = array_diff( $photos, $newphotos );
+			if ( ! empty( $diff ) ) {
 				$this->set( 'photo' );
 			}
 		}
@@ -532,14 +533,14 @@ class MF2_Post {
 	}
 
 	private function sideload_images( $photos ) {
-		require_once(ABSPATH . 'wp-admin/includes/media.php');
-		require_once(ABSPATH . 'wp-admin/includes/file.php');
-		require_once(ABSPATH . 'wp-admin/includes/image.php');
-		foreach( $photos as $key => $value ) {
+		require_once ABSPATH . 'wp-admin/includes/media.php';
+		require_once ABSPATH . 'wp-admin/includes/file.php';
+		require_once ABSPATH . 'wp-admin/includes/image.php';
+		foreach ( $photos as $key => $value ) {
 			if ( ! attachment_url_to_postid( $value ) ) {
 				$id = media_sideload_image( $value, $this->uid, null, 'id' );
 				if ( $id ) {
-					$photos[$key] = wp_get_attachment_url( $id );
+					$photos[ $key ] = wp_get_attachment_url( $id );
 				}
 			}
 		}
