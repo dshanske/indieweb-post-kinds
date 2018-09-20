@@ -1,0 +1,3 @@
+[submodule "parse-this"]
+	path = parse-this
+	url = git@github.com:dshanske/parse-this.git
