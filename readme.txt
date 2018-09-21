@@ -232,6 +232,8 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 rather than having them instantiate them individually. This means some overhead.
 * The MF2_Post class now caches the generated data in the event it is requested multiple times in a pageload.
 * The MF2 post class now checks the photo property only for remote URLs and sideloads them.
+* As of this version, Parse This is now a separate repository and all feature updates will be noted as of the next version in its separate changelog.
+
 
 = 3.0.9 ( 2018-06-23 ) =
 * If title is empty show start of excerpt in admin only
