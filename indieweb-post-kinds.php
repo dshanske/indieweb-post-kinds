@@ -64,8 +64,6 @@ class Post_Kinds_Plugin {
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-view.php';
 		add_action( 'init', array( 'Kind_View', 'init' ) );
 
-		require_once 'vendor/autoload.php';
-
 		// Parse This
 		require_once plugin_dir_path( __FILE__ ) . 'parse-this/parse-this.php';
 
