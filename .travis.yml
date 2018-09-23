@@ -9,15 +9,11 @@ cache:
   directories:
     - vendor
     - $HOME/.composer/cache
-after_success: curl -L https://raw.githubusercontent.com/miya0001/travis2wpplugin/master/deploy.sh | bash
 env:
   matrix:
   - WP_VERSION=latest WP_MULTISITE=0
   global:
   - WP_TRAVISCI=travis:phpunit
-  - SVN_REPO: https://plugins.svn.wordpress.org/indieweb-post-kinds/
-  - GH_REF: https://github.com/dshanske/indieweb-post-kinds.git
-  - secure: SKEHj0zThPfUhTyTKtgNuzqPp+uvdUUcMWT0ZqyARjnOGII6dO2UDzQIUc5WolgFd/HYIFfaDzBd3+FPdDTunPiwIHxIYcyr2EjvEQLJYM1zqTAUtjEPpztemKRtrnbNd1TQgWIIqIaNk//WuYkuW7+vc/HsyyTm6PGEbHK6zj11UG8ZYT8ru/Sw+PxHebwlz3d+8H6iEvFSX/rkc1kMpntwNMoFYb9PgwhkvtJ6KkVRKu4uMCkXf6BnlVqJSAGdTn+XckDeY+pwgsWGIAPakLD9MKxAq2MMqfmCxTK8uMN3VBetlbbkT7JMaYyU95gw3+3QrcPLlmRLNdbiuguD39J820wjtflEUNCJ3Heg8JF0q4z/69s6n3LEinDxtJNesK/0G//nYjsLaKXARFfnvLSRbhZvxeePsmEWTxEGt9KvoW7iD/vnwYmf1aYeobwBfkCkvA7t5FSNUTMvI8yo33DWdOyFKdWRL0V2JaaOh0H81kaXOEBayplmDfdbNX7y77/bLU863V0JkORSsJNv7ZGl8zR77ja/s1Ep0F3d43QhIoQk40w8SckpLEx+2bUs3J2jNpBeike5cut7RuSPTt7G2AiipTfmPa666f+CsmfNAjd2MYFfB2NL5ZHwjmOuxYE6hicdKt2vwOjLa31hLY/u3bT8s346w+DzIPZmItU=
 matrix:
   include:
   - php: 7.2
@@ -25,7 +21,6 @@ matrix:
   - php: 7.0
   - php: 5.6
   - php: 5.6
-    env: WP_PULUGIN_DEPLOY=1
   - php: 5.6
     env: WP_TRAVISCI=travis:phpcs
   - php: 5.5
