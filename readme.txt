@@ -30,6 +30,9 @@ Many sites will not need all of the kinds set up. What kinds of posts you wish t
 
 The plugin requires the [webmention](https://wordpress.org/plugins/webmention/) plugin to support sending/receiving notice of a reply/like to another site which will appear as a comment. The [Semantic Linkbacks](https://wordpress.org/plugins/semantic-linkbacks/) plugin is available to more richly display the comment.
 
+To install the development version, git clone --recursive https://github.com/dshanske/indieweb-post-kinds.git . The recursive option is required or it will not bring in
+the second repository. Otherwise inside the repo you can run git submodule init and git submodule update.
+
 == Privacy and Data Storage Notice ==
 
 Post Kinds stores extra data in a post indicating what you are responding to. This data is either hand-added or can be parsed from the source URL if provided. This means you have additional
