@@ -38,9 +38,9 @@ class Post_Kinds_Plugin {
 	}
 
 	public static function parse_this_error() {
-		$class = 'notice notice-error';
+		$class   = 'notice notice-error';
 		$message = __( 'Parse This is not installed. You can install it separately from its repo as its own plugin or if you installed Post Kinds via Git, run git submodule init and git submodule update in the main directly to bring in the dependency', 'indieweb-post-kinds' );
-		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) ); 
+		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
 	}
 	public static function plugins_loaded() {
 		load_plugin_textdomain( 'indieweb-post-kinds', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
