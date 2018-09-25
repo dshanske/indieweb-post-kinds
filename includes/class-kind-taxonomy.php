@@ -52,8 +52,9 @@ final class Kind_Taxonomy {
 			'post',
 			'kind',
 			array(
-				'get_callback' => array( 'Kind_Taxonomy', 'get_post_kind_slug' ),
-				'schema'       => array(
+				'get_callback'    => array( 'Kind_Taxonomy', 'get_post_kind_slug' ),
+				'update_callback' => array( 'Kind_Taxonomy', 'set_rest_post_kind' ),
+				'schema'          => array(
 					'kind' => __( 'Post Kind', 'indieweb-post-kinds' ),
 					'type' => 'string',
 				),
@@ -1003,6 +1004,12 @@ final class Kind_Taxonomy {
 			return new WP_Error( 'invalid_kind', __( 'Invalid Kind', 'indieweb-post-kinds' ) );
 		}
 		return wp_set_post_terms( $post->ID, $kind, 'kind' );
+	}
+
+	public static function set_rest_post_kind( $kind, $post_array ) {
+		if ( isset( $post_array['id'] ) ) {
+			self::set_post_kind( $post_array['id'], $kind );
+		}
 	}
 
 	public static function before_kind() {
