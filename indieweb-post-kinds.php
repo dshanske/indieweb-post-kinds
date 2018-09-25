@@ -20,7 +20,7 @@ if ( ! defined( 'POST_KINDS_KSES' ) ) {
 
 
 
-if ( ! file_exists( plugin_dir_path( __FILE__ ) . 'parse-this/parse-this.php' ) ) {
+if ( ! file_exists( plugin_dir_path( __FILE__ ) . 'includes/parse-this/parse-this.php' ) ) {
 	add_action( 'admin_notices', array( 'Post_Kinds_Plugin', 'parse_this_error' ) );
 }
 
@@ -39,7 +39,7 @@ class Post_Kinds_Plugin {
 
 	public static function parse_this_error() {
 		$class   = 'notice notice-error';
-		$message = __( 'Parse This is not installed. You can install it separately from its repo as its own plugin or if you installed Post Kinds via Git, run git submodule init and git submodule update in the main directly to bring in the dependency', 'indieweb-post-kinds' );
+		$message = __( 'Parse This is not installed. Please advise the developer', 'indieweb-post-kinds' );
 		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
 	}
 	public static function plugins_loaded() {
@@ -75,7 +75,7 @@ class Post_Kinds_Plugin {
 		add_action( 'init', array( 'Kind_View', 'init' ) );
 
 		// Parse This
-		require_once plugin_dir_path( __FILE__ ) . 'parse-this/parse-this.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/parse-this/parse-this.php';
 
 		// Load stylesheets.
 		add_action( 'wp_enqueue_scripts', array( 'Post_Kinds_Plugin', 'style_load' ) );

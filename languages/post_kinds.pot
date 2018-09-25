@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Post Kinds 3.1.0\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2018-09-25 05:54:52+00:00\n"
+"POT-Creation-Date: 2018-09-25 22:33:44+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -763,12 +763,36 @@ msgid_plural " %d seconds"
 msgstr[0] ""
 msgstr[1] ""
 
-#: indieweb-post-kinds.php:42
+#: includes/parse-this/includes/class-parse-this-api.php:24
+#: includes/parse-this/includes/class-parse-this-api.php:25
+msgid "Parse This"
+msgstr ""
+
+#: includes/parse-this/includes/class-parse-this-api.php:43
+msgid "Parse This Debugger"
+msgstr ""
+
+#: includes/parse-this/includes/class-parse-this-api.php:44
 msgid ""
-"Parse This is not installed. You can install it separately from its repo as "
-"its own plugin or if you installed Post Kinds via Git, run git submodule "
-"init and git submodule update in the main directly to bring in the "
-"dependency"
+"Test the Parse Tools Debugger. You can report sites to the developer for "
+"possibly improvement in future"
+msgstr ""
+
+#: includes/parse-this/includes/class-parse-this-api.php:48
+#: templates/reply-metabox.php:51
+msgid "URL"
+msgstr ""
+
+#: includes/parse-this/includes/class-parse-this-api.php:50
+msgid "Parse"
+msgstr ""
+
+#: includes/parse-this/includes/class-parse-this.php:78
+msgid "A valid URL was not provided."
+msgstr ""
+
+#: indieweb-post-kinds.php:42
+msgid "Parse This is not installed. Please advise the developer"
 msgstr ""
 
 #: indieweb-post-kinds.php:118
@@ -780,34 +804,6 @@ msgid ""
 "embed provided by third-party site, etc may be stored and are solely to "
 "provide this \n"
 "\t\t\t\tcontext. We will remove any of this on request."
-msgstr ""
-
-#: parse-this/includes/class-parse-this-api.php:24
-#: parse-this/includes/class-parse-this-api.php:25
-msgid "Parse This"
-msgstr ""
-
-#: parse-this/includes/class-parse-this-api.php:43
-msgid "Parse This Debugger"
-msgstr ""
-
-#: parse-this/includes/class-parse-this-api.php:44
-msgid ""
-"Test the Parse Tools Debugger. You can report sites to the developer for "
-"possibly improvement in future"
-msgstr ""
-
-#: parse-this/includes/class-parse-this-api.php:48
-#: templates/reply-metabox.php:51
-msgid "URL"
-msgstr ""
-
-#: parse-this/includes/class-parse-this-api.php:50
-msgid "Parse"
-msgstr ""
-
-#: parse-this/includes/class-parse-this.php:78
-msgid "A valid URL was not provided."
 msgstr ""
 
 #: templates/reply-author.php:2
@@ -941,7 +937,7 @@ msgstr ""
 msgid "https://david.shanske.com"
 msgstr ""
 
-#: includes/class-kind-plugins.php:27
+#: includes/class-kind-plugins.php:34
 msgctxt "direct article"
 msgid "this"
 msgstr ""

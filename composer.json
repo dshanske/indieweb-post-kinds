@@ -12,7 +12,7 @@
      "extra": {
 		"installer-name": "indieweb-post-kinds",
 		"installer-paths": {
-			"{$name}": ["dshanske/parse-this"]
+			"includes/{$name}": ["dshanske/parse-this"]
 		}
      },
     "require": {
