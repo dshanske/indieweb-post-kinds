@@ -44,7 +44,23 @@ final class Kind_Taxonomy {
 
 		add_filter( 'the_title', array( 'Kind_Taxonomy', 'the_title' ), 9, 2 );
 
+		add_action( 'rest_api_init', array( 'Kind_Taxonomy', 'rest_kind' ) );
 	}
+
+	public static function rest_kind() {
+		register_rest_field(
+			'post',
+			'kind',
+			array(
+				'get_callback' => array( 'Kind_Taxonomy', 'get_post_kind_slug' ),
+				'schema'       => array(
+					'kind' => __( 'Post Kind', 'indieweb-post-kinds' ),
+					'type' => 'string',
+				),
+			)
+		);
+	}
+
 
 	public static function the_title( $title, $post_id ) {
 		if ( ! $title && is_admin() ) {
@@ -929,6 +945,9 @@ final class Kind_Taxonomy {
 	}
 
 	public static function get_post_kind_slug( $post = null ) {
+		if ( is_array( $post ) && isset( $post['id'] ) ) {
+			$post = $post['id'];
+		}
 		$post = get_post( $post );
 		if ( ! $post ) {
 			return false; }
