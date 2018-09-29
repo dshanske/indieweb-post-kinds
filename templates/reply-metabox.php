@@ -45,6 +45,7 @@ if ( isset( $cite['url'] ) && is_array( $cite['url'] ) ) {
 ?>
 <a href="#kind-details" class="show-kind-details button hide-if-no-js"><?php _e( 'Details', 'indieweb-post-kinds' ); ?></a>
 <a href="#kind-author" class="show-kind-author-details button hide-if-no-js"><?php _e( 'Author', 'indieweb-post-kinds' ); ?></a>
+<a id="add-kind-media" class="button button-secondary" href="javascript:;">Upload or Attach Media</a>
 <button class="clear-kindmeta-button button hide-if-no-js"><?php _e( 'Clear', 'indieweb-post-kinds' ); ?></button>
 <p class="field-row">
 	<label for="cite_url" class="three-quarters">
@@ -60,6 +61,12 @@ if ( isset( $cite['url'] ) && is_array( $cite['url'] ) ) {
 </p>
 <p class="field-row hide-if-js" id="rsvp-option">
 	<?php echo Kind_Metabox::rsvp_select( $mf2_post->get( 'rsvp', true ) ); ?>
+</p>
+<p id="kind-media hide-if-no-js">
+    <div id="kind-media-container" class="hidden">
+      <img src="" alt="" title="" height="100" />
+    </div>
+    <input type="hidden" value="" id="cite_media" name="cite_media">
 </p>
 
 
