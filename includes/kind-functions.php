@@ -154,3 +154,14 @@ function kind_src_url_in_content( $content ) {
 	}
 	return 0;
 }
+
+function kind_gallery( $photos ) {
+	return gallery_shortcode(
+		array(
+			'ids'     => $photos,
+			'size'    => 'large',
+			'columns' => 1,
+			'link'    => 'file',
+		)
+	);
+}
