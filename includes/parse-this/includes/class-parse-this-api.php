@@ -41,8 +41,14 @@ class Parse_This_API {
 		?>
 				<div class="wrap">
 						<h2> <?php esc_html_e( 'Parse This Debugger', 'indieweb-post-kinds' ); ?> </h2>
-						<p> <?php esc_html_e( 'Test the Parse Tools Debugger. You can report sites to the developer for possibly improvement in future', 'indieweb-post-kinds' ); ?>
+						<p> <?php esc_html_e( 'Test the Parse Tools Debugger. You can report sites to the developer for possibly improvement in future', 'parse-this' ); ?>
 						</p>
+							<p> 
+							<?php
+							if ( is_plugin_active( 'parse-this/parse-this.php' ) ) {
+								esc_html_e( 'You are using the plugin version of Parse This as opposed to a version built into any plugin', 'parse-this' );
+							}
+							?>
 						<hr />
 			<form method="get" action="<?php echo esc_url( rest_url( '/parse-this/1.0/parse/' ) ); ?> ">
 			<label for="url"><?php esc_html_e( 'URL', 'indieweb-post-kinds' ); ?></label><input type="url" class="widefat" name="url" id="url" />
@@ -64,11 +70,11 @@ class Parse_This_API {
 			array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'read' ),
+					'callback'            => array( 'Parse_This_API', 'read' ),
 					'args'                => array(
 						'url' => array(
 							'required'          => true,
-							'validate_callback' => array( $this, 'is_valid_url' ),
+							'validate_callback' => array( 'Parse_This_API', 'is_valid_url' ),
 							'sanitize_callback' => 'esc_url_raw',
 						),
 					),
