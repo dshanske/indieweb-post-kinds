@@ -45,7 +45,7 @@ if ( isset( $cite['url'] ) && is_array( $cite['url'] ) ) {
 ?>
 <a href="#kind-details" class="show-kind-details button hide-if-no-js"><?php _e( 'Details', 'indieweb-post-kinds' ); ?></a>
 <a href="#kind-author" class="show-kind-author-details button hide-if-no-js"><?php _e( 'Author', 'indieweb-post-kinds' ); ?></a>
-<a id="add-kind-media" class="button button-secondary" href="javascript:;">Upload or Attach Media</a>
+<a id="add-kind-media" class="button hide-if-no-js hidden" href="javascript:;">Upload or Attach Media</a>
 <button class="clear-kindmeta-button button hide-if-no-js"><?php _e( 'Clear', 'indieweb-post-kinds' ); ?></button>
 <p class="field-row">
 	<label for="cite_url" class="three-quarters">

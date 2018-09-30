@@ -220,40 +220,53 @@ function changeSettings() {
 			hideReply();
 			hideRSVP();
 			hideTime();
+			hideMedia();
 			break;
 		case 'article':
 			showTitle();
 			hideReply();
 			hideRSVP();
 			hideTime();
+			hideMedia();
 			break;
 		case 'issue':
 			showTitle();
 			showReply();
 			hideRSVP();
 			hideTime();
+			hideMedia();
 			break;
 		case 'listen':
 		case 'jam':
 		case 'watch':
+			hideTitle();
+			showReply();
+			hideRSVP();
+			showTime();
+			hideMedia();
+			break;
+		case 'photo':
 		case 'video':
 		case 'audio':
 			hideTitle();
 			showReply();
 			hideRSVP();
 			showTime();
+			showMedia();
 			break;
 		case 'rsvp':
 			showReply();
 			hideTitle();
 			hideTime();
 			showRSVP();
+			hideMedia();
 			break;
 		default:
 			showReply();
 			hideTime();
 			hideTitle();
 			hideRSVP();
+			hideMedia();
 	}
 }
 
@@ -264,6 +277,15 @@ function showReply() {
 function hideReply() {
 	$( '#replybox-meta' ).addClass( 'hidden' );
 }
+
+function showMedia() {
+	$( '#add-kind-media' ).removeClass( 'hidden' );
+}
+
+function hideMedia() {
+	$( '#add-kind-media' ).addClass( 'hidden' );
+}
+
 
 function showTitle() {
 	var titlediv = $( '#titlediv' ).detach();
