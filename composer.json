@@ -24,8 +24,8 @@
 	"squizlabs/php_codesniffer": "*",
         "phpcompatibility/php-compatibility": "*",
         "wp-coding-standards/wpcs": "*",
-	"dshanske/parse-this": "dev-master"
-      "phpcompatibility/phpcompatibility-wp": "^1.0"
+	"dshanske/parse-this": "dev-master",
+        "phpcompatibility/phpcompatibility-wp": "^1.0"
     },
     "scripts": {
         "lint": "phpcs",
