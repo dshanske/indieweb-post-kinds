@@ -238,6 +238,7 @@ rather than having them instantiate them individually. This means some overhead.
 * The MF2 post class now checks the photo property only for remote URLs and sideloads them.
 * As of this version, Parse This is now a separate repository and all feature updates will be noted as of the next version in its separate changelog.
 * Kind now appears in REST API post controller
+* Photo Video and Audio now use the WordPress media selector and the citation should now be added in the attachment, as opposed to inside the post
 
 ### 3.0.9 ( 2018-06-23 ) ###
 * If title is empty show start of excerpt in admin only
