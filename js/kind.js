@@ -328,12 +328,14 @@ function handleKindMediaWindow() {
 	}
 
 	KindWindow = wp.media.frames.KindWindow = wp.media({
-		frame: 'post',
-		state: 'insert',
+		title: 'Attach',
+		button: {
+			text: 'Use this media'
+		},
 		multiple: false
 	});
 
-	KindWindow.on( 'insert', function() {
+	KindWindow.on( 'select', function() {
 		json = KindWindow.state().get( 'selection' ).first().toJSON();
 		console.log( json );
 		if ( 0 > $.trim( json.url.length ) ) {

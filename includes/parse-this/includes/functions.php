@@ -38,7 +38,7 @@ function mf2_to_jf2( $entry ) {
 	$jf2         = array();
 	$type        = is_array( $entry['type'] ) ? array_pop( $entry['type'] ) : $entry['type'];
 	$jf2['type'] = str_replace( 'h-', '', $type );
-	if ( isset( $entry['properties'] ) && is_array( $properties ) ) {
+	if ( isset( $entry['properties'] ) && is_array( $entry['properties'] ) ) {
 		foreach ( $entry['properties'] as $key => $value ) {
 			if ( is_array( $value ) && 1 === count( $value ) ) {
 				$value = array_pop( $value );
