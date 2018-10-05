@@ -166,25 +166,23 @@ function kind_gallery( $photos ) {
 	);
 }
 
-function kind_audio_gallery( $id, $args ) {
-	$return = array();
+function kind_audio_gallery( $id, $args = null ) {
+	$return  = array();
+	$default = array(
+		'class' => 'wp-audio-shortcode u-audio',
+	);
 	if ( is_array( $id ) ) {
 		foreach ( $id as $i ) {
-			$return[] = kind_audio_gallery( $i );
+			$return[] = kind_audio_gallery( $i, $args );
 		}
 		return implode( ' ', $return );
 	} elseif ( wp_http_validate_url( $id ) ) {
-		$url = $id;
+		$args['src'] = $id;
 	} else {
-		$url = wp_get_attachment_url( (int) $id );
+		$args['src'] = wp_get_attachment_url( (int) $id );
 	}
-	if ( $url ) {
-		return wp_audio_shortcode(
-			array(
-				'class' => 'wp-audio-shortcode u-audio',
-				'src'   => $url,
-			)
-		);
+	if ( $args['src'] ) {
+		return wp_audio_shortcode( $args );
 	}
 	return '';
 }
@@ -196,15 +194,15 @@ function kind_video_gallery( $id, $args = null ) {
 	);
 	if ( is_array( $id ) ) {
 		foreach ( $id as $i ) {
-			$return[] = kind_video_gallery( $i );
+			$return[] = kind_video_gallery( $i, $args );
 		}
 		return implode( ' ', $return );
 	} elseif ( wp_http_validate_url( $id ) ) {
-		$url = $id;
+		$args['src'] = $id;
 	} else {
-		$url = wp_get_attachment_url( (int) $id );
+		$args['src'] = wp_get_attachment_url( (int) $id );
 	}
-	if ( $url ) {
+	if ( $args['src'] ) {
 		$args = wp_parse_argS( $args, $defaults );
 		return wp_video_shortcode( $args );
 	}
