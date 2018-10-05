@@ -8,12 +8,7 @@ if ( $cite && ! $audios ) {
 	$url   = ifset( $cite['url'] );
 	$embed = self::get_embed( $url );
 	if ( ! $embed ) {
-		$embed = wp_audio_shortcode(
-			array(
-				'class' => 'wp_audio-shortcode u-audio',
-				'src'   => $url,
-			)
-		);
+		$embed = kind_audio_gallery( $url );
 	}
 }
 
@@ -42,9 +37,5 @@ if ( $duration ) {
 if ( $embed ) {
 	printf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
 } elseif ( $audios ) {
-	echo wp_audio_shortcode(
-		array(
-			'class' => 'wp-audio-shortcode u-audio',
-		)
-	);
+	echo kind_audio_gallery( $audios );
 }

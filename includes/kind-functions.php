@@ -165,3 +165,49 @@ function kind_gallery( $photos ) {
 		)
 	);
 }
+
+function kind_audio_gallery( $id, $args ) {
+	$return = array();
+	if ( is_array( $id ) ) {
+		foreach ( $id as $i ) {
+			$return[] = kind_audio_gallery( $i );
+		}
+		return implode( ' ', $return );
+	} elseif ( wp_http_validate_url( $id ) ) {
+		$url = $id;
+	} else {
+		$url = wp_get_attachment_url( (int) $id );
+	}
+	if ( $url ) {
+		return wp_audio_shortcode(
+			array(
+				'class' => 'wp-audio-shortcode u-audio',
+				'src'   => $url,
+			)
+		);
+	}
+	return '';
+}
+
+function kind_video_gallery( $id, $args = null ) {
+	$return   = array();
+	$defaults = array(
+		'class' => 'wp-video-shortcode u-video',
+	);
+	if ( is_array( $id ) ) {
+		foreach ( $id as $i ) {
+			$return[] = kind_video_gallery( $i );
+		}
+		return implode( ' ', $return );
+	} elseif ( wp_http_validate_url( $id ) ) {
+		$url = $id;
+	} else {
+		$url = wp_get_attachment_url( (int) $id );
+	}
+	if ( $url ) {
+		$args = wp_parse_argS( $args, $defaults );
+		return wp_video_shortcode( $args );
+	}
+	return '';
+}
+

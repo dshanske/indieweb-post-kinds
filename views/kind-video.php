@@ -14,12 +14,7 @@ if ( is_array( $cite ) && ! $videos ) {
 	$url   = ifset( $cite['url'] );
 	$embed = self::get_embed( $url );
 	if ( ! $embed ) {
-		$embed = wp_video_shortcode(
-			array(
-				'class' => 'wp_video-shortcode u-video',
-				'src'   => $url,
-			)
-		);
+		$embed = kind_video_gallery( $url );
 	}
 }
 
@@ -42,12 +37,7 @@ if ( $embed ) {
 } elseif ( $videos ) {
 
 	$poster = wp_get_attachment_image_url( $first_photo, 'full' );
-	echo wp_video_shortcode(
-		array(
-			'poster' => $poster,
-			'class'  => 'wp-video-shortcode u-video',
-		)
-	);
+	echo kind_video_gallery( $videos, array( 'poster' => $poster ) );
 }
 ?>
 <?php
