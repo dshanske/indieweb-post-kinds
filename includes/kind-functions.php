@@ -155,7 +155,7 @@ function kind_src_url_in_content( $content ) {
 	return 0;
 }
 
-function kind_gallery( $photos ) {
+function kind_photo_gallery( $photos ) {
 	return gallery_shortcode(
 		array(
 			'ids'     => $photos,
