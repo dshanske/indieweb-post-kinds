@@ -57,6 +57,10 @@ class Post_Kinds_Plugin {
 		require_once plugin_dir_path( __FILE__ ) . '/includes/class-kind-plugins.php';
 		add_action( 'init', array( 'Kind_Plugins', 'init' ) );
 
+		// Enhance Media Metadata
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class-media-metadata.php';
+		add_action( 'init', array( 'Media_Metadata', 'init' ) );
+
 		// Config Settings.
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-config.php';
 		add_action( 'init', array( 'Kind_Config', 'init' ) );
