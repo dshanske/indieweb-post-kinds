@@ -181,10 +181,12 @@ function kind_audio_gallery( $id, $args = null ) {
 	} else {
 		$args['src'] = wp_get_attachment_url( (int) $id );
 	}
+	$return = '';
 	if ( $args['src'] ) {
-		return wp_audio_shortcode( $args );
+		$return  = sprintf( '<p>%s</p>', get_the_title( $id ) );
+		$return .= wp_audio_shortcode( $args );
 	}
-	return '';
+	return $return;
 }
 
 function kind_video_gallery( $id, $args = null ) {
@@ -202,10 +204,12 @@ function kind_video_gallery( $id, $args = null ) {
 	} else {
 		$args['src'] = wp_get_attachment_url( (int) $id );
 	}
+	$return = '';
 	if ( $args['src'] ) {
-		$args = wp_parse_argS( $args, $defaults );
-		return wp_video_shortcode( $args );
+		$args    = wp_parse_args( $args, $defaults );
+		$return  = sprintf( '<p>%s</p>', get_the_title( $id ) );
+		$return .= wp_video_shortcode( $args );
 	}
-	return '';
+	return $return;
 }
 

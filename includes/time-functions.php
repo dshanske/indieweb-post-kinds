@@ -151,6 +151,23 @@ function calculate_duration( $start_string, $end_string ) {
 	return false;
 }
 
+function seconds_to_iso8601( $second ) {
+	$h   = intval( $second / 3600 );
+	$m   = intval( ( $second - $h * 3600 ) / 60 );
+	$s   = $second - ( $h * 3600 + $m * 60 );
+	$ret = 'PT';
+	if ( $h ) {
+		$ret .= $h . 'H';
+	}
+	if ( $m ) {
+		$ret .= $m . 'M';
+	}
+	if ( ( ! $h && ! $m ) || $s ) {
+		$ret .= $s . 'S';
+	}
+	return $ret;
+}
+
 // Return a date interval as an ISO8601 string
 function date_interval_to_iso8601( \DateInterval $interval ) {
 	// Reading all non-zero date parts.
