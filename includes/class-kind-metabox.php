@@ -329,7 +329,7 @@ class Kind_Metabox {
 		if ( ! $fetch ) {
 			$fetch = array();
 		}
-		if ( isset( $_POST['cite_media'] ) ) {
+		if ( ! empty( $_POST['cite_media'] ) ) {
 			$mf2_post->set( $type, array( $cite['url'] ) );
 			return;
 		}
