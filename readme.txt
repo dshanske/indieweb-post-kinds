@@ -44,12 +44,12 @@ responsibilities to responsibly use this data, and to remove information on requ
 
 = 3.1.0 =
 
-Custom post kind registration, previously done by filter, is now done by registration. This will cause issues who had been using the filter. Due to a particular
+* Custom post kind registration, previously done by filter, is now done by registration. This will cause issues who had been using the filter. Due to a particular
 user who created many custom kinds, decided to create a better way to do this. 
-
-Posting capability via custom REST API endpoint has been removed due improved Micropub support
-
-Kind_Meta class deprecated as promised
+* Posting capability via custom REST API endpoint has been removed due improved Micropub support
+* Kind_Meta class deprecated as promiseda
+* Media Data is no longer stored in the post instead being stored in the attachment
+* This version introduces a lot of base changes. Before making additional ones will be releasing this version so that things can stabilize
 
 = 3.0.0 = 
 
@@ -211,7 +211,7 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 == Changelog ==
 
-= 3.1.0 ( 2018-xx-xx ) =
+= 3.1.0 ( 2018-10-13 ) =
 * Missing Add New Note in Dashbar
 * Add itinerary to post type discovery
 * Do not return a failed attempt to parse a URL
@@ -235,6 +235,8 @@ rather than having them instantiate them individually. This means some overhead.
 * As of this version, Parse This is now a separate repository and all feature updates will be noted as of the next version in its separate changelog.
 * Kind now appears in REST API post controller
 * Photo Video and Audio now use the WordPress media selector and the citation should now be added in the attachment, as opposed to inside the post
+* Photo Video and Audio presentation have new functions for display that are currently wrappers around the WordPress functions but hoping to add more customization in future
+
 
 = 3.0.9 ( 2018-06-23 ) =
 * If title is empty show start of excerpt in admin only
