@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.1.0  
+**Stable tag:** 3.1.1  
 **Requires at least:** 4.7  
 **Requires PHP:** 5.3  
 **Tested up to:** 4.9.8  
@@ -45,6 +45,9 @@ responsibilities to responsibly use this data, and to remove information on requ
 2. [Chris Aldrich](http://boffosocko.com) always receives a credit on my plugins due his regular feedback, input, and usage.
 
 ## Upgrade Notice ##
+
+### 3.1.1 ###
+* Bugs were reported in 3.1.0 and this is a quick fix for the ones initially reported
 
 ### 3.1.0 ###
 
@@ -214,6 +217,12 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 
 ## Changelog ##
+
+### 3.1.1 ( 2018-10-14 ) ###
+* Fix save issues for Post Kind
+* Fix auto-import for bookmarklets
+* Fix author showing anonymously
+* JSONFeed enhanced to use external url property
 
 ### 3.1.0 ( 2018-10-13 ) ###
 * Missing Add New Note in Dashbar
