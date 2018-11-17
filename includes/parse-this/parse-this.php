@@ -17,10 +17,6 @@
 if ( ! function_exists( 'parse_this_loader' ) ) {
 	function parse_this_loader() {
 
-		if ( ! class_exists( 'Mf2\Parser' ) ) {
-			require_once dirname( __FILE__ ) . '/vendor/mf2/mf2/Mf2/Parser.php';
-		}
-
 		// Global Functions
 		require_once plugin_dir_path( __FILE__ ) . 'includes/functions.php';
 
@@ -32,11 +28,18 @@ if ( ! function_exists( 'parse_this_loader' ) ) {
 		// Parse This for OGP and HTML Properties
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-parse-this-html.php';
 
+		// Parse This for RSS/ATOM Feeds
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class-parse-this-rss.php';
+
+		// Parse This for JSONFeed
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class-parse-this-jsonfeed.php';
+
 		// Parse This for Microformats 2
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-parse-this-mf2.php';
 
 		// Parse This API
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-parse-this-api.php';
+
 	}
 	add_action( 'plugins_loaded', 'parse_this_loader', 11 );
 }
