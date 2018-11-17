@@ -138,6 +138,26 @@ final class Kind_Taxonomy {
 			'query_var'          => true,
 		);
 		register_taxonomy( 'kind', array( 'post' ), $args );
+		add_rewrite_rule(
+			'kind/([a-z]+)/([0-9]{4})/?$',
+			'index.php?year=$matches[2]&kind=$matches[1]',
+			'top'
+		);
+		add_rewrite_rule(
+			'kind/([a-z]+)/([a-z]+)/?$',
+			'index.php?tag=$matches[2]&kind=$matches[1]',
+			'top'
+		);
+		add_rewrite_rule(
+			'kind/([a-z]+)/([0-9]{4})/([0-9]{2})/?$',
+			'index.php?year=$matches[2]&monthnum=$matches[3]&kind=$matches[1]',
+			'top'
+		);
+		add_rewrite_rule(
+			'kind/([a-z]+)/([0-9]{4})/([0-9]{2})/([0-9]{2})/?$',
+			'index.php?year=$matches[2]&monthnum=$matches[3]&day=$matches[4]&kind=$matches[1]',
+			'top'
+		);
 	}
 
 	/**
