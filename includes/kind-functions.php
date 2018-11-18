@@ -51,7 +51,7 @@ function get_post_jf2meta( $post, $wordpress = true ) {
  * @return array The array of post kind slugs.
  */
 function get_post_kind_slugs() {
-	return Kind_Taxonomy::get_post_king_slugs();
+	return Kind_Taxonomy::get_post_kind_slugs();
 }
 
 /**
