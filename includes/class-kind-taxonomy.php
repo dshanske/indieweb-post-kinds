@@ -45,6 +45,8 @@ final class Kind_Taxonomy {
 		add_filter( 'the_title', array( 'Kind_Taxonomy', 'the_title' ), 9, 2 );
 
 		add_action( 'rest_api_init', array( 'Kind_Taxonomy', 'rest_kind' ) );
+
+		add_filter( 'embed_template_hierarchy', array( 'Kind_Taxonomy', 'embed_template_hierarchy' ) );
 	}
 
 	public static function rest_kind() {
@@ -62,6 +64,16 @@ final class Kind_Taxonomy {
 		);
 	}
 
+	public static function embed_template_hierarchy( $templates ) {
+		$object = get_queried_object();
+		if ( ! empty( $object->post_type ) ) {
+			$post_kind = get_post_kind( $object );
+			if ( $post_kind ) {
+				array_unshift( $templates, "embed-{$object->post_type}-{$post_kind}.php" );
+			}
+		}
+		return $templates;
+	}
 
 	public static function the_title( $title, $post_id ) {
 		if ( ! $title && is_admin() ) {
