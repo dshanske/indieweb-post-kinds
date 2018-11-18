@@ -13,6 +13,7 @@ class Kind_Plugins {
 		add_action( 'after_micropub', array( 'Kind_Plugins', 'micropub_set_kind' ), 9, 2 );
 		add_action( 'after_micropub', array( 'Kind_Plugins', 'post_formats' ), 11, 2 );
 		add_filter( 'before_micropub', array( 'Kind_Plugins', 'micropub_parse' ), 11 );
+		add_filter( 'micropub_query', array( 'Kind_Plugins', 'micropub_query_source' ), 11, 2 );
 		// Override Post Type in Semantic Linkbacks.
 		add_filter( 'semantic_linkbacks_post_type', array( 'Kind_Plugins', 'semantic_post_type' ), 11, 2 );
 
@@ -27,6 +28,36 @@ class Kind_Plugins {
 			}
 		}
 
+	}
+
+	public static function micropub_query_source( $resp, $input ) {
+		// Only modify source
+		if ( 'source' !== $input['q'] ) {
+			return $resp;
+		}
+		if ( array_key_exists( 'url', $input ) ) {
+			$post_id = url_to_postid( static::$input['url'] );
+			if ( ! $post_id ) {
+				return $resp;
+			}
+			$mf2_post = new MF2_Post( $post_id );
+			$resp     = $mf2_post->get();
+		} else {
+			$numberposts = ifset( $input['limit'], 10 );
+			$posts       = get_posts(
+				array(
+					'posts_per_page' => $numberposts,
+					'fields'         => 'ids',
+				)
+			);
+			$resp        = array();
+			foreach ( $posts as $post ) {
+				$mf2_post = new MF2_Post( $post );
+				$resp[]   = $mf2_post->get();
+			}
+			$resp = array( 'items' => $resp );
+		}
+		return $resp;
 	}
 
 	// Replaces need for Replacing the Entire Excerpt
