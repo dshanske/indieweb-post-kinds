@@ -245,7 +245,17 @@ final class Kind_Taxonomy {
 				$return[] = self::get_kind_info( $term->slug, 'name' );
 			}
 			if ( $return ) {
-				return join( ', ', $return );
+				$title = join( ', ', $return );
+			}
+			if ( is_year() ) {
+				/* translators: 1: Kinds. Yearly archive title. 2: Year */
+				return sprintf( __( '%1$1s: %2$2s', 'indieweb-post-kinds' ), $title, get_the_date( _x( 'Y', 'yearly archives date format', 'indieweb-post-kinds' ) ) );
+			} elseif ( is_month() ) {
+				/* translators: Monthly archive title. 1: Month name and year */
+				return sprintf( __( '%1$1s: %2$2s', 'indieweb-post-kinds' ), $title, get_the_date( _x( 'F Y', 'monthly archives date format', 'indieweb-post-kinds' ) ) );
+			} elseif ( is_day() ) {
+				/* translators: Daily archive title. 1: Date */
+				return sprintf( __( '%1$1s: %2$2s', 'indieweb-post-kinds' ), $title, get_the_date( _x( 'F j, Y', 'daily archives date format', 'indieweb-post-kinds' ) ) );
 			}
 		}
 		return $title;
