@@ -53,7 +53,7 @@ class Kind_Plugins {
 			$resp        = array();
 			foreach ( $posts as $post ) {
 				$mf2_post = new MF2_Post( $post );
-				$resp[]   = $mf2_post->get();
+				$resp[]   = jf2_to_mf2( $mf2_post->get() );
 			}
 			$resp = array( 'items' => $resp );
 		}
