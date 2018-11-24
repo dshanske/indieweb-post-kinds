@@ -180,6 +180,8 @@ interface at this time.
 Post Kinds automatically handles the display of archives of individual types. So to view all the posts marked as "note", for example, one could visit the URL http://www.YOURSITE.COM/kind/note/. 
 Simply replace YOURSITE.COM with your particular site name and the particular post kind name to access the others.
 
+You can also add the date /kind/note/2018/12/24 to see date-based archives. Or /kind/note/tag using the slug of a tag to see an archive of tagged posts of a specific kind
+
 = Do you have RSS feeds for each kind? = 
 
 Post Kinds also automatically handles RSS feeds which can be made available or subscribed to for any of the particular kinds. The RSS feed for all the posts marked as "note", for example could be found at either the URL `http://www.example.com/kind/note/feed` or  `http://www.example.com/feed/?kind=note` (if one doesn't have pretty permalinks enabled). Others can be obtained by replacing "note" with the other kinds.
@@ -213,6 +215,12 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 
 == Changelog ==
+
+= 3.1.2 ( 2018-11-xx ) =
+* Date archive view for kind archives
+* Tag archive view for kind archives
+* The Embed template allows for a template in the theme based on post format. This allows post kinds as an alternate
+* Take over source queries for Micropub
 
 = 3.1.1 ( 2018-10-14 ) =
 * Fix save issues for Post Kind
