@@ -454,7 +454,7 @@ class Parse_This_HTML {
 			$jf2['video'] = $raw['videos'];
 		}
 		//  If Site Name is not set use domain name less www
-		if ( ! isset( $jf2['publication'] ) ) {
+		if ( ! isset( $jf2['publication'] ) && isset( $jf2['url'] ) ) {
 			$jf2['publication'] = preg_replace( '/^www\./', '', wp_parse_url( $jf2['url'], PHP_URL_HOST ) );
 		}
 

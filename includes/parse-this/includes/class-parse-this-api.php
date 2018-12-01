@@ -55,6 +55,7 @@ class Parse_This_API {
 			<p><label for="mf2"><?php esc_html_e( 'MF2', 'indieweb-post-kinds' ); ?></label><input type="checkbox" name="mf2" id="mf2" /></p>
 			<p><label for="discovery"><?php esc_html_e( 'Feed Discovery', 'indieweb-post-kinds' ); ?></label><input type="checkbox" name="discovery" id="discovery" /></p>
 			<p><label for="feed"><?php esc_html_e( 'Show Feed', 'indieweb-post-kinds' ); ?></label><input type="checkbox" name="feed" id="feed" /></p>
+			<p><label for="follow"><?php esc_html_e( 'Follow Author Links', 'indieweb-post-kinds' ); ?></label><input type="checkbox" name="follow" id="follow" /></p>
 			<?php wp_nonce_field( 'wp_rest' ); ?>
 			<?php submit_button( __( 'Parse', 'indieweb-post-kinds' ) ); ?>
 						</form>
@@ -94,6 +95,7 @@ class Parse_This_API {
 		$mf2       = $request->get_param( 'mf2' );
 		$feed      = $request->get_param( 'feed' );
 		$discovery = $request->get_param( 'discovery' );
+		$follow    = $request->get_param( 'follow' );
 		$parse     = new Parse_This( $url );
 		if ( $discovery ) {
 			return $parse->fetch_feeds();
@@ -104,7 +106,12 @@ class Parse_This_API {
 		if ( is_wp_error( $return ) ) {
 			return $return;
 		}
-		$parse->parse( array( 'feed' => isset( $feed ) ) );
+		$parse->parse(
+			array(
+				'feed'   => isset( $feed ),
+				'follow' => isset( $follow ),
+			)
+		);
 		if ( $mf2 ) {
 			return jf2_to_mf2( $parse->get() );
 		}

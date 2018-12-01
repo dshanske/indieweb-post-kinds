@@ -105,7 +105,6 @@ class Parse_This_MF2 {
 		return ! empty( $mf['rels'][ $relname ] ) && is_array( $mf['rels'][ $relname ] );
 	}
 
-
 	/**
 	 * shortcut for getPlaintext.
 	 *
@@ -127,7 +126,10 @@ class Parse_This_MF2 {
 	 */
 	public static function to_plaintext( $v ) {
 		if ( self::is_microformat( $v ) || self::is_embedded_html( $v ) ) {
-			return $v['value']; }
+			return $v['value']; 
+		} elseif ( is_array( $v ) && isset( $v['text'] ) ) {
+			return $v['text'];
+		}
 		return $v;
 	}
 
@@ -166,10 +168,9 @@ class Parse_This_MF2 {
 	 *
 	 * @param array       $mf
 	 * @param array       $properties
-	 * @param null|string $fallback
 	 * @return null|array
 	 */
-	public static function get_prop_array( array $mf, $properties, $fallback = null ) {
+	public static function get_prop_array( array $mf, $properties, $args = null ) {
 		if ( ! self::is_microformat( $mf ) ) {
 			return array();
 		}
@@ -178,20 +179,17 @@ class Parse_This_MF2 {
 		foreach ( $properties as $p ) {
 			if ( array_key_exists( $p, $mf['properties'] ) ) {
 				foreach ( $mf['properties'][ $p ] as $v ) {
-					if ( is_string( $v ) ) {
-						$data[ $p ] = $v;
-					} elseif ( self::is_microformat( $v ) ) {
-						if ( self::is_type( $v, 'h-card' ) ) {
-							$data[ $p ] = self::parse_hcard( $v, $mf );
-						} elseif ( self::is_type( $v, 'h-adr' ) ) {
-							$data[ $p ] = self::parse_hadr( $v, $mf );
-						} elseif ( self::is_type( $v, 'h-cite' ) ) {
-							$data[ $p ] = self::parse_hcite( $v, $mf );
-						} else {
-							$u = self::get_plaintext( $v, 'url' );
-							if ( ( $u ) && wp_http_validate_url( $u ) ) {
-								$data[ $p ] = $u;
+					if ( self::is_microformat( $v ) ) {
+						$data[ $p ] = self::parse_item( $v, $mf, $args );
+					} else {
+						if ( isset( $data[ $p ] ) ) {
+							if ( is_array( $data[ $p ] ) ) {
+								$data[ $p ][] = $v;
+							} elseif ( is_string( $data[ $p ] ) ) {
+								$data[ $p ] = array( $data[ $p ], $v );
 							}
+						} else {
+							$data[ $p ] = $v;
 						}
 					}
 				}
@@ -319,84 +317,11 @@ class Parse_This_MF2 {
 	/**
 	 * Large function for fishing out author of $mf from various possible array elements.
 	 *
-	 * @param array      $mf
-	 * @param array|null $context
-	 * @param null       $url
-	 * @param bool       $matchname
-	 * @param bool       $matchhostname
-	 * @return mixed|null
-	 * @todo: this needs to be just part of an indiewebcamp.com/authorship algorithm, at the moment it tries to do too much
-	 * @todo: maybe split some bits of this out into separate functions
+	 * @param array      $item Individual item
+	 * @param array      $mf2 Overall Microformats array
+	 * @param boolean $follow Follow author arrays
 	 */
-	public static function get_author( array $mf, array $context = null, $url = null, $matchname = true, $matchhostname = true ) {
-		$entryauthor = null;
-
-		if ( null === $url && self::has_prop( $mf, 'url' ) ) {
-			$url = self::get_prop( $mf, 'url' ); }
-
-		if ( self::has_prop( $mf, 'author' ) && self::is_microformat( current( $mf['properties']['author'] ) ) ) {
-			$entryauthor = current( $mf['properties']['author'] ); } elseif ( self::has_prop( $mf, 'reviewer' ) && self::is_microformat( current( $mf['properties']['author'] ) ) ) {
-			$entryauthor = current( $mf['properties']['reviewer'] ); } elseif ( self::has_prop( $mf, 'author' ) ) {
-				$entryauthor = self::get_plaintext( $mf, 'author' ); }
-
-			// If we have no context that’s the best we can do
-			if ( null === $context ) {
-				return $entryauthor; }
-
-			// Whatever happens after this we’ll need these
-			$flattenedmf = self::flatten_microformats( $context );
-			$hcards      = self::find_microformats_by_type( $flattenedmf, 'h-card', false );
-			if ( is_string( $entryauthor ) ) {
-				// look through all page h-cards for one with this URL
-				$authorhcards = self::find_microformats_by_property( $hcards, 'url', $entryauthor, false );
-				if ( ! empty( $authorhcards ) ) {
-					$entryauthor = current( $authorhcards ); }
-			}
-			if ( is_string( $entryauthor ) && $matchname ) {
-				// look through all page h-cards for one with this name
-				$authorhcards = self::find_microformats_by_property( $hcards, 'name', $entryauthor, false );
-
-				if ( ! empty( $authorhcards ) ) {
-					$entryauthor = current( $authorhcards ); }
-			}
-
-			if ( null !== $entryauthor ) {
-				return $entryauthor; }
-
-			// look for page-wide rel-author, h-card with that
-			if ( ! empty( $context['rels'] ) && ! empty( $context['rels']['author'] ) ) {
-				// Grab first href with rel=author
-				$relauthorhref = current( $context['rels']['author'] );
-
-				$relauthorhcards = self::find_microformats_by_property( $hcards, 'url', $relauthorhref );
-
-				if ( ! empty( $relauthorhcards ) ) {
-					return current( $relauthorhcards ); }
-			}
-			// look for h-card with same hostname as $url if given
-			if ( null !== $url && $matchhostname ) {
-				$samehostnamehcards = self::find_microformats_by_callable(
-					$hcards,
-					function ( $mf ) use ( $url ) {
-						if ( ! has_prop( $mf, 'url' ) ) {
-							return false; }
-						foreach ( $mf['properties']['url'] as $u ) {
-							if ( same_hostname( $url, $u ) ) {
-								return true; }
-						}
-					},
-					false
-				);
-				if ( ! empty( $samehostnamehcards ) ) {
-					return current( $samehostnamehcards ); }
-			}
-			// Without fetching, this is the best we can do. Return the found string value, or null.
-			return empty( $relauthorhref )
-			? null
-			: $relauthorhref;
-	}
-
-	public static function find_author( $item, $mf2 ) {
+	public static function find_author( $item, $mf2, $url, $follow = false ) {
 		$author = array(
 			'type'  => 'card',
 			'name'  => null,
@@ -406,7 +331,7 @@ class Parse_This_MF2 {
 		// Author Discovery
 		// http://indieweb,org/authorship
 		$authorpage = false;
-		if ( array_key_exists( 'author', $item['properties'] ) ) {
+		if ( self::has_prop( $item, 'author' ) ) {
 			// Check if any of the values of the author property are an h-card
 			foreach ( $item['properties']['author'] as $a ) {
 				if ( self::is_type( $a, 'h-card' ) ) {
@@ -437,12 +362,17 @@ class Parse_This_MF2 {
 		}
 		// 7. "if there is an author-page URL" ...
 		if ( $authorpage ) {
-			$author['url'] = $authorpage;
-			return array_filter( $author );
+			if ( $follow && ! self::urls_match( $authorpage, self::get_plaintext( $mf2, 'url' ) ) ) {
+				$parse = new Parse_This( $authorpage );
+				$parse->fetch();
+				$parse->parse();
+				return $parse->get();
+			} else {
+				$author['url'] = $authorpage;
+				return array_filter( $author );
+			}
 		}
 	}
-
-
 
 	/**
 	 * Returns array per parse_url standard with pathname key added.
@@ -478,74 +408,6 @@ class Parse_This_MF2 {
 			}
 		}
 		return true;
-	}
-	/**
-	 * Representative h-card
-	 *
-	 * Given the microformats on a page representing a person or organisation (h-card), find the single h-card which is
-	 * representative of the page, or null if none is found.
-	 *
-	 * @see http://microformats.org/wiki/representative-h-card-parsing
-	 *
-	 * @param array  $mfs The parsed microformats of a page to search for a representative h-card
-	 * @param string $url The URL the microformats were fetched from
-	 * @return array|null Either a single h-card array structure, or null if none was found
-	 */
-	public static function get_representative_hcard( array $mfs, $url ) {
-		$hcardsmatchinguidurlpageurl = find_microformats_by_callable(
-			$mfs,
-			function ( $hcard ) use ( $url ) {
-				return has_prop( $hcard, 'uid' ) && has_prop( $hcard, 'url' )
-				&& urls_match( get_plaintext( $hcard, 'uid' ), $url )
-				&& count(
-					array_filter(
-						$hcard['properties']['url'],
-						function ( $u ) use ( $url ) {
-							return urls_match( $u, $url );
-						}
-					)
-				) > 0;
-			}
-		);
-		if ( ! empty( $hcardsmatchinguidurlpageurl ) ) {
-			return $hcardsmatchinguidurlpageurl[0]; }
-		if ( ! empty( $mfs['rels']['me'] ) ) {
-			$hcardsmatchingurlrelme = self::find_microformats_by_callable(
-				$mfs,
-				function ( $hcard ) use ( $mfs ) {
-					if ( hasProp( $hcard, 'url' ) ) {
-						foreach ( $mfs['rels']['me'] as $relurl ) {
-							foreach ( $hcard['properties']['url'] as $url ) {
-								if ( urlsMatch( $url, $relurl ) ) {
-									return true;
-								}
-							}
-						}
-					}
-					return false;
-				}
-			);
-			if ( ! empty( $hcardsmatchingurlrelme ) ) {
-				return $hcardsmatchingurlrelme[0]; }
-		}
-		$hcardsmatchingurlpageurl = find_microformats_by_callable(
-			$mfs,
-			function ( $hcard ) use ( $url ) {
-				return has_prop( $hcard, 'url' )
-				&& count(
-					array_filter(
-						$hcard['properties']['url'],
-						function ( $u ) use ( $url ) {
-							return urls_match( $u, $url );
-						}
-					)
-				) > 0;
-			}
-		);
-		if ( count( $hcardsmatchingurlpageurl ) === 1 ) {
-			return $hcardsmatchingurlpageurl[0]; }
-		// Otherwise, no representative h-card could be found.
-		return null;
 	}
 
 	/**
@@ -676,6 +538,7 @@ class Parse_This_MF2 {
 		$defaults = array(
 			'alternate' => true, // Use rel-alternate if set for jf2 or mf2
 			'feed'      => false, // Return entire feed if found
+			'follow'    => false, // Follow author links and return parsed data
 		);
 		$args     = wp_parse_args( $args, $defaults );
 		// Normalize all urls to ensure comparisons
@@ -718,27 +581,34 @@ class Parse_This_MF2 {
 		}
 
 		if ( 1 === $count ) {
-			return self::parse_item( $input['items'][0], $input );
+			return self::parse_item( $input['items'][0], $input, $args );
 		}
 		$return = array();
 		$card   = null;
 		foreach ( $input['items'] as $key => $item ) {
-			$parsed = self::parse_item( $item, $input );
-			if ( $url === $parsed['url'] ) {
-				if ( ! $args['feed'] ) {
-					return $parsed;
+			$parsed = self::parse_item( $item, $input, $args );
+			if ( isset( $parsed['url'] ) ) {
+				if ( is_array( $parsed['url'] ) ) {
+					$check = in_array( $url, $parsed['url'], true );
+				} elseif ( is_string( $parsed['url'] ) ) {
+					$check = self::urls_match( $url, $parsed['url'] );
 				}
-				if ( 'card' === $parsed['type'] ) {
-					unset( $input['items'][ $key ] );
-					return array_filter(
-						array(
-							'type'   => 'feed',
-							'author' => $parsed,
-							'items'  => self::parse_children( $input['items'], $input ),
-							'name'   => ifset( $card['name'] ),
-							'url'    => $url,
-						)
-					);
+				if ( $check ) {
+					if ( ! $args['feed'] ) {
+						return $parsed;
+					}
+					if ( 'card' === $parsed['type'] ) {
+						unset( $input['items'][ $key ] );
+						return array_filter(
+							array(
+								'type'   => 'feed',
+								'author' => $parsed,
+								'items'  => self::parse_children( $input['items'], $input, $args ),
+								'name'   => ifset( $card['name'] ),
+								'url'    => $url,
+							)
+						);
+					}
 				}
 			}
 			$return[] = $parsed;
@@ -747,78 +617,77 @@ class Parse_This_MF2 {
 		return $return;
 	}
 
-	public static function parse_hfeed( $entry, $mf ) {
+	public static function parse_hfeed( $entry, $mf, $args ) {
 		$data         = array(
 			'type'  => 'feed',
 			'items' => array(),
 		);
 		$data['name'] = self::get_plaintext( $entry, 'name' );
-		if ( isset( $entry['children'] ) ) {
-			$data['items'] = self::parse_children( $entry['children'], $mf );
+		if ( isset( $entry['children'] ) && $args['feed'] ) {
+			$data['items'] = self::parse_children( $entry['children'], $mf, $args );
 		}
 		return array_filter( $data );
 
 	}
 
-	public static function parse_children( $children, $mf ) {
+	public static function parse_children( $children, $mf, $args ) {
 		$items = array();
+		$index = 0;
 		foreach ( $children as $child ) {
-			$items[] = self::parse_item( $child, $mf );
+			if ( isset( $args['limit'] ) && $args['limit'] === $index ) {
+				continue;
+			}
+			$items[] = self::parse_item( $child, $mf, $args );
+			$index++;
 		}
 		return array_filter( $items );
 	}
 
-	public static function parse_item( $item, $mf ) {
-		if ( in_array( 'h-feed', $item['type'], true ) ) {
+	public static function parse_item( $item, $mf, $args ) {
+		if ( self::is_type( $item, 'h-feed' ) ) {
 			if ( 1 !== count( $item['children'] ) ) {
-				return self::parse_hfeed( $item, $mf );
+				return self::parse_hfeed( $item, $mf, $args );
 			} else {
-				return self::parse_item( $item['children'][0] );
+				return self::parse_item( $item['children'][0], $args );
 			}
-		} elseif ( in_array( 'h-card', $item['type'], true ) ) {
-			return self::parse_hcard( $item, $mf );
-		} elseif ( in_array( 'h-entry', $item['type'], true ) || in_array( 'h-cite', $item['type'], true ) ) {
-			return self::parse_hentry( $item, $mf );
-		} elseif ( in_array( 'h-event', $item['type'], true ) ) {
-			return self::parse_hevent( $item, $mf );
-		} elseif ( in_array( 'h-review', $item['type'], true ) ) {
-			return self::parse_hreview( $item, $mf );
-		} elseif ( in_array( 'h-recipe', $item['type'], true ) ) {
-			return self::parse_hrecipe( $item, $mf );
-		} elseif ( in_array( 'h-listing', $item['type'], true ) ) {
-			return self::parse_hlisting( $item, $mf );
-		} elseif ( in_array( 'h-product', $item['type'], true ) ) {
-			return self::parse_hproduct( $item, $mf );
-		} elseif ( in_array( 'h-resume', $item['type'], true ) ) {
-			return self::parse_hresume( $item, $mf );
-		} elseif ( in_array( 'h-item', $item['type'], true ) ) {
-			return self::parse_hitem( $item, $mf );
+		} elseif ( self::is_type( $item, 'h-card' ) ) {
+			return self::parse_hcard( $item, $mf, $args );
+		} elseif ( self::is_type( $item, 'h-entry' ) || self::is_type( $item, 'h-cite' ) ) {
+			return self::parse_hentry( $item, $mf, $args );
+		} elseif ( self::is_type( $item, 'h-event' ) ) {
+			return self::parse_hevent( $item, $mf, $args );
+		} elseif ( self::is_type( $item, 'h-review' ) ) {
+			return self::parse_hreview( $item, $mf, $args );
+		} elseif ( self::is_type( $item, 'h-recipe' ) ) {
+			return self::parse_hrecipe( $item, $mf, $args );
+		} elseif ( self::is_type( $item, 'h-listing' ) ) {
+			return self::parse_hlisting( $item, $mf, $args );
+		} elseif ( self::is_type( $item, 'h-product' ) ) {
+			return self::parse_hproduct( $item, $mf, $args );
+		} elseif ( self::is_type( $item, 'h-resume' ) ) {
+			return self::parse_hresume( $item, $mf, $args );
+		} elseif ( self::is_type( $item, 'h-item' ) ) {
+			return self::parse_hitem( $item, $mf, $args );
 		}
 		return array();
 	}
 
-	public static function parse_hcite( $entry, $mf ) {
+	public static function parse_hcite( $entry, $mf, $args ) {
 		$data         = self::get_prop_array( $entry, array_keys( $entry['properties'] ) );
 		$data['type'] = 'cite';
 		return $data;
 	}
 
-	public static function parse_h( $entry, $mf ) {
+	public static function parse_h( $entry, $mf, $args ) {
 		$data              = array();
 		$data['name']      = self::get_plaintext( $entry, 'name' );
 		$data['published'] = self::get_published( $entry );
 		$data['updated']   = self::get_updated( $entry );
 		$data['url']       = normalize_url( self::get_plaintext( $entry, 'url' ) );
-		$author            = self::find_author( $entry, $mf );
-		if ( $author ) {
-			if ( is_array( $author['type'] ) ) {
-				$data['author'] = self::parse_hcard( $author, $mf );
-			} else {
-				$data['author'] = $author;
-			}
-		}
-		$data['content'] = self::parse_html_value( $entry, 'content' );
-		$data['summary'] = self::get_summary( $entry, $data['content'] );
+		$author            = jf2_to_mf2( self::find_author( $entry, $mf, $data['url'], $args['follow'] ) );
+		$data['author']    = self::parse_hcard( $author, $mf, $args, $data['url'] );
+		$data['content']   = self::parse_html_value( $entry, 'content' );
+		$data['summary']   = self::get_summary( $entry, $data['content'] );
 
 		if ( isset( $mf['rels']['syndication'] ) ) {
 			if ( isset( $data['syndication'] ) ) {
@@ -836,7 +705,7 @@ class Parse_This_MF2 {
 		return array_filter( $data );
 	}
 
-	public static function parse_hentry( $entry, $mf ) {
+	public static function parse_hentry( $entry, $mf, $args ) {
 		// Array Values
 		$properties   = array(
 			'checkin',
@@ -869,62 +738,38 @@ class Parse_This_MF2 {
 			$data[ $property ] = self::get_plaintext( $entry, $property );
 		}
 		$data              = array_filter( $data );
-		$data              = array_merge( $data, self::parse_h( $entry, $mf ) );
+		$data              = array_merge( $data, self::parse_h( $entry, $mf, $args ) );
 		$data['post-type'] = self::post_type_discovery( $entry );
 		return array_filter( $data );
 	}
 
-	public static function parse_hcard( $hcard, $mf, $authorurl = false ) {
-		// If there is a matching author URL, use that one
-		$data = array(
-			'type' => 'card',
-		);
-		// Possible Nested Values
-		$properties = array( 'org', 'location' );
-		$data       = array_merge( $data, self::get_prop_array( $hcard, $properties ) );
-		// Single Values
-		$properties = array( 'url', 'name', 'photo', 'latitude', 'longitude', 'note', 'uid', 'bday', 'role', 'locality', 'region', 'country' );
-		foreach ( $properties as $p ) {
-			$v = self::get_plaintext( $hcard, $p );
-			if ( 'url' === $p && $authorurl ) {
-				// If there is a matching author URL, use that one
-				$found = false;
-				foreach ( $hcard['properties']['url'] as $url ) {
-					if ( wp_http_validate_url( $url ) ) {
-						$url = normalize_url( $url );
-						if ( $url === $authorurl ) {
-							$data['url'] = $url;
-							$found       = true;
-						}
-					}
-				}
-				if ( ! $found && wp_http_validate_url( $hcard['properties']['url'][0] ) ) {
-					$data['url'] = normalize_url( $hcard['properties']['url'][0] );
-				}
-			} elseif ( null !== $v ) {
-				// Make sure the URL property is actually a URL
-				if ( 'url' === $p || 'photo' === $p ) {
-					if ( wp_http_validate_url( $v ) ) {
-						$data[ $p ] = normalize_url( $v );
-					}
-				} else {
-					$data[ $p ] = $v;
-				}
-			}
+	public static function parse_hcard( $hcard, $mf, $args, $url = false ) {
+		if ( ! self::is_microformat( $hcard ) ) {
+			return;
 		}
+		$data         = self::get_prop_array( $hcard, array_keys( $hcard['properties'] ) );
+		$data['type'] = 'card';
 		if ( isset( $hcard['children'] ) ) {
-			$data['items'] = self::parse_children( $hcard['children'], $mf );
+			// In the case of sites like tantek.com where multiple feeds are nested inside h-card if it is a feed request return only the first feed
+			if ( $args['feed'] && self::is_type( $hcard['children'][0], 'h-feed' ) ) {
+				$feed = self::parse_hfeed( $hcard['children'][0], $mf, $args );
+				unset( $data['children'] );
+				$feed['author'] = $data;
+				return array_filter( $feed );
+			} else {
+				$data['items'] = self::parse_children( $hcard['children'], $mf, $args );
+			}
 		}
 		return array_filter( $data );
 	}
 
-	public static function parse_hevent( $entry, $mf ) {
+	public static function parse_hevent( $entry, $mf, $args ) {
 		$data       = array(
 			'type' => 'event',
 			'name' => null,
 			'url'  => null,
 		);
-		$data       = array_merge( $data, self::parse_h( $entry, $mf ) );
+		$data       = array_merge( $data, self::parse_h( $entry, $mf, $args ) );
 		$properties = array( 'location', 'start', 'end', 'photo' );
 		foreach ( $properties as $p ) {
 			$v = self::get_plaintext( $entry, $p );
@@ -935,7 +780,7 @@ class Parse_This_MF2 {
 		return array_filter( $data );
 	}
 
-	public static function parse_hreview( $entry, $mf ) {
+	public static function parse_hreview( $entry, $mf, $args ) {
 		$data       = array(
 			'type' => 'review',
 			'name' => null,
@@ -955,7 +800,7 @@ class Parse_This_MF2 {
 	}
 
 
-	public static function parse_hproduct( $entry, $mf ) {
+	public static function parse_hproduct( $entry, $mf, $args ) {
 		$data       = array(
 			'type' => 'product',
 			'name' => null,
@@ -975,7 +820,7 @@ class Parse_This_MF2 {
 	}
 
 
-	public static function parse_hresume( $entry, $mf ) {
+	public static function parse_hresume( $entry, $mf, $args ) {
 		$data       = array(
 			'type' => 'resume',
 			'name' => null,
@@ -994,7 +839,7 @@ class Parse_This_MF2 {
 		return array_filter( $data );
 	}
 
-	public static function parse_hlisting( $entry, $mf ) {
+	public static function parse_hlisting( $entry, $mf, $args ) {
 		$data       = array(
 			'type' => 'listing',
 			'name' => null,
@@ -1009,11 +854,11 @@ class Parse_This_MF2 {
 				$data[ $p ] = $v;
 			}
 		}
-		$data = array_merge( $data, self::parse_h( $entry, $mf ) );
+		$data = array_merge( $data, self::parse_h( $entry, $mf, $args ) );
 		return array_filter( $data );
 	}
 
-	public static function parse_hrecipe( $entry, $mf ) {
+	public static function parse_hrecipe( $entry, $mf, $args ) {
 		$data       = array(
 			'type' => 'recipe',
 			'name' => null,
@@ -1028,11 +873,11 @@ class Parse_This_MF2 {
 				$data[ $p ] = $v;
 			}
 		}
-		$data = array_merge( $data, self::parse_h( $entry, $mf ) );
+		$data = array_merge( $data, self::parse_h( $entry, $mf, $args ) );
 		return array_filter( $data );
 	}
 
-	public static function parse_hitem( $entry, $mf ) {
+	public static function parse_hitem( $entry, $mf, $args ) {
 		$data       = array(
 			'type' => 'item',
 			'name' => null,
@@ -1047,11 +892,11 @@ class Parse_This_MF2 {
 				$data[ $p ] = $v;
 			}
 		}
-		$data = array_merge( $data, self::parse_h( $entry, $mf ) );
+		$data = array_merge( $data, self::parse_h( $entry, $mf, $args ) );
 		return array_filter( $data );
 	}
 
-	public static function parse_hadr( $hadr, $mf ) {
+	public static function parse_hadr( $hadr, $mf, $args ) {
 		$data       = array(
 			'type' => 'adr',
 			'name' => null,
@@ -1111,9 +956,13 @@ class Parse_This_MF2 {
 			$name = static::get_plaintext( $mf, 'name' );
 			if ( ! empty( $name ) ) {
 				$name    = trim( $name );
-				$content = trim( static::get_plaintext( $mf, 'content' ) );
-				if ( 0 !== strpos( $content, $name ) ) {
-					return 'article';
+				$content = static::get_plaintext( $mf, 'content' );
+				if ( is_string( $content ) ) {
+					$content = trim( $content );
+					if ( 0 !== strpos( $content, $name ) ) {
+						return 'article';
+					}
+				} elseif ( is_array( $content ) ) {
 				}
 			}
 			return 'note';
