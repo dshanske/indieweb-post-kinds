@@ -314,7 +314,7 @@ class Parse_This {
 			'alternate' => false, // check for rel-alternate jf2 or mf2 feed
 			'feed'      => false, // If true will return the full feed otherwise will only return top-level
 			'follow'    => false, // If set to true h-card and author properties with external urls will be retrieved parsed and merged into the return
-			'limit'     => 150 // Limit the number of children returned.
+			'limit'     => 150, // Limit the number of children returned.
 		);
 		$args     = wp_parse_args( $args, $defaults );
 		if ( $this->content instanceof WP_Post ) {

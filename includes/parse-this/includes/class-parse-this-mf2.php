@@ -126,7 +126,7 @@ class Parse_This_MF2 {
 	 */
 	public static function to_plaintext( $v ) {
 		if ( self::is_microformat( $v ) || self::is_embedded_html( $v ) ) {
-			return $v['value']; 
+			return $v['value'];
 		} elseif ( is_array( $v ) && isset( $v['text'] ) ) {
 			return $v['text'];
 		}
@@ -962,7 +962,6 @@ class Parse_This_MF2 {
 					if ( 0 !== strpos( $content, $name ) ) {
 						return 'article';
 					}
-				} elseif ( is_array( $content ) ) {
 				}
 			}
 			return 'note';
