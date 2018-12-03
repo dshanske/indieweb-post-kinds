@@ -81,6 +81,9 @@ class Post_Kinds_Plugin {
 		// Parse This
 		require_once plugin_dir_path( __FILE__ ) . 'includes/parse-this/parse-this.php';
 
+		// Kind Menu Widget
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-menu-widget.php';
+
 		// Load stylesheets.
 		add_action( 'wp_enqueue_scripts', array( 'Post_Kinds_Plugin', 'style_load' ) );
 		add_action( 'admin_enqueue_scripts', array( 'Post_Kinds_Plugin', 'admin_style_load' ) );

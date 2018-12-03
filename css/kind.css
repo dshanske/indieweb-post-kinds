@@ -11,6 +11,20 @@
   color: grey;
 }
 
+#kind-menu .svg-icon {
+  fill: currentColor;
+  padding-left: 2px;
+  padding-right: 2px;
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+  top: -0.0625em;
+  color: black;
+}
+#kind-menu ul {
+  list-style-type: none;
+}
+
 .response .svg-icon {
   fill: currentColor;
   padding-left: 2px;
