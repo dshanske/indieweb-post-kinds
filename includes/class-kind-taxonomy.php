@@ -983,8 +983,17 @@ final class Kind_Taxonomy {
 	public static function get_post_kind_link( $kind ) {
 		$term = get_term_by( 'slug', $kind, 'kind' );
 		if ( ! $term || is_wp_error( $term ) ) {
-			return false; }
+			return false; 
+		}
 		return get_term_link( $term );
+	}
+
+	public static function get_post_kind_count( $kind ) {
+		$term = get_term_by( 'slug', $kind, 'kind' );
+		if ( ! $term || is_wp_error( $term ) ) {
+			return false; 
+		}
+		return $term->count;
 	}
 
 	public static function get_post_kind_slug( $post = null ) {

@@ -49,7 +49,22 @@ class Kind_Menu_Widget extends WP_Widget {
 		<ul id="kind-menu">
 		<?php
 		foreach ( $include as $i ) {
-			printf( '<li>%1$s<a href="%2$s">%3$s</a></li>', Kind_Taxonomy::get_icon( $i ), esc_url( Kind_Taxonomy::get_post_kind_link( $i ) ), esc_html( Kind_Taxonomy::get_kind_info( $i, 'name' )) ); // phpcs:ignore
+			$count = Kind_Taxonomy::get_post_kind_count( $i );
+			if ( $count === 0 ) {
+				continue;
+			}
+			$name = ( $count === 1 ) ? Kind_Taxonomy::get_kind_info( $i, 'singular_name' ) : Kind_Taxonomy::get_kind_info( $i, 'name' );
+			if ( 1 === (int) $instance['count'] ) {
+				$count = sprintf( '%1$s (%2$s)', $name, $count );
+			} else {
+				$count = $name;
+			}
+			printf(
+				'<li>%1$s<a href="%2$s">%3$s</a></li>',
+				Kind_Taxonomy::get_icon( $i ),
+				esc_url( Kind_Taxonomy::get_post_kind_link( $i ) ),
+				$count
+			); // phpcs:ignore
 		}
 		if ( 1 === (int) $instance['all'] ) {
 			printf( '<li>%1$s<a href="%2$s">%3$s</a></li>', Kind_Taxonomy::get_icon( 'firehose' ), esc_url( get_post_type_archive_link( 'post' ) ), esc_html__( 'All Posts', 'indieweb-post-kinds' ) ); // phpcs:ignore
@@ -89,6 +104,7 @@ class Kind_Menu_Widget extends WP_Widget {
 	 */
 	public function form( $instance ) {
 		$defaults  = array(
+			'count'     => 1,
 			'all'       => 1,
 			'termslist' => array(),
 		);
@@ -116,6 +132,11 @@ class Kind_Menu_Widget extends WP_Widget {
 		<label for="<?php echo esc_attr( $this->get_field_id( 'all' ) ); ?>"><?php esc_html_e( 'Show Link to All:', 'indieweb-post-kinds' ); ?></label>
 		<input type="hidden" name="<?php echo esc_attr( $this->get_field_name( 'all' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'all' ) ); ?>" value="0" />
 		<input type="checkbox" name="<?php echo esc_attr( $this->get_field_name( 'all' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'all' ) ); ?>" value="1" <?php checked( $instance['all'], 1 ); ?> />
+</p>
+		<p>
+		<label for="<?php echo esc_attr( $this->get_field_id( 'count' ) ); ?>"><?php esc_html_e( 'Show Count:', 'indieweb-post-kinds' ); ?></label>
+		<input type="hidden" name="<?php echo esc_attr( $this->get_field_name( 'count' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'count' ) ); ?>" value="0" />
+		<input type="checkbox" name="<?php echo esc_attr( $this->get_field_name( 'count' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'count' ) ); ?>" value="1" <?php checked( $instance['count'], 1 ); ?> />
 </p>
 		<?php
 	}
