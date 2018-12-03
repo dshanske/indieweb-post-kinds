@@ -220,6 +220,9 @@ The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow y
 
 ## Changelog ##
 
+### 3.1.3 ( 2018-12-xx ) ###
+* Add Kind Menu Widget
+
 ### 3.1.2 ( 2018-11-24 ) ###
 * Date archive view for kind archives
 * Tag archive view for kind archives

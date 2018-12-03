@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Post Kinds 3.1.2\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2018-11-24 21:43:27+00:00\n"
+"POT-Creation-Date: 2018-12-03 01:59:20+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -116,6 +116,22 @@ msgid ""
 "interested.</li>\n"
 " \t\t\t            \t\t\t</ul>\n"
 " \t\t\t\t\t\t"
+msgstr ""
+
+#: includes/class-kind-menu-widget.php:16
+msgid "Kind Menu Widget"
+msgstr ""
+
+#: includes/class-kind-menu-widget.php:19
+msgid "A widget that allows you to display a menu of kind archives"
+msgstr ""
+
+#: includes/class-kind-menu-widget.php:55
+msgid "All Posts"
+msgstr ""
+
+#: includes/class-kind-menu-widget.php:116
+msgid "Show Link to All:"
 msgstr ""
 
 #: includes/class-kind-metabox.php:108
@@ -809,7 +825,11 @@ msgstr ""
 msgid "Show Feed"
 msgstr ""
 
-#: includes/parse-this/includes/class-parse-this-api.php:59
+#: includes/parse-this/includes/class-parse-this-api.php:58
+msgid "Follow Author Links"
+msgstr ""
+
+#: includes/parse-this/includes/class-parse-this-api.php:60
 msgid "Parse"
 msgstr ""
 
@@ -822,7 +842,7 @@ msgstr ""
 msgid "Parse This is not installed. Please advise the developer"
 msgstr ""
 
-#: indieweb-post-kinds.php:122
+#: indieweb-post-kinds.php:125
 msgid ""
 "For responses to URLs, such as responding to a post or article, this site "
 "allows the storage of data around the post/article in order to generate a "

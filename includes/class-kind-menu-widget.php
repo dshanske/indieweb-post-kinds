@@ -49,7 +49,10 @@ class Kind_Menu_Widget extends WP_Widget {
 		<ul id="kind-menu">
 		<?php
 		foreach ( $include as $i ) {
-			printf( '<li>%1$s<a href="%2$s">%3$s</a></li>', Kind_Taxonomy::get_icon( $i ), Kind_Taxonomy::get_post_kind_link( $i ), Kind_Taxonomy::get_kind_info( $i, 'name' ) );
+			printf( '<li>%1$s<a href="%2$s">%3$s</a></li>', Kind_Taxonomy::get_icon( $i ), esc_url( Kind_Taxonomy::get_post_kind_link( $i ) ), esc_html( Kind_Taxonomy::get_kind_info( $i, 'name' )) ); // phpcs:ignore
+		}
+		if ( 1 === (int) $instance['all'] ) {
+			printf( '<li>%1$s<a href="%2$s">%3$s</a></li>', Kind_Taxonomy::get_icon( 'firehose' ), esc_url( get_post_type_archive_link( 'post' ) ), esc_html__( 'All Posts', 'indieweb-post-kinds' ) ); // phpcs:ignore
 		}
 		?>
 		</ul>
@@ -85,11 +88,14 @@ class Kind_Menu_Widget extends WP_Widget {
 	 * @param array $instance Previously saved values from database.
 	 */
 	public function form( $instance ) {
-		$defaults  = array( 'termslist' => array() );
+		$defaults  = array(
+			'all'       => 1,
+			'termslist' => array(),
+		);
 		$instance  = wp_parse_args( (array) $instance, $defaults );
 		$termslist = (array) $instance['termslist'];
 		?>
-		 <div id="kind-all"> 
+		<div id="kind-all"> 
 		<?php
 		foreach ( get_option( 'kind_termslist', Kind_Taxonomy::get_kind_list() ) as $term ) {
 			$value = Kind_Taxonomy::get_post_kind_info( $term );
@@ -101,11 +107,16 @@ class Kind_Menu_Widget extends WP_Widget {
 					esc_attr( $term ),
 					checked( in_array( $term, $termslist, true ), true, false )
 				);
-				printf( '%1$s %2$s<br />', Kind_Taxonomy::get_icon( $term ), sanitize_text_field( $value->singular_name ) );
+				printf( '%1$s %2$s<br />', Kind_Taxonomy::get_icon( $term ), esc_html( $value->singular_name ) ); //phpcs:ignore
 			}
 		}
 		?>
 		</div>
+		<p>
+		<label for="<?php echo esc_attr( $this->get_field_id( 'all' ) ); ?>"><?php esc_html_e( 'Show Link to All:', 'indieweb-post-kinds' ); ?></label>
+		<input type="hidden" name="<?php echo esc_attr( $this->get_field_name( 'all' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'all' ) ); ?>" value="0" />
+		<input type="checkbox" name="<?php echo esc_attr( $this->get_field_name( 'all' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'all' ) ); ?>" value="1" <?php checked( $instance['all'], 1 ); ?> />
+</p>
 		<?php
 	}
 }
