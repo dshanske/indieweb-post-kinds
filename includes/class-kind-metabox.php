@@ -316,12 +316,12 @@ class Kind_Metabox {
 		$cite['featured']    = ifset( $_POST['cite_featured'] );
 
 		$author          = array();
-		$author['type']  = 'card';
 		$author['name']  = self::explode( ifset( $_POST['cite_author_name'] ) );
 		$author['url']   = self::explode( ifset( $_POST['cite_author_url'] ) );
 		$author['photo'] = self::explode( ifset( $_POST['cite_author_photo'] ) );
 		$author          = array_filter( $author );
 		if ( ! empty( $author ) ) {
+			$author['type'] = 'card';
 			$cite['author'] = jf2_to_mf2( $author );
 		}
 		$kind = $mf2_post->get( 'kind', true );
@@ -337,14 +337,17 @@ class Kind_Metabox {
 		}
 		$cite = array_merge( $fetch, $cite );
 		$cite = array_filter( $cite );
-		if ( 1 === count( $cite ) && array_key_exists( 'url', $cite ) ) {
-			$cite = $cite['url'];
-		} else {
-			// Temporary code which assumes everything except a checkin is a citation
-			if ( 'checkin' === $kind ) {
-				$cite['type'] = 'card';
+
+		if ( ! empty( $cite ) ) {
+			if ( 1 === count( $cite ) && array_key_exists( 'url', $cite ) ) {
+				$cite = $cite['url'];
 			} else {
-				$cite['type'] = 'cite';
+				// Temporary code which assumes everything except a checkin is a citation
+				if ( 'checkin' === $kind ) {
+					$cite['type'] = 'card';
+				} else {
+					$cite['type'] = 'cite';
+				}
 			}
 		}
 		$cite = jf2_to_mf2( $cite );
