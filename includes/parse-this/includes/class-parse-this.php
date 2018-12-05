@@ -73,14 +73,8 @@ class Parse_This {
 				return 'atom';
 			case 'application/jf2feed+json':
 				return 'jf2feed';
-			case 'application/stream+json':
-				return 'activitystream';
-			case 'application/mf2+json':
-				return 'mf2-json';
-			case 'application/jf2+json':
-				return 'jf2-json';
 			default:
-				return 'feed';
+				return '';
 		}
 	}
 
@@ -181,17 +175,18 @@ class Parse_This {
 				$href  = $link->getAttribute( 'href' );
 				$title = $link->getAttribute( 'title' );
 				$type  = self::get_feed_type( $link->getAttribute( 'type' ) );
-				if ( in_array( $rel, array( 'alternate', 'feed' ), true ) ) {
+				if ( in_array( $rel, array( 'alternate', 'feed' ), true ) && ! empty( $type ) ) {
 					$links[] = array(
-						'url'  => WP_Http::make_absolute_url( $href, $url ),
-						'type' => $type,
-						'name' => $title,
+						'url'        => WP_Http::make_absolute_url( $href, $url ),
+						'type'       => 'feed',
+						'_feed_type' => $type,
+						'name'       => $title,
 					);
 				}
 			}
 			// Check to see if the current page is an h-feed
-			$this->parse();
-			if ( 'feed' === $this->jf2['type'] ) {
+			$this->parse( array( 'feed' => true ) );
+			if ( isset( $this->jf2['type'] ) && 'feed' === $this->jf2['type'] ) {
 				$links[] = array(
 					'url'  => $url,
 					'type' => 'microformats',
@@ -200,19 +195,16 @@ class Parse_This {
 			}
 			// Sort feeds by priority
 			$rank = array(
-				'jf2feed'        => 0,
-				'jf2-json'       => 1,
-				'mf2-json'       => 2,
-				'microformats'   => 3,
-				'jsonfeed'       => 4,
-				'atom'           => 5,
-				'rss'            => 6,
-				'activitystream' => 6,
+				'jf2feed'      => 0,
+				'microformats' => 1,
+				'jsonfeed'     => 2,
+				'atom'         => 3,
+				'rss'          => 4,
 			);
 			usort(
 				$links,
 				function( $a, $b ) use ( $rank ) {
-					return $rank[ $a['type'] ] > $rank[ $b['type'] ];
+					return $rank[ $a['_feed_type'] ] > $rank[ $b['_feed_type'] ];
 				}
 			);
 
