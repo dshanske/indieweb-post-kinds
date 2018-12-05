@@ -45,8 +45,8 @@ class Kind_Menu_Widget extends WP_Widget {
 
 		?>
 
-		<div id="kind_menu_widget">
-		<ul id="kind-menu">
+		<div id="kind-menu">
+		<ul>
 		<?php
 		foreach ( $include as $i ) {
 			$count = Kind_Taxonomy::get_post_kind_count( $i );
