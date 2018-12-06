@@ -4,6 +4,20 @@
  *
  */
 $audios = $mf2_post->get_audios();
+if ( $audios && is_array( $audios ) ) {
+	foreach( $audios as $audio ) {
+		if ( wp_http_validate_url( $audio ) ) {
+			$audio = attachment_url_to_postid( $audio );
+		}
+		if ( is_numeric( $audio ) ) {
+			$audio_attachment = new MF2_Post( $audio );
+			$cite = $audio_attachment->get();
+		}
+	}
+}
+
+
+
 if ( $cite && ! $audios ) {
 	$url   = ifset( $cite['url'] );
 	$embed = self::get_embed( $url );

@@ -29,7 +29,7 @@ class MF2_Post {
 			$this->uid = $post->ID;
 		}
 		$_mf2_post = wp_cache_get( $this->uid, 'mf2_posts' );
-		if ( is_object( $_mf2_post ) ) {
+		if ( is_object( $_mf2_post ) && $_mf2_post instanceof MF2_Post ) {
 			if ( ! empty( $_mf2_post->url ) ) {
 				return $_mf2_post;
 			}

@@ -335,7 +335,13 @@ class Parse_This_MF2 {
 			// Check if any of the values of the author property are an h-card
 			foreach ( $item['properties']['author'] as $a ) {
 				if ( self::is_type( $a, 'h-card' ) ) {
-					// 5.1 "if it has an h-card, use it, exit."
+					// 5.1 "if it has an h-card, use it, exit." Unless it has no photo in which case if follow is set try to get more data.
+					if ( ! self::has_prop( $a, 'photo' ) && self::has_prop( $a, 'url' ) && $follow ) {
+						$parse = new Parse_This( self::get_plaintext( $a, 'url' ) );
+						$parse->fetch();
+						$parse->parse();
+						return $parse->get();
+					}
 					return $a;
 				} elseif ( is_string( $a ) ) {
 					if ( wp_http_validate_url( $a ) ) {
@@ -397,17 +403,7 @@ class Parse_This_MF2 {
 	 * @see parseUrl()
 	 */
 	public static function urls_match( $url1, $url2 ) {
-		$u1 = wp_parse_url( $url1 );
-		$u2 = wp_parse_url( $url2 );
-		foreach ( array_merge( array_keys( $u1 ), array_keys( $u2 ) ) as $component ) {
-			if ( ! array_key_exists( $component, $u1 ) || ! array_key_exists( $component, $u1 ) ) {
-				return false;
-			}
-			if ( $u1[ $component ] !== $u2[ $component ] ) {
-				return false;
-			}
-		}
-		return true;
+		return ( normalize_url( $url1 ) === normalize_url( $url2 ) );
 	}
 
 	/**

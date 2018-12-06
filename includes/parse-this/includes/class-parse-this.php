@@ -188,9 +188,10 @@ class Parse_This {
 			$this->parse( array( 'feed' => true ) );
 			if ( isset( $this->jf2['type'] ) && 'feed' === $this->jf2['type'] ) {
 				$links[] = array(
-					'url'  => $url,
-					'type' => 'microformats',
-					'name' => $this->jf2['name'],
+					'url'        => $url,
+					'type'       => 'feed',
+					'_feed_type' => 'microformats',
+					'name'       => $this->jf2['name'],
 				);
 			}
 			// Sort feeds by priority
