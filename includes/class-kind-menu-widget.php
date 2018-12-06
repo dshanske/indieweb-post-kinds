@@ -60,14 +60,14 @@ class Kind_Menu_Widget extends WP_Widget {
 				$count = $name;
 			}
 			printf(
-				'<li>%1$s<a href="%2$s">%3$s</a></li>',
+				'<li><a href="%2$s">%1$s%3$s</a></li>',
 				Kind_Taxonomy::get_icon( $i ),
 				esc_url( Kind_Taxonomy::get_post_kind_link( $i ) ),
 				$count
 			); // phpcs:ignore
 		}
 		if ( 1 === (int) $instance['all'] ) {
-			printf( '<li>%1$s<a href="%2$s">%3$s</a></li>', Kind_Taxonomy::get_icon( 'firehose' ), esc_url( get_post_type_archive_link( 'post' ) ), esc_html__( 'All Posts', 'indieweb-post-kinds' ) ); // phpcs:ignore
+			printf( '<li><a href="%2$s">%1$s%3$s</a></li>', Kind_Taxonomy::get_icon( 'firehose' ), esc_url( get_post_type_archive_link( 'post' ) ), esc_html__( 'All Posts', 'indieweb-post-kinds' ) ); // phpcs:ignore
 		}
 		?>
 		</ul>
