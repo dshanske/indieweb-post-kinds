@@ -1,8 +1,8 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like, scrobble
-Stable tag: 3.1.2
-Requires at least: 4.7
+Stable tag: 3.1.3
+Requires at least: 4.9.6
 Requires PHP: 5.3
 Tested up to: 4.9.8
 License: GPLv2 or later
@@ -117,7 +117,6 @@ WordPress](http://indieweb.org/Getting_Started_on_WordPress).
 You can enable/disable more based on preference. Some may be enabled by plugins. You do not have to use ones you don't want. Not having a post kind enabled 
 will not disable the functionality on existing posts, it only hides the selection in adding new posts.
 
-
 = What are the kinds of posts I can make? =
 
 These kinds have an analog in post formats. Adding context to one of these may make it a Passive Kind.
@@ -175,6 +174,32 @@ interface at this time.
  * **Acquisition** - Purchased, Donated, or otherwise acquired an object
  * **Question** - Question is a post type for soliciting answer replies, which are then typically up/down voted by others and then displayed underneath the question post ordered by highest positive vote count rather than time ordered.
 
+= Can I add my own kinds? = 
+
+I would prefer if something is popular enough to merge it into the plugin. However if you are interested in creating your own there is functionality around it.
+
+register_post_kind(
+	'reply',
+		array(
+			'singular_name'   => __( 'Reply', 'indieweb-post-kinds' ), // Name for one instance of the kind
+			'name'            => __( 'Replies', 'indieweb-post-kinds' ), // General name for the kind plural
+		       	'verb'            => __( 'Replied to', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+			'property'        => 'in-reply-to', // microformats 2 property
+                        'format'          => 'link', // Post Format that maps to this
+                        'description'     => __( 'a reply to content typically on another site', 'indieweb-post-kinds' ),
+                        'description-url' => 'http://indieweb.org/reply',
+                        'title'           => false, // Should this kind have an explicit title
+                        'show'            => true, // Show in Settings
+                        )
+		)
+);
+
+Add a function with your kind in the above format, hooking it in the init hook and it will add the Kind to the system. 
+
+= Can I enable one of the Kinds you plan to offer in future? =
+
+`set_post_kind_visibility( $slug, $show = true )` - If you add this function in early on, it will change the visibility of a kind.
+
 = Can I create archives for each kind? ==
 
 Post Kinds automatically handles the display of archives of individual types. So to view all the posts marked as "note", for example, one could visit the URL http://www.YOURSITE.COM/kind/note/. 
@@ -213,11 +238,16 @@ below and call `kind_display` directly. This will allow it to appear outside the
 
 The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow you to manipulate the kind settings in a post. `get_post_kind_string` will return the display name of a kind.
 
+If you want to customize the look of the display, you can create a directory in your theme called `kind_views`, copy the file from the views directory of the plugin, and modify it. This will persist
+through future plugin updates.
+
 
 == Changelog ==
 
-= 3.1.3 ( 2018-12-xx ) =
+= 3.1.3 ( 2018-12-06 ) =
 * Add Kind Menu Widget
+* Add onthisday redirect
+* Minor fixes
 
 = 3.1.2 ( 2018-11-24 ) =
 * Date archive view for kind archives

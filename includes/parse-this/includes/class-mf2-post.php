@@ -27,6 +27,16 @@ class MF2_Post {
 			$this->uid = (int) $post;
 		} elseif ( $post instanceof WP_Post ) {
 			$this->uid = $post->ID;
+		} elseif ( wp_http_validate_url( $post ) ) {
+			$id = url_to_postid( $post );
+			if ( $id ) {
+				$this->uid = $id;
+				$post      = $id;
+			} else {
+				$id        = attachment_url_to_postid( $post );
+				$this->uid = $id;
+				$post      = id;
+			}
 		}
 		$_mf2_post = wp_cache_get( $this->uid, 'mf2_posts' );
 		if ( is_object( $_mf2_post ) && $_mf2_post instanceof MF2_Post ) {

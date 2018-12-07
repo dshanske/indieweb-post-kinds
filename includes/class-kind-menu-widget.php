@@ -48,22 +48,27 @@ class Kind_Menu_Widget extends WP_Widget {
 		<div id="kind-menu">
 		<ul>
 		<?php
+		$feed = is_front_page() ? 'rel="feed"' : '';
 		foreach ( $include as $i ) {
 			$count = Kind_Taxonomy::get_post_kind_count( $i );
-			if ( $count === 0 ) {
+			if ( 0 === $count ) {
 				continue;
 			}
-			$name = ( $count === 1 ) ? Kind_Taxonomy::get_kind_info( $i, 'singular_name' ) : Kind_Taxonomy::get_kind_info( $i, 'name' );
+			$name = ( 1 === $count ) ? Kind_Taxonomy::get_kind_info( $i, 'singular_name' ) : Kind_Taxonomy::get_kind_info( $i, 'name' );
+			/* translators: 1. Blog Title 2. Kind Singular Name */
+			$title = sprintf( __( 'title="%1$s %2$s Feed"', 'indieweb-post-kinds' ), esc_attr( get_bloginfo( 'name' ) ), esc_attR( Kind_Taxonomy::get_kind_info( $i, 'singular_name' ) ) );
 			if ( 1 === (int) $instance['count'] ) {
 				$count = sprintf( '%1$s (%2$s)', $name, $count );
 			} else {
 				$count = $name;
 			}
 			printf(
-				'<li><a href="%2$s">%1$s%3$s</a></li>',
-				Kind_Taxonomy::get_icon( $i ),
+				'<li><a %4$s %5$s href="%2$s">%1$s%3$s</a></li>',
+				Kind_Taxonomy::get_icon( $i ), // phpcs:ignore
 				esc_url( Kind_Taxonomy::get_post_kind_link( $i ) ),
-				$count
+				$count, // phpcs:ignore
+				$feed, // phpcs:ignore
+				$title  // phpcs:ignore
 			); // phpcs:ignore
 		}
 		if ( 1 === (int) $instance['all'] ) {

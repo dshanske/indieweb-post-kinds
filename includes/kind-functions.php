@@ -14,6 +14,10 @@ function register_post_kind( $slug, $args ) {
 	Kind_Taxonomy::register_post_kind( $slug, $args );
 }
 
+function set_post_kind_visibility( $slug, $show = true ) {
+	Kind_Taxonomy::set_post_kind_visibility( $slug, $show );
+}
+
 /**
  * Retrieves an array of mf2 data from a post.
  *
