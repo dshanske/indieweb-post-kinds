@@ -41,7 +41,7 @@ class Kind_Menu_Widget extends WP_Widget {
 		}
 
 		// phpcs:ignore
-		esc_html( $args['before_widget'] );
+		echo $args['before_widget'];
 
 		?>
 

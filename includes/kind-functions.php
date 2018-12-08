@@ -210,7 +210,7 @@ function kind_video_gallery( $id, $args = null ) {
 	}
 	$return = '';
 	if ( $args['src'] ) {
-		$args    = wp_parse_args( $args, $defaults );
+		$args   = wp_parse_args( $args, $defaults );
 		$return = wp_video_shortcode( $args );
 	}
 	return $return;
