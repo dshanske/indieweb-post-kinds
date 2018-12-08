@@ -251,7 +251,7 @@ through future plugin updates.
 
 ## Changelog ##
 
-### 3.1.4 ( 2018-12-xx ) ###
+### 3.1.4 ( 2018-12-07 ) ###
 * Fix issue with widget
 * Declare metaboxes are not compatible with Gutenberg
 
