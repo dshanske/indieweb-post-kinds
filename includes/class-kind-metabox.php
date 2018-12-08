@@ -204,7 +204,11 @@ class Kind_Metabox {
 			array( 'Kind_Metabox', 'reply_metabox' ), // Callback function
 			'post',
 			'kind_after_title', // Context
-			'default' // Priority
+			'default', // Priority
+			array(
+				'__block_editor_compatible_meta_box' => false,
+				'__back_compat_meta_box'             => true,
+			)
 		);
 	}
 
