@@ -1,10 +1,10 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.1.3  
+**Stable tag:** 3.1.4  
 **Requires at least:** 4.9.6  
 **Requires PHP:** 5.3  
-**Tested up to:** 4.9.8  
+**Tested up to:** 5.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -12,8 +12,8 @@ Ever want to reply to someone else's post with a post on your own site? Or to "l
 
 ## Description ##
 
-Post Kinds adds support for responding to and interacting with other sites using the standards
-developed by the IndieWeb by implementing [kinds of posts](http://indieweb.org/post_kinds).
+Post Kinds adds support to the Classic Editor for responding to and interacting with other sites using the standards
+developed by the IndieWeb by implementing [kinds of posts](http://indieweb.org/post_kinds). It is not compatible with Gutenberg.
 
 It can also distinguish certain types of passive posts in a manner similar to [post formats](http://codex.wordpress.org/Post_Formats). While it can work alongside
 post formats, it is recommended as a replacement as it functions in a similar manner.
@@ -45,6 +45,9 @@ responsibilities to responsibly use this data, and to remove information on requ
 2. [Chris Aldrich](http://boffosocko.com) always receives a credit on my plugins due his regular feedback, input, and usage.
 
 ## Upgrade Notice ##
+
+### 3.1.4 ###
+This version is compatible with 5.0 of WordPress but is not integrated with the Gutenberg editor and requires the Classic Editor to function correctly.
 
 ### 3.1.1 ###
 * Bugs were reported in 3.1.0 and this is a quick fix for the ones initially reported
@@ -247,6 +250,10 @@ through future plugin updates.
 
 
 ## Changelog ##
+
+### 3.1.4 ( 2018-12-xx ) ###
+* Fix issue with widget
+* Declare metaboxes are not compatible with Gutenberg
 
 ### 3.1.3 ( 2018-12-06 ) ###
 * Add Kind Menu Widget
