@@ -327,9 +327,11 @@ class Kind_Metabox {
 		$kind = $mf2_post->get( 'kind', true );
 		$type = Kind_Taxonomy::get_kind_info( $kind, 'property' );
 		// Make sure there is no overwrite of properties that might not be handled by the plugin
-		$fetch = array_filter( $mf2_post->fetch( $type ) );
+		$fetch = $mf2_post->fetch( $type );
 		if ( ! $fetch ) {
 			$fetch = array();
+		} else {
+			$fetch = array_filter( $fetch );
 		}
 		if ( ! empty( $_POST['cite_media'] ) ) {
 			$mf2_post->set( $type, array( $cite['url'] ) );
