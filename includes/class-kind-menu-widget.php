@@ -63,7 +63,7 @@ class Kind_Menu_Widget extends WP_Widget {
 				$count = $name;
 			}
 			printf(
-				'<li><a %4$s %5$s href="%2$s">%1$s%3$s</a></li>',
+				'<li><a %4$s %5$s type="text/html" href="%2$s">%1$s%3$s</a></li>',
 				Kind_Taxonomy::get_icon( $i ), // phpcs:ignore
 				esc_url( Kind_Taxonomy::get_post_kind_link( $i ) ),
 				$count, // phpcs:ignore
@@ -72,7 +72,7 @@ class Kind_Menu_Widget extends WP_Widget {
 			); // phpcs:ignore
 		}
 		if ( 1 === (int) $instance['all'] ) {
-			printf( '<li><a href="%2$s">%1$s%3$s</a></li>', Kind_Taxonomy::get_icon( 'firehose' ), esc_url( get_post_type_archive_link( 'post' ) ), esc_html__( 'All Posts', 'indieweb-post-kinds' ) ); // phpcs:ignore
+			printf( '<li><a type="text/html" href="%2$s">%1$s%3$s</a></li>', Kind_Taxonomy::get_icon( 'firehose' ), esc_url( get_post_type_archive_link( 'post' ) ), esc_html__( 'All Posts', 'indieweb-post-kinds' ) ); // phpcs:ignore
 		}
 		?>
 		</ul>
