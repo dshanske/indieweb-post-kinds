@@ -80,6 +80,7 @@ class Post_Kinds_Plugin {
 
 		// Parse This
 		require_once plugin_dir_path( __FILE__ ) . 'includes/parse-this/parse-this.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/parse-this/includes/class-mf2-post.php';
 
 		// Kind Menu Widget
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-menu-widget.php';
