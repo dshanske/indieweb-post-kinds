@@ -54,7 +54,12 @@ class Parse_This_API {
 			<p><label for="url"><?php esc_html_e( 'URL', 'indieweb-post-kinds' ); ?></label><input type="url" class="widefat" name="url" id="url" /></p>
 			<p><label for="mf2"><?php esc_html_e( 'MF2', 'indieweb-post-kinds' ); ?></label><input type="checkbox" name="mf2" id="mf2" /></p>
 			<p><label for="discovery"><?php esc_html_e( 'Feed Discovery', 'indieweb-post-kinds' ); ?></label><input type="checkbox" name="discovery" id="discovery" /></p>
-			<p><label for="feed"><?php esc_html_e( 'Show Feed', 'indieweb-post-kinds' ); ?></label><input type="checkbox" name="feed" id="feed" /></p>
+			<p><label for"return"><?php esc_html_e( 'Return Type', 'indieweb-post-kinds' ); ?></label>
+				<select name="return">
+					<option value="single"><?php esc_html_e( 'Single', 'indieweb-post-kinds' ); ?></option>
+					<option value="feed"><?php esc_html_e( 'Feed', 'indieweb-post-kinds' ); ?></option>
+				</select>
+			</p>
 			<p><label for="follow"><?php esc_html_e( 'Follow Author Links', 'indieweb-post-kinds' ); ?></label><input type="checkbox" name="follow" id="follow" /></p>
 			<?php wp_nonce_field( 'wp_rest' ); ?>
 			<?php submit_button( __( 'Parse', 'indieweb-post-kinds' ) ); ?>
@@ -93,23 +98,27 @@ class Parse_This_API {
 	public static function read( $request ) {
 		$url       = $request->get_param( 'url' );
 		$mf2       = $request->get_param( 'mf2' );
-		$feed      = $request->get_param( 'feed' );
+		$return    = $request->get_param( 'return' );
 		$discovery = $request->get_param( 'discovery' );
 		$follow    = $request->get_param( 'follow' );
-		$parse     = new Parse_This( $url );
+		if ( ! class_exists( 'Parse_This' ) ) {
+			require_once plugin_dir_path( __FILE__ ) . 'class-parse-this.php';
+		}
+
+		$parse = new Parse_This( $url );
 		if ( $discovery ) {
 			return $parse->fetch_feeds();
 
 		} else {
-			$return = $parse->fetch();
+			$r = $parse->fetch();
 		}
-		if ( is_wp_error( $return ) ) {
-			return $return;
+		if ( is_wp_error( $r ) ) {
+			return $r;
 		}
 		$parse->parse(
 			array(
-				'feed'   => isset( $feed ),
-				'follow' => isset( $follow ),
+				'return' => $return,
+				'follow' => $follow,
 			)
 		);
 		if ( $mf2 ) {

@@ -78,7 +78,11 @@ final class Kind_Taxonomy {
 
 	public static function the_title( $title, $post_id ) {
 		if ( ! $title && is_admin() ) {
-			echo mb_strimwidth( wp_strip_all_tags( get_the_excerpt( $post_id ) ), 0, 40, '...' ); // phpcs:ignore
+			$post = get_post( $post_id );
+			if ( $post instanceof WP_Post ) {
+				$excerpt = get_the_excerpt( $post );
+				return mb_strimwidth( wp_strip_all_tags( $excerpt ), 0, 40, '...' ) . '&diams;'; // phpcs:ignore
+			}
 		}
 		return $title;
 	}

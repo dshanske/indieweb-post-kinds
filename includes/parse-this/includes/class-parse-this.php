@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Parse This class.
  * Originally Derived from the Press This Class with Enhancements.
@@ -73,8 +74,13 @@ class Parse_This {
 				return 'atom';
 			case 'application/jf2feed+json':
 				return 'jf2feed';
-			default:
+			case 'application/json+oembed':
+			case 'text/xml+oembed':
 				return '';
+			case 'text/html':
+				return 'microformats';
+			default:
+				return 'microformats';
 		}
 	}
 
@@ -159,11 +165,24 @@ class Parse_This {
 		if ( empty( $url ) ) {
 			return new WP_Error( 'invalid-url', __( 'A valid URL was not provided.', 'indieweb-post-kinds' ) );
 		}
-		$this->fetch( $url );
+		$fetch = $this->fetch( $url );
+		if ( is_wp_error( $fetch ) ) {
+			return $fetch;
+		}
 		// A feed was given
 		if ( $this->content instanceof SimplePie ) {
+			if ( ! class_exists( 'Parse_This_RSS', false ) ) {
+				require_once plugin_dir_path( __FILE__ ) . '/class-parse-this-rss.php';
+			}
 			return array(
-				'results' => array( Parse_This_RSS::parse( $this->content, $url ) ),
+				'results' => array(
+					array(
+						'url'        => $url,
+						'type'       => 'feed',
+						'_feed_type' => Parse_This_RSS::get_type( $this->content ),
+						'name'       => $this->content->get_title(),
+					),
+				),
 			);
 		}
 		if ( $this->doc instanceof DOMDocument ) {
@@ -242,9 +261,9 @@ class Parse_This {
 		}
 
 		$args          = array(
-			'timeout'             => 10,
+			'timeout'             => 15,
 			'limit_response_size' => 1048576,
-			'redirection'         => 1,
+			'redirection'         => 5,
 			// Use an explicit user-agent for Parse This
 			'user-agent'          => 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:57.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36 Parse This/WP',
 		);
@@ -285,11 +304,14 @@ class Parse_This {
 
 		$response = wp_safe_remote_get( $url, $args );
 		$content  = wp_remote_retrieve_body( $response );
-		if ( in_array( $content_type, array( 'application/mf2+json', 'application/jf2+json' ), true ) ) {
+		if ( in_array( $content_type, array( 'application/mf2+json', 'application/jf2+json', 'application/jf2feed+json' ), true ) ) {
 			$content = json_decode( $content, true );
 			return true;
 		}
 		if ( 'application/json' === $content_type ) {
+			if ( ! class_exists( 'Parse_This_JSONFeed', false ) ) {
+				require_once plugin_dir_path( __FILE__ ) . '/class-parse-this-jsonfeed.php';
+			}
 			$content = json_decode( $content, true );
 			if ( $content && isset( $content['version'] ) && 'https://jsonfeed.org/version/1' === $content['version'] ) {
 				$content = Parse_This_JSONFeed::to_jf2( $content, $url );
@@ -305,15 +327,22 @@ class Parse_This {
 	public function parse( $args = array() ) {
 		$defaults = array(
 			'alternate' => false, // check for rel-alternate jf2 or mf2 feed
-			'feed'      => false, // If true will return the full feed otherwise will only return top-level
+			'return'    => 'single', // Options are single, feed, or TBC mention
 			'follow'    => false, // If set to true h-card and author properties with external urls will be retrieved parsed and merged into the return
 			'limit'     => 150, // Limit the number of children returned.
 		);
 		$args     = wp_parse_args( $args, $defaults );
+		// If not an option then revert to single
+		if ( ! in_array( $args['return'], array( 'single', 'feed' ), true ) ) {
+			$args['return'] = 'single';
+		}
 		if ( $this->content instanceof WP_Post ) {
 			$this->jf2 = self::wp_post( $this->content );
 			return;
 		} elseif ( $this->content instanceof SimplePie ) {
+			if ( ! class_exists( 'Parse_This_RSS', false ) ) {
+				require_once plugin_dir_path( __FILE__ ) . '/class-parse-this-rss.php';
+			}
 			$this->jf2 = Parse_This_RSS::parse( $this->content, $this->url );
 			return;
 		} elseif ( $this->doc instanceof DOMDocument ) {
@@ -326,7 +355,13 @@ class Parse_This {
 		}
 		// Ensure not already preparsed
 		if ( empty( $this->jf2 ) ) {
+			if ( ! class_exists( 'Parse_This_MF2', false ) ) {
+				require_once plugin_dir_path( __FILE__ ) . '/class-parse-this-mf2.php';
+			}
 			$this->jf2 = Parse_This_MF2::parse( $content, $this->url, $args );
+		}
+		if ( ! class_exists( 'Parse_This_HTML', false ) ) {
+			require_once plugin_dir_path( __FILE__ ) . '/class-parse-this-html.php';
 		}
 		// If No MF2
 		if ( empty( $this->jf2 ) ) {
@@ -343,6 +378,9 @@ class Parse_This {
 	}
 
 	public static function wp_post( $post ) {
+		if ( ! class_exists( 'MF2_Post', false ) ) {
+			require_once plugin_dir_path( __FILE__ ) . '/class-mf2-post.php';
+		}
 		$mf2 = new MF2_Post( $post );
 		return $mf2->get( null, true );
 	}

@@ -194,7 +194,7 @@ if ( ! function_exists( 'build_url' ) ) {
 
 
 if ( ! function_exists( 'normalize_url' ) ) {
-		// Adds slash if no path is in the URL, and convert hostname to lowercase
+	// Adds slash if no path is in the URL, and convert hostname to lowercase
 	function normalize_url( $url ) {
 			$parts = wp_parse_url( $url );
 		if ( empty( $parts['path'] ) ) {
@@ -204,5 +204,64 @@ if ( ! function_exists( 'normalize_url' ) ) {
 				$parts['host'] = strtolower( $parts['host'] );
 				return build_url( $parts );
 		}
+	}
+}
+
+if ( ! function_exists( 'post_type_discover' ) ) {
+	function post_type_discovery( $jf2 ) {
+		if ( ! is_array( $jf2 ) ) {
+			return '';
+		}
+		if ( ! array_key_exists( 'type', $jf2 ) ) {
+			return '';
+		}
+		if ( 'entry' === $jf2['type'] ) {
+			$map = array(
+				'rsvp'      => array( 'rsvp' ),
+				'checkin'   => array( 'checkin' ),
+				'itinerary' => array( 'itinerary' ),
+				'repost'    => array( 'repost-of' ),
+				'like'      => array( 'like-of' ),
+				'follow'    => array( 'follow-of' ),
+				'tag'       => array( 'tag-of' ),
+				'favorite'  => array( 'favorite-of' ),
+				'bookmark'  => array( 'bookmark-of' ),
+				'watch'     => array( 'watch-of' ),
+				'jam'       => array( 'jam-of' ),
+				'listen'    => array( 'listen-of' ),
+				'read'      => array( 'read-of' ),
+				'play'      => array( 'play-of' ),
+				'ate'       => array( 'eat', 'p3k-food' ),
+				'drink'     => array( 'drank' ),
+				'reply'     => array( 'in-reply-to' ),
+				'video'     => array( 'video' ),
+				'photo'     => array( 'photo' ),
+				'audio'     => array( 'audio' ),
+			);
+			foreach ( $map as $key => $value ) {
+				$diff = array_intersect( array_keys( $jf2 ), $value );
+				if ( ! empty( $diff ) ) {
+					return $key;
+				}
+			}
+			if ( isset( $jf2['name'] ) && ! empty( $jf2['name'] ) ) {
+				$jf2['name'] = $jf2['name'];
+				$content     = ifset( $jf2['content'] );
+				if ( ! $content ) {
+					$content = ifset( $jf2['summary'] );
+				}
+				if ( is_array( $content ) && array_key_exists( 'text', $content ) ) {
+					$content = $content['text'];
+				}
+				if ( is_string( $content ) ) {
+					$content = trim( $content );
+					if ( 0 !== strpos( $content, $jf2['name'] ) ) {
+						return 'article';
+					}
+				}
+			}
+				return 'note';
+		}
+		return '';
 	}
 }

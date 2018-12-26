@@ -108,7 +108,7 @@ class MF2_Post {
 				'type'       => array( 'h-entry' ),
 				'properties' => $this->mf2,
 			);
-			return Parse_This_MF2::post_type_discovery( $mf2 );
+			return post_type_discovery( mf2_to_jf2( $mf2 ) );
 		}
 	}
 
