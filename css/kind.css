@@ -11,7 +11,7 @@
   color: grey;
 }
 
-#kind-menu .svg-icon {
+#kind-menu .svg-icon, #kind-posts .svg-icon {
   fill: currentColor;
   padding-left: 2px;
   padding-right: 2px;
@@ -21,7 +21,7 @@
   top: -0.0625em;
   color: black;
 }
-#kind-menu ul {
+#kind-menu ul, #kind-posts ul {
   list-style-type: none;
 }
 

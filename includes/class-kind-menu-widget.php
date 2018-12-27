@@ -1,8 +1,8 @@
 <?php
 
-add_action( 'widgets_init', 'iwt_register_widget' );
+add_action( 'widgets_init', 'iwt_register_menu_widget' );
 
-function iwt_register_widget() {
+function iwt_register_menu_widget() {
 	register_widget( 'Kind_Menu_Widget' );
 }
 

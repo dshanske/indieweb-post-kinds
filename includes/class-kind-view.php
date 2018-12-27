@@ -244,7 +244,10 @@ class Kind_View {
 	 * @return array A translated post type string for specific domain or 'a post'
 	 */
 	public static function get_post_type_string( $url ) {
-		if ( ! $url ) {
+		if ( ! $url || ! is_string( $url ) ) {
+			return ' ';
+		}
+		if ( ! wp_http_validate_url( $url ) ) {
 			return ' ';
 		}
 		$strings = array(
