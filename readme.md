@@ -1,10 +1,10 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.1.4  
+**Stable tag:** 3.1.5  
 **Requires at least:** 4.9.6  
-**Requires PHP:** 5.3  
-**Tested up to:** 5.0  
+**Requires PHP:** 5.4  
+**Tested up to:** 5.0.2  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -250,6 +250,12 @@ through future plugin updates.
 
 
 ## Changelog ##
+
+### 3.1.5 ( 2018-12-xx ) ###
+* Update Parse This load to only load when needed
+* Add title to Kind Menu widget
+* Add Kind Posts Widget
+* List minimum supported version as PHP5.4 as part of a slow bump up of version requirements
 
 ### 3.1.4 ( 2018-12-07 ) ###
 * Fix issue with widget

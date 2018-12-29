@@ -6,10 +6,11 @@
 	<file>./includes/</file>
 	<exclude-pattern>*/includes/*\.(inc|css|js|svg)</exclude-pattern>
 	<exclude-pattern>*/includes/parse-this/*</exclude-pattern>
+	<exclude-pattern>*/includes/parse-this/includes/*</exclude-pattern>
 	<rule ref="PHPCompatibility"/>
-	<config name="testVersion" value="5.3-"/>
+	<config name="testVersion" value="5.4-"/>
 	<rule ref="PHPCompatibilityWP"/>
-	<config name="minimum_supported_wp_version" value="4.7"/>
+	<config name="minimum_supported_wp_version" value="4.8"/>
 	<rule ref="WordPress.WP.DeprecatedFunctions" />
 
 	<rule ref="WordPress-Core">
