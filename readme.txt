@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like, scrobble
-Stable tag: 3.1.5
+Stable tag: 3.1.6
 Requires at least: 4.9.6
 Requires PHP: 5.4
 Tested up to: 5.0.2
@@ -247,7 +247,11 @@ through future plugin updates.
 
 == Changelog ==
 
-= 3.1.5 ( 2018-12-xx ) =
+= 3.1.6 ( 2018-12-31) =
+* Fix Micropub bug introduced by Parse This change.
+* Written on a JetBlue flight as the last fix of 2018
+
+= 3.1.5 ( 2018-12-28 ) =
 * Update Parse This load to only load when needed
 * Add title to Kind Menu widget
 * Add Kind Posts Widget

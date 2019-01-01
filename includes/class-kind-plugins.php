@@ -77,7 +77,7 @@ class Kind_Plugins {
 		if ( ! $wp_args ) {
 			return;
 		}
-		$type = Parse_This_MF2::post_type_discovery( $input );
+		$type = post_type_discovery( mf2_to_jf2( $input ) );
 		if ( ! empty( $type ) ) {
 			set_post_kind( $wp_args['ID'], $type );
 		}
