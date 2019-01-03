@@ -321,7 +321,7 @@ class Parse_This_MF2 {
 	 * @param array      $mf2 Overall Microformats array
 	 * @param boolean $follow Follow author arrays
 	 */
-	public static function find_author( $item, $mf2, $url, $follow = false ) {
+	public static function find_author( $item, $mf2, $follow = false ) {
 		$author = array(
 			'type'  => 'card',
 			'name'  => null,
@@ -531,12 +531,13 @@ class Parse_This_MF2 {
 	 * @param string|DOMDocument|array $input HTML marked up content, HTML in DOMDocument, or array of already parsed MF2 JSON
 	 */
 	public static function parse( $input, $url, $args = array() ) {
-		$defaults = array(
+		$defaults    = array(
 			'alternate' => true, // Use rel-alternate if set for jf2 or mf2
 			'return'    => 'single',
 			'follow'    => false, // Follow author links and return parsed data
 		);
-		$args     = wp_parse_args( $args, $defaults );
+		$args        = wp_parse_args( $args, $defaults );
+		$args['url'] = $url;
 		if ( ! in_array( $args['return'], array( 'single', 'feed' ), true ) ) {
 			$args['return'] = 'single';
 		}
@@ -546,7 +547,8 @@ class Parse_This_MF2 {
 			require_once plugin_dir_path( __DIR__ ) . 'vendor/mf2/mf2/Mf2/Parser.php';
 		}
 		if ( is_string( $input ) || is_a( $input, 'DOMDocument' ) ) {
-			$input = Mf2\parse( $input, $url );
+			$parser = new Mf2\Parser( $input, $url );
+			$input  = $parser->parse();
 			if ( $args['alternate'] ) {
 				// Check for rel-alternate jf2 or mf2 feed
 				if ( isset( $input['rel-urls'] ) ) {
@@ -617,11 +619,18 @@ class Parse_This_MF2 {
 	}
 
 	public static function parse_hfeed( $entry, $mf, $args ) {
-		$data         = array(
+		$data           = array(
 			'type'  => 'feed',
 			'items' => array(),
 		);
-		$data['name'] = self::get_plaintext( $entry, 'name' );
+		$data['name']   = self::get_plaintext( $entry, 'name' );
+		$author         = jf2_to_mf2( self::find_author( $entry, $args['follow'] ) );
+		$data['author'] = self::parse_hcard( $author, $mf, $args, $data['url'] );
+		$data['uid']    = self::get_plaintext( $entry, 'uid' );
+		if ( isset( $entry['id'] ) && isset( $args['url'] ) && ! $data['uid'] ) {
+			$data['uid'] = $args['url'] . '#' . $entry['id'];
+		}
+
 		if ( isset( $entry['children'] ) && 'feed' === $args['return'] ) {
 			$data['items'] = self::parse_children( $entry['children'], $mf, $args );
 		}
@@ -637,7 +646,7 @@ class Parse_This_MF2 {
 				continue;
 			}
 			$item = self::parse_item( $child, $mf, $args );
-			if ( isset( $item['type'] ) && 'feed' !== $item['type'] ) {
+			if ( isset( $item['type'] ) ) {
 				$items[] = $item;
 			}
 			$index++;
@@ -647,11 +656,7 @@ class Parse_This_MF2 {
 
 	public static function parse_item( $item, $mf, $args ) {
 		if ( self::is_type( $item, 'h-feed' ) ) {
-			if ( isset( $item['children'] ) && 1 !== count( $item['children'] ) ) {
-				return self::parse_hfeed( $item, $mf, $args );
-			} else {
-				return self::parse_item( $item['children'][0], $args );
-			}
+			return self::parse_hfeed( $item, $mf, $args );
 		} elseif ( self::is_type( $item, 'h-card' ) ) {
 			return self::parse_hcard( $item, $mf, $args );
 		} elseif ( self::is_type( $item, 'h-entry' ) || self::is_type( $item, 'h-cite' ) ) {
@@ -681,6 +686,9 @@ class Parse_This_MF2 {
 	}
 
 	public static function compare( $string1, $string2 ) {
+		if ( empty( $string1 ) || empty( $string2 ) ) {
+			return false;
+		}
 		$string1 = trim( $string1 );
 		$string2 = trim( $string2 );
 		return ( 0 === strpos( $string1, $string2 ) );
@@ -692,7 +700,7 @@ class Parse_This_MF2 {
 		$data['published'] = self::get_published( $entry );
 		$data['updated']   = self::get_updated( $entry );
 		$data['url']       = normalize_url( self::get_plaintext( $entry, 'url' ) );
-		$author            = jf2_to_mf2( self::find_author( $entry, $mf, $data['url'], $args['follow'] ) );
+		$author            = jf2_to_mf2( self::find_author( $entry, $args['follow'] ) );
 		$data['author']    = self::parse_hcard( $author, $mf, $args, $data['url'] );
 		$data['content']   = self::parse_html_value( $entry, 'content' );
 		$data['summary']   = self::get_summary( $entry, $data['content'] );

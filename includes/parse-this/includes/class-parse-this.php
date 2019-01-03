@@ -195,23 +195,40 @@ class Parse_This {
 				$title = $link->getAttribute( 'title' );
 				$type  = self::get_feed_type( $link->getAttribute( 'type' ) );
 				if ( in_array( $rel, array( 'alternate', 'feed' ), true ) && ! empty( $type ) ) {
-					$links[] = array(
-						'url'        => WP_Http::make_absolute_url( $href, $url ),
-						'type'       => 'feed',
-						'_feed_type' => $type,
-						'name'       => $title,
+					$links[] = array_filter(
+						array(
+							'url'        => WP_Http::make_absolute_url( $href, $url ),
+							'type'       => 'feed',
+							'_feed_type' => $type,
+							'name'       => $title,
+						)
 					);
 				}
 			}
 			// Check to see if the current page is an h-feed
 			$this->parse( array( 'feed' => true ) );
 			if ( isset( $this->jf2['type'] ) && 'feed' === $this->jf2['type'] ) {
-				$links[] = array(
-					'url'        => $url,
-					'type'       => 'feed',
-					'_feed_type' => 'microformats',
-					'name'       => $this->jf2['name'],
+				$links[] = array_filter(
+					array(
+						'url'        => $url,
+						'type'       => 'feed',
+						'_feed_type' => 'microformats',
+						'name'       => $this->jf2['name'],
+					)
 				);
+			} elseif ( isset( $this->jf2['items'] ) ) {
+				foreach ( $this->jf2['items'] as $item ) {
+					if ( 'feed' === $item['type'] && isset( $item['uid'] ) ) {
+						$links[] = array_filter(
+							array(
+								'url'        => $item['uid'],
+								'type'       => 'feed',
+								'_feed_type' => 'microformats',
+								'name'       => ifset( $item['name'] ),
+							)
+						);
+					}
+				}
 			}
 			// Sort feeds by priority
 			$rank = array(
@@ -330,6 +347,7 @@ class Parse_This {
 			'return'    => 'single', // Options are single, feed, or TBC mention
 			'follow'    => false, // If set to true h-card and author properties with external urls will be retrieved parsed and merged into the return
 			'limit'     => 150, // Limit the number of children returned.
+			'html'      => true, // If mf2 parsing does not work look for html parsing
 		);
 		$args     = wp_parse_args( $args, $defaults );
 		// If not an option then revert to single
@@ -360,6 +378,10 @@ class Parse_This {
 			}
 			$this->jf2 = Parse_This_MF2::parse( $content, $this->url, $args );
 		}
+		// If the HTML argument is not true return at this point
+		if ( ! $args['html'] ) {
+			return;
+		}
 		if ( ! class_exists( 'Parse_This_HTML', false ) ) {
 			require_once plugin_dir_path( __FILE__ ) . '/class-parse-this-html.php';
 		}
@@ -369,11 +391,11 @@ class Parse_This {
 			$this->jf2         = Parse_This_HTML::parse( $content, $this->url, $args );
 			return;
 		}
-		// If the parsed jf2 is missing any sort of content then try to find it in the HTML
+		/* // If the parsed jf2 is missing any sort of content then try to find it in the HTML
 		$more = array_intersect( array_keys( $this->jf2 ), array( 'name', 'summary', 'content' ) );
 		if ( empty( $more ) && $this->doc instanceof DOMDocument ) {
 			$this->jf2 = array_merge( $this->jf2, Parse_This_HTML::parse( $this->doc, $this->url ) );
-		}
+		} */
 
 	}
 
