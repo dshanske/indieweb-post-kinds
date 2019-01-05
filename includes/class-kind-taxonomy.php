@@ -161,7 +161,7 @@ final class Kind_Taxonomy {
 			'top'
 		);
 		add_rewrite_rule(
-			'kind/([a-z]+)/([a-z]+)/?$',
+			'kind/([a-z]+)/tag/([a-z]+)/?$',
 			'index.php?tag=$matches[2]&kind=$matches[1]',
 			'top'
 		);
