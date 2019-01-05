@@ -212,7 +212,7 @@ Add a function with your kind in the above format, hooking it in the init hook a
 Post Kinds automatically handles the display of archives of individual types. So to view all the posts marked as "note", for example, one could visit the URL http://www.YOURSITE.COM/kind/note/. 
 Simply replace YOURSITE.COM with your particular site name and the particular post kind name to access the others.
 
-You can also add the date /kind/note/2018/12/24 to see date-based archives. Or /kind/note/tag using the slug of a tag to see an archive of tagged posts of a specific kind
+You can also add the date /kind/note/2018/12/24 to see date-based archives. Or /kind/note/tag/tagname using the slug of a tag to see an archive of tagged posts of a specific kind
 
 ### Do you have RSS feeds for each kind? ###
 
@@ -230,6 +230,14 @@ So - `https://www.example.com/wp-admin/post-new.php?kindurl=URL&kind=like` will 
 ### Can I post automatically outside the Post Editor? ###
 
 Using the [Micropub](https://wordpress.org/plugins/micropub) plugin for WordPress is the easiest way to post outside of the Post Editor. This will work with any Micropub client.
+
+### I installed JetPack and I am no longer getting context added to my posts ###
+
+The JetPack sharing module conflicts with this plugin.
+
+### When will this plugin support Gutenberg? ###
+
+I am not sure. It is not a strict priority. At this time, there is no definite time for this support.
 
 ### How do I get support? ###
 
@@ -250,6 +258,9 @@ through future plugin updates.
 
 
 ## Changelog ##
+
+### 3.1.7 ( 2019-01-xx ) ###
+* Fix issue with new tag rewrite overwriting feed by changing tag kind archive to /kind/????/tag/????? 
 
 ### 3.1.6 ( 2018-12-31) ###
 * Fix Micropub bug introduced by Parse This change.

@@ -194,6 +194,9 @@ class MF2_Post {
 	 */
 	private function get_mf2meta() {
 		$meta = get_post_meta( $this->uid );
+		if ( ! $meta ) {
+			return array();
+		}
 		if ( isset( $meta['response'] ) ) {
 			$response = maybe_unserialize( $meta['response'] );
 			// Retrieve from the old response array and store in new location.
