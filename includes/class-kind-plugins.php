@@ -99,6 +99,9 @@ class Kind_Plugins {
 		if ( ! isset( $input['properties'] ) ) {
 			return $input;
 		}
+		if ( ! class_exists( 'Parse-This' ) ) {
+			require_once plugin_dir_path( __FILE__ ) . 'parse-this/includes/class-parse-this.php';
+		}
 		$parsed = array( 'bookmark-of', 'like-of', 'favorite-of', 'in-reply-to', 'read-of', 'listen-of', 'watch-of' );
 		foreach ( $input['properties'] as $property => $value ) {
 			if ( in_array( $property, $parsed, true ) ) {

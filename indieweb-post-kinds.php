@@ -7,7 +7,7 @@
  * Plugin Name: Post Kinds
  * Plugin URI: https://wordpress.org/plugins/indieweb-post-kinds/
  * Description: Ever want to reply to someone else's post with a post on your own site? Or to "like" someone else's post, but with your own site?
- * Version: 3.1.7
+ * Version: 3.1.8
  * Author: David Shanske
  * Author URI: https://david.shanske.com
  * Text Domain: indieweb-post-kinds
@@ -28,7 +28,7 @@ add_action( 'plugins_loaded', array( 'Post_Kinds_Plugin', 'plugins_loaded' ) );
 add_action( 'init', array( 'Post_Kinds_Plugin', 'init' ) );
 
 class Post_Kinds_Plugin {
-	public static $version = '3.1.7';
+	public static $version = '3.1.8';
 	public static function init() {
 		// Add Kind Taxonomy.
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-post-kind.php';
@@ -52,6 +52,13 @@ class Post_Kinds_Plugin {
 
 		// Add Time Global Functions.
 		require_once plugin_dir_path( __FILE__ ) . '/includes/time-functions.php';
+
+		if ( ! class_exists( 'MF2_Post' ) ) {
+			require_once plugin_dir_path( __FILE__ ) . 'includes/parse-this/includes/class-mf2-post.php';
+		}
+
+		// Parse This
+		require_once plugin_dir_path( __FILE__ ) . 'includes/parse-this/parse-this.php';
 
 		// Plugin Specific Kind Customizations
 		require_once plugin_dir_path( __FILE__ ) . '/includes/class-kind-plugins.php';
@@ -78,13 +85,6 @@ class Post_Kinds_Plugin {
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-view.php';
 		add_action( 'init', array( 'Kind_View', 'init' ) );
 
-		// Parse This
-		require_once plugin_dir_path( __FILE__ ) . 'includes/parse-this/parse-this.php';
-
-		if ( ! class_exists( 'MF2_Post' ) ) {
-			require_once plugin_dir_path( __FILE__ ) . 'includes/parse-this/includes/class-mf2-post.php';
-		}
-		
 		// Kind Widgets
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-menu-widget.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-post-widget.php';

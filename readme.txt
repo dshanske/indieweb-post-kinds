@@ -1,10 +1,10 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like, scrobble
-Stable tag: 3.1.7
+Stable tag: 3.1.8
 Requires at least: 4.9.6
 Requires PHP: 5.4
-Tested up to: 5.0.2
+Tested up to: 5.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -254,6 +254,9 @@ through future plugin updates.
 
 
 == Changelog ==
+
+= 3.1.8 ( 2019-01-12 ) =
+* Fix issue with Micropub posting caused by this plugin
 
 = 3.1.7 ( 2019-01-05 ) =
 * Fix issue with new tag rewrite overwriting feed by changing tag kind archive to /kind/????/tag/????? 
