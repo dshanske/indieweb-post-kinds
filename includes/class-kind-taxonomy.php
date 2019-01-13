@@ -78,13 +78,30 @@ final class Kind_Taxonomy {
 
 	public static function the_title( $title, $post_id ) {
 		if ( ! $title && is_admin() ) {
+			$kind = get_post_kind_slug( $post_id );
 			$post = get_post( $post_id );
 			if ( $post instanceof WP_Post ) {
-				$excerpt = get_the_excerpt( $post );
+				$excerpt = self::get_excerpt( $post );
+				if ( ! in_array( $kind, array( 'note', 'article' ), true ) || ! $kind ) {
+					$mf2_post = new MF2_Post( $post );
+					$type     = self::get_kind_info( $kind, 'property' );
+					$cite     = $mf2_post->fetch( $type );
+					if ( isset( $cite['name'] ) ) {
+						$excerpt = $cite['name'];
+					}
+				}
 				return mb_strimwidth( wp_strip_all_tags( $excerpt ), 0, 40, '...' ) . '&diams;'; // phpcs:ignore
 			}
 		}
 		return $title;
+	}
+
+	public static function get_excerpt( $post_id ) {
+		$post = get_post( $post_id );
+		if ( has_excerpt( $post ) ) {
+			return $post->post_excerpt;
+		}
+		return $post->post_content;
 	}
 
 	public static function set_object_terms( $object_id, $terms, $tt_ids, $taxonomy, $append, $old_tt_ids ) {
