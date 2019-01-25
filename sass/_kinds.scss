@@ -1,25 +1,23 @@
+.svg-icon svg {
+	fill: currentColor;
+	padding-left: 2px;
+	padding-right: 2px;
+	vertical-align: middle;
+	top: -0.0625em;
+}
+
 #kind-all {
 	svg {
-		fill: currentColor;
-		padding-left: 2px;
-		padding-right: 2px;
 		width: 16px;
 		height: 16px;
-		vertical-align: middle;
-		top: -0.0625em;
 		color: grey
 	}
 }
 
 #kind-menu, #kind-posts {
 	svg {
-		fill: currentColor;
-		padding-left: 2px;
-		padding-right: 2px;
 		width: 24px;
 		height: 24px;
-		vertical-align: middle;
-		top: -0.0625em;
 		color: black
 	}
 	ul {
@@ -29,13 +27,8 @@
 
 .response {
         svg {
-                fill: currentColor;
-                padding-left: 2px;
-                padding-right: 2px;
                 width: 32px;
                 height: 32px;
-                vertical-align: middle;
-                top: -0.0625em;
                 color: black
         }
 }

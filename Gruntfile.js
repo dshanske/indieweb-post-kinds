@@ -67,8 +67,6 @@ module.exports = function(grunt) {
         files: {                         // Dictionary of files
           'css/kind.min.css': 'sass/main.scss',       // 'destination': 'source'
           'css/kind.admin.min.css': 'sass/admin.scss',       // 'destination': 'source'
-          'css/kind.themecompat.min.css': 'sass/themecompat.scss'       // 'destination': 'source'
-
         }
       }
     },
