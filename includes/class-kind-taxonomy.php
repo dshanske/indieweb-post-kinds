@@ -1144,18 +1144,13 @@ final class Kind_Taxonomy {
 	}
 
 	public static function get_icon( $kind, $echo = false ) {
-		$icon = self::get_kind_info( $kind, 'icon' );
-		// Use a sprite otherwise use passed URL
-		if ( ! wp_http_validate_url( $icon ) ) {
-			// Substitute another svg sprite file
-			$sprite = apply_filters( 'kind_icon_sprite', plugins_url( 'kinds.svg', dirname( __FILE__ ) ), $kind );
-			if ( '' === $sprite ) {
-				return '';
-			}
-			$sprite = $sprite . '#' . $kind;
+		$name = self::get_kind_info( $kind, 'singular_name' );
+		$svg  = sprintf( '%1$ssvgs/%2$s.svg', plugin_dir_path( __DIR__ ), $kind );
+		if ( file_exists( $svg ) ) {
+			$return = sprintf( '<span class="svg-icon svg-%1$s" aria-hidden="true" aria-label="%2$s" title="%2$s" >%3$s</span>', esc_attr( $kind ), esc_attr( $name ), file_get_contents( $svg ) );
+		} else {
+			return '';
 		}
-		$name   = self::get_kind_info( $kind, 'singular_name' );
-		$return = sprintf( '<svg class="svg-icon svg-%1$s" aria-hidden="true" aria-label="%2$s" title="%2$s" ><use xlink:href="%3$s"></use></svg>', esc_attr( $kind ), esc_attr( $name ), esc_url_raw( $sprite ) );
 		if ( $echo ) {
 			echo $return; // phpcs:ignore
 		}
