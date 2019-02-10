@@ -20,3 +20,6 @@ package.json
 phpunit.xml
 phpunit.xml.dist
 tests
+node_modules
+sass
+vendor

@@ -3,13 +3,5 @@ sass/.sass-cache/*
 sass/svg/intermediate/*
 sass/symbol/*
 vendor/*
-!/vendor/autoload.php
-!/vendor/composer
-!/vendor/mf2
-/vendor/mf2/mf2/*
-!/vendor/mf2/mf2/Mf2
-!/vendor/mf2/mf2/LICENSE.md
-!/vendor/masterminds
-/vendor/masterminds/html5/*
-!/vendor/masterminds/html5/src
+node_modules/*
 composer.lock
