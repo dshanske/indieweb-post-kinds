@@ -88,7 +88,7 @@ class Parse_This {
 	*/
 	public static function fetch_feed( $url ) {
 		if ( ! class_exists( 'SimplePie', false ) ) {
-			$path  = plugin_dir_path( __DIR__ ) . 'vendor/simplepie/simplepie/library/';
+			$path  = plugin_dir_path( __DIR__ ) . 'includes/simplepie/';
 			$files = array(
 				'SimplePie/Credit.php',
 				'SimplePie/Restriction.php',

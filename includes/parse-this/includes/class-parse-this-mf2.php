@@ -544,7 +544,7 @@ class Parse_This_MF2 {
 		// Normalize all urls to ensure comparisons
 		$url = normalize_url( $url );
 		if ( ! class_exists( 'Mf2\Parser' ) ) {
-			require_once plugin_dir_path( __DIR__ ) . 'vendor/mf2/mf2/Mf2/Parser.php';
+			require_once plugin_dir_path( __DIR__ ) . 'includes/Parser.php';
 		}
 		if ( is_string( $input ) || is_a( $input, 'DOMDocument' ) ) {
 			$parser = new Mf2\Parser( $input, $url );
@@ -625,7 +625,7 @@ class Parse_This_MF2 {
 		);
 		$data['name']   = self::get_plaintext( $entry, 'name' );
 		$author         = jf2_to_mf2( self::find_author( $entry, $args['follow'] ) );
-		$data['author'] = self::parse_hcard( $author, $mf, $args, $data['url'] );
+		$data['author'] = self::parse_hcard( $author, $mf, $args );
 		$data['uid']    = self::get_plaintext( $entry, 'uid' );
 		if ( isset( $entry['id'] ) && isset( $args['url'] ) && ! $data['uid'] ) {
 			$data['uid'] = $args['url'] . '#' . $entry['id'];
