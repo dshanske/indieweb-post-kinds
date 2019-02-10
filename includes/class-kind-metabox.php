@@ -75,7 +75,7 @@ class Kind_Metabox {
 
 			wp_enqueue_script(
 				'jquery-ui-timepicker',
-				plugins_url( 'node_modules/timepicker/jquery.timepicker.min.js', dirname( __FILE__ ) ),
+				plugins_url( 'js/jquery.timepicker.min.js', dirname( __FILE__ ) ),
 				array( 'jquery' ),
 				self::$version,
 				true
@@ -83,7 +83,7 @@ class Kind_Metabox {
 
 			wp_enqueue_script(
 				'jquery-datepair',
-				plugins_url( 'node_modules/datepair.js/dist/jquery.datepair.min.js', dirname( __FILE__ ) ),
+				plugins_url( 'js/jquery.datepair.min.js', dirname( __FILE__ ) ),
 				array( 'jquery' ),
 				self::$version,
 				true
@@ -112,7 +112,7 @@ class Kind_Metabox {
 
 			wp_enqueue_script(
 				'moment',
-				plugins_url( 'node_modules/moment/min/moment.min.js', dirname( __FILE__ ) ),
+				plugins_url( 'js/moment.min.js', dirname( __FILE__ ) ),
 				array( 'jquery' ),
 				'2.20.1',
 				true

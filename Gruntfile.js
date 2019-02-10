@@ -7,35 +7,16 @@ module.exports = function(grunt) {
 		              src: ['js/kind.js' ]
 	          }
  	   },
-    copy: {
-      main: {
-        options: {
-          mode: true
-        },
-        src: [
-          '**',
-          '!node_modules/**',
-          '!build/**',
-          '!.git/**',
-          '!Gruntfile.js',
-          '!package.json',
-          '!.gitignore',
-		   '!kind.css.map',
-		   '!kind.min.css.map',
-		   '!vendor/**',
-		   'vendor/mf2/mf2/Mf2/Parser.php'
-        ],
-        dest: 'build/trunk/'
-      },
-	    assets: {
-	       options: {
-	           mode: true
-	       },
-	       src: [
-	         'assets/*'
-	       ],
-	       dest: 'build/'
-	    }
+
+
+	copy: {
+	    main: {
+		    files: [
+		    	{expand: true, cwd: 'node_modules/datepair.js/dist', src: ['jquery.datepair.min.js'], dest: 'js/'}, 
+		    	{expand: true, cwd: 'node_modules/moment/min', src: ['moment.min.js'], dest: 'js/'},
+		    	{expand: true, cwd: 'node_modules/timepicker', src: ['jquery.timepicker.min.js'], dest: 'js/'},
+  			],
+		},
     },
 
     wp_readme_to_markdown: {
@@ -71,36 +52,6 @@ module.exports = function(grunt) {
       }
     },
 
-	svg_sprite		: {
-		kinds: {
- 	 	        src: ['svgs/*.svg'],
-			dest: '.',
-			options		: {
-
-				shape				: {
-					dimension		: {			// Set maximum dimensions
-						maxWidth	: 32,
-						maxHeight	: 32,
-						attributes      : true
-					},
-					spacing			: {			// Add padding
-						padding		: 10
-					},
-					id 			: {
-						separator 	: ''
-					}
-				},
-				mode : {
-					symbol			: {		// Activate the «symbol» mode
-						sprite : 'kinds.svg',
-						dest: ''
-					}
-
-				}
-			}
-		}
-	},
-
     makepot: {
       target: {
         options: {
@@ -121,10 +72,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-wp-i18n');
   grunt.loadNpmTasks('grunt-contrib-sass');
   grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-svg-sprite');
   grunt.loadNpmTasks('grunt-eslint');
 
   // Default task(s).
-  grunt.registerTask('default', ['wp_readme_to_markdown', 'makepot', 'sass', 'svg_sprite', 'eslint']);
+  grunt.registerTask('default', ['copy', 'wp_readme_to_markdown', 'makepot', 'sass', 'eslint']);
 
 };
