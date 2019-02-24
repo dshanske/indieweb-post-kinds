@@ -1,0 +1,47 @@
+{
+   "name": "dshanske/parse-this",
+     "description": "Parse This Library for WordPress",
+     "type": "wordpress-plugin",
+     "license": "GPL-2.0-or-later",
+     "authors": [
+       {
+	       "name": "David Shanske",
+	       "email": "david@shanske.com"
+       }
+     ],
+     "extra": {
+		"installer-name": "parse-this"
+     },
+    "require": {
+	"php": ">=5.3.0",
+	"mf2/mf2": "dev-master",
+	"composer/installers": "~1.0"
+    },
+    "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.4.3",
+	"squizlabs/php_codesniffer": "*",
+        "phpcompatibility/php-compatibility": "*",
+        "wp-coding-standards/wpcs": "*",
+      "phpcompatibility/phpcompatibility-wp": "^1.0",
+      "wpreadme2markdown/wp2md": "^3.0",
+      "simplepie/simplepie": "*"
+    },
+    "prefer-stable" : true,
+    "scripts": {
+        "lint": "phpcs",
+	"install-codestandards": [
+		"Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
+	],
+	"update-readme": [
+		"wp2md -i readme.txt | tail -n +11 > readme.md"
+	],
+	"copy-files": [
+		"cp -u -r vendor/mf2/mf2/Mf2/Parser.php includes",
+		"cp -u -r vendor/simplepie/simplepie/library includes/simplepie"
+	],
+	"post-update-cmd": [
+		"@update-readme",
+		"@copy-files"
+	]
+    }
+}
