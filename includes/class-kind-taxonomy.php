@@ -912,7 +912,7 @@ final class Kind_Taxonomy {
 	 * @return string|array Return kind-property. If either is set to all, return all.
 	 */
 	public static function get_kind_info( $kind, $property ) {
-		if ( ! $kind || ! $property ) {
+		if ( ! is_string( $kind ) || ! $property ) {
 			return false;
 		}
 		if ( 'all' === $kind ) {

@@ -48,7 +48,7 @@ if ( ! function_exists( 'mf2_to_jf2' ) ) {
 		$jf2['type'] = str_replace( 'h-', '', $type );
 		if ( isset( $entry['properties'] ) && is_array( $entry['properties'] ) ) {
 			foreach ( $entry['properties'] as $key => $value ) {
-				if ( is_array( $value ) && 1 === count( $value ) ) {
+				if ( is_array( $value ) && 1 === count( $value ) && wp_is_numeric_array( $value ) ) {
 					$value = array_pop( $value );
 				}
 				if ( ! wp_is_numeric_array( $value ) && isset( $value['type'] ) ) {
@@ -63,6 +63,30 @@ if ( ! function_exists( 'mf2_to_jf2' ) ) {
 			}
 		}
 		return $jf2;
+	}
+}
+
+
+if ( ! function_exists( 'jf2_references' ) ) {
+	/* Turns nested properties into references per the jf2 spec
+	*/
+	function jf2_references( $data ) {
+		foreach ( $data as $key => $value ) {
+			if ( ! is_array( $value ) ) {
+				continue;
+			}
+			// Indicates nested type
+			if ( array_key_exists( 'type', $value ) && 'cite' === $value['type'] ) {
+				if ( ! isset( $data['references'] ) ) {
+					$data['references'] = array();
+				}
+				if ( isset( $value['url'] ) ) {
+					$data['references'][ $value['url'] ] = $value;
+					$data[ $key ]                        = array( $value['url'] );
+				}
+			}
+		}
+		return $data;
 	}
 }
 
@@ -218,6 +242,9 @@ if ( ! function_exists( 'post_type_discovery' ) ) {
 		if ( ! array_key_exists( 'type', $jf2 ) ) {
 			return '';
 		}
+		if ( 'event' === $jf2['type'] ) {
+			return 'event';
+		}
 		if ( 'entry' === $jf2['type'] ) {
 			$map = array(
 				'rsvp'      => array( 'rsvp' ),
@@ -234,8 +261,8 @@ if ( ! function_exists( 'post_type_discovery' ) ) {
 				'listen'    => array( 'listen-of' ),
 				'read'      => array( 'read-of' ),
 				'play'      => array( 'play-of' ),
-				'ate'       => array( 'eat', 'p3k-food' ),
-				'drink'     => array( 'drank' ),
+				'eat'       => array( 'ate', 'pk-ate' ),
+				'drink'     => array( 'drank', 'pk-drank' ),
 				'reply'     => array( 'in-reply-to' ),
 				'video'     => array( 'video' ),
 				'photo'     => array( 'photo' ),

@@ -53,10 +53,6 @@ class Post_Kinds_Plugin {
 		// Add Time Global Functions.
 		require_once plugin_dir_path( __FILE__ ) . '/includes/time-functions.php';
 
-		if ( ! class_exists( 'MF2_Post' ) ) {
-			require_once plugin_dir_path( __FILE__ ) . 'includes/parse-this/includes/class-mf2-post.php';
-		}
-
 		// Parse This
 		require_once plugin_dir_path( __FILE__ ) . 'includes/parse-this/parse-this.php';
 

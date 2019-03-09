@@ -20,6 +20,9 @@ if ( ! function_exists( 'parse_this_loader' ) ) {
 		// Parse This API
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-parse-this-api.php';
 
+		// MF2 Post
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class-mf2-post.php';
+
 	}
-	add_action( 'plugins_loaded', 'parse_this_loader', 11 );
+	add_action( 'plugins_loaded', 'parse_this_loader', 9 );
 }

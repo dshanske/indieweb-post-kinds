@@ -1,7 +1,7 @@
 <?php
 wp_nonce_field( 'replykind_metabox', 'replykind_metabox_nonce' );
 $mf2_post = new MF2_Post( get_post() );
-$type     = Kind_Taxonomy::get_kind_info( $mf2_post->get( 'kind' ), 'property' );
+$type     = Kind_Taxonomy::get_kind_info( $mf2_post->get( 'kind', true ), 'property' );
 $cite     = $mf2_post->fetch( $type );
 $duration = divide_iso8601_duration( $mf2_post->get( 'duration' ) );
 

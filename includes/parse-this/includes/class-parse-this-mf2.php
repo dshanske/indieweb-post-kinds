@@ -183,13 +183,9 @@ class Parse_This_MF2 {
 						$data[ $p ] = self::parse_item( $v, $mf, $args );
 					} else {
 						if ( isset( $data[ $p ] ) ) {
-							if ( is_array( $data[ $p ] ) ) {
-								$data[ $p ][] = $v;
-							} elseif ( is_string( $data[ $p ] ) ) {
-								$data[ $p ] = array( $data[ $p ], $v );
-							}
+							$data[ $p ][] = $v;
 						} else {
-							$data[ $p ] = $v;
+							$data[ $p ] = array( $v );
 						}
 					}
 				}
@@ -666,7 +662,7 @@ class Parse_This_MF2 {
 					if ( is_string( $author['url'] ) ) {
 						$author['url'] = array( $author['url'] );
 					}
-					if ( in_array( $item['author']['url'], $author['url'] ) ) {
+					if ( in_array( $item['author']['url'], $author['url'], true ) ) {
 						$item['author'] = $author;
 						break;
 					}
@@ -714,14 +710,10 @@ class Parse_This_MF2 {
 			return self::parse_hresume( $item, $mf, $args );
 		} elseif ( self::is_type( $item, 'h-item' ) ) {
 			return self::parse_hitem( $item, $mf, $args );
+		} elseif ( self::is_type( $item, 'h-leg' ) ) {
+			return self::parse_hleg( $item, $mf, $args );
 		}
-		return array();
-	}
-
-	public static function parse_hcite( $entry, $mf, $args ) {
-		$data         = self::get_prop_array( $entry, array_keys( $entry['properties'] ) );
-		$data['type'] = 'cite';
-		return $data;
+		return self::parse_hunknown( $item, $mf, $args );
 	}
 
 	public static function compare( $string1, $string2 ) {
@@ -731,6 +723,13 @@ class Parse_This_MF2 {
 		$string1 = trim( $string1 );
 		$string2 = trim( $string2 );
 		return ( 0 === strpos( $string1, $string2 ) );
+	}
+
+	public static function parse_hunknown( $unknown, $mf, $args ) {
+		// Parse unknown h property
+		$data         = self::parse_h( $unknown, $mf, $args );
+		$data['type'] = $unknown['type'][0];
+		return $data;
 	}
 
 	public static function parse_h( $entry, $mf, $args ) {
@@ -761,11 +760,30 @@ class Parse_This_MF2 {
 			} else {
 				$data['syndication'] = $mf['rels']['syndication'];
 			}
-			if ( 1 === count( $data['syndication'] ) ) {
-				$data['syndication'] = array_pop( $data['syndication'] );
-			}
 		}
 		return array_filter( $data );
+	}
+
+	public static function parse_hleg( $leg, $mf, $args ) {
+		// The aaronpk special
+		$data       = array();
+		$properties = array(
+			'url',
+			'name',
+			'origin',
+			'destination',
+			'operator',
+			'transit-type',
+			'number',
+		);
+		foreach ( $properties as $property ) {
+			$data[ $property ] = self::get_plaintext( $leg, $property );
+		}
+
+		$data['departure'] = self::get_datetime_property( 'departure', $leg, false, null );
+		$data['arrival']   = self::get_datetime_property( 'arrival', $leg, false, null );
+		$data              = array_filter( $data );
+		return $data;
 	}
 
 	public static function parse_hentry( $entry, $mf, $args ) {
@@ -793,15 +811,20 @@ class Parse_This_MF2 {
 			'tag-of',
 			'location',
 			'checked-in-by',
+			'pk-ate',
+			'pk-drank',
 		);
 		$data         = self::get_prop_array( $entry, $properties );
-		$data['type'] = 'entry';
-		$properties   = array( 'url', 'weather', 'temperature', 'rsvp', 'featured', 'swarm-coins' );
+		$data['type'] = self::is_type( $entry, 'h-entry' ) ? 'entry' : 'cite';
+		$properties   = array( 'url', 'weather', 'temperature', 'rsvp', 'featured', 'swarm-coins', 'latitude', 'longitude' );
 		foreach ( $properties as $property ) {
 			$data[ $property ] = self::get_plaintext( $entry, $property );
 		}
-		$data              = array_filter( $data );
-		$data              = array_merge( $data, self::parse_h( $entry, $mf, $args ) );
+		$data = array_filter( $data );
+		$data = array_merge( $data, self::parse_h( $entry, $mf, $args ) );
+		if ( $args['references'] ) {
+			$data = jf2_references( $data );
+		}
 		$data['post-type'] = post_type_discovery( $data );
 		return array_filter( $data );
 	}
@@ -810,8 +833,40 @@ class Parse_This_MF2 {
 		if ( ! self::is_microformat( $hcard ) ) {
 			return;
 		}
+		$data       = array();
+		$properties = array(
+			'url',
+			'uid',
+			'name',
+			'note',
+			'photo',
+			'bday',
+			'callsign',
+			'latitude',
+			'longitude',
+			'street-address',
+			'extended-address',
+			'locality',
+			'region',
+			'country-name',
+			'label',
+			'post-office-box',
+			'given-name',
+			'honoric-prefix',
+			'additional-name',
+			'family-name',
+			'honorifix-suffix',
+			'email',
+			'postal-code',
+			'altitude',
+			'location',
+		);
+		foreach ( $properties as $property ) {
+			$data[ $property ] = self::get_plaintext( $hcard, $property );
+		}
+		$data = array_filter( $data );
+		$data = array_merge( self::get_prop_array( $hcard, array_keys( $hcard['properties'] ) ), $data );
 
-		$data         = self::get_prop_array( $hcard, array_keys( $hcard['properties'] ) );
 		$data['type'] = 'card';
 		if ( isset( $hcard['children'] ) ) {
 			// In the case of sites like tantek.com where multiple feeds are nested inside h-card if it is a feed request return only the first feed
@@ -834,7 +889,7 @@ class Parse_This_MF2 {
 			'url'  => null,
 		);
 		$data       = array_merge( $data, self::parse_h( $entry, $mf, $args ) );
-		$properties = array( 'location', 'start', 'end', 'photo' );
+		$properties = array( 'location', 'start', 'end', 'photo', 'uid', 'url' );
 		foreach ( $properties as $p ) {
 			$v = self::get_plaintext( $entry, $p );
 			if ( null !== $v ) {
@@ -982,4 +1037,5 @@ class Parse_This_MF2 {
 		}
 		return array_filter( $data );
 	}
+
 }
