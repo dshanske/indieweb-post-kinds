@@ -46,8 +46,8 @@ class Parse_This_JSONFeed {
 					),
 					'summary'     => self::ifset( 'summary', $item ),
 					'featured'    => self::ifset( 'image', $item ),
-					'published'   => self::ifset( 'date_published', $item ),
-					'updated'     => self::ifset( 'date_modified', $item ),
+					'published'   => normalize_iso8601( self::ifset( 'date_published', $item ) ),
+					'updated'     => normalize_iso8601( self::ifset( 'date_modified', $item ) ),
 					'author'      => self::get_author( $item ),
 					'category'    => self::ifset( 'tags', $item ),
 				)

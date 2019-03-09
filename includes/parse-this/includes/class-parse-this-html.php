@@ -78,7 +78,7 @@ class Parse_This_HTML {
 		}
 
 		// Does not look like a URL.
-		if ( ! wp_http_validate_url( $url ) ) {
+		if ( ! filter_var( $url, FILTER_VALIDATE_URL ) ) {
 			return '';
 		}
 
@@ -378,29 +378,13 @@ class Parse_This_HTML {
 				}
 				if ( 'article' === $type ) {
 					$jf2['type'] = 'entry';
-					if ( isset( $meta['article']['published_time'] ) ) {
-						$datetime = new DateTime( $meta['article']['published_time'] );
-						if ( $datetime ) {
-							$jf2['published'] = $datetime->format( DATE_W3C );
-						}
+					$published   = ifset( $meta['article']['published_time'], ifset( $meta['article']['published'] ) );
+					if ( $published ) {
+						$jf2['published'] = normalize_iso8601( $published );
 					}
-					if ( isset( $meta['article']['modified_time'] ) ) {
-						$datetime = new DateTime( $meta['article']['modified_time'] );
-						if ( $datetime ) {
-							$jf2['updated'] = $datetime->format( DATE_W3C );
-						}
-					}
-					if ( isset( $meta['article']['published'] ) ) {
-						$datetime = new DateTime( $meta['article']['published'] );
-						if ( $datetime ) {
-							$jf2['published'] = $datetime->format( DATE_W3C );
-						}
-					}
-					if ( isset( $meta['article']['modified'] ) ) {
-						$datetime = new DateTime( $meta['article']['modified'] );
-						if ( $datetime ) {
-							$jf2['updated'] = $datetime->format( DATE_W3C );
-						}
+					$modified = ifset( $meta['article']['modified_time'], ifset( $meta['article']['modified'] ) );
+					if ( $modified ) {
+						$jf2['modified'] = normalize_iso8601( $modified );
 					}
 				}
 				if ( 'book' === $type ) {

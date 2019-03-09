@@ -43,6 +43,7 @@ class Parse_This_API {
 						<h2> <?php esc_html_e( 'Parse This Debugger', 'indieweb-post-kinds' ); ?> </h2>
 						<p> <?php esc_html_e( 'Test the Parse Tools Debugger. You can report sites to the developer for possibly improvement in future', 'parse-this' ); ?>
 						</p>
+						<a href="https://github.com/dshanske/parse-this/issues"><?php esc_html_e( 'Open an Issue', 'parse-this' ); ?></a>
 							<p> 
 							<?php
 							if ( is_plugin_active( 'parse-this/parse-this.php' ) ) {

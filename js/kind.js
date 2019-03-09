@@ -125,7 +125,8 @@ function getLinkPreview() {
 		},
 		data: {
 			url: $( '#cite_url' ).val(),
-			kind: $( 'input[name=\'tax_input[kind]\']:checked' ).val()
+			kind: $( 'input[name=\'tax_input[kind]\']:checked' ).val(),
+			follow: true
 		},
 		success: function( response ) {
 			var published;

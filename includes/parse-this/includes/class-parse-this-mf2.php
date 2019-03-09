@@ -289,8 +289,8 @@ class Parse_This_MF2 {
 			if ( ! $ensurevalid ) {
 				return $return; } else {
 				try {
-					new DateTime( $return );
-					return $return;
+					$date = new DateTime( $return );
+					return $date->format( DATE_W3C );
 				} catch ( Exception $e ) {
 					return $fallback;
 				}
@@ -735,10 +735,10 @@ class Parse_This_MF2 {
 	public static function parse_h( $entry, $mf, $args ) {
 		$data              = array();
 		$data['name']      = self::get_plaintext( $entry, 'name' );
-		$data['published'] = self::get_published( $entry );
-		$data['updated']   = self::get_updated( $entry );
+		$data['published'] = self::get_published( $entry, true, null );
+		$data['updated']   = self::get_updated( $entry, true, null );
 		$data['url']       = normalize_url( self::get_plaintext( $entry, 'url' ) );
-		$author            = jf2_to_mf2( self::find_author( $entry, $args['follow'] ) );
+		$author            = jf2_to_mf2( self::find_author( $entry, $mf, $args['follow'] ) );
 		$data['author']    = self::parse_hcard( $author, $mf, $args, $data['url'] );
 		$data['content']   = self::parse_html_value( $entry, 'content' );
 		$data['summary']   = self::get_summary( $entry, $data['content'] );
@@ -780,8 +780,8 @@ class Parse_This_MF2 {
 			$data[ $property ] = self::get_plaintext( $leg, $property );
 		}
 
-		$data['departure'] = self::get_datetime_property( 'departure', $leg, false, null );
-		$data['arrival']   = self::get_datetime_property( 'arrival', $leg, false, null );
+		$data['departure'] = self::get_datetime_property( 'departure', $leg, true, null );
+		$data['arrival']   = self::get_datetime_property( 'arrival', $leg, true, null );
 		$data              = array_filter( $data );
 		return $data;
 	}
