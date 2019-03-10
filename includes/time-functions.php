@@ -200,3 +200,8 @@ function date_interval_to_iso8601( \DateInterval $interval ) {
 	return $spec;
 }
 
+function display_formatted_datetime( $string ) {
+	$date = new DateTime( $string );
+	return $date->format( get_option( 'date_format' ) ) . ' ' . $date->format( get_option( 'time_format' ) );
+}
+

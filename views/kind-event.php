@@ -14,15 +14,15 @@ echo get_the_title();
 ?>
 </header>
 <?php
-$start = new DateTime( $mf2_post->get( 'start' ) );
-$end = new DateTime( $mf2_post->get( 'end' ) );
-$timestring = '<p>%1$s: <time class="%2$s" datetime="%3$s">%4$s %5$s</time></p>';
+$start = $mf2_post->get( 'start' );
+$end = $mf2_post->get( 'end' );
+$timestring = '<p>%1$s: <time class="%2$s" datetime="%3$s">%4$s</time></p>';
 
 if ( $start ) {
-	printf( $timestring, __( 'Start', 'indieweb-post-kinds' ), 'dt-start', $start->format( DATE_W3C ), $start->format( get_option( 'date_format' ) ), $start->format( get_option( 'time_format' ) ) );
+	printf( $timestring, __( 'Start', 'indieweb-post-kinds' ), 'dt-start', $start, display_formatted_datetime( $start ) );
 } 
 if ( $end ) {
-	printf( $timestring, __( 'End', 'indieweb-post-kinds' ), 'dt-end', $end->format( DATE_W3C ), $end->format( get_option( 'date_format' ) ), $end->format( get_option( 'time_format' ) ) );
+	printf( $timestring, __( 'End', 'indieweb-post-kinds' ), 'dt-end', $end, display_formatted_datetime( $end ) );
 }	
 // Close Response
 ?>
