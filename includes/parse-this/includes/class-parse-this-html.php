@@ -226,6 +226,13 @@ class Parse_This_HTML {
 			if ( strlen( $meta_name ) > 200 ) {
 				continue;
 			}
+			// Decode known JSON encoded properties
+			if ( in_array( $meta_name, array( 'parsely-page', 'parsely-metadata' ), true ) ) {
+				$json = json_decode( $meta_value, true );
+				if ( is_array( $json ) ) {
+					$meta_value = $json;
+				}
+			}
 			$meta = self::set( $meta, $meta_name, $meta_value );
 		}
 
@@ -286,6 +293,9 @@ class Parse_This_HTML {
 
 		$meta['title'] = trim( $xpath->query( '//title' )->item( 0 )->textContent );
 		$meta          = self::parse_meta( $meta );
+		if ( isset( $meta['og'] ) ) {
+			$meta['og'] = self::parse_meta( $meta['og'] );
+		}
 
 		$video_extensions = array(
 			'mp4',
@@ -323,7 +333,7 @@ class Parse_This_HTML {
 		$audios = array_unique( $audios );
 		$videos = array_unique( $videos );
 		$images = array_unique( $images );
-		$return = compact( 'jsonld', 'meta', 'images', 'embeds', 'audios', 'videos', 'links', 'content' );
+		$return = array_filter( compact( 'jsonld', 'meta', 'images', 'embeds', 'audios', 'videos', 'links', 'content' ) );
 		$jf2    = self::raw_to_jf2( $return );
 		if ( WP_DEBUG ) {
 			$jf2['_raw'] = $return;
@@ -354,7 +364,13 @@ class Parse_This_HTML {
 				$jf2['publication'] = $meta['og']['site_name'];
 			}
 			if ( isset( $meta['og']['video'] ) ) {
-				$jf2['video'] = $meta['og']['video'];
+				$video = $meta['og']['video'];
+				if ( is_string( $video ) ) {
+					$jf2['video'] = $video;
+				} elseif ( is_array( $video ) ) {
+					$jf2['video']    = ifset( $video['url'] );
+					$jf2['category'] = ifset( $video['tag'] );
+				}
 			}
 			if ( isset( $meta['og']['audio'] ) ) {
 				$jf2['audio'] = $meta['og']['audio'];
@@ -428,6 +444,19 @@ class Parse_This_HTML {
 				}
 			}
 		}
+		if ( isset( $meta['parsely-page'] ) ) {
+			$parsely = $meta['parsely-page'];
+			if ( ! isset( $jf2['author'] ) && isset( $parsely['author'] ) ) {
+				$jf2['author'] = $parsely['author'];
+			}
+			if ( ! isset( $jf2['published'] ) && isset( $parsely['pub_date'] ) ) {
+				$jf2['published'] = normalize_iso8601( $parsely['pub_date'] );
+			}
+			if ( ! isset( $jf2['featured'] ) && isset( $parsely['pub_date'] ) ) {
+				$jf2['featured'] = esc_url_raw( $parsely['image_url'] );
+			}
+		}
+
 		if ( ! isset( $jf2['author'] ) && isset( $meta['author'] ) ) {
 			$jf2['author'] = $meta['author'];
 		}
@@ -454,9 +483,25 @@ class Parse_This_HTML {
 		if ( isset( $meta ) && is_array( $meta ) ) {
 			foreach ( $meta as $key => $value ) {
 				$name = explode( ':', $key );
-				if ( 1 < count( $name ) ) {
-					$key                        = str_replace( $name[0] . ':', '', $key );
-					$return[ $name[0] ][ $key ] = $value;
+				if ( is_array( $name ) && 1 < count( $name ) ) {
+					$name = $name[0];
+					$key  = str_replace( $name . ':', '', $key );
+					if ( is_array( $value ) ) {
+						$value = array_unique( $value );
+						if ( 1 === count( $value ) ) {
+							$value = array_shift( $value );
+						}
+					}
+					if ( ! isset( $return[ $name ] ) ) {
+						$return[ $name ] = array(
+							$key => $value,
+						);
+					} else {
+						if ( is_string( $return[ $name ] ) ) {
+							$return[ $name ] = array( $return[ $name ] );
+						}
+						$return[ $name ][ $key ] = $value;
+					}
 				} else {
 					$return[ $key ] = $value;
 				}
