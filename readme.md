@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.2.0  
+**Stable tag:** 3.2.1  
 **Requires at least:** 4.9.6  
 **Requires PHP:** 5.4  
 **Tested up to:** 5.1  
@@ -259,7 +259,10 @@ through future plugin updates.
 
 ## Changelog ##
 
-### 3.2.0 ( 2019-xx-xx ) ###
+### 3.2.1 ( 2019-03-10 ) ###
+* Revert load change
+
+### 3.2.0 ( 2019-03-10 ) ###
 * Switch from SVG Sprites to inline SVG
 * Adjust storage locations for included libraries
 * Refreshed version of Parse This that improves post type discovery for Micropub and parses more properties

@@ -211,7 +211,7 @@ class Parse_This_HTML {
 
 		$jsonld = array();
 		foreach ( $xpath->query( "//script[@type='application/ld+json']" ) as $script ) {
-			$jsonld = json_decode( $script->textContent ); // phpcs:ignore
+			$jsonld = json_decode( $script->textContent, true ); // phpcs:ignore
 		}
 		$meta = array();
 		// Look for OGP properties
@@ -358,7 +358,12 @@ class Parse_This_HTML {
 				$jf2['summary'] = $meta['og']['description'];
 			}
 			if ( isset( $meta['og']['image'] ) ) {
-				$jf2['photo'] = $meta['og']['image'];
+				$image = $meta['og']['image'];
+				if ( is_string( $image ) ) {
+					$jf2['photo'] = $image;
+				} elseif ( is_array( $image ) ) {
+					$jf2['photo'] = ifset( $image[0], ifset( $image['secure_url'] ) );
+				}
 			}
 			if ( isset( $meta['og']['site_name'] ) ) {
 				$jf2['publication'] = $meta['og']['site_name'];
@@ -402,6 +407,7 @@ class Parse_This_HTML {
 					if ( $modified ) {
 						$jf2['modified'] = normalize_iso8601( $modified );
 					}
+					$jf2['category'] = ifset( $meta['article']['tag'] );
 				}
 				if ( 'book' === $type ) {
 					$jf2['type'] = 'cite';
@@ -466,6 +472,25 @@ class Parse_This_HTML {
 		if ( ! empty( $raw['videos'] ) && ! isset( $jf2['video'] ) ) {
 			$jf2['video'] = $raw['videos'];
 		}
+
+		if ( isset( $raw['jsonld'] ) ) {
+			$jsonld = $raw['jsonld'];
+			if ( ! isset( $jf2['author'] ) && isset( $jsonld['author'] ) ) {
+				$jf2['author'] = ifset( $jsonld['author']['name'] );
+			}
+			if ( ! isset( $jf2['published'] ) && isset( $jsonld['datePublished'] ) ) {
+				$jf2['published'] = normalize_iso8601( $jsonld['datePublished'] );
+			}
+
+			if ( ! isset( $jf2['updated'] ) && isset( $jsonld['dateModified'] ) ) {
+				$jf2['updated'] = normalize_iso8601( $jsonld['dateModified'] );
+			}
+
+			if ( ! isset( $jf2['publication'] ) && isset( $jsonld['publisher'] ) ) {
+				$jf2['publication'] = ifset( $jsonld['publisher']['name'] );
+			}
+		}
+
 		//  If Site Name is not set use domain name less www
 		if ( ! isset( $jf2['publication'] ) && isset( $jf2['url'] ) ) {
 			$jf2['publication'] = preg_replace( '/^www\./', '', wp_parse_url( $jf2['url'], PHP_URL_HOST ) );
