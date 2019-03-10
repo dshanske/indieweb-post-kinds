@@ -24,5 +24,5 @@ if ( ! function_exists( 'parse_this_loader' ) ) {
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-mf2-post.php';
 
 	}
-	add_action( 'plugins_loaded', 'parse_this_loader', 9 );
+	add_action( 'plugins_loaded', 'parse_this_loader', 11 );
 }
