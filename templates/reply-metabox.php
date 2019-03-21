@@ -7,14 +7,7 @@ $duration = divide_iso8601_duration( $mf2_post->get( 'duration' ) );
 
 if ( ! isset( $cite['url'] ) ) {
 	if ( array_key_exists( 'kindurl', $_GET ) && wp_http_validate_url( $_GET['kindurl'] ) ) {
-		$parse  = new Parse_This( $_GET['kindurl'] );
-		$return = $parse->fetch();
-		if ( is_wp_error( $return ) ) {
-			return $return;
-		}
-		$parse->parse();
-		$cite   = $parse->get();
-		$author = ifset( $cite['author'], array() );
+		$cite = array( 'url' => $_GET['kindurl'] );
 	}
 }
 $author = ifset( $cite['author'], array() );

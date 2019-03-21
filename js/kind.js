@@ -366,7 +366,7 @@ jQuery( document )
 		changeSettings();
 		event.preventDefault();
 	})
-	.on( 'change', '#cite_url', function( event ) {
+	.on( 'blur', '#cite_url', function( event ) {
 		if ( false == checkUrl( $( '#cite_url' ).val() ) ) {
 			alert( 'Invalid URL' );
 		} else if ( '' === $( '#cite_name' ).val() ) {
