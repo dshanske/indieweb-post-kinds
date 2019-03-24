@@ -44,6 +44,7 @@ final class Kind_Taxonomy {
 		add_action( 'set_object_terms', array( 'Kind_Taxonomy', 'set_object_terms' ), 10, 6 );
 
 		add_filter( 'the_title', array( 'Kind_Taxonomy', 'the_title' ), 9, 2 );
+		add_filter( 'get_sample_permalink', array( 'Kind_Taxonomy', 'get_sample_permalink' ), 10, 5 );
 
 		add_action( 'rest_api_init', array( 'Kind_Taxonomy', 'rest_kind' ) );
 
@@ -76,6 +77,17 @@ final class Kind_Taxonomy {
 		return $templates;
 	}
 
+	public static function get_sample_permalink( $permalink, $post_id, $title, $name, $post ) {
+		if ( ! $title ) {
+			$excerpt = self::get_excerpt( $post );
+			$excerpt = sanitize_title( mb_strimwidth( wp_strip_all_tags( $excerpt ), 0, 40 ) ); // phpcs:ignore
+			if ( ! empty( $excerpt ) ) {
+				$permalink[1] = wp_unique_post_slug( $excerpt, $post_id, $post->post_status, $post->post_type, $post->post_parent );
+			}
+		}
+		return $permalink;
+	}
+
 	public static function the_title( $title, $post_id ) {
 		if ( ! $title && is_admin() ) {
 			$kind = get_post_kind_slug( $post_id );
@@ -96,9 +108,11 @@ final class Kind_Taxonomy {
 		return $title;
 	}
 
-	public static function get_excerpt( $post_id ) {
-		$post = get_post( $post_id );
-		if ( has_excerpt( $post ) ) {
+	public static function get_excerpt( $post ) {
+		if ( ! $post instanceof WP_Post ) {
+			return '';
+		}
+		if ( ! empty( $post->post_excerpt ) ) {
 			return $post->post_excerpt;
 		}
 		return $post->post_content;
