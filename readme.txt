@@ -1,10 +1,10 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like, scrobble
-Stable tag: 3.2.1
+Stable tag: 3.2.2
 Requires at least: 4.9.6
 Requires PHP: 5.4
-Tested up to: 5.1
+Tested up to: 5.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -154,6 +154,8 @@ posts.
  * **Watch** - video - watching a video
  * **Play** - playing a game
  * **Read** - reading a book, compared to online material
+ * **Eat** - Representing recording what you eat, perhaps for a food diary
+ * **Drink** - Similar to Eat
 
 = What kinds do you plan to add in the future? =
 
@@ -167,8 +169,6 @@ interface at this time.
  * **Trip** - Representing a trip...this represents a geographic journey and would require location awareness.
  * **Itinerary** - Itinerary - this would refer to scheduled transit, plane, train, etc. and does not require location awareness
  * **Tag** - Allows you to tag a post as being of a specific tag, or person tagging.
- * **Eat** - Representing recording what you eat, perhaps for a food diary
- * **Drink** - Similar to Eat
  * **Follow** - A post indicating you are now following someone's activities
  * **Mood** - Mood - Feeling
  * **Recipe** - Recipe
@@ -254,6 +254,11 @@ through future plugin updates.
 
 
 == Changelog ==
+
+= 3.2.2 ( 2019-03-24 ) =
+* Fix issue with kindurl query
+* If no title try to generate a slug from the content or excerpt
+* Add food and drink templates and activate types
 
 = 3.2.1 ( 2019-03-10 ) =
 * Revert load change

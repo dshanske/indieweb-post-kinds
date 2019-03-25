@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the Post Kinds package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Kinds 3.2.1\n"
+"Project-Id-Version: Post Kinds 3.2.2\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2019-03-10 06:25:08+00:00\n"
+"POT-Creation-Date: 2019-03-25 03:29:15+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -172,7 +172,7 @@ msgstr ""
 msgid "Interested"
 msgstr ""
 
-#: includes/class-kind-metabox.php:192 includes/class-kind-taxonomy.php:586
+#: includes/class-kind-metabox.php:192 includes/class-kind-taxonomy.php:600
 msgid "RSVP"
 msgstr ""
 
@@ -192,13 +192,13 @@ msgstr ""
 msgid "Number of Posts:"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:61
+#: includes/class-kind-taxonomy.php:62
 msgid "Post Kind"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:291 includes/class-kind-taxonomy.php:294
-#: includes/class-kind-taxonomy.php:297 includes/class-kind-taxonomy.php:305
-#: includes/class-kind-taxonomy.php:328
+#: includes/class-kind-taxonomy.php:305 includes/class-kind-taxonomy.php:308
+#: includes/class-kind-taxonomy.php:311 includes/class-kind-taxonomy.php:319
+#: includes/class-kind-taxonomy.php:342
 #. translators: 1: Kinds. Yearly archive title. 2: Year
 #. translators: Monthly archive title. 1: Month name and year
 #. translators: Daily archive title. 1: Date
@@ -207,469 +207,469 @@ msgstr ""
 msgid "%1$1s: %2$2s"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:305 includes/class-kind-taxonomy.php:328
+#: includes/class-kind-taxonomy.php:319 includes/class-kind-taxonomy.php:342
 msgid "On This Day"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:432
+#: includes/class-kind-taxonomy.php:446
 msgid "Article"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:433
+#: includes/class-kind-taxonomy.php:447
 msgid "Articles"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:437
+#: includes/class-kind-taxonomy.php:451
 msgid "traditional long form content: a post with an explicit title and body"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:446
+#: includes/class-kind-taxonomy.php:460
 msgid "Note"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:447
+#: includes/class-kind-taxonomy.php:461
 msgid "Notes"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:451
+#: includes/class-kind-taxonomy.php:465
 msgid ""
 "short content: a post or status update with just plain content and "
 "typically without a title"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:460
+#: includes/class-kind-taxonomy.php:474
 msgid "Reply"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:461
+#: includes/class-kind-taxonomy.php:475
 msgid "Replies"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:462
+#: includes/class-kind-taxonomy.php:476
 msgid "Replied to"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:465
+#: includes/class-kind-taxonomy.php:479
 msgid "a reply to content typically on another site"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:474
+#: includes/class-kind-taxonomy.php:488
 msgid "Repost"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:475
+#: includes/class-kind-taxonomy.php:489
 msgid "Reposts"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:476
+#: includes/class-kind-taxonomy.php:490
 msgid "Reposted"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:479
+#: includes/class-kind-taxonomy.php:493
 msgid "a complete reposting of content from another site"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:488
+#: includes/class-kind-taxonomy.php:502
 msgid "Like"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:489
+#: includes/class-kind-taxonomy.php:503
 msgid "Likes"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:490
+#: includes/class-kind-taxonomy.php:504
 msgid "Liked"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:493
+#: includes/class-kind-taxonomy.php:507
 msgid "a way to pay compliments to the original post/poster of external content"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:502
+#: includes/class-kind-taxonomy.php:516
 msgid "Favorite"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:503
+#: includes/class-kind-taxonomy.php:517
 msgid "Favorites"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:504
+#: includes/class-kind-taxonomy.php:518
 msgid "Favorited"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:507
+#: includes/class-kind-taxonomy.php:521
 msgid "special to the author"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:516
+#: includes/class-kind-taxonomy.php:530
 msgid "Bookmark"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:517
+#: includes/class-kind-taxonomy.php:531
 msgid "Bookmarks"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:518
+#: includes/class-kind-taxonomy.php:532
 msgid "Bookmarked"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:521
+#: includes/class-kind-taxonomy.php:535
 msgid "storing a link/bookmark for personal use or sharing with others"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:530
+#: includes/class-kind-taxonomy.php:544
 msgid "Photo"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:531
+#: includes/class-kind-taxonomy.php:545
 msgid "Photos"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:535
+#: includes/class-kind-taxonomy.php:549
 msgid "a post with an embedded image/photo as its primary focus"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:544
+#: includes/class-kind-taxonomy.php:558
 msgid "Video"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:545
+#: includes/class-kind-taxonomy.php:559
 msgid "Videos"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:549
+#: includes/class-kind-taxonomy.php:563
 msgid "a post with an embedded video as its primary focus"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:558
+#: includes/class-kind-taxonomy.php:572
 msgid "Audio"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:559
+#: includes/class-kind-taxonomy.php:573
 msgid "Audios"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:563
+#: includes/class-kind-taxonomy.php:577
 msgid "a post with an embedded audio file as its primary focus"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:572
+#: includes/class-kind-taxonomy.php:586
 msgid "Tag"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:573
+#: includes/class-kind-taxonomy.php:587
 msgid "Tags"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:574
+#: includes/class-kind-taxonomy.php:588
 msgid "Tagged"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:577
+#: includes/class-kind-taxonomy.php:591
 msgid ""
 "allows you to tag a post as being of a specific category or tag, or for "
 "person tagging"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:587
+#: includes/class-kind-taxonomy.php:601
 msgid "RSVPs"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:588
+#: includes/class-kind-taxonomy.php:602
 msgid "RSVPed"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:591
+#: includes/class-kind-taxonomy.php:605
 msgid "a specific type of reply regarding attendance of an event"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:600
+#: includes/class-kind-taxonomy.php:614
 msgid "Listen"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:601
+#: includes/class-kind-taxonomy.php:615
 msgid "Listens"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:602
+#: includes/class-kind-taxonomy.php:616
 msgid "Listened"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:605
+#: includes/class-kind-taxonomy.php:619
 msgid "listening to audio; sometimes called a scrobble"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:614
+#: includes/class-kind-taxonomy.php:628
 msgid "Watch"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:615
+#: includes/class-kind-taxonomy.php:629
 msgid "Watches"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:616
+#: includes/class-kind-taxonomy.php:630
 msgid "Watched"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:619
+#: includes/class-kind-taxonomy.php:633
 msgid ""
 "watching a movie, television show, online video, play or other visual-based "
 "event"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:628
+#: includes/class-kind-taxonomy.php:642
 msgid "Checkin"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:629
+#: includes/class-kind-taxonomy.php:643
 msgid "Checkins"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:630
+#: includes/class-kind-taxonomy.php:644
 msgid "Checked into"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:633
+#: includes/class-kind-taxonomy.php:647
 msgid "identifying you are at a particular geographic location"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:642
+#: includes/class-kind-taxonomy.php:656
 msgid "Wish"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:643
+#: includes/class-kind-taxonomy.php:657
 msgid "Wishes"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:644
+#: includes/class-kind-taxonomy.php:658
 msgid "Wished"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:647
+#: includes/class-kind-taxonomy.php:661
 msgid ""
 "a post indicating a desire/wish. The archive of which would be a wishlist, "
 "such as a gift registry or similar"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:656
+#: includes/class-kind-taxonomy.php:670
 msgid "Play"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:657
+#: includes/class-kind-taxonomy.php:671
 msgid "Playing"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:658
+#: includes/class-kind-taxonomy.php:672
 msgid "Played"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:661
+#: includes/class-kind-taxonomy.php:675
 msgid "playing a game"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:670 includes/class-kind-taxonomy.php:671
+#: includes/class-kind-taxonomy.php:684 includes/class-kind-taxonomy.php:685
 msgid "Weather"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:675
+#: includes/class-kind-taxonomy.php:689
 msgid "current weather conditions"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:684 includes/class-kind-taxonomy.php:685
+#: includes/class-kind-taxonomy.php:698 includes/class-kind-taxonomy.php:699
 msgid "Exercise"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:686
+#: includes/class-kind-taxonomy.php:700
 msgid "Exercised"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:689
+#: includes/class-kind-taxonomy.php:703
 msgid ""
 "some form of physical activity or workout (examples: walk, run, cycle, "
 "hike, yoga, etc.)"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:698
+#: includes/class-kind-taxonomy.php:712
 msgid "Trip"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:699
+#: includes/class-kind-taxonomy.php:713
 msgid "Trips"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:700 includes/class-kind-taxonomy.php:714
+#: includes/class-kind-taxonomy.php:714 includes/class-kind-taxonomy.php:728
 msgid "Travelled"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:703
+#: includes/class-kind-taxonomy.php:717
 msgid "represents a geographic journey"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:712
+#: includes/class-kind-taxonomy.php:726
 msgid "Itinerary"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:713
+#: includes/class-kind-taxonomy.php:727
 msgid "Itineraries"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:717
+#: includes/class-kind-taxonomy.php:731
 msgid "parts of a scheduled trip including transit by car, plane, train, etc."
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:726 includes/class-kind-taxonomy.php:727
+#: includes/class-kind-taxonomy.php:740 includes/class-kind-taxonomy.php:741
 msgid "Eat"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:728
+#: includes/class-kind-taxonomy.php:742
 msgid "Ate"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:731
+#: includes/class-kind-taxonomy.php:745
 msgid "what you are eating, perhaps for a food dairy"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:740
+#: includes/class-kind-taxonomy.php:754
 msgid "Drink"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:741
+#: includes/class-kind-taxonomy.php:755
 msgid "Drinks"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:742
+#: includes/class-kind-taxonomy.php:756
 msgid "Drank"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:745
+#: includes/class-kind-taxonomy.php:759
 msgid "what you are drinking, perhaps for a food dairy"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:754
+#: includes/class-kind-taxonomy.php:768
 msgid "Follow"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:755
+#: includes/class-kind-taxonomy.php:769
 msgid "Follows"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:756
+#: includes/class-kind-taxonomy.php:770
 msgid "Followed"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:759
+#: includes/class-kind-taxonomy.php:773
 msgid ""
 "indicating you are now following or subscribing to another person`s "
 "activities online"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:768
+#: includes/class-kind-taxonomy.php:782
 msgid "Jam"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:769
+#: includes/class-kind-taxonomy.php:783
 msgid "Jams"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:770
+#: includes/class-kind-taxonomy.php:784
 msgid "Listened to"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:773
+#: includes/class-kind-taxonomy.php:787
 msgid "a particularly personally meaningful song (a listen with added emphasis)"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:782 includes/class-kind-taxonomy.php:784
+#: includes/class-kind-taxonomy.php:796 includes/class-kind-taxonomy.php:798
 msgid "Read"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:783
+#: includes/class-kind-taxonomy.php:797
 msgid "Reads"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:787
+#: includes/class-kind-taxonomy.php:801
 msgid "reading a book, magazine, newspaper, other physical document, or online post"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:796
+#: includes/class-kind-taxonomy.php:810
 msgid "Quote"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:797
+#: includes/class-kind-taxonomy.php:811
 msgid "Quotes"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:798
+#: includes/class-kind-taxonomy.php:812
 msgid "Quoted"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:801
+#: includes/class-kind-taxonomy.php:815
 msgid "quoted content"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:810
+#: includes/class-kind-taxonomy.php:824
 msgid "Mood"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:811
+#: includes/class-kind-taxonomy.php:825
 msgid "Moods"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:812
+#: includes/class-kind-taxonomy.php:826
 msgid "Felt"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:815
+#: includes/class-kind-taxonomy.php:829
 msgid "how you are feeling (example: happy, sad, indifferent, etc.)"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:824
+#: includes/class-kind-taxonomy.php:838
 msgid "Recipe"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:825
+#: includes/class-kind-taxonomy.php:839
 msgid "Recipes"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:826
+#: includes/class-kind-taxonomy.php:840
 msgid "Cooked"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:829
+#: includes/class-kind-taxonomy.php:843
 msgid "list of ingredients and directions for making food or drink"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:838
+#: includes/class-kind-taxonomy.php:852
 msgid "Issue"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:839
+#: includes/class-kind-taxonomy.php:853
 msgid "Issues"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:840
+#: includes/class-kind-taxonomy.php:854
 msgid "Filed an Issue"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:843
+#: includes/class-kind-taxonomy.php:857
 msgid ""
 "Issue is a special kind of article post that is a reply to typically some "
 "source code, though potentially anything at a source control repository."
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:852
+#: includes/class-kind-taxonomy.php:866
 msgid "Question"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:853
+#: includes/class-kind-taxonomy.php:867
 msgid "Questions"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:854
+#: includes/class-kind-taxonomy.php:868
 msgid "Asked a question"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:857
+#: includes/class-kind-taxonomy.php:871
 msgid ""
 "Question is a post type for soliciting answer replies, which are then "
 "typically up/down voted by others and then displayed underneath the "
@@ -677,68 +677,68 @@ msgid ""
 "ordered."
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:866
+#: includes/class-kind-taxonomy.php:880
 msgid "Sleep"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:867
+#: includes/class-kind-taxonomy.php:881
 msgid "Sleeps"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:868
+#: includes/class-kind-taxonomy.php:882
 msgid "Slept"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:871
+#: includes/class-kind-taxonomy.php:885
 msgid ""
 "Sleep is a passive metrics post type that indicates how much time (and "
 "often a graph of how deeply) a person has slept."
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:880
+#: includes/class-kind-taxonomy.php:894
 msgid "Event"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:881
+#: includes/class-kind-taxonomy.php:895
 msgid "Events"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:882
+#: includes/class-kind-taxonomy.php:896
 msgid "Planned"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:885
+#: includes/class-kind-taxonomy.php:899
 msgid ""
 "An event is a type of post that in addition to a post name (event title) "
 "has a start datetime (likely end datetime), and a location."
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:894
+#: includes/class-kind-taxonomy.php:908
 msgid "Acquisition"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:895
+#: includes/class-kind-taxonomy.php:909
 msgid "Acquisitions"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:896
+#: includes/class-kind-taxonomy.php:910
 msgid "Acquired"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:899
+#: includes/class-kind-taxonomy.php:913
 msgid "Purchases, gifts, found things, or objects donated"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:972
+#: includes/class-kind-taxonomy.php:986
 #. translators: All
 msgid "All %1s"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:1096
+#: includes/class-kind-taxonomy.php:1110
 msgid "Invalid post"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:1099
+#: includes/class-kind-taxonomy.php:1113
 msgid "Invalid Kind"
 msgstr ""
 
@@ -846,7 +846,7 @@ msgid ""
 msgstr ""
 
 #: includes/parse-this/includes/class-parse-this-api.php:55
-#: templates/reply-metabox.php:58
+#: templates/reply-metabox.php:51
 msgid "URL"
 msgstr ""
 
@@ -906,7 +906,7 @@ msgstr ""
 msgid "(Multiple Entries separated by semicolon)"
 msgstr ""
 
-#: templates/reply-author.php:6 templates/reply-metabox.php:53
+#: templates/reply-author.php:6 templates/reply-metabox.php:46
 msgid "Author"
 msgstr ""
 
@@ -946,15 +946,15 @@ msgstr ""
 msgid "Featured Image"
 msgstr ""
 
-#: templates/reply-metabox.php:52
+#: templates/reply-metabox.php:45
 msgid "Details"
 msgstr ""
 
-#: templates/reply-metabox.php:55
+#: templates/reply-metabox.php:48
 msgid "Clear"
 msgstr ""
 
-#: templates/reply-metabox.php:64
+#: templates/reply-metabox.php:57
 msgid "Name"
 msgstr ""
 
@@ -1050,107 +1050,107 @@ msgctxt "direct article"
 msgid "this"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:139
+#: includes/class-kind-taxonomy.php:153
 msgctxt "taxonomy general name"
 msgid "Kinds"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:140
+#: includes/class-kind-taxonomy.php:154
 msgctxt "taxonomy singular name"
 msgid "Kind"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:141
+#: includes/class-kind-taxonomy.php:155
 msgctxt "search locations"
 msgid "Search Kinds"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:142
+#: includes/class-kind-taxonomy.php:156
 msgctxt "popular kinds"
 msgid "Popular Kinds"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:143
+#: includes/class-kind-taxonomy.php:157
 msgctxt "all taxonomy items"
 msgid "All Kinds"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:144
+#: includes/class-kind-taxonomy.php:158
 msgctxt "taxonomy parent item"
 msgid "Parent Kind"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:145
+#: includes/class-kind-taxonomy.php:159
 msgctxt "taxonomy parent item with colon"
 msgid "Parent Kind:"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:146
+#: includes/class-kind-taxonomy.php:160
 msgctxt "edit taxonomy item"
 msgid "Edit Kind"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:147
+#: includes/class-kind-taxonomy.php:161
 msgctxt "view taxonomy item"
 msgid "View Kind"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:148
+#: includes/class-kind-taxonomy.php:162
 msgctxt "update taxonomy item"
 msgid "Update Kind"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:149
+#: includes/class-kind-taxonomy.php:163
 msgctxt "add taxonomy item"
 msgid "Add New Kind"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:150
+#: includes/class-kind-taxonomy.php:164
 msgctxt "new taxonomy item"
 msgid "New Kind"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:151
+#: includes/class-kind-taxonomy.php:165
 msgctxt "separate kinds with commas"
 msgid "Separate kinds with commas"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:152
+#: includes/class-kind-taxonomy.php:166
 msgctxt "add or remove items"
 msgid "Add or remove kinds"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:153
+#: includes/class-kind-taxonomy.php:167
 msgctxt "choose most used"
 msgid "Choose from the most used kinds"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:154
+#: includes/class-kind-taxonomy.php:168
 msgctxt "no kinds found"
 msgid "No kinds found"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:155
+#: includes/class-kind-taxonomy.php:169
 msgctxt "no kinds"
 msgid "No kinds"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:291
+#: includes/class-kind-taxonomy.php:305
 msgctxt "yearly archives date format"
 msgid "Y"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:294
+#: includes/class-kind-taxonomy.php:308
 msgctxt "monthly archives date format"
 msgid "F Y"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:297
+#: includes/class-kind-taxonomy.php:311
 msgctxt "daily archives date format"
 msgid "F j, Y"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:305 includes/class-kind-taxonomy.php:328
+#: includes/class-kind-taxonomy.php:319 includes/class-kind-taxonomy.php:342
 msgctxt "daily archives date format"
 msgid "F j"
 msgstr ""

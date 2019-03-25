@@ -740,12 +740,12 @@ final class Kind_Taxonomy {
 				'singular_name'   => __( 'Eat', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Eat', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Ate', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
-				'property'        => 'food', // microformats 2 property
+				'property'        => 'ate', // microformats 2 property
 				'format'          => 'status', // Post Format that maps to this
 				'description'     => __( 'what you are eating, perhaps for a food dairy', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/food',
 				'title'           => false, // Should this kind have an explicit title
-				'show'            => false, // Show in Settings
+				'show'            => true, // Show in Settings
 			)
 		);
 		register_post_kind(
@@ -754,12 +754,12 @@ final class Kind_Taxonomy {
 				'singular_name'   => __( 'Drink', 'indieweb-post-kinds' ), // Name for one instance of the kind
 				'name'            => __( 'Drinks', 'indieweb-post-kinds' ), // General name for the kind plural
 				'verb'            => __( 'Drank', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
-				'property'        => 'food', // microformats 2 property
+				'property'        => 'drank', // microformats 2 property
 				'format'          => 'status', // Post Format that maps to this
 				'description'     => __( 'what you are drinking, perhaps for a food dairy', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/food',
 				'title'           => false, // Should this kind have an explicit title
-				'show'            => false, // Show in Settings
+				'show'            => true, // Show in Settings
 			)
 		);
 		register_post_kind(

@@ -351,6 +351,8 @@ class Kind_Metabox {
 				// Temporary code which assumes everything except a checkin is a citation
 				if ( 'checkin' === $kind ) {
 					$cite['type'] = 'card';
+				} elseif ( in_array( $kind, array( 'drink', 'eat' ), true ) ) {
+					$cite['type'] = 'food';
 				} else {
 					$cite['type'] = 'cite';
 				}
