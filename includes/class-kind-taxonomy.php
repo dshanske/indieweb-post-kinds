@@ -78,7 +78,7 @@ final class Kind_Taxonomy {
 	}
 
 	public static function get_sample_permalink( $permalink, $post_id, $title, $name, $post ) {
-		if ( ! $title ) {
+		if ( ! $title && 'publish' !== $post->post_status ) {
 			$excerpt = self::get_excerpt( $post );
 			$excerpt = sanitize_title( mb_strimwidth( wp_strip_all_tags( $excerpt ), 0, 40 ) ); // phpcs:ignore
 			if ( ! empty( $excerpt ) ) {
