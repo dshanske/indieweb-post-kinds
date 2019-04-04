@@ -526,7 +526,7 @@ msgid "Ate"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:745
-msgid "what you are eating, perhaps for a food dairy"
+msgid "what you are eating, perhaps for a food diary"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:754
@@ -542,7 +542,7 @@ msgid "Drank"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:759
-msgid "what you are drinking, perhaps for a food dairy"
+msgid "what you are drinking, perhaps for a food diary"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:768
