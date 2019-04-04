@@ -742,7 +742,7 @@ final class Kind_Taxonomy {
 				'verb'            => __( 'Ate', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
 				'property'        => 'ate', // microformats 2 property
 				'format'          => 'status', // Post Format that maps to this
-				'description'     => __( 'what you are eating, perhaps for a food dairy', 'indieweb-post-kinds' ),
+				'description'     => __( 'what you are eating, perhaps for a food diary', 'indieweb-post-kinds' ),
 				'description-url' => 'https://indieweb.org/food',
 				'title'           => false, // Should this kind have an explicit title
 				'show'            => true, // Show in Settings
