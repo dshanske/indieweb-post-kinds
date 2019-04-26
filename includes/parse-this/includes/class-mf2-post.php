@@ -514,7 +514,7 @@ class MF2_Post implements ArrayAccess {
 
 	public function get_attached_media( $type, $post ) {
 		$posts = get_attached_media( $type, $post );
-		return wp_list_pluck( $posts, 'post_ID' );
+		return wp_list_pluck( $posts, 'ID' );
 	}
 
 	public function get_audios() {
