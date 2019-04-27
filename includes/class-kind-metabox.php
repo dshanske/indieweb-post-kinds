@@ -281,22 +281,24 @@ class Kind_Metabox {
 			'duration_minutes' => '',
 			'duration_seconds' => '',
 		);
-		if ( array_intersect_key( $duration_keys, $_POST ) ) {
-			$durations = array(
-				'Y' => ifset( $_POST['duration_years'] ),
-				'M' => ifset( $_POST['duration_months'] ),
-				'D' => ifset( $_POST['duration_days'] ),
-				'H' => ifset( $_POST['duration_hours'] ),
-				'I' => ifset( $_POST['duration_minutes'] ),
-				'S' => ifset( $_POST['duration_seconds'] ),
-			);
-			$durations = array_filter( $durations );
-			$duration  = build_iso8601_duration( $durations );
-
-		} else {
+		$durations     = array(
+			'Y' => ifset( $_POST['duration_years'] ),
+			'M' => ifset( $_POST['duration_months'] ),
+			'D' => ifset( $_POST['duration_days'] ),
+			'H' => ifset( $_POST['duration_hours'] ),
+			'I' => ifset( $_POST['duration_minutes'] ),
+			'S' => ifset( $_POST['duration_seconds'] ),
+		);
+		$durations     = array_filter( $durations );
+		if ( ! empty( $durations ) ) {
+			$duration = build_iso8601_duration( $durations );
+		} elseif ( isset( $start ) && isset( $end ) ) {
 			$duration = calculate_duration( $start, $end );
+			if ( $duration instanceof DateInterval ) {
+				$duration = date_interval_to_iso8601( $duration );
+			}
 		}
-		if ( $duration ) {
+		if ( ! empty( $duration ) ) {
 			$mf2_post->set( 'duration', $duration );
 		} else {
 			$mf2_post->delete( 'duration' );
