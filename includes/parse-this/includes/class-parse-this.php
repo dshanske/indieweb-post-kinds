@@ -400,6 +400,9 @@ class Parse_This {
 			}
 			$this->jf2 = Parse_This_MF2::parse( $content, $this->url, $args );
 		}
+		if ( ! isset( $this->jf2['url'] ) ) {
+			$this->jf2['url'] = $this->url;
+		}
 		// If the HTML argument is not true return at this point
 		if ( ! $args['html'] ) {
 			return;
@@ -417,6 +420,9 @@ class Parse_This {
 		$more = array_intersect( array_keys( $this->jf2 ), array( 'summary', 'content', 'references' ) );
 		if ( empty( $more ) && $this->doc instanceof DOMDocument ) {
 			$this->jf2 = array_merge( $this->jf2, Parse_This_HTML::parse( $this->doc, $this->url ) );
+		}
+		if ( ! isset( $this->jf2['url'] ) ) {
+			$this->jf2['url'] = $this->url;
 		}
 
 	}
