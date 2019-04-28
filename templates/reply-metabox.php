@@ -63,7 +63,7 @@ if ( isset( $cite['url'] ) && is_array( $cite['url'] ) ) {
 	<?php echo Kind_Metabox::rsvp_select( $mf2_post->get( 'rsvp', true ) ); ?>
 </p>
 <p id="kind-media hide-if-no-js">
-<?php $show_media = ( isset( $cite['url'] ) && in_array( $kind, array( 'audio', 'video', 'photo' ) ) ); ?>
+<?php $show_media = ( isset( $cite['url'] ) && in_array( $kind, array( 'photo' ) ) ); ?>
 <div id="kind-media-container" <?php echo ( $show_media ) ? '' : 'class="hidden"'; ?> >
 <img src="<?php echo ifset( $cite['url'], '' ); ?>" alt="" title="" height="100" />
 	</div>
