@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like, scrobble
-Stable tag: 3.2.2
+Stable tag: 3.2.3
 Requires at least: 4.9.6
 Requires PHP: 5.4
 Tested up to: 5.1.1
@@ -254,6 +254,13 @@ through future plugin updates.
 
 
 == Changelog ==
+
+= 3.2.3 ( 2019-04-27 ) =
+* Fix issue with attached media
+* Only suggest permalinks if not published
+* Fix storage issue with tags in citation
+* Hide media box when not media type
+* Fix duration storage issues
 
 = 3.2.2 ( 2019-03-24 ) =
 * Fix issue with kindurl query

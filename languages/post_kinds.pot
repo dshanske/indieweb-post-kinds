@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the Post Kinds package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Kinds 3.2.2\n"
+"Project-Id-Version: Post Kinds 3.2.3\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2019-03-25 03:29:15+00:00\n"
+"POT-Creation-Date: 2019-04-28 00:03:50+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -542,7 +542,7 @@ msgid "Drank"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:759
-msgid "what you are drinking, perhaps for a food diary"
+msgid "what you are drinking, perhaps for a food dairy"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:768
@@ -846,7 +846,7 @@ msgid ""
 msgstr ""
 
 #: includes/parse-this/includes/class-parse-this-api.php:55
-#: templates/reply-metabox.php:51
+#: templates/reply-metabox.php:52
 msgid "URL"
 msgstr ""
 
@@ -906,7 +906,7 @@ msgstr ""
 msgid "(Multiple Entries separated by semicolon)"
 msgstr ""
 
-#: templates/reply-author.php:6 templates/reply-metabox.php:46
+#: templates/reply-author.php:6 templates/reply-metabox.php:47
 msgid "Author"
 msgstr ""
 
@@ -946,15 +946,15 @@ msgstr ""
 msgid "Featured Image"
 msgstr ""
 
-#: templates/reply-metabox.php:45
+#: templates/reply-metabox.php:46
 msgid "Details"
 msgstr ""
 
-#: templates/reply-metabox.php:48
+#: templates/reply-metabox.php:49
 msgid "Clear"
 msgstr ""
 
-#: templates/reply-metabox.php:57
+#: templates/reply-metabox.php:58
 msgid "Name"
 msgstr ""
 
