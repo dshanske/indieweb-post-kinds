@@ -69,7 +69,7 @@ class Kind_Post_Widget extends WP_Widget {
 	}
 
 	public function get_the_link( $post, $kind ) {
-		return sprintf( '<a href="%2$s">%1$s</a> - %3$s', self::get_the_title( $post, $kind ), get_the_permalink( $post ), get_the_date() );
+		return sprintf( '<a href="%2$s">%1$s</a> - %3$s', self::get_the_title( $post, $kind ), get_the_permalink( $post ), get_the_date( '', $post ) );
 	}
 
 
