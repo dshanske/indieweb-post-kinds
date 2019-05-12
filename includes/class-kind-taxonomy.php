@@ -23,6 +23,10 @@ final class Kind_Taxonomy {
 		add_filter( 'post_link', array( 'Kind_Taxonomy', 'kind_permalink' ), 10, 3 );
 		add_filter( 'post_type_link', array( 'Kind_Taxonomy', 'kind_permalink' ), 10, 3 );
 
+		// Query Variable to Exclude Kinds from Feed
+		add_filter( 'query_vars', array( 'Kind_Taxonomy', 'query_vars' ) );
+		add_action( 'pre_get_posts', array( 'Kind_Taxonomy', 'kind_filter_query' ) );
+
 		// Add Dropdown
 		add_action( 'restrict_manage_posts', array( 'Kind_Taxonomy', 'kind_dropdown' ), 10, 2 );
 
@@ -49,6 +53,38 @@ final class Kind_Taxonomy {
 		add_action( 'rest_api_init', array( 'Kind_Taxonomy', 'rest_kind' ) );
 
 		add_filter( 'embed_template_hierarchy', array( 'Kind_Taxonomy', 'embed_template_hierarchy' ) );
+	}
+
+	public static function query_vars( $qvars ) {
+		$qvars[] = 'exclude_kind';
+		return $qvars;
+	}
+
+	public static function kind_filter_query( $query ) {
+		// check if the user is requesting an admin page
+		if ( is_admin() ) {
+			return;
+		}
+		$exclude = get_query_var( 'exclude_kind' );
+		// Return if both are not set
+		if ( ! $exclude ) {
+			return;
+		}
+		$operator = 'NOT IN';
+		$filter   = $exclude;
+		$filter   = explode( ',', $filter );
+		$query->set(
+			'tax_query',
+			array(
+				array(
+					'taxonomy' => 'kind',
+					'field'    => 'slug',
+					'terms'    => $filter,
+					'operator' => $operator,
+				),
+			)
+		);
+
 	}
 
 	public static function rest_kind() {
@@ -187,26 +223,44 @@ final class Kind_Taxonomy {
 			'query_var'          => true,
 		);
 		register_taxonomy( 'kind', array( 'post' ), $args );
+		// Year archive for kinds
 		add_rewrite_rule(
 			'kind/([a-z]+)/([0-9]{4})/?$',
 			'index.php?year=$matches[2]&kind=$matches[1]',
 			'top'
 		);
+		// Tag Archive for Kinds
 		add_rewrite_rule(
-			'kind/([a-z]+)/tag/([a-z]+)/?$',
+			'kind/([a-z]+)/tag/([a-zA-Z0-9]+)/?$',
 			'index.php?tag=$matches[2]&kind=$matches[1]',
 			'top'
 		);
+		// Year and Month Archive for Kind
 		add_rewrite_rule(
 			'kind/([a-z]+)/([0-9]{4})/([0-9]{2})/?$',
 			'index.php?year=$matches[2]&monthnum=$matches[3]&kind=$matches[1]',
 			'top'
 		);
+		// Year Month and Day Archive for Kind
 		add_rewrite_rule(
 			'kind/([a-z]+)/([0-9]{4})/([0-9]{2})/([0-9]{2})/?$',
 			'index.php?year=$matches[2]&monthnum=$matches[3]&day=$matches[4]&kind=$matches[1]',
 			'top'
 		);
+
+		// Exclude/Include Kinds
+		add_rewrite_rule(
+			'exclude/kind/([a-zA-Z,]+)/?$',
+			'index.php?exclude_kind=$matches[1]',
+			'top'
+		);
+		add_rewrite_rule(
+			'exclude/kind/([a-zA-Z,]+)/feed/([a-z]+)?$',
+			'index.php?exclude_kind=$matches[1]&feed=$matches[2]',
+			'top'
+		);
+
+		// On This Day Archive
 		add_rewrite_rule(
 			'onthisday/([0-9]{2})/([0-9]{2})/?$',
 			'index.php?monthnum=$matches[1]&day=$matches[2]',

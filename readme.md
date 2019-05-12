@@ -1,10 +1,10 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.2.3  
+**Stable tag:** 3.2.4  
 **Requires at least:** 4.9.6  
 **Requires PHP:** 5.4  
-**Tested up to:** 5.1.1  
+**Tested up to:** 5.2  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -214,6 +214,8 @@ Simply replace YOURSITE.COM with your particular site name and the particular po
 
 You can also add the date /kind/note/2018/12/24 to see date-based archives. Or /kind/note/tag/tagname using the slug of a tag to see an archive of tagged posts of a specific kind
 
+For archives if you add exclude_kind as a query variable it will exclude specific kinds from the query `?exclude_kind=note`. You can also do this as /exclude/kind/note,checkin as it accepts multiple values
+
 ### Do you have RSS feeds for each kind? ###
 
 Post Kinds also automatically handles RSS feeds which can be made available or subscribed to for any of the particular kinds. The RSS feed for all the posts marked as "note", for example could be found at either the URL `http://www.example.com/kind/note/feed` or  `http://www.example.com/feed/?kind=note` (if one doesn't have pretty permalinks enabled). Others can be obtained by replacing "note" with the other kinds.
@@ -258,6 +260,13 @@ through future plugin updates.
 
 
 ## Changelog ##
+
+### 3.2.4 ( 2019-05-12 ) ###
+* Add exclude kind query var and rewrite
+* Adjust icons to relative values and prevent fatwigoo
+* Change checkin icon
+* Fix issue where post date was not being passed to widget
+* Attempt to fix permalink issue reported
 
 ### 3.2.3 ( 2019-04-27 ) ###
 * Fix issue with attached media
