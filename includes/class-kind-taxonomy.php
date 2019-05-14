@@ -1216,7 +1216,7 @@ final class Kind_Taxonomy {
 		$name = self::get_kind_info( $kind, 'singular_name' );
 		$svg  = sprintf( '%1$ssvgs/%2$s.svg', plugin_dir_path( __DIR__ ), $kind );
 		if ( file_exists( $svg ) ) {
-			$return = sprintf( '<span class="svg-icon svg-%1$s" style="display: inline-block; max-width: 1rem; margin: 2px;" aria-hidden="true" aria-label="%2$s" title="%2$s" >%3$s</span>', esc_attr( $kind ), esc_attr( $name ), file_get_contents( $svg ) );
+			$return = sprintf( '<span class="svg-icon svg-%1$s" style="display: inline-block; max-width: 1rem; margin: 1rem;" aria-hidden="true" aria-label="%2$s" title="%2$s" >%3$s</span>', esc_attr( $kind ), esc_attr( $name ), file_get_contents( $svg ) );
 		} else {
 			return '';
 		}
