@@ -18,15 +18,15 @@ if ( ! function_exists( 'jf2_to_mf2' ) ) {
 			}
 			if ( ! wp_is_numeric_array( $value ) && is_array( $value ) && array_key_exists( 'type', $value ) ) {
 				$value = jf2_to_mf2( $value );
-			} elseif ( wp_is_numeric_array( $value ) && is_array( $value[0] ) && array_key_exists( 'type', $value[0] ) ) {
-				foreach ( $value as $item ) {
-					$items[] = jf2_to_mf2( $item );
+			} elseif ( wp_is_numeric_array( $value ) ) {
+				if ( is_array( $value[0] ) && array_key_exists( 'type', $value[0] ) ) {
+					foreach ( $value as $item ) {
+						$items[] = jf2_to_mf2( $item );
+					}
+					$value = $items;
 				}
-				$value = $items;
 			} elseif ( ! wp_is_numeric_array( $value ) ) {
 				$value = array( $value );
-			} else {
-				continue;
 			}
 			$return['properties'][ $key ] = $value;
 		}
