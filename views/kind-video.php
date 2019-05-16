@@ -5,7 +5,7 @@
  */
 
 $videos      = $mf2_post->get_videos();
-if ( is_array( $videos ) ) {
+if ( is_array( $videos )  && (count($videos) > 1)  ) {
 	foreach( $videos as $video ) {
 		$video_attachment = new MF2_Post( $video );
 		$cite = $video_attachment->get();
