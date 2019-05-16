@@ -4,19 +4,19 @@
  *
  */
 
-$videos      = $mf2_post->get_videos();
-if ( is_array( $videos )  && (count($videos) > 1)  ) {
-	foreach( $videos as $video ) {
+$videos = $mf2_post->get_videos();
+if ( is_array( $videos ) && ( count( $videos ) > 1 ) ) {
+	foreach ( $videos as $video ) {
 		$video_attachment = new MF2_Post( $video );
-		$cite = $video_attachment->get();
+		$cite             = $video_attachment->get();
 	}
 }
 $photos      = $mf2_post->get_images();
 $first_photo = null;
 if ( is_countable( $photos ) ) {
 	$first_photo = $photos[0];
-}	
-$embed       = null;
+}
+$embed = null;
 if ( is_array( $cite ) && ! $videos ) {
 	$url   = ifset( $cite['url'] );
 	$embed = self::get_embed( $url );

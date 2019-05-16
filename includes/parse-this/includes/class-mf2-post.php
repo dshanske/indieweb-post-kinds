@@ -538,7 +538,7 @@ class MF2_Post implements ArrayAccess {
 		}
 		$att_ids = $this->get_attached_media( 'video', $this->uid );
 		$videos  = $this->get( 'video' );
-		$att_ids = array_merge( $att_ids, $this->get_attachments_from_urls( $videos ) );
+		$att_ids = array_unique( array_merge( $att_ids, $this->get_attachments_from_urls( $videos ) ) );
 		if ( ! empty( $att_ids ) ) {
 			return $att_ids;
 		}

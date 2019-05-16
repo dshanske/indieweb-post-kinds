@@ -261,6 +261,12 @@ through future plugin updates.
 
 ## Changelog ##
 
+### 3.2.6 ( 2019-05-16 ) ###
+* Only allow citations for more than one video until improvement to media display
+* Adjust inline style again at request of theme developer
+* Fix issue with WordPress filters not being used by moving Post Kinds additions to before they are run
+* Add Nag for Classic Editor
+
 ### 3.2.5 ( 2019-05-14 ) ###
 * Merge in update from Parse This that did not make it into 3.2.4 fixing saving of citation tags
 * Fix issue in new markup
