@@ -52,15 +52,11 @@ class Kind_Post_Widget extends WP_Widget {
 			return;
 		}
 		echo '<div id="kind-posts">';
-		if ( 1 === count( $posts ) ) {
-			printf( '<p>%1$s</p>', self::get_the_link( $post, $kind ) ); // phpcs:ignore
-		} else {
-			echo '<ul>';
-			foreach ( $posts as $post ) {
-				printf( '<li>%1$s</li>', self::get_the_link( $post, $kind ) ); // phpcs:ignore
-			}
-			echo '</ul>';
+		echo '<ul>';
+		foreach ( $posts as $post ) {
+			printf( '<li>%1$s</li>', self::get_the_link( $post, $kind ) ); // phpcs:ignore
 		}
+		echo '</ul>';
 		echo '</div>';
 		// phpcs:ignore
 		if ( isset( $args['after_widget'] ) ) {
