@@ -120,8 +120,8 @@ class Kind_Post_Widget extends WP_Widget {
 		$instance['kind'] = ifset( $instance['kind'], 'note' );
 		?>
 				<p><label for="title"><?php esc_html_e( 'Title: ', 'indieweb-post-kinds' ); ?></label>
-				<input type="text" size="30" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?> id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" value="
-		<?php echo esc_html( ifset( $instance['title'] ) ); ?>" /></p>
+				<input type="text" size="30" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?> id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"
+				value="<?php echo esc_html( ifset( $instance['title'] ) ); ?>" /></p>
 		<select name="<?php echo esc_attr( $this->get_field_name( 'kind' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'kind' ) ); ?>">
 		<?php
 		$list   = get_option( 'kind_termslist', Kind_Taxonomy::get_kind_list() );
