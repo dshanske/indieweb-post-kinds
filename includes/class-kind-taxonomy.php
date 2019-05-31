@@ -1143,7 +1143,7 @@ final class Kind_Taxonomy {
 	 * @return bool True if the post has any of the given kinds (or any kind, if no kind specified), false otherwise.
 	 */
 	public static function has_post_kind( $kinds = array(), $post = null ) {
-		$prefixed = array();
+		$kind = array();
 		if ( $kinds ) {
 			foreach ( (array) $kinds as $single ) {
 				$kind[] = sanitize_key( $single );
