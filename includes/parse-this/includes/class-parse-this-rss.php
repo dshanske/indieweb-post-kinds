@@ -23,8 +23,8 @@ class Parse_This_RSS {
 				'type'       => 'feed',
 				'_feed_type' => self::get_type( $feed ),
 				'summary'    => $feed->get_description(),
-				'author'     => self::get_author( $feed->get_author() ),
-				'name'       => $title,
+				'author'     => self::get_authors( $feed->get_author() ),
+				'name'       => htmlspecialchars_decode( $title, ENT_QUOTES ),
 				'url'        => $feed->get_permalink(),
 				'photo'      => $feed->get_image_url(),
 				'items'      => $items,
@@ -47,18 +47,49 @@ class Parse_This_RSS {
 	 * @param SimplePie_Author $author
 	 * @return JF2 array
 	 */
-	public static function get_author( $author ) {
+	public static function get_authors( $author ) {
 		if ( ! $author ) {
 			return array();
 		}
-		$return = array_filter(
-			array(
+		if ( $author instanceof SimplePie_Author ) {
+			$author = array( $author );
+		}
+		$return = array();
+		foreach ( $author as $a ) {
+			$r   = array(
 				'type'  => 'card',
-				'name'  => $author->get_name(),
-				'url'   => $author->get_link(),
-				'email' => $author->get_email(),
-			)
-		);
+				'name'  => htmlspecialchars_decode( $a->get_name() ),
+				'url'   => $a->get_link(),
+				'email' => $a->get_email(),
+			);
+			$dom = new DOMDocument();
+			$dom->loadHTML( $r['name'] );
+			$links = $dom->getElementsByTagName( 'a' );
+			$names = array();
+			foreach ( $links as $link ) {
+					$names[ wp_strip_all_tags( $link->nodeValue ) ] = $link->getAttribute( 'href' );
+			}
+			if ( ! empty( $names ) ) {
+				if ( 1 === count( $names ) ) {
+					reset( $names );
+					$r['name'] = key( $names );
+				} else {
+					foreach ( $names as $name => $url ) {
+						$return[] = array(
+							'type' => 'card',
+							'name' => $name,
+							'url'  => $url,
+						);
+					}
+				}
+			} else {
+				$r['name'] = wp_strip_all_tags( $r['name'] );
+				$return[]  = array_filter( $r );
+			}
+		}
+		if ( 1 === count( $return ) ) {
+			$return = array_shift( $return );
+		}
 		return $return;
 	}
 
@@ -68,16 +99,16 @@ class Parse_This_RSS {
 	 * @return JF2
 	 */
 	public static function get_item( $item, $title = '' ) {
-		$return     = array(
+		$return = array(
 			'type'        => 'entry',
-			'name'        => htmlspecialchars_decode( $item->get_title(), ENT_QUOTES ),
-			'author'      => self::get_author( $item->get_author() ),
+			'name'        => $item->get_title(),
+			'author'      => self::get_authors( $item->get_authors() ),
 			'publication' => $title,
-			'summary'     => $item->get_description( true ),
+			'summary'     => wp_strip_all_tags( $item->get_description( true ) ),
 			'content'     => array_filter(
 				array(
-					'html' => htmlspecialchars( $item->get_content( true ) ),
-					'text' => wp_strip_all_tags( $item->get_content( true ) ),
+					'html' => parse_this_clean_content( $item->get_content( true ) ),
+					'text' => wp_strip_all_tags( htmlspecialchars_decode( $item->get_content( true ) ) ),
 				)
 			),
 			'published'   => $item->get_date( DATE_W3C ),
@@ -86,25 +117,32 @@ class Parse_This_RSS {
 			'uid'         => $item->get_id(),
 			'location'    => self::get_location( $item ),
 			'category'    => self::get_categories( $item->get_categories() ),
+			'featured'    => $item->get_thumbnail(),
 		);
+
+		if ( ! is_array( $return['category'] ) ) {
+			$return['category'] = array();
+		}
+
 		$enclosures = $item->get_enclosures();
 		foreach ( $enclosures as $enclosure ) {
-			$medium = $enclosure->get_medium();
-			if ( 'image' === $medium ) {
-				$medium = 'photo';
-			}
+			$medium = $enclosure->get_type();
 			if ( ! $medium ) {
-				$medium = $enclosure->get_type();
-				switch ( $medium ) {
-					case 'audio/mpeg':
-						$medium = 'audio';
-						break;
-					case 'image/jpeg':
-					case 'image/png':
-					case 'image/gif':
-						$medium = 'photo';
-						break;
-				}
+				$medium = $enclosure->get_medium();
+			} else {
+				$medium = explode( '/', $medium );
+				$medium = array_shift( $medium );
+			}
+			switch ( $medium ) {
+				case 'audio':
+					$medium = 'audio';
+					break;
+				case 'image':
+					$medium = 'photo';
+					break;
+				case 'video':
+					$medium = 'video';
+					break;
 			}
 			if ( array_key_exists( $medium, $return ) ) {
 				if ( is_string( $return[ $medium ] ) ) {
@@ -114,13 +152,39 @@ class Parse_This_RSS {
 			} else {
 				$return[ $medium ] = $enclosure->get_link();
 			}
+			if ( isset( $return['category'] ) && is_array( $return['category'] ) ) {
+				$return['category'] = array_merge( $return['category'], $enclosure->get_keywords() );
+			} else {
+				$return['category'] = $enclosure->get_keywords();
+			}
+			if ( ! isset( $return['duration'] ) ) {
+				$return['duration'] = seconds_to_iso8601( $enclosure->get_duration() );
+			}
 		}
 		// If there is just one photo it is probably the featured image
-		if ( isset( $return['photo'] ) && is_string( $return['photo'] ) ) {
+		if ( isset( $return['photo'] ) && is_string( $return['photo'] ) && empty( $return['featured'] ) ) {
 			$return['featured'] = $return['photo'];
 			unset( $return['photo'] );
 		}
+		if ( empty( $return['featured'] ) ) {
+			$i = $item->get_item_tags( SIMPLEPIE_NAMESPACE_ITUNES, 'image' );
+			if ( is_array( $i ) ) {
+				$i = array_shift( $i );
+				if ( isset( $i['attribs'] ) && is_array( $i['attribs'] ) ) {
+					$i = array_shift( $i['attribs'] );
+					if ( isset( $i['href'] ) ) {
+						$i = $i['href'];
+					}
+				}
+			}
+			if ( is_string( $i ) ) {
+				$return['featured'] = $i;
+			}
+		}
 		$return['post_type'] = post_type_discovery( $return );
+		foreach ( array( 'category', 'video', 'audio' ) as $prop ) {
+			$return[ $prop ] = array_unique( $return[ $prop ] );
+		}
 		return array_filter( $return );
 	}
 

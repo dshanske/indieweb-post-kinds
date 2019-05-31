@@ -154,6 +154,27 @@ class Parse_This {
 	}
 
 	/**
+	 * Returns a list of supported content types
+	 *
+	 * @param string $content_type
+	 * @return boolean if supported
+	 */
+	public function supported_content( $content_type ) {
+		$types = array(
+			'application/mf2+json',
+			'text/html',
+			'application/json',
+			'application/xml',
+			'text/xml',
+			'application/jf2+json',
+			'application/jf2feed+json',
+			'application/rss+xml',
+			'application/atom+xml',
+		);
+		return in_array( $content_type, $types, true );
+	}
+
+	/**
 	 * Fetches a list of feeds
 	 *
 	 * @param string $url URL to scan
@@ -206,7 +227,8 @@ class Parse_This {
 				}
 			}
 			// Check to see if the current page is an h-feed
-			$this->parse( array( 'feed' => true ) );
+			$this->parse( array( 'return' => 'feed' ) );
+
 			if ( isset( $this->jf2['type'] ) && 'feed' === $this->jf2['type'] ) {
 				$links[] = array_filter(
 					array(
@@ -250,28 +272,6 @@ class Parse_This {
 		return new WP_Error( 'unknown error', null, $this->content );
 	}
 
-	public function head( $url, $args ) {
-		$args          = array_filter( $args );
-		$response      = wp_safe_remote_head( $url, $args );
-		$response_code = wp_remote_retrieve_response_code( $response );
-		$content_type  = wp_remote_retrieve_header( $response, 'content-type' );
-		if ( is_wp_error( $response ) ) {
-			return $response;
-		}
-		switch ( $response_code ) {
-			case 200:
-				break;
-			default:
-				return new WP_Error( 'source_error', wp_remote_retrieve_response_message( $response ), array( 'status' => $response_code ) );
-		}
-
-		if ( preg_match( '#(image|audio|video|model)/#is', $content_type ) ) {
-			return new WP_Error( 'content-type', 'Content Type is Media' );
-		}
-		return $content_type;
-	}
-
-
 	/**
 	 * Downloads the source's via server-side call for the given URL.
 	 *
@@ -304,21 +304,16 @@ class Parse_This {
 			'redirection'         => 5,
 			// Use an explicit user-agent for Parse This
 		);
-		$content_type = self::head( $url, $args );
-		if ( is_wp_error( $content_type ) ) {
-			if ( 'source_error' === $content_type->get_error_code() ) {
-				$data = $content_type->get_error_data();
-				if ( in_array( $data['status'], array( 403, 415 ), true ) ) {
-					$args['user-agent'] = $user_agent;
-					$content_type       = self::head( $url, $args );
-					if ( is_wp_error( $content_type ) ) {
-						return $content_type;
-					}
-				} else {
-					return $content_type;
-				}
-			} else {
-				return $content_type;
+
+		$response      = wp_safe_remote_get( $url, $args );
+		$response_code = wp_remote_retrieve_response_code( $response );
+		$content_type  = wp_remote_retrieve_header( $response, 'content-type' );
+		if ( in_array( $response_code, array( 403, 415 ), true ) ) {
+			$args['user-agent'] = $user_agent;
+			$response           = wp_safe_remote_get( $url, $args );
+			$response_code      = wp_remote_retrieve_response_code( $response );
+			if ( in_array( $response_code, array( 403, 415 ), true ) ) {
+				return new WP_Error( 'source_error', 'Unable to Retrieve' );
 			}
 		}
 
@@ -328,6 +323,12 @@ class Parse_This {
 			$content_type = array_shift( $ct );
 		}
 		$content_type = trim( $content_type );
+		// List of content types we know how to handle
+		if ( ! self::supported_content( $content_type ) ) {
+			return new WP_Error( 'content-type', 'Content Type is Not Supported', array( 'content-type' => $content_type ) );
+		}
+
+		$content = wp_remote_retrieve_body( $response );
 		// This is an RSS or Atom Feed URL and if it is not we do not know how to deal with XML anyway
 		if ( ( in_array( $content_type, array( 'application/rss+xml', 'application/atom+xml', 'text/xml', 'application/xml', 'text/xml' ), true ) ) ) {
 			// Get a SimplePie feed object from the specified feed source.
@@ -340,8 +341,6 @@ class Parse_This {
 			return true;
 		}
 
-		$response = wp_safe_remote_get( $url, $args );
-		$content  = wp_remote_retrieve_body( $response );
 		if ( in_array( $content_type, array( 'application/mf2+json', 'application/jf2+json', 'application/jf2feed+json' ), true ) ) {
 			$content = json_decode( $content, true );
 			return true;
@@ -365,7 +364,7 @@ class Parse_This {
 	public function parse( $args = array() ) {
 		$defaults = array(
 			'alternate'  => false, // check for rel-alternate jf2 or mf2 feed
-			'return'     => 'single', // Options are single, feed, or TBC mention
+			'return'     => 'single', // Options are single, feed or TBC mention
 			'follow'     => false, // If set to true h-card and author properties with external urls will be retrieved parsed and merged into the return
 			'limit'      => 150, // Limit the number of children returned.
 			'html'       => true, // If mf2 parsing does not work look for html parsing
