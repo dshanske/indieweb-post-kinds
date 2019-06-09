@@ -176,7 +176,7 @@ class Kind_Metabox {
 			'no'         => __( 'No', 'indieweb-post-kinds' ),
 			'maybe'      => __( 'Maybe', 'indieweb-post-kinds' ),
 			'interested' => __( 'Interested', 'indieweb-post-kinds' ),
-			'remote'     => __( 'Remote', 'indieweb-post-kind' ),
+			'remote'     => __( 'Remote', 'indieweb-post-kinds' ),
 		);
 		$string = '';
 		foreach ( $rsvps as $key => $value ) {

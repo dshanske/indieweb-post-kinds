@@ -54,6 +54,7 @@ class Post_Kinds_Plugin {
 	}
 
 	public static function plugins_loaded() {
+		$cls = get_called_class();
 		load_plugin_textdomain( 'indieweb-post-kinds', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 		// On Activation, add terms.
 		register_activation_hook( __FILE__, array( 'Kind_Taxonomy', 'activate_kinds' ) );
@@ -97,12 +98,32 @@ class Post_Kinds_Plugin {
 		require_once plugin_dir_path( __FILE__ ) . 'includes/class-kind-post-widget.php';
 
 		// Load stylesheets.
-		add_action( 'wp_enqueue_scripts', array( 'Post_Kinds_Plugin', 'style_load' ) );
-		add_action( 'admin_enqueue_scripts', array( 'Post_Kinds_Plugin', 'admin_style_load' ) );
+		add_action( 'wp_enqueue_scripts', array( $cls, 'style_load' ) );
+		add_action( 'admin_enqueue_scripts', array( $cls, 'admin_style_load' ) );
 
 		// Load Privacy Declaration
-		add_action( 'admin_init', array( 'Post_Kinds_Plugin', 'privacy_declaration' ) );
+		add_action( 'admin_init', array( $cls, 'privacy_declaration' ) );
 
+		remove_all_actions( 'do_feed_rss2' );
+		remove_all_actions( 'do_feed_atom' );
+		add_action( 'do_feed_rss2', array( $cls, 'do_feed_rss2' ), 10, 1 );
+		add_action( 'do_feed_atom', array( $cls, 'do_feed_atom' ), 10, 1 );
+	}
+
+	public static function do_feed_atom( $for_comments ) {
+		if ( $for_comments ) {
+			load_template( plugin_dir_path( __FILE__ ) . 'templates/feed-atom-comments.php' );
+		} else {
+			load_template( plugin_dir_path( __FILE__ ) . 'templates/feed-atom.php' );
+		}
+	}
+
+	public static function do_feed_rss2( $for_comments ) {
+		if ( $for_comments ) {
+			load_template( plugin_dir_path( __FILE__ ) . 'templates/feed-rss2-comments.php' );
+		} else {
+			load_template( plugin_dir_path( __FILE__ ) . 'templates/feed-rss2.php' );
+		}
 	}
 
 	/**
