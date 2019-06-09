@@ -196,7 +196,9 @@ function getLinkPreview() {
 				}
 			}
 			if ( 'category' in response ) {
-				$( '#cite_tags' ).val( response.category.join( ';' ) );
+				if ( 'object' === typeof response.category ) {
+					$( '#cite_tags' ).val( response.category.join( ';' ) );
+				}
 			}
 		alert( PKAPI.success_message );
 		console.log( response );
@@ -367,13 +369,15 @@ jQuery( document )
 		event.preventDefault();
 	})
 	.on( 'blur', '#cite_url', function( event ) {
-		if ( false == checkUrl( $( '#cite_url' ).val() ) ) {
-			alert( 'Invalid URL' );
-		} else if ( '' === $( '#cite_name' ).val() ) {
-			showLoadingSpinner();
-			getLinkPreview();
+		if ( '' !== $( '#cite_url' ).val() ) {
+			if ( false == checkUrl( $( '#cite_url' ).val() ) ) {
+				alert( 'Invalid URL' );
+			} else if ( '' === $( '#cite_name' ).val() ) {
+				showLoadingSpinner();
+				getLinkPreview();
+			}
+			event.preventDefault();
 		}
-		event.preventDefault();
 	})
 	.on( 'click', '.clear-kindmeta-button', function( event ) {
 		clearPostProperties();
