@@ -88,32 +88,12 @@ class Parse_This {
 	*/
 	public static function fetch_feed( $url ) {
 		if ( ! class_exists( 'SimplePie', false ) ) {
-			$path  = plugin_dir_path( __DIR__ ) . 'includes/simplepie/';
-			$files = array(
-				'SimplePie/Credit.php',
-				'SimplePie/Restriction.php',
-				'SimplePie/Enclosure.php',
-				'SimplePie/Category.php',
-				'SimplePie/Misc.php',
-				'SimplePie/Cache.php',
-				'SimplePie/File.php',
-				'SimplePie/Sanitize.php',
-				'SimplePie/Rating.php',
-				'SimplePie/Registry.php',
-				'SimplePie/IRI.php',
-				'SimplePie/Locator.php',
-				'SimplePie/Content/Type/Sniffer.php',
-				'SimplePie/XML/Declaration/Parser.php',
-				'SimplePie/Parser.php',
-				'SimplePie/Item.php',
-				'SimplePie/Parse/Date.php',
-				'SimplePie/Author.php',
-				'SimplePie.php',
-			);
-			foreach ( $files as $file ) {
-				if ( file_exists( $path . $file ) ) {
-					require_once $path . $file;
-				}
+			// Try to use bundled SimplePie if not WordPress older SimplePie
+			$file = plugin_dir_path( __DIR__ ) . 'lib/simplepie/autoloader.php';
+			if ( file_exists( $file ) ) {
+				require_once $file;
+			} else {
+				require_once ABSPATH . WPINC . '/class-simplepie.php';
 			}
 		}
 		require_once ABSPATH . WPINC . '/class-wp-feed-cache.php';

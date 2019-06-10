@@ -20,7 +20,7 @@ if ( ! defined( 'POST_KINDS_KSES' ) ) {
 
 
 
-if ( ! file_exists( plugin_dir_path( __FILE__ ) . 'includes/parse-this/parse-this.php' ) ) {
+if ( ! file_exists( plugin_dir_path( __FILE__ ) . 'lib/parse-this/parse-this.php' ) ) {
 	add_action( 'admin_notices', array( 'Post_Kinds_Plugin', 'parse_this_error' ) );
 }
 
@@ -66,7 +66,7 @@ class Post_Kinds_Plugin {
 		require_once plugin_dir_path( __FILE__ ) . '/includes/time-functions.php';
 
 		// Parse This
-		require_once plugin_dir_path( __FILE__ ) . 'includes/parse-this/parse-this.php';
+		require_once plugin_dir_path( __FILE__ ) . 'lib/parse-this/parse-this.php';
 
 		// Plugin Specific Kind Customizations
 		require_once plugin_dir_path( __FILE__ ) . '/includes/class-kind-plugins.php';

@@ -49,8 +49,6 @@ class Parse_This_HTML {
 			} else {
 				$return = $value;
 			}
-
-			// $return = html_entity_decode( $return, ENT_QUOTES, 'UTF-8' );
 			$return = sanitize_text_field( trim( $return ) );
 		}
 
@@ -450,6 +448,31 @@ class Parse_This_HTML {
 				}
 			}
 		}
+		if ( isset( $meta['dc'] ) ) {
+			$dc = $meta['dc'];
+			if ( isset( $dc['Title'] ) ) {
+				$jf2['name'] = $dc['Title'];
+			}
+			if ( isset( $dc['Creator'] ) ) {
+				if ( is_string( $dc['Creator'] ) ) {
+					$jf2['author'] = $dc['Creator'];
+				} else {
+					$jf2['author'] = array();
+					foreach ( $dc['Creator'] as $creator ) {
+						$jf2['author'][] = array(
+							'type' => 'card',
+							'name' => $creator,
+						);
+					}
+				}
+			}
+			if ( isset( $dc['Description'] ) ) {
+				$jf2['summary'] = $dc['Description'];
+			}
+			if ( isset( $dc['Date'] ) && ! isset( $jf2['published'] ) ) {
+				$jf2['published'] = $dc['Date'];
+			}
+		}
 		if ( isset( $meta['parsely-page'] ) ) {
 			$parsely = $meta['parsely-page'];
 			if ( ! isset( $jf2['author'] ) && isset( $parsely['author'] ) ) {
@@ -461,6 +484,22 @@ class Parse_This_HTML {
 			if ( ! isset( $jf2['featured'] ) && isset( $parsely['pub_date'] ) ) {
 				$jf2['featured'] = esc_url_raw( $parsely['image_url'] );
 			}
+		}
+		if ( ! isset( $jf2['author'] ) && isset( $meta['citation_author'] ) ) {
+			if ( is_string( $meta['citation_author'] ) ) {
+				$jf2['author'] = $meta['citation_author'];
+			} else {
+				$jf2['author'] = array();
+				foreach ( $meta['citation_author'] as $a ) {
+					$jf2['author'][] = array(
+						'type' => 'card',
+						'name' => $a,
+					);
+				}
+			}
+		}
+		if ( ! isset( $jf2['published'] ) && isset( $meta['citation_date'] ) ) {
+			$jf2['published'] = normalize_iso8601( $meta['citation_date'] );
 		}
 
 		if ( ! isset( $jf2['author'] ) && isset( $meta['author'] ) ) {
@@ -508,9 +547,13 @@ class Parse_This_HTML {
 		if ( isset( $meta ) && is_array( $meta ) ) {
 			foreach ( $meta as $key => $value ) {
 				$name = explode( ':', $key );
-				if ( is_array( $name ) && 1 < count( $name ) ) {
+				if ( 1 === count( $name ) ) {
+					$name = explode( '.', $key );
+				}
+				if ( 1 < count( $name ) ) {
 					$name = $name[0];
 					$key  = str_replace( $name . ':', '', $key );
+					$key  = str_replace( $name . '.', '', $key );
 					if ( is_array( $value ) ) {
 						$value = array_unique( $value );
 						if ( 1 === count( $value ) ) {

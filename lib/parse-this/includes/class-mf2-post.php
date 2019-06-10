@@ -7,14 +7,14 @@
  */
 class MF2_Post implements ArrayAccess {
 	public $uid;
-	public $_post_author;
+	public $post_author;
 	public $author;
 	public $publication;
 	public $published;
 	public $updated;
 	public $content;
 	public $summary;
-	public $_post_parent;
+	public $post_parent;
 	public $kind;
 	public $url;
 	public $name;
@@ -42,12 +42,12 @@ class MF2_Post implements ArrayAccess {
 		if ( ! $post ) {
 			return false;
 		}
-		$this->_post_author = $post->post_author;
-		$this->author       = self::get_author();
-		$this->_post_parent = $post->post_parent;
-		$this->published    = get_the_date( DATE_W3C, $post );
-		$this->updated      = get_the_modified_date( DATE_W3C, $post );
-		$this->publication  = get_bloginfo( 'title' );
+		$this->post_author = $post->post_author;
+		$this->author      = self::get_author();
+		$this->post_parent = $post->post_parent;
+		$this->published   = get_the_date( DATE_W3C, $post );
+		$this->updated     = get_the_modified_date( DATE_W3C, $post );
+		$this->publication = get_bloginfo( 'title' );
 		if ( ! empty( $post->post_content ) ) {
 			$this->content = array(
 				'html'  => $post->post_content,
@@ -138,7 +138,7 @@ class MF2_Post implements ArrayAccess {
 		}
 	}
 
-	public static function get_post() {
+	public function get_post() {
 		return get_post( $this->uid );
 	}
 
@@ -179,7 +179,7 @@ class MF2_Post implements ArrayAccess {
 		return wp_kses( $value, $allowed );
 	}
 
-	public static function sanitize_text( $value ) {
+	public function sanitize_text( $value ) {
 		if ( is_array( $value ) ) {
 			return array_map( array( $this, 'sanitize_text' ), $value );
 		}

@@ -534,7 +534,7 @@ class Parse_This_MF2 {
 		// Normalize all urls to ensure comparisons
 		$url = normalize_url( $url );
 		if ( ! class_exists( 'Mf2\Parser' ) ) {
-			require_once plugin_dir_path( __DIR__ ) . 'includes/Parser.php';
+			require_once plugin_dir_path( __DIR__ ) . 'lib/mf2/Parser.php';
 		}
 		if ( is_string( $input ) || is_a( $input, 'DOMDocument' ) ) {
 			$parser = new Mf2\Parser( $input, $url );
