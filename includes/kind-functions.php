@@ -187,8 +187,7 @@ function kind_audio_gallery( $id, $args = null ) {
 	}
 	$return = '';
 	if ( $args['src'] ) {
-		$return  = sprintf( '<p>%s</p>', get_the_title( $id ) );
-		$return .= wp_audio_shortcode( $args );
+		$return = wp_audio_shortcode( $args );
 	}
 	return $return;
 }
