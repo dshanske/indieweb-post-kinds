@@ -16,10 +16,10 @@ class Media_Metadata {
 	}
 
 	public static function wp_update_attachment_metadata( $metadata, $attachment_id ) {
-		if ( isset( $metadata['album'] ) ) {
+		if ( ! empty( $metadata['album'] ) ) {
 			update_post_meta( $attachment_id, 'mf2_publication', $metadata['album'] );
 		}
-		if ( isset( $metadata['artist'] ) ) {
+		if ( ! empty( $metadata['artist'] ) ) {
 			update_post_meta( $attachment_id, 'mf2_author', $metadata['artist'] );
 		}
 		if ( isset( $metadata['length'] ) ) {

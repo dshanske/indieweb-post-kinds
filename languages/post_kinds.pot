@@ -2,10 +2,10 @@
 # This file is distributed under the same license as the Post Kinds package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Kinds 3.2.6\n"
+"Project-Id-Version: Post Kinds 3.3.0\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2019-05-16 04:58:22+00:00\n"
+"POT-Creation-Date: 2019-06-10 04:26:02+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -136,7 +136,7 @@ msgid "All Posts"
 msgstr ""
 
 #: includes/class-kind-menu-widget.php:121
-#: includes/class-kind-post-widget.php:126
+#: includes/class-kind-post-widget.php:122
 msgid "Title: "
 msgstr ""
 
@@ -172,11 +172,15 @@ msgstr ""
 msgid "Interested"
 msgstr ""
 
-#: includes/class-kind-metabox.php:192 includes/class-kind-taxonomy.php:655
+#: includes/class-kind-metabox.php:179
+msgid "Remote"
+msgstr ""
+
+#: includes/class-kind-metabox.php:193 includes/class-kind-taxonomy.php:655
 msgid "RSVP"
 msgstr ""
 
-#: includes/class-kind-metabox.php:203
+#: includes/class-kind-metabox.php:204
 msgid "Response Properties"
 msgstr ""
 
@@ -188,7 +192,7 @@ msgstr ""
 msgid "A widget that allows you to display a list of posts by type"
 msgstr ""
 
-#: includes/class-kind-post-widget.php:146
+#: includes/class-kind-post-widget.php:142
 msgid "Number of Posts:"
 msgstr ""
 
@@ -766,122 +770,64 @@ msgstr ""
 msgid "Interested in Attending %s"
 msgstr ""
 
-#: includes/class-kind-view.php:407
-msgid "Want to Read: "
-msgstr ""
-
-#: includes/class-kind-view.php:408
-msgid "Reading: "
+#: includes/class-kind-view.php:399
+#. translators: URL for link to event and name of event
+msgid "Attending %s remotely"
 msgstr ""
 
 #: includes/class-kind-view.php:409
+msgid "Want to Read: "
+msgstr ""
+
+#: includes/class-kind-view.php:410
+msgid "Reading: "
+msgstr ""
+
+#: includes/class-kind-view.php:411
 msgid "Finished Reading: "
 msgstr ""
 
-#: includes/class-kind-view.php:431
+#: includes/class-kind-view.php:433
 #. translators: singular and plural
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-kind-view.php:435
+#: includes/class-kind-view.php:437
 #. translators: singular and plural
 msgid " %d month"
 msgid_plural " %d months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-kind-view.php:439
+#: includes/class-kind-view.php:441
 #. translators: singular and plural
 msgid " %d day"
 msgid_plural " %d days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-kind-view.php:443
+#: includes/class-kind-view.php:445
 #. translators: singular and plural
 msgid " %d hour"
 msgid_plural " %d hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-kind-view.php:447
+#: includes/class-kind-view.php:449
 #. translators: singular and plural
 msgid " %d minute"
 msgid_plural " %d minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-kind-view.php:451
+#: includes/class-kind-view.php:453
 #. translators: singular and plural
 msgid " %d second"
 msgid_plural " %d seconds"
 msgstr[0] ""
 msgstr[1] ""
-
-#: includes/parse-this/includes/class-parse-this-api.php:24
-#: includes/parse-this/includes/class-parse-this-api.php:25
-msgid "Parse This"
-msgstr ""
-
-#: includes/parse-this/includes/class-parse-this-api.php:43
-msgid "Parse This Debugger"
-msgstr ""
-
-#: includes/parse-this/includes/class-parse-this-api.php:44
-msgid ""
-"Test the Parse Tools Debugger. You can report sites to the developer for "
-"possibly improvement in future"
-msgstr ""
-
-#: includes/parse-this/includes/class-parse-this-api.php:46
-msgid "Open an Issue"
-msgstr ""
-
-#: includes/parse-this/includes/class-parse-this-api.php:50
-msgid ""
-"You are using the plugin version of Parse This as opposed to a version "
-"built into any plugin"
-msgstr ""
-
-#: includes/parse-this/includes/class-parse-this-api.php:55
-#: templates/reply-metabox.php:52
-msgid "URL"
-msgstr ""
-
-#: includes/parse-this/includes/class-parse-this-api.php:56
-msgid "MF2"
-msgstr ""
-
-#: includes/parse-this/includes/class-parse-this-api.php:57
-msgid "Feed Discovery"
-msgstr ""
-
-#: includes/parse-this/includes/class-parse-this-api.php:58
-msgid "Return Type"
-msgstr ""
-
-#: includes/parse-this/includes/class-parse-this-api.php:60
-msgid "Single"
-msgstr ""
-
-#: includes/parse-this/includes/class-parse-this-api.php:61
-msgid "Feed"
-msgstr ""
-
-#: includes/parse-this/includes/class-parse-this-api.php:64
-msgid "Follow Author Links"
-msgstr ""
-
-#: includes/parse-this/includes/class-parse-this-api.php:66
-msgid "Parse"
-msgstr ""
-
-#: includes/parse-this/includes/class-parse-this.php:166
-#: includes/parse-this/includes/class-parse-this.php:286
-msgid "A valid URL was not provided."
-msgstr ""
 
 #: indieweb-post-kinds.php:46
 msgid "Parse This is not installed. Please advise the developer"
@@ -893,7 +839,7 @@ msgid ""
 "correctly at this time without using the Classic Editor."
 msgstr ""
 
-#: indieweb-post-kinds.php:137
+#: indieweb-post-kinds.php:158
 msgid ""
 "For responses to URLs, such as responding to a post or article, this site "
 "allows the storage of data around the post/article in order to generate a "
@@ -902,6 +848,139 @@ msgid ""
 "embed provided by third-party site, etc may be stored and are solely to "
 "provide this \n"
 "\t\t\t\tcontext. We will remove any of this on request."
+msgstr ""
+
+#: lib/parse-this/includes/class-parse-this-api.php:24
+#: lib/parse-this/includes/class-parse-this-api.php:25
+#: vendor/parse-this/includes/class-parse-this-api.php:24
+#: vendor/parse-this/includes/class-parse-this-api.php:25
+#: wp-content/plugins/parse-this/includes/class-parse-this-api.php:24
+#: wp-content/plugins/parse-this/includes/class-parse-this-api.php:25
+msgid "Parse This"
+msgstr ""
+
+#: lib/parse-this/includes/class-parse-this-api.php:43
+#: vendor/parse-this/includes/class-parse-this-api.php:43
+#: wp-content/plugins/parse-this/includes/class-parse-this-api.php:43
+msgid "Parse This Debugger"
+msgstr ""
+
+#: lib/parse-this/includes/class-parse-this-api.php:44
+#: vendor/parse-this/includes/class-parse-this-api.php:44
+#: wp-content/plugins/parse-this/includes/class-parse-this-api.php:44
+msgid ""
+"Test the Parse Tools Debugger. You can report sites to the developer for "
+"possibly improvement in future"
+msgstr ""
+
+#: lib/parse-this/includes/class-parse-this-api.php:46
+#: vendor/parse-this/includes/class-parse-this-api.php:46
+#: wp-content/plugins/parse-this/includes/class-parse-this-api.php:46
+msgid "Open an Issue"
+msgstr ""
+
+#: lib/parse-this/includes/class-parse-this-api.php:50
+#: vendor/parse-this/includes/class-parse-this-api.php:50
+#: wp-content/plugins/parse-this/includes/class-parse-this-api.php:50
+msgid ""
+"You are using the plugin version of Parse This as opposed to a version "
+"built into any plugin"
+msgstr ""
+
+#: lib/parse-this/includes/class-parse-this-api.php:55
+#: templates/reply-metabox.php:52
+#: vendor/parse-this/includes/class-parse-this-api.php:55
+#: wp-content/plugins/parse-this/includes/class-parse-this-api.php:55
+msgid "URL"
+msgstr ""
+
+#: lib/parse-this/includes/class-parse-this-api.php:56
+#: vendor/parse-this/includes/class-parse-this-api.php:56
+#: wp-content/plugins/parse-this/includes/class-parse-this-api.php:56
+msgid "MF2"
+msgstr ""
+
+#: lib/parse-this/includes/class-parse-this-api.php:57
+#: vendor/parse-this/includes/class-parse-this-api.php:57
+#: wp-content/plugins/parse-this/includes/class-parse-this-api.php:57
+msgid "Feed Discovery"
+msgstr ""
+
+#: lib/parse-this/includes/class-parse-this-api.php:58
+#: vendor/parse-this/includes/class-parse-this-api.php:58
+#: wp-content/plugins/parse-this/includes/class-parse-this-api.php:58
+msgid "Return Type"
+msgstr ""
+
+#: lib/parse-this/includes/class-parse-this-api.php:60
+#: vendor/parse-this/includes/class-parse-this-api.php:60
+#: wp-content/plugins/parse-this/includes/class-parse-this-api.php:60
+msgid "Single"
+msgstr ""
+
+#: lib/parse-this/includes/class-parse-this-api.php:61
+#: vendor/parse-this/includes/class-parse-this-api.php:61
+#: wp-content/plugins/parse-this/includes/class-parse-this-api.php:61
+msgid "Feed"
+msgstr ""
+
+#: lib/parse-this/includes/class-parse-this-api.php:64
+#: vendor/parse-this/includes/class-parse-this-api.php:64
+#: wp-content/plugins/parse-this/includes/class-parse-this-api.php:64
+msgid "Follow Author Links"
+msgstr ""
+
+#: lib/parse-this/includes/class-parse-this-api.php:66
+#: vendor/parse-this/includes/class-parse-this-api.php:66
+#: wp-content/plugins/parse-this/includes/class-parse-this-api.php:66
+msgid "Parse"
+msgstr ""
+
+#: lib/parse-this/includes/class-parse-this.php:167
+#: lib/parse-this/includes/class-parse-this.php:266
+#: vendor/parse-this/includes/class-parse-this.php:167
+#: vendor/parse-this/includes/class-parse-this.php:266
+#: wp-content/plugins/parse-this/includes/class-parse-this.php:189
+#: wp-content/plugins/parse-this/includes/class-parse-this.php:288
+msgid "A valid URL was not provided."
+msgstr ""
+
+#: templates/feed-atom-comments.php:34
+#. translators: Comments feed title. %s: Post title
+msgid "Comments on %s"
+msgstr ""
+
+#: templates/feed-atom-comments.php:37 templates/feed-rss2-comments.php:42
+#. translators: Comments feed title. 1: Site name, 2: Search query
+msgid "Comments for %1$s searching on %2$s"
+msgstr ""
+
+#: templates/feed-atom-comments.php:40 templates/feed-rss2-comments.php:45
+#. translators: Comments feed title. %s: Site name
+msgid "Comments for %s"
+msgstr ""
+
+#: templates/feed-atom-comments.php:83 templates/feed-rss2-comments.php:87
+#. translators: Individual comment title. 1: Post title, 2: Comment author name
+msgid "Comment on %1$s by %2$s"
+msgstr ""
+
+#: templates/feed-atom-comments.php:86 templates/feed-rss2-comments.php:93
+#. translators: Comment author title. %s: Comment author name
+msgid "By: %s"
+msgstr ""
+
+#: templates/feed-rss2-comments.php:39
+#. translators: Comments feed title. %s: Post title
+msgid "Comments on: %s"
+msgstr ""
+
+#: templates/feed-rss2-comments.php:89
+msgid "Comment by %1$s"
+msgstr ""
+
+#: templates/feed-rss2-comments.php:102
+msgid "Protected Comments: Please enter your password to view comments."
 msgstr ""
 
 #: templates/reply-author.php:2
