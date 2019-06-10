@@ -197,7 +197,7 @@ class MF2_Post implements ArrayAccess {
 	 * @return boolean|array The result or false if does not exist.
 	 */
 	public function get_author() {
-		if ( ! $this->_post_author ) {
+		if ( ! $this->post_author ) {
 			return ifset( $this->meta['author'], false );
 		}
 		// Attachments may have been uploaded by a user but may have metadata for original author
@@ -207,9 +207,9 @@ class MF2_Post implements ArrayAccess {
 		return array(
 			'type'       => array( 'h-card' ),
 			'properties' => array(
-				'name'  => array( get_the_author_meta( 'display_name', $this->_post_author ) ),
-				'url'   => array( get_the_author_meta( 'user_url', $this->_post_author ) ? get_the_author_meta( 'user_url', $this->_post_author ) : get_author_posts_url( $this->_post_author ) ),
-				'photo' => array( get_avatar_url( $this->_post_author ) ),
+				'name'  => array( get_the_author_meta( 'display_name', $this->post_author ) ),
+				'url'   => array( get_the_author_meta( 'user_url', $this->post_author ) ? get_the_author_meta( 'user_url', $this->post_author ) : get_author_posts_url( $this->post_author ) ),
+				'photo' => array( get_avatar_url( $this->post_author ) ),
 			),
 		);
 	}

@@ -131,12 +131,14 @@ class Parse_This_RSS {
 	}
 
 	public function get_thumbnail( $item ) {
-		$return = $item->get_thumbnail();
-		if ( is_string( $return ) ) {
-			return $return;
-		}
-		if ( is_array( $return ) && isset( $return['url'] ) ) {
-			return $return['url'];
+		if ( method_exists( $item, 'get_thumbnail' ) ) {
+			$return = $item->get_thumbnail();
+			if ( is_string( $return ) ) {
+				return $return;
+			}
+			if ( is_array( $return ) && isset( $return['url'] ) ) {
+				return $return['url'];
+			}
 		}
 		return null;
 	}
