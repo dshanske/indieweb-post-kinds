@@ -11,6 +11,16 @@ if ( ! isset( $cite['url'] ) ) {
 		$cite = array( 'url' => $_GET['kindurl'] );
 	}
 }
+
+if ( isset( $cite['url'] ) && in_array( $kind, array( 'audio', 'video', 'photo' ) ) ) {
+	$attachment = attachment_url_to_postid( $cite['url'] );
+} else {
+	$attachment = 0;
+}
+if ( $attachment ) {
+	$attachment_post = new MF2_Post( $attachment );
+	$cite = $attachment_post->get();
+}
 $author = ifset( $cite['author'], array() );
 if ( 1 === count( $author ) && wp_is_numeric_array( $author ) ) {
 	$author = array_pop( $author );
@@ -37,11 +47,11 @@ if ( isset( $cite['category'] ) ) {
 }
 
 
+
 // FIXME: Discards extra URLs as currently unsupported
 if ( isset( $cite['url'] ) && is_array( $cite['url'] ) ) {
 			$cite['url'] = array_shift( $cite['url'] );
 }
-
 ?>
 <a href="#kind-details" class="show-kind-details button hide-if-no-js"><?php _e( 'Details', 'indieweb-post-kinds' ); ?></a>
 <a href="#kind-author" class="show-kind-author-details button hide-if-no-js"><?php _e( 'Author', 'indieweb-post-kinds' ); ?></a>
@@ -63,11 +73,21 @@ if ( isset( $cite['url'] ) && is_array( $cite['url'] ) ) {
 	<?php echo Kind_Metabox::rsvp_select( $mf2_post->get( 'rsvp', true ) ); ?>
 </p>
 <p id="kind-media hide-if-no-js">
-<?php $show_media = ( isset( $cite['url'] ) && in_array( $kind, array( 'photo' ) ) ); ?>
+<?php $show_media = ( isset( $cite['url'] ) && in_array( $kind, array( 'photo', 'audio', 'video' ) ) ); ?>
 <div id="kind-media-container" <?php echo ( $show_media ) ? '' : 'class="hidden"'; ?> >
-<img src="<?php echo ifset( $cite['url'], '' ); ?>" alt="" title="" height="100" />
+<?php if ( $attachment ) {
+	if ( wp_attachment_is( 'image', $attachment ) ) {
+		echo wp_get_attachment_image( $attachment );
+	}
+	elseif ( wp_attachment_is( 'audio', $attachment ) ) {
+		echo kind_audio_gallery( $attachment );
+	}
+	elseif ( wp_attachment_is( 'video', $attachment ) ) {
+		echo kind_video_gallery( $attachment );
+	}
+} ?>
 	</div>
-	<input type="hidden" value="" id="cite_media" name="cite_media">
+	<input type="hidden" id="cite_media" name="cite_media" value="<?php echo $attachment; ?>" >
 </p>
 
 

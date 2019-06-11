@@ -17,13 +17,22 @@ class Media_Metadata {
 
 	public static function wp_update_attachment_metadata( $metadata, $attachment_id ) {
 		if ( ! empty( $metadata['album'] ) ) {
-			update_post_meta( $attachment_id, 'mf2_publication', $metadata['album'] );
+			update_post_meta( $attachment_id, 'mf2_publication', array( $metadata['album'] ) );
 		}
 		if ( ! empty( $metadata['artist'] ) ) {
-			update_post_meta( $attachment_id, 'mf2_author', $metadata['artist'] );
+			update_post_meta(
+				$attachment_id,
+				'mf2_author',
+				jf2_to_mf2(
+					array(
+						'name' => $metadata['artist'],
+						'type' => 'card',
+					)
+				)
+			);
 		}
 		if ( isset( $metadata['length'] ) ) {
-			update_post_meta( $attachment_id, 'mf2_duration', seconds_to_iso8601( $metadata['length'] ) );
+			update_post_meta( $attachment_id, 'mf2_duration', array( seconds_to_iso8601( $metadata['length'] ) ) );
 		}
 		return $metadata;
 	}
