@@ -8,6 +8,7 @@
 class MF2_Post implements ArrayAccess {
 	public $uid;
 	public $post_author;
+	public $post_type;
 	public $author;
 	public $publication;
 	public $published;
@@ -43,6 +44,7 @@ class MF2_Post implements ArrayAccess {
 			return false;
 		}
 		$this->post_author = $post->post_author;
+		$this->post_type   = $post->post_type;
 		$this->author      = self::get_author();
 		$this->post_parent = $post->post_parent;
 		$this->published   = get_the_date( DATE_W3C, $post );
@@ -54,16 +56,20 @@ class MF2_Post implements ArrayAccess {
 				'value' => wp_strip_all_tags( $post->post_content ),
 			);
 		}
-		$this->summary  = $post->post_excerpt;
-		$this->mf2      = $this->get_mf2meta();
-		$this->url      = get_permalink( $post->ID );
+		$this->summary = $post->post_excerpt;
+		$this->mf2     = $this->get_mf2meta();
+		if ( 'attachment' === $post->post_type ) {
+			$this->url = wp_get_attachment_url( $post->ID );
+		} else {
+			$this->url = get_permalink( $post->ID );
+		}
 		$this->name     = $post->post_title;
 		$this->category = $this->get_categories( $post->ID );
 		if ( $this->uid === (int) $this->name ) {
 			unset( $this->name );
 		}
 		if ( has_post_thumbnail( $post ) ) {
-			$this->featured = wp_get_attachment_url( get_post_thumbnail_id( $post ), 'full' );
+			$this->featured = wp_get_attachment_url( get_post_thumbnail_id( $post ) );
 		}
 		$this->kind = self::get_post_kind();
 	}
@@ -667,7 +673,12 @@ class MF2_Post implements ArrayAccess {
 
 	public function get_attachments_from_urls( $urls ) {
 		if ( is_string( $urls ) ) {
-			$urls = array( $urls );
+			$attachment = attachment_url_to_postid( $urls );
+			if ( $attachment ) {
+				return array( $attachment );
+			} else {
+				return array();
+			}
 		}
 		$att_ids = array();
 		if ( wp_is_numeric_array( $urls ) ) {

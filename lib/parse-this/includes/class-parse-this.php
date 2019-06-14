@@ -52,6 +52,13 @@ class Parse_This {
 		if ( $jf2 ) {
 			$this->jf2 = $source_content;
 		} elseif ( is_string( $this->content ) ) {
+
+			if ( ! class_exists( '\Masterminds\HTML5', false ) ) {
+				$file = plugin_dir_path( __DIR__ ) . 'lib/html5/autoloader.php';
+				if ( file_exists( $file ) ) {
+					require_once $file;
+				}
+			}
 			if ( class_exists( 'Masterminds\\HTML5' ) ) {
 				$this->doc = new \Masterminds\HTML5( array( 'disable_html_ns' => true ) );
 				$this->doc = $this->doc->loadHTML( $this->content );

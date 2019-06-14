@@ -36,7 +36,8 @@
 		"cp -u -r vendor/parse-this/*.php lib/parse-this",
 		"cp -u -r vendor/parse-this/readme.* lib/parse-this",
 		"cp -u -r vendor/parse-this/includes/*.php lib/parse-this/includes",
-		"cp -u -r vendor/parse-this/lib/mf2/*.* lib/parse-this/lib/mf2"
+		"cp -u -r vendor/parse-this/lib/mf2/*.* lib/parse-this/lib/mf2",
+		"cp -u -r vendor/parse-this/lib/html5 lib/parse-this/lib"
 	]
     },
     "post-update-cmd": [
