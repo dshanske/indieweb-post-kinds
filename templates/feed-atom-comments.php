@@ -43,7 +43,7 @@ do_action( 'rss_tag_pre', 'atom-comments' );
 	</title>
 	<subtitle type="text"><?php bloginfo_rss( 'description' ); ?></subtitle>
 
-	<updated><?php echo get_feed_build_date( 'Y-m-d\TH:i:s\Z' ); ?></updated>
+	<updated><?php echo get_feed_build_date( DATE_RSS ); ?></updated>
 
 <?php if ( is_singular() ) { ?>
 	<link rel="alternate" type="<?php bloginfo_rss( 'html_type' ); ?>" href="<?php comments_link_feed(); ?>" />
@@ -99,8 +99,8 @@ if ( have_comments() ) :
 		</author>
 
 		<id><?php comment_guid(); ?></id>
-		<updated><?php echo mysql2date( 'Y-m-d\TH:i:s\Z', get_comment_time( 'Y-m-d H:i:s', true, false ), false ); ?></updated>
-		<published><?php echo mysql2date( 'Y-m-d\TH:i:s\Z', get_comment_time( 'Y-m-d H:i:s', true, false ), false ); ?></published>
+		<updated><?php echo get_comment_date( DATE_RSS ); ?></updated>
+		<published><?php echo echo get_comment_date( DATE_RSS ); ?></published>
 		<?php if ( post_password_required( $comment_post ) ) : ?>
 		<content type="html" xml:base="<?php comment_link(); ?>"><![CDATA[<?php echo get_the_password_form(); ?>]]></content>
 	<?php else : // post pass ?>
