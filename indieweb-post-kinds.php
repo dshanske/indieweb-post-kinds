@@ -69,7 +69,9 @@ class Post_Kinds_Plugin {
 		require_once plugin_dir_path( __FILE__ ) . '/includes/time-functions.php';
 
 		// Parse This
-		require_once plugin_dir_path( __FILE__ ) . 'lib/parse-this/parse-this.php';
+		require_once plugin_dir_path( __FILE__ ) . 'lib/parse-this/includes/autoload.php';
+		require_once plugin_dir_path( __FILE__ ) . 'lib/parse-this/includes/class-rest-parse-this.php';
+		require_once plugin_dir_path( __FILE__ ) . 'lib/parse-this/includes/functions.php';
 
 		// Plugin Specific Kind Customizations
 		require_once plugin_dir_path( __FILE__ ) . '/includes/class-kind-plugins.php';

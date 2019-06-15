@@ -364,3 +364,27 @@ if ( ! function_exists( 'seconds_to_iso8601' ) ) {
 		return $ret;
 	}
 }
+
+if ( ! function_exists( 'pt_load_domdocument' ) ) {
+	function pt_load_domdocument( $content ) {
+		if ( ! class_exists( '\Masterminds\HTML5', false ) ) {
+			$file = plugin_dir_path( __DIR__ ) . 'lib/html5/autoloader.php';
+			if ( file_exists( $file ) ) {
+				require_once $file;
+			}
+		}
+		if ( class_exists( 'Masterminds\\HTML5' ) ) {
+			$doc = new \Masterminds\HTML5( array( 'disable_html_ns' => true ) );
+			$doc = $doc->loadHTML( $content );
+		} else {
+			$doc = new DOMDocument();
+			libxml_use_internal_errors( true );
+			if ( function_exists( 'mb_convert_encoding' ) ) {
+				$content = mb_convert_encoding( $content, 'HTML-ENTITIES', mb_detect_encoding( $content ) );
+			}
+			$doc->loadHTML( $content );
+			libxml_use_internal_errors( false );
+		}
+		return $doc;
+	}
+}

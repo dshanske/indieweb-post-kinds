@@ -374,12 +374,12 @@ class MF2_Post implements ArrayAccess {
 			}
 		}
 		if ( null === $value || empty( $value ) ) {
-			return;
+			return false;
 		}
 		$properties = array_keys( get_object_vars( $this ) );
 		unset( $properties['mf2'] );
 		if ( ! in_array( $key, $properties, true ) ) {
-			update_post_meta( $this->uid, 'mf2_' . $key, $value );
+			return update_post_meta( $this->uid, 'mf2_' . $key, $value );
 		} else {
 			switch ( $key ) {
 				case 'url':
@@ -408,14 +408,13 @@ class MF2_Post implements ArrayAccess {
 					$post_date = $date->format( 'Y-m-d H:i:s' );
 					$date->setTimeZone( new DateTimeZone( 'GMT' ) );
 					$post_date_gmt = $date->format( 'Y-m-d H:i:s' );
-					wp_update_post(
+					return wp_update_post(
 						array(
 							'ID'            => $this->uid,
 							'post_date'     => $post_date,
 							'post_date_gmt' => $post_date_gmt,
 						)
 					);
-					break;
 				case 'updated':
 					$date      = new DateTime( $value );
 					$tz_string = get_option( 'timezone_string' );
@@ -427,34 +426,31 @@ class MF2_Post implements ArrayAccess {
 					$post_modified = $date->format( 'Y-m-d H:i:s' );
 					$date->setTimeZone( new DateTimeZone( 'GMT' ) );
 					$post_modified_gmt = $date->format( 'Y-m-d H:i:s' );
-					wp_update_post(
+					return wp_update_post(
 						array(
 							'ID'                => $this->uid,
 							'post_modified'     => $post_modified,
 							'post_modified_gmt' => $post_modified_gmt,
 						)
 					);
-					break;
 				case 'content':
 					$key = 'post_content';
-					wp_update_post(
+					return wp_update_post(
 						array(
 							'ID' => $this->uid,
 							$key => $value,
 						)
 					);
-					break;
 				case 'summary':
 					$key = 'post_excerpt';
-					wp_update_post(
+					return wp_update_post(
 						array(
 							'ID' => $this->uid,
 							$key => $value,
 						)
 					);
-					break;
 				default:
-					wp_update_post(
+					return wp_update_post(
 						array(
 							'ID' => $this->uid,
 							$key => $value,
@@ -465,7 +461,7 @@ class MF2_Post implements ArrayAccess {
 	}
 
 	public function delete( $key ) {
-		delete_post_meta( $this->uid, 'mf2_' . $key );
+		return delete_post_meta( $this->uid, 'mf2_' . $key );
 	}
 
 	public function mf2_to_jf2( $cite ) {
@@ -639,9 +635,8 @@ class MF2_Post implements ArrayAccess {
 	public function get_img_ids_from_content( $content ) {
 		$content = wp_unslash( $content );
 		$return  = array();
-		$doc     = new DOMDocument();
-		$doc->loadHTML( $content );
-		$images = $doc->getElementsByTagName( 'img' );
+		$doc     = pt_load_domdocument( $content );
+		$images  = $doc->getElementsByTagName( 'img' );
 		foreach ( $images as $image ) {
 			$classes = $image->getAttribute( 'class' );
 			$classes = explode( ' ', $classes );

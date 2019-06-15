@@ -16,13 +16,13 @@
 
 if ( ! function_exists( 'parse_this_loader' ) ) {
 	function parse_this_loader() {
-		require_once plugin_dir_path( __FILE__ ) . 'includes/functions.php';
-		// Parse This API
-		require_once plugin_dir_path( __FILE__ ) . 'includes/class-parse-this-api.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/autoload.php';
 
-		// MF2 Post
-		require_once plugin_dir_path( __FILE__ ) . 'includes/class-mf2-post.php';
+		require_once plugin_dir_path( __FILE__ ) . 'includes/functions.php';
+		// Parse This REST Endpoint
+		require_once plugin_dir_path( __FILE__ ) . 'includes/class-rest-parse-this.php';
 
 	}
 	add_action( 'plugins_loaded', 'parse_this_loader', 11 );
 }
+

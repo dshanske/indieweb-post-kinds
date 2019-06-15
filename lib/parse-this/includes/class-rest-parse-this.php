@@ -1,11 +1,10 @@
 <?php
 /**
- * Gathers Data for Link Previews
+ * Provides REST Endpoint to Retrieve the Parsed Data
  *
- * Parses Arbitrary URLs
  */
 
-class Parse_This_API {
+class REST_Parse_This {
 	public function __construct() {
 		add_action( 'rest_api_init', array( $this, 'register_routes' ) );
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
@@ -74,17 +73,18 @@ class Parse_This_API {
 	 * Register the Route.
 	 */
 	public static function register_routes() {
+		$cls = get_called_class();
 		register_rest_route(
 			'parse-this/1.0',
 			'/parse',
 			array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( 'Parse_This_API', 'read' ),
+					'callback'            => array( $cls, 'read' ),
 					'args'                => array(
 						'url' => array(
 							'required'          => true,
-							'validate_callback' => array( 'Parse_This_API', 'is_valid_url' ),
+							'validate_callback' => array( $cls, 'is_valid_url' ),
 							'sanitize_callback' => 'esc_url_raw',
 						),
 					),
@@ -102,9 +102,6 @@ class Parse_This_API {
 		$return    = $request->get_param( 'return' );
 		$discovery = $request->get_param( 'discovery' );
 		$follow    = $request->get_param( 'follow' );
-		if ( ! class_exists( 'Parse_This' ) ) {
-			require_once plugin_dir_path( __FILE__ ) . 'class-parse-this.php';
-		}
 
 		$parse = new Parse_This( $url );
 		if ( $discovery ) {
@@ -123,7 +120,7 @@ class Parse_This_API {
 			)
 		);
 		if ( $mf2 ) {
-			return jf2_to_mf2( $parse->get() );
+			return $parse->get( 'mf2' );
 		}
 		return $parse->get();
 	}
@@ -146,4 +143,4 @@ class Parse_This_API {
 
 }
 
-new Parse_This_API();
+new REST_Parse_This();
