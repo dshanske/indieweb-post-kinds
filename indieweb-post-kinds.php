@@ -59,6 +59,9 @@ class Post_Kinds_Plugin {
 		// On Activation, add terms.
 		register_activation_hook( __FILE__, array( 'Kind_Taxonomy', 'activate_kinds' ) );
 
+		// Add WordPress Compatibility File for Functions Introduced Post 4.9.9
+		require_once plugin_dir_path( __FILE__ ) . 'includes/compat.php';
+
 		// Add Kind Global Functions.
 		require_once plugin_dir_path( __FILE__ ) . '/includes/kind-functions.php';
 
@@ -103,7 +106,6 @@ class Post_Kinds_Plugin {
 
 		// Load Privacy Declaration
 		add_action( 'admin_init', array( $cls, 'privacy_declaration' ) );
-
 		remove_all_actions( 'do_feed_rss2' );
 		remove_all_actions( 'do_feed_atom' );
 		add_action( 'do_feed_rss2', array( $cls, 'do_feed_rss2' ), 10, 1 );
