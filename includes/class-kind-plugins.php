@@ -99,9 +99,6 @@ class Kind_Plugins {
 		if ( ! isset( $input['properties'] ) ) {
 			return $input;
 		}
-		if ( ! class_exists( 'Parse-This' ) ) {
-			require_once plugin_dir_path( __FILE__ ) . 'parse-this/includes/class-parse-this.php';
-		}
 		$parsed = array( 'bookmark-of', 'like-of', 'favorite-of', 'in-reply-to', 'read-of', 'listen-of', 'watch-of' );
 		foreach ( $input['properties'] as $property => $value ) {
 			if ( in_array( $property, $parsed, true ) ) {
@@ -126,7 +123,7 @@ class Kind_Plugins {
 					}
 				} else {
 					if ( isset( $value['url'] ) && wp_http_validate_url( $value['url'] ) ) {
-						$parse = new Parse_this( $value['url'] );
+						$parse = new Parse_This( $value['url'] );
 						$fetch = $parse - fetch();
 						if ( ! is_wp_error( $fetch ) ) {
 							$parse->parse();

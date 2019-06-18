@@ -100,7 +100,7 @@ if ( have_comments() ) :
 
 		<id><?php comment_guid(); ?></id>
 		<updated><?php echo get_comment_date( DATE_RSS ); ?></updated>
-		<published><?php echo echo get_comment_date( DATE_RSS ); ?></published>
+		<published><?php echo get_comment_date( DATE_RSS ); ?></published>
 		<?php if ( post_password_required( $comment_post ) ) : ?>
 		<content type="html" xml:base="<?php comment_link(); ?>"><![CDATA[<?php echo get_the_password_form(); ?>]]></content>
 	<?php else : // post pass ?>
