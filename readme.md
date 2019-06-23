@@ -1,8 +1,8 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.2.6  
-**Requires at least:** 4.9.6  
+**Stable tag:** 3.3.0  
+**Requires at least:** 4.9.9  
 **Requires PHP:** 5.4  
 **Tested up to:** 5.2  
 **License:** GPLv2 or later  
@@ -45,6 +45,10 @@ responsibilities to responsibly use this data, and to remove information on requ
 2. [Chris Aldrich](http://boffosocko.com) always receives a credit on my plugins due his regular feedback, input, and usage.
 
 ## Upgrade Notice ##
+
+### 3.3.0 ###
+Media metadata storage has been moved into the attachment as opposed to being stored in the post itself. This may have some unexpected effects. Please report if needed. The next version will
+improve presentation by adding custom media gallery generation functionality.
 
 ### 3.1.4 ###
 This version is compatible with 5.0 of WordPress but is not integrated with the Gutenberg editor and requires the Classic Editor to function correctly.
@@ -260,6 +264,20 @@ through future plugin updates.
 
 
 ## Changelog ##
+
+### 3.3.0 ( 2019-xx-xx ) ###
+* Add remote as an RSVP property
+* Add feed templates
+* Misc bug fixes
+* URL validation in JS not firing if property is empty
+* Updated Parse This
+* Rearrange Parse This filed and removed bundling SimplePie with Post Kinds from Parse This
+* HTML5 Masterminds library is now part of Parse This so new load procedure needed
+* Use new autoloader from Parse This
+* Add autoloader for included classes
+* Added Clone Media Fragment JS courtesy https://aaronparecki.com/2017/02/19/4/day-61-media-fragments. This allows for timestamps for audio or video
+* Fix issue with exclude argument for the default feed
+
 
 ### 3.2.6 ( 2019-05-16 ) ###
 * Only allow citations for more than one video until improvement to media display
