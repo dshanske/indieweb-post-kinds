@@ -45,7 +45,7 @@ class Kind_View {
 		$templates[] = "{$slug}.php";
 		$look        = apply_filters( 'kind_view_paths', array( get_stylesheet_directory() . 'kind_views' ) );
 		$look[]      = plugin_dir_path( __DIR__ ) . 'views/';
-		$located = null;
+		$located     = null;
 		foreach ( (array) $templates as $template_name ) {
 			if ( ! $template_name ) {
 					continue;
@@ -400,15 +400,15 @@ class Kind_View {
 		}
 		$rsvp = array(
 			/* translators: URL for link to event and name of event */
-			'yes'        => __( 'Attending <a href="%1$1s" class="u-in-reply-to">%2$2s</a>', 'indieweb-post-kinds' ),
+			'yes'        => __( 'Attending <a href="%1$s" class="u-in-reply-to">%2$s</a>', 'indieweb-post-kinds' ),
 			/* translators: URL for link to event and name of event */
-			'maybe'      => __( 'Might be attending <a href="%1$1s" class="u-in-reply-to">%2$2s</a>', 'indieweb-post-kinds' ),
+			'maybe'      => __( 'Might be attending <a href="%1$s" class="u-in-reply-to">%2$s</a>', 'indieweb-post-kinds' ),
 			/* translators: URL for link to event and name of event */
-			'no'         => __( 'Unable to Attend <a href="%1$1s" class="u-in-reply-to">%2$2s</a>', 'indieweb-post-kinds' ),
+			'no'         => __( 'Unable to Attend <a href="%1$s" class="u-in-reply-to">%2$s</a>', 'indieweb-post-kinds' ),
 			/* translators: URL for link to event and name of event */
-			'interested' => __( 'Interested in Attending %s', 'indieweb-post-kinds' ),
+			'interested' => __( 'Interested in Attending <a href="%1$s" class=u-in-reply-to">%2$s</a>', 'indieweb-post-kinds' ),
 			/* translators: URL for link to event and name of event */
-			'remote'     => __( 'Attending %s remotely', 'indieweb-post-kinds' ),
+			'remote'     => __( 'Attending <a href="%1s" class="u-in-reply-to">%2$s</a>  remotely', 'indieweb-post-kinds' ),
 		);
 		return $rsvp[ $type ];
 	}
