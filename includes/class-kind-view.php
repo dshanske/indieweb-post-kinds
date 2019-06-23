@@ -43,13 +43,13 @@ class Kind_View {
 		}
 		$templates[] = "{$slug}-{$name}.php";
 		$templates[] = "{$slug}.php";
-		$look = apply_filters( 'kind_view_paths', array( get_stylesheet_directory() . 'kind_views' ) );
-		$look[] = plugin_dir_path( __DIR__ ) . 'views/';
+		$look        = apply_filters( 'kind_view_paths', array( get_stylesheet_directory() . 'kind_views' ) );
+		$look[]      = plugin_dir_path( __DIR__ ) . 'views/';
 		foreach ( (array) $templates as $template_name ) {
 			if ( ! $template_name ) {
 					continue;
 			}
-			foreach( $look as $l ) {
+			foreach ( $look as $l ) {
 				if ( file_exists( $l . $template_name ) ) {
 					$located = $l . $template_name;
 					break;
@@ -60,7 +60,7 @@ class Kind_View {
 		$kind     = $mf2_post->get( 'kind', true );
 		$type     = Kind_Taxonomy::get_kind_info( $kind, 'property' );
 		$cite     = $mf2_post->fetch( $type );
-		if ( in_array( $type, array( 'video', 'audio', 'photo' ) ) ) {
+		if ( in_array( $type, array( 'video', 'audio', 'photo' ), true ) ) {
 			if ( array_key_exists( 'url', $cite ) ) {
 				$u = attachment_url_to_postid( $cite['url'] );
 				if ( $u ) {

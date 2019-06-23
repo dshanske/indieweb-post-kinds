@@ -29,8 +29,6 @@ spl_autoload_register(
 				$file     = $base_dir . $filename . '.php';
 				if ( file_exists( $file ) ) {
 					require $file;
-				} else {
-					echo $file;
 				}
 			}
 		}
