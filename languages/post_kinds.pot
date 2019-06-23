@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Post Kinds 3.3.0\n"
 "Report-Msgid-Bugs-To: "
 "http://wordpress.org/support/plugin/indieweb-post-kinds\n"
-"POT-Creation-Date: 2019-06-23 04:08:25+00:00\n"
+"POT-Creation-Date: 2019-06-23 04:22:15+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -829,17 +829,17 @@ msgid_plural " %d seconds"
 msgstr[0] ""
 msgstr[1] ""
 
-#: indieweb-post-kinds.php:64
+#: indieweb-post-kinds.php:62
 msgid "Parse This is not installed. Please advise the developer"
 msgstr ""
 
-#: indieweb-post-kinds.php:70
+#: indieweb-post-kinds.php:68
 msgid ""
 "Classic Editor Plugin is not active. This plugin will not function "
 "correctly at this time without using the Classic Editor."
 msgstr ""
 
-#: indieweb-post-kinds.php:184
+#: indieweb-post-kinds.php:182
 msgid ""
 "For responses to URLs, such as responding to a post or article, this site "
 "allows the storage of data around the post/article in order to generate a "
@@ -1008,7 +1008,7 @@ msgid "Information on what you are responding to"
 msgstr ""
 
 #: templates/reply-details.php:4
-msgid "Summary/Quote"
+msgid "Summary/Quote/Caption"
 msgstr ""
 
 #: templates/reply-details.php:9

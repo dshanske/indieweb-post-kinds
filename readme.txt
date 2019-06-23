@@ -261,7 +261,7 @@ through future plugin updates.
 
 == Changelog ==
 
-= 3.3.0 ( 2019-xx-xx ) =
+= 3.3.0 ( 2019-06-23 ) =
 * Add remote as an RSVP property
 * Add feed templates
 * Misc bug fixes
