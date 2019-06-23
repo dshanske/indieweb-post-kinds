@@ -259,6 +259,11 @@ final class Kind_Taxonomy {
 			'index.php?exclude_kind=$matches[1]&feed=$matches[2]',
 			'top'
 		);
+		add_rewrite_rule(
+			'exclude/kind/([a-zA-Z,]+)/feed',
+			'index.php?exclude_kind=$matches[1]&feed=' . get_default_feed(),
+			'top'
+		);
 
 		// On This Day Archive
 		add_rewrite_rule(
