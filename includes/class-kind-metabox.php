@@ -63,9 +63,10 @@ class Kind_Metabox {
 
 	/* Meta box setup function. */
 	public static function kindbox_setup() {
+		$cls = get_called_class();
 		/* Add meta boxes on the 'add_meta_boxes' hook. */
-		add_action( 'add_meta_boxes', array( 'Kind_Metabox', 'add_meta_boxes' ) );
-		add_action( 'admin_enqueue_scripts', array( 'Kind_Metabox', 'enqueue_admin_scripts' ) );
+		add_action( 'add_meta_boxes', array( $cls, 'add_meta_boxes' ) );
+		add_action( 'admin_enqueue_scripts', array( $cls, 'enqueue_admin_scripts' ) );
 
 	}
 
