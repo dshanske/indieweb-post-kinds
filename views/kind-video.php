@@ -45,7 +45,8 @@ if ( $embed ) {
 } elseif ( $videos ) {
 
 	$poster = wp_get_attachment_image_url( $first_photo, 'full' );
-	echo kind_video_gallery( $videos, array( 'poster' => $poster ) );
+	$view = new Kind_Media_View( $videos, 'video' );
+	echo $view->get();
 }
 ?>
 <?php

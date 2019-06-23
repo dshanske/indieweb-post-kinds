@@ -609,7 +609,7 @@ class MF2_Post implements ArrayAccess {
 		$audios  = $this->get( 'audio' );
 		$att_ids = array_merge( $att_ids, $this->get_attachments_from_urls( $audios ) );
 		if ( ! empty( $att_ids ) ) {
-			return $att_ids;
+			return array_unique( $att_ids );
 		}
 		return false;
 	}
@@ -621,9 +621,9 @@ class MF2_Post implements ArrayAccess {
 		}
 		$att_ids = $this->get_attached_media( 'video', $this->uid );
 		$videos  = $this->get( 'video' );
-		$att_ids = array_unique( array_merge( $att_ids, $this->get_attachments_from_urls( $videos ) ) );
+		$att_ids = array_merge( $att_ids, $this->get_attachments_from_urls( $videos ) );
 		if ( ! empty( $att_ids ) ) {
-			return $att_ids;
+			return array_unique( $att_ids );
 		}
 		return false;
 	}
@@ -643,7 +643,7 @@ class MF2_Post implements ArrayAccess {
 			$urls    = self::get_img_urls_from_content( $post_content );
 			$att_ids = self::get_attachments_from_urls( $urls );
 			if ( ! empty( $att_ids ) ) {
-				return $content_allow ? $att_ids : array();
+				return $content_allow ? array_unique( $att_ids ) : array();
 			}
 		}
 		// If there is a featured image return only that. Otherwise return all images

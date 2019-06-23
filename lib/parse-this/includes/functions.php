@@ -307,45 +307,6 @@ if ( ! function_exists( 'post_type_discovery' ) ) {
 	}
 }
 
-function parse_this_clean_content( $content ) {
-	$allowed = array(
-		'a'          => array(
-			'href' => array(),
-			'name' => array(),
-		),
-		'abbr'       => array(),
-		'b'          => array(),
-		'br'         => array(),
-		'code'       => array(),
-		'del'        => array(),
-		'em'         => array(),
-		'i'          => array(),
-		'q'          => array(),
-		'strike'     => array(),
-		'strong'     => array(),
-		'time'       => array(),
-		'blockquote' => array(),
-		'pre'        => array(),
-		'p'          => array(),
-		'h1'         => array(),
-		'h2'         => array(),
-		'h3'         => array(),
-		'h4'         => array(),
-		'h5'         => array(),
-		'h6'         => array(),
-		'ul'         => array(),
-		'li'         => array(),
-		'ol'         => array(),
-		'span'       => array(),
-		'img'        => array(
-			'src'   => array(),
-			'alt'   => array(),
-			'title' => array(),
-		),
-	);
-	return trim( wp_kses( $content, $allowed ) );
-}
-
 if ( ! function_exists( 'seconds_to_iso8601' ) ) {
 	function seconds_to_iso8601( $second ) {
 		$h   = intval( $second / 3600 );

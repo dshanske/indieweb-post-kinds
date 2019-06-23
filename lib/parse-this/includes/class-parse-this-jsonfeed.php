@@ -22,7 +22,8 @@ class Parse_This_JSONFeed {
 	public static function to_jf2( $content, $url ) {
 		$return          = array_filter(
 			array(
-				'type'    => 'jsonfeed',
+				'type'    => 'feed',
+				'_feed_type' => 'jsonfeed',
 				'name'    => self::ifset( 'title', $content ),
 				'url'     => $url,
 				'summary' => self::ifset( 'description', $content ),
@@ -40,7 +41,7 @@ class Parse_This_JSONFeed {
 					'name'        => self::ifset( 'title', $item ),
 					'content'     => array_filter(
 						array(
-							'html' => self::ifset( 'content_html', $item ),
+							'html' => Parse_This::clean_content( self::ifset( 'content_html', $item ) ),
 							'text' => self::ifset( 'content_text', $item ),
 						)
 					),

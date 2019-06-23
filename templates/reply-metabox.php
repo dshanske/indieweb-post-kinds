@@ -80,10 +80,12 @@ if ( isset( $cite['url'] ) && is_array( $cite['url'] ) ) {
 		echo wp_get_attachment_image( $attachment );
 	}
 	elseif ( wp_attachment_is( 'audio', $attachment ) ) {
-		echo kind_audio_gallery( $attachment );
+		$view = new Kind_Media_View( $attachment, 'audio' );
+		echo $view->get();
 	}
 	elseif ( wp_attachment_is( 'video', $attachment ) ) {
-		echo kind_video_gallery( $attachment );
+		$view = new Kind_Media_View( $attachment, 'video' );
+		echo $view->get();
 	}
 } ?>
 	</div>

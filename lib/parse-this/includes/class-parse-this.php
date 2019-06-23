@@ -28,12 +28,55 @@ class Parse_This {
 
 	public function get( $key = 'jf2' ) {
 		if ( 'mf2' === $key ) {
-			return jf2_to_mf2( $key );
+			return jf2_to_mf2( $this->jf2 );
 		}
 		if ( ! in_array( $key, get_object_vars( $this ), true ) ) {
 			$key = 'jf2';
 		}
 		return $this->$key;
+	}
+
+
+	public static function clean_content( $content ) {
+		if ( ! is_string( $content ) ) {
+			return $content;
+		}
+		$allowed = array(
+			'a'          => array(
+				'href' => array(),
+				'name' => array(),
+			),
+			'abbr'       => array(),
+			'b'          => array(),
+			'br'         => array(),
+			'code'       => array(),
+			'del'        => array(),
+			'em'         => array(),
+			'i'          => array(),
+			'q'          => array(),
+			'strike'     => array(),
+			'strong'     => array(),
+			'time'       => array(),
+			'blockquote' => array(),
+			'pre'        => array(),
+			'p'          => array(),
+			'h1'         => array(),
+			'h2'         => array(),
+			'h3'         => array(),
+			'h4'         => array(),
+			'h5'         => array(),
+			'h6'         => array(),
+			'ul'         => array(),
+			'li'         => array(),
+			'ol'         => array(),
+			'span'       => array(),
+			'img'        => array(
+				'src'   => array(),
+				'alt'   => array(),
+				'title' => array(),
+			),
+		);
+		return trim( wp_kses( $content, $allowed ) );
 	}
 
 	/**
@@ -388,7 +431,7 @@ class Parse_This {
 
 	public static function wp_post( $post ) {
 		$mf2 = new MF2_Post( $post );
-		return $mf2->get( null, true );
+		return mf2_to_jf2( $mf2->get() );
 	}
 
 }

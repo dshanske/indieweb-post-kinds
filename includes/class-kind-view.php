@@ -62,8 +62,18 @@ class Kind_View {
 		$kind     = $mf2_post->get( 'kind', true );
 		$type     = Kind_Taxonomy::get_kind_info( $kind, 'property' );
 		$cite     = $mf2_post->fetch( $type );
-		$url      = null;
-		$embed    = null;
+		if ( in_array( $type, array( 'video', 'audio', 'photo' ) ) ) {
+			if ( array_key_exists( 'url', $cite ) ) {
+				$u = attachment_url_to_postid( $cite['url'] );
+				if ( $u ) {
+					$attachment = new MF2_Post( $u );
+					$attachment->set( $cite );
+					$mf2_post->set( array( $cite['url'] ) );
+				}
+			}
+		}
+		$url   = null;
+		$embed = null;
 		ob_start();
 		include $located;
 		$return = ob_get_contents();
