@@ -43,19 +43,17 @@ class Kind_View {
 		}
 		$templates[] = "{$slug}-{$name}.php";
 		$templates[] = "{$slug}.php";
+		$look = apply_filters( 'kind_view_paths', array( get_stylesheet_directory() . 'kind_views' ) );
+		$look[] = plugin_dir_path( __DIR__ ) . 'views/';
 		foreach ( (array) $templates as $template_name ) {
 			if ( ! $template_name ) {
 					continue;
 			}
-			// If the Theme Has a kind_views directory look there first.
-			if ( file_exists( get_stylesheet_directory() . '/kind_views/' . $template_name ) ) {
-				$located = get_stylesheet_directory() . '/kind_views/' . $template_name;
-				break;
-			}
-			// Look in the views subdirectory.
-			if ( file_exists( plugin_dir_path( __DIR__ ) . 'views/' . $template_name ) ) {
-				$located = plugin_dir_path( __DIR__ ) . 'views/' . $template_name;
-				break;
+			foreach( $look as $l ) {
+				if ( file_exists( $l . $template_name ) ) {
+					$located = $l . $template_name;
+					break;
+				}
 			}
 		}
 		$mf2_post = new MF2_Post( get_the_ID() );
