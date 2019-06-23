@@ -22,5 +22,6 @@ echo Kind_Taxonomy::get_before_kind( 'photo' );
 if ( $embed ) {
 	printf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
 } elseif ( $photos ) {
-	echo kind_photo_gallery( $photos );
+	$view = new Kind_Media_View( $photos, 'photo' );
+	echo $view->get();
 }

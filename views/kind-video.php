@@ -21,7 +21,8 @@ if ( is_array( $cite ) && ! $videos ) {
 	$url   = ifset( $cite['url'] );
 	$embed = self::get_embed( $url );
 	if ( ! $embed ) {
-		$embed = kind_video_gallery( $url );
+		$view = new Kind_Media_View( $url, 'video' );
+		$embed = $view->get();
 	}
 }
 
