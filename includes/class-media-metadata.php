@@ -48,6 +48,7 @@ class Media_Metadata {
 	}
 
 	public static function wp_update_attachment_metadata( $data, $attachment_id ) {
+		$data = array_filter( $data );
 		if ( ! empty( $data['album'] ) ) {
 			update_post_meta( $attachment_id, 'mf2_publication', array( $data['album'] ) );
 		}

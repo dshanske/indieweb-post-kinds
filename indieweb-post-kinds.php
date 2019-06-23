@@ -28,7 +28,7 @@ if ( ! class_exists( 'Classic_Editor' ) ) {
 	add_action( 'admin_notices', array( 'Post_Kinds_Plugin', 'classic_editor_error' ) );
 }
 
-add_action( 'plugins_loaded', array( 'Post_Kinds_Plugin', 'plugins_loaded' ) );
+add_action( 'plugins_loaded', array( 'Post_Kinds_Plugin', 'plugins_loaded' ), 11 );
 add_action( 'init', array( 'Post_Kinds_Plugin', 'init' ) );
 
 class Post_Kinds_Plugin {
@@ -70,7 +70,9 @@ class Post_Kinds_Plugin {
 
 		// Parse This
 		require_once plugin_dir_path( __FILE__ ) . 'lib/parse-this/includes/autoload.php';
-		require_once plugin_dir_path( __FILE__ ) . 'lib/parse-this/includes/class-rest-parse-this.php';
+		if ( ! class_exists( 'REST_Parse_This' ) ) {
+			require_once plugin_dir_path( __FILE__ ) . 'lib/parse-this/includes/class-rest-parse-this.php';
+		}
 		require_once plugin_dir_path( __FILE__ ) . 'lib/parse-this/includes/functions.php';
 
 		// Plugin Specific Kind Customizations

@@ -43,13 +43,14 @@ class MF2_Post implements ArrayAccess {
 		if ( ! $post ) {
 			return false;
 		}
+		$this->mf2         = $this->get_mf2meta();
 		$this->post_author = $post->post_author;
 		$this->post_type   = $post->post_type;
-		$this->author      = self::get_author();
+		$this->author      = $this->get_author();
 		$this->post_parent = $post->post_parent;
-		$this->published   = get_the_date( DATE_W3C, $post );
-		$this->updated     = get_the_modified_date( DATE_W3C, $post );
-		$this->publication = get_bloginfo( 'title' );
+		$this->published   = $this->get_published();
+		$this->updated     = $this->get_updated();
+		$this->publication = $this->get_publication();
 		if ( ! empty( $post->post_content ) ) {
 			$this->content = array(
 				'html'  => $post->post_content,
@@ -57,7 +58,6 @@ class MF2_Post implements ArrayAccess {
 			);
 		}
 		$this->summary = $post->post_excerpt;
-		$this->mf2     = $this->get_mf2meta();
 		if ( 'attachment' === $post->post_type ) {
 			$this->url = wp_get_attachment_url( $post->ID );
 		} else {
@@ -72,6 +72,27 @@ class MF2_Post implements ArrayAccess {
 			$this->featured = wp_get_attachment_url( get_post_thumbnail_id( $post ) );
 		}
 		$this->kind = self::get_post_kind();
+	}
+
+	public function get_published() {
+		if ( 'attachment' === $this->post_type ) {
+			return ifset( $this->meta['published'] );
+		}
+		return get_the_date( DATE_W3C, $this->uid );
+	}
+
+	public function get_updated() {
+		if ( 'attachment' === $this->post_type ) {
+			return ifset( $this->meta['updated'] );
+		}
+		return get_the_modified_date( DATE_W3C, $this->uid );
+	}
+
+	public function get_publication() {
+		if ( 'attachment' !== $this->post_type ) {
+			return get_bloginfo( 'title' );
+		}
+		return ifset( $this->meta['publication'] );
 	}
 
 	public function offsetExists( $offset ) {
@@ -207,8 +228,8 @@ class MF2_Post implements ArrayAccess {
 			return ifset( $this->meta['author'], false );
 		}
 		// Attachments may have been uploaded by a user but may have metadata for original author
-		if ( is_attachment( $this->uid ) && isset( $this->meta['author'] ) ) {
-			return $this->meta['author'];
+		if ( 'attachment' === $this->post_type ) {
+			return ifset( $this->meta['author'] );
 		}
 		return array(
 			'type'       => array( 'h-card' ),
@@ -288,6 +309,19 @@ class MF2_Post implements ArrayAccess {
 	}
 
 	/**
+	 * Map Properties Based on Post Type
+	 *
+	 */
+	private function get_post_type_properties() {
+		$properties = array_keys( get_object_vars( $this ) );
+		unset( $properties['mf2'] );
+		if ( 'attachment' === $this->post_type ) {
+			$properties = array_diff( $properties, array( 'published', 'updated', 'author' ) );
+		}
+		return $properties;
+	}
+
+	/**
 	 * Retrieve value
 	 *
 	 * @param  string $key The key to retrieve.
@@ -295,9 +329,6 @@ class MF2_Post implements ArrayAccess {
 	 * @return boolean|string|array The result or false if does not exist.
 	 */
 	public function get( $key = null, $single = true ) {
-		if ( 'mf2' === $key ) {
-			return $this->mf2;
-		}
 		if ( null === $key ) {
 			$vars = get_object_vars( $this );
 			unset( $vars['mf2'] );
@@ -322,8 +353,7 @@ class MF2_Post implements ArrayAccess {
 			}
 			return $return;
 		}
-		$properties = array_keys( get_object_vars( $this ) );
-		unset( $properties['mf2'] );
+		$properties = $this->get_post_type_properties();
 		if ( in_array( $key, $properties, true ) ) {
 			$return = $this->$key;
 		} else {
@@ -368,6 +398,9 @@ class MF2_Post implements ArrayAccess {
 		if ( ! $key ) {
 			return;
 		}
+		if ( Parse_This_MF2::is_microformat( $key ) ) {
+			$key = $key['properties'];
+		}
 		if ( is_array( $key ) ) {
 			foreach ( $key as $k => $v ) {
 				self::set( $k, $v );
@@ -376,14 +409,46 @@ class MF2_Post implements ArrayAccess {
 		if ( null === $value || empty( $value ) ) {
 			return false;
 		}
-		$properties = array_keys( get_object_vars( $this ) );
+		if ( in_array( $key, array( 'photo', 'video', 'audio' ), true ) ) {
+			if ( 'attachment' === $this->post_type ) {
+				return;
+			}
+			if ( Parse_This_MF2::is_microformat( $value ) ) {
+				$u          = Parse_This_MF2::get_plaintext( $value, 'url', null );
+				$attachment = new MF2_Post( attachment_url_to_postid( $u ) );
+				$attachment->set( $value );
+				return update_post_meta( $this->uid, 'mf2_' . $key, array( $u ) );
+			}
+			if ( wp_is_numeric_array( $value ) ) {
+				if ( is_string( $value[0] ) ) {
+					return update_post_meta( $this->uid, 'mf2_' . $key, $value );
+				} else {
+					$mprop = array();
+					foreach ( $value as $media ) {
+						if ( Parse_This_MF2::is_microformat( $media ) ) {
+							$u          = Parse_This_MF2::get_plaintext( $media, 'url', null );
+							$attachment = new MF2_Post( attachment_url_to_postid( $u ) );
+							$attachment->set( $media );
+							$mprop[] = $u;
+						}
+					}
+					if ( ! empty( $mprop ) ) {
+						return update_post_meta( $this->uid, 'mf2_' . $key, $mprop );
+					}
+				}
+			}
+		}
+		$properties = $this->get_post_type_properties();
 		unset( $properties['mf2'] );
 		if ( ! in_array( $key, $properties, true ) ) {
 			return update_post_meta( $this->uid, 'mf2_' . $key, $value );
 		} else {
+			$value = $this->get_single( $value );
 			switch ( $key ) {
 				case 'url':
 				case 'uid':
+				case 'kind':
+				case 'post_type':
 					break;
 				case 'post_author':
 					if ( is_numeric( $value ) ) {
@@ -433,22 +498,38 @@ class MF2_Post implements ArrayAccess {
 							'post_modified_gmt' => $post_modified_gmt,
 						)
 					);
-				case 'content':
-					$key = 'post_content';
+				case 'name':
 					return wp_update_post(
 						array(
-							'ID' => $this->uid,
-							$key => $value,
+							'ID'         => $this->uid,
+							'post_title' => $value,
+						)
+					);
+				case 'content':
+					return wp_update_post(
+						array(
+							'ID'           => $this->uid,
+							'post_content' => $value,
 						)
 					);
 				case 'summary':
-					$key = 'post_excerpt';
 					return wp_update_post(
 						array(
-							'ID' => $this->uid,
-							$key => $value,
+							'ID'           => $this->uid,
+							'post_excerpt' => $value,
 						)
 					);
+				case 'publication':
+					if ( get_bloginfo( 'title' ) === $value ) {
+						return false;
+					}
+					return update_post_meta( $this->uid, 'mf2_publication', array( $value ) );
+				case 'featured':
+					$attachment_id = attachment_url_to_postid( $value );
+					if ( $attachment_id ) {
+						return set_post_thumbnail( $this->uid, $attachment_id );
+					}
+					return false;
 				default:
 					return wp_update_post(
 						array(

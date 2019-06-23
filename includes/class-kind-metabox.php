@@ -340,12 +340,10 @@ class Kind_Metabox {
 		} else {
 			$fetch = array_filter( $fetch );
 		}
-		if ( ! empty( $_POST['cite_media'] ) ) {
-			$mf2_post->set( $type, array( $cite['url'] ) );
-			return;
+		if ( empty( $_POST['cite_media'] ) ) {
+			$cite = array_merge( $fetch, $cite );
+			$cite = array_filter( $cite );
 		}
-		$cite = array_merge( $fetch, $cite );
-		$cite = array_filter( $cite );
 
 		if ( ! empty( $cite ) ) {
 			if ( 1 === count( $cite ) && array_key_exists( 'url', $cite ) ) {
