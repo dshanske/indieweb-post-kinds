@@ -8,6 +8,7 @@
 class Kind_Metabox {
 	public static $version;
 	public static function init() {
+		self::$version = Post_Kinds_Plugin::$version;
 		add_action( 'edit_form_after_title', array( 'Kind_Metabox', 'after_title_metabox' ) );
 		// Add meta box to new post/post pages only
 		add_action( 'load-post.php', array( 'Kind_Metabox', 'kindbox_setup' ) );

@@ -3,7 +3,7 @@
  *
  * Enhances Metadata for Media
  */
-class Media_Metadata {
+class Kind_Media_Metadata {
 
 	/**
 	 * Function to Initialize the Configuration.
@@ -15,6 +15,19 @@ class Media_Metadata {
 		add_filter( 'wp_update_attachment_metadata', array( $cls, 'wp_update_attachment_metadata' ), 33, 2 );
 		if ( ! function_exists( 'wp_sanitize_media_metadata' ) ) {
 			add_filter( 'wp_update_attachment_metadata', array( $cls, 'wp_sanitize_media_metadata' ), 9, 2 );
+		}
+		add_action( 'wp_enqueue_scripts', array( $cls, 'enqueue' ) );
+	}
+
+	public static function enqueue() {
+		if ( is_singular() ) {
+			wp_enqueue_script(
+				'media-fragment',
+				plugins_url( 'js/clone-media-fragment.js', dirname( __FILE__ ) ),
+				array(),
+				'1.0',
+				true
+			);
 		}
 	}
 

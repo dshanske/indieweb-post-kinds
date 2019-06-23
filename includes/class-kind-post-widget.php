@@ -1,11 +1,5 @@
 <?php
 
-add_action( 'widgets_init', 'iwt_register_post_widget' );
-
-function iwt_register_post_widget() {
-	register_widget( 'Kind_Post_Widget' );
-}
-
 class Kind_Post_Widget extends WP_Widget {
 	/**
 	 * Register widget with WordPress.

@@ -1,11 +1,5 @@
 <?php
 
-add_action( 'widgets_init', 'iwt_register_menu_widget' );
-
-function iwt_register_menu_widget() {
-	register_widget( 'Kind_Menu_Widget' );
-}
-
 class Kind_Menu_Widget extends WP_Widget {
 	/**
 	 * Register widget with WordPress.
