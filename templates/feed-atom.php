@@ -64,8 +64,8 @@ do_action( 'rss_tag_pre', 'atom' );
 			?>
 		</author>
 		<?php $title = get_the_title_rss(); ?>
-		<?php if ( $title )  { ?>
-		<title type="<?php html_type_rss(); ?>"><![CDATA[<php echo $title; ?>]]></title>
+		<?php if ( ! empty( $title ) )  { ?>
+		<title type="<?php html_type_rss(); ?>"><![CDATA[<?php echo $title; ?>]]></title>
 		<?php } ?>
 		<link rel="alternate" type="<?php bloginfo_rss( 'html_type' ); ?>" href="<?php the_permalink_rss(); ?>" />
 		<id><?php the_guid(); ?></id>
