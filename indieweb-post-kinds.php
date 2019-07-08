@@ -111,7 +111,7 @@ class Post_Kinds_Plugin {
 
 		// Add a Settings Link to the Plugins Page.
 		$plugin = plugin_basename( __FILE__ );
-		add_filter( 'plugin_action_links_$plugin', array( 'Post_Kinds_Plugin', 'settings_link' ) );
+		add_filter( "plugin_action_links_$plugin", array( 'Post_Kinds_Plugin', 'settings_link' ) );
 
 		// Load stylesheets.
 		add_action( 'wp_enqueue_scripts', array( $cls, 'style_load' ) );
@@ -158,7 +158,13 @@ class Post_Kinds_Plugin {
 	 * @return array Modified Links.
 	 */
 	public static function settings_link( $links ) {
-		$settings_link = '<a href="options-general.php?page=kind_options">Settings</a>';
+		// Because of how Kind_Config::admin_menu() is set up, the settings page
+		// can be located at two different URLs; menu_page_url() finds both.
+		$settings_url = menu_page_url( 'kind_options', false );
+		$settings_link = sprintf( '<a href="%1$s">%2$s</a>',
+			$settings_url,
+			__( 'Settings' )
+		);
 		array_unshift( $links, $settings_link );
 		return $links;
 	}
