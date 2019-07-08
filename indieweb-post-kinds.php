@@ -65,7 +65,7 @@ class Post_Kinds_Plugin {
 
 	public static function classic_editor_error() {
 		$class   = 'notice notice-error';
-		$message = __( 'Classic Editor Plugin is not active. This plugin will not function correctly at this time without using the Classic Editor.', 'indieweb-post-kinds' );
+		$message = __( 'Classic Editor Plugin is not active. The Post Kinds plugin will not function correctly at this time without using the Classic Editor.', 'indieweb-post-kinds' );
 		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
 	}
 
@@ -111,7 +111,7 @@ class Post_Kinds_Plugin {
 
 		// Add a Settings Link to the Plugins Page.
 		$plugin = plugin_basename( __FILE__ );
-		add_filter( 'plugin_action_links_$plugin', array( 'Post_Kinds_Plugin', 'settings_link' ) );
+		add_filter( "plugin_action_links_$plugin", array( 'Post_Kinds_Plugin', 'settings_link' ) );
 
 		// Load stylesheets.
 		add_action( 'wp_enqueue_scripts', array( $cls, 'style_load' ) );
@@ -158,7 +158,13 @@ class Post_Kinds_Plugin {
 	 * @return array Modified Links.
 	 */
 	public static function settings_link( $links ) {
-		$settings_link = '<a href="options-general.php?page=kind_options">Settings</a>';
+		// Because of how Kind_Config::admin_menu() is set up, the settings page
+		// can be located at two different URLs; menu_page_url() finds both.
+		$settings_url = menu_page_url( 'kind_options', false );
+		$settings_link = sprintf( '<a href="%1$s">%2$s</a>',
+			$settings_url,
+			__( 'Settings' )
+		);
 		array_unshift( $links, $settings_link );
 		return $links;
 	}
@@ -180,9 +186,7 @@ class Post_Kinds_Plugin {
 	public static function privacy_declaration() {
 		if ( function_exists( 'wp_add_privacy_policy_content' ) ) {
 			$content = __(
-				'For responses to URLs, such as responding to a post or article, this site allows the storage of data around the post/article in order to generate a rich
-				citation. Items such as author name and image, summary of the text, embed provided by third-party site, etc may be stored and are solely to provide this 
-				context. We will remove any of this on request.',
+				'For responses to URLs, such as responding to a post or article, this site allows the storage of data around the post/article in order to generate a rich citation. Items such as author name and image, summary of the text, embed provided by third-party site, etc may be stored and are solely to provide this context. We will remove any of this on request.',
 				'indieweb-post-kinds'
 			);
 			wp_add_privacy_policy_content(
@@ -206,5 +210,3 @@ if ( ! function_exists( 'ifset' ) ) {
 		return isset( $var ) ? $var : $return;
 	}
 }
-
-
