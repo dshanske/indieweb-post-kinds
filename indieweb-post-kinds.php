@@ -65,7 +65,7 @@ class Post_Kinds_Plugin {
 
 	public static function classic_editor_error() {
 		$class   = 'notice notice-error';
-		$message = __( 'Classic Editor Plugin is not active. This plugin will not function correctly at this time without using the Classic Editor.', 'indieweb-post-kinds' );
+		$message = __( 'Classic Editor Plugin is not active. The Post Kinds plugin will not function correctly at this time without using the Classic Editor.', 'indieweb-post-kinds' );
 		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
 	}
 
