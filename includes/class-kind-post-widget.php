@@ -58,11 +58,26 @@ class Kind_Post_Widget extends WP_Widget {
 		}
 	}
 
+	/**
+	 * @access public
+	 *
+	 * @param WP_Post $post Post object
+	 * @param string  $kind Post kind to link.
+	 * @return string
+	 */
 	public function get_the_link( $post, $kind ) {
 		return sprintf( '<a href="%2$s">%1$s</a> - %3$s', self::get_the_title( $post, $kind ), get_the_permalink( $post ), get_the_date( '', $post ) );
 	}
 
-
+	/**
+	 * Construct a title for the post kind link.
+	 *
+	 * @access public
+	 *
+	 * @param WP_Post $post Post object.
+	 * @param string  $kind Post kind.
+	 * @return string
+	 */
 	public function get_the_title( $post, $kind ) {
 		$title = get_the_title( $post );
 		if ( ! empty( $title ) ) {
