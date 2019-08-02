@@ -156,16 +156,36 @@ class Kind_Config {
 		add_filter( 'query_vars', array( 'Kind_Config', 'query_var' ) );
 	}
 
-
+	/**
+	 * Function to add our kindurl query var.
+	 *
+	 * @access public
+	 *
+	 * @param array $vars Current array of query variables.
+	 * @return array
+	 */
 	public static function query_var( $vars ) {
 		$vars[] = 'kindurl';
 		return $vars;
 	}
 
+	/**
+	 * Function to remove "post" from the "New" admin bar section.
+	 *
+	 * @access public
+	 *
+	 * @param WP_Admin_Bar $wp_admin_bar
+	 */
 	public static function remove_dashbar_post( $wp_admin_bar ) {
 		$wp_admin_bar->remove_menu( 'new-post' );
 	}
 
+	/**
+	 * Function to add our Post Kind post links to the "New" admin bar section.
+	 *
+	 * @access public
+	 * @param WP_Admin_Bar $wp_admin_bar
+	 */
 	public static function dashbar_links( $wp_admin_bar ) {
 		$termslist = get_option( 'kind_termslist' );
 		// Note can never be removed
@@ -287,6 +307,8 @@ class Kind_Config {
 	 * Generate Radio Options.
 	 *
 	 * @access public
+	 *
+	 * @param array $args array of radio option field args.
 	 */
 	public static function radio_callback( array $args ) {
 		$display = get_option( 'kind_display' );
@@ -294,8 +316,6 @@ class Kind_Config {
 			printf( '<input id="%1$s" name="%1$s" type="radio" value="%2$s" class="%3$s" %4$s />%5$s<br />', esc_attr( $args['name'] ), esc_attr( $key ), esc_attr( $args['class'] ), checked( $key, $display, false ), sanitize_text_field( $value ) ); // phpcs:ignore
 		}
 	}
-
-
 
 	/**
 	 * Generate Options Form.
@@ -321,6 +341,11 @@ class Kind_Config {
 		<?php
 	}
 
+	/**
+	 * Function to generate a help tab in the WordPress admin help tab.
+	 *
+	 * @access public
+	 */
 	public static function add_post_help_tab() {
 		get_current_screen()->add_help_tab(
 			array(
