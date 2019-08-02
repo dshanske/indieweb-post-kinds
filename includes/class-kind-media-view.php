@@ -37,6 +37,15 @@ class Kind_Media_View {
 		);
 	}
 
+	/**
+	 * Return a media view for the audio post kind.
+	 *
+	 * @access private
+	 * @param int   $id   Audio attachment ID.
+	 * @param mixed $args Arguments for the audio media view.
+	 *
+	 * @return array|string|void
+	 */
 	private function audio( $id, $args = null ) {
 		$return  = array();
 		$default = array(
@@ -59,6 +68,15 @@ class Kind_Media_View {
 		return $return;
 	}
 
+	/**
+	 * Return a media view for the video post kind.
+	 *
+	 * @access private
+	 * @param int   $id   Video attachment ID.
+	 * @param mixed $args Arguments for the video media view.
+	 *
+	 * @return array|string|void
+	 */
 	private function video( $id, $args = null ) {
 		$return   = array();
 		$defaults = array(
