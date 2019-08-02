@@ -64,6 +64,10 @@ class Post_Kinds_Plugin {
 	}
 
 	public static function classic_editor_error() {
+		if ( ! self::post_uses_gutenberg() ) {
+			return '';
+		}
+
 		$class   = 'notice notice-error';
 		$message = __( 'Classic Editor Plugin is not active. The Post Kinds plugin will not function correctly at this time without using the Classic Editor.', 'indieweb-post-kinds' );
 		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
@@ -196,6 +200,14 @@ class Post_Kinds_Plugin {
 		}
 	}
 
+	public static function post_uses_gutenberg() {
+		$screen = get_current_screen();
+		if ( ! is_object( $screen ) || 'post' !== $screen->base ) {
+			return true;
+		}
+
+		return $screen->is_block_editor;
+	}
 }
 
 if ( ! function_exists( 'ifset' ) ) {
