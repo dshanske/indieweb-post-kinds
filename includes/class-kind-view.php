@@ -15,6 +15,15 @@ class Kind_View {
 		add_filter( 'wp_get_attachment_image_attributes', array( 'Kind_View', 'wp_get_attachment_image_attributes' ), 10, 2 );
 	}
 
+	/**
+	 * Filters the attachment image attributes for image post kinds.
+	 *
+	 * @access public
+	 *
+	 * @param array   $attr       Attribute arguments for the attachment image.
+	 * @param WP_Post $attachment Attachment post object.
+	 * @return array
+	 */
 	public static function wp_get_attachment_image_attributes( array $attr, WP_Post $attachment ) {
 		$parents = get_post_ancestors( $attachment );
 		$count   = count( $parents );
@@ -35,7 +44,17 @@ class Kind_View {
 		return $attr;
 	}
 
-	// This mirrors get_template_part but for views and locates the correct file and returns the output
+	/**
+	 * Post kind version of get_template_part WordPress function.
+	 *
+	 * Function will locate the correct template file to load and return the output.
+	 *
+	 * @access public
+	 *
+	 * @param string $slug Post kind slug.
+	 * @param string $name Post kind term name.
+	 * @return string
+	 */
 	public static function get_view_part( $slug, $name ) {
 		$name = (string) $name;
 		if ( empty( $name ) ) {
@@ -83,8 +102,14 @@ class Kind_View {
 		return wp_make_content_images_responsive( $return );
 	}
 
-
-	// Return the Display
+	/**
+	 * Return the post kind display.
+	 *
+	 * @access public
+	 *
+	 * @param int|null $post_id Post ID.
+	 * @return mixed|void
+	 */
 	public static function get_display( $post_id = null ) {
 		if ( ! $post_id ) {
 			$post_id = get_the_ID();
@@ -96,11 +121,24 @@ class Kind_View {
 		}
 	}
 
-	// Echo the output of get_display
+	/**
+	 * Echo the output of get_display.
+	 *
+	 * @access public
+	 * @param int|null $post_id Post ID.
+	 */
 	public static function display( $post_id = null ) {
 		echo self::get_display( $post_id ); // phpcs:ignore
 	}
 
+	/**
+	 * Output the post kind content to the post content.
+	 *
+	 * @access public
+	 *
+	 * @param string $content Post content.
+	 * @return string
+	 */
 	public static function content_response( $content ) {
 		if ( ( is_admin() ) && ! ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
 			return $content;
@@ -127,10 +165,28 @@ class Kind_View {
 		return self::get_display() . $content;
 	}
 
+	/**
+	 * Output the post kind content to the feed item content.
+	 *
+	 * @access public
+	 *
+	 * @param string $content   Post content.
+	 * @param string $feed_type Feed type being rendered.
+	 * @return string
+	 */
 	public static function content_feed_response( $content, $feed_type ) {
 		return self::get_display() . $content;
 	}
 
+	/**
+	 * Output the post kind content to the content if the `jsonfeed` plugin is active.
+	 *
+	 * @access public
+	 *
+	 * @param array   $feed_item Post content for the JSON feed item.
+	 * @param WP_Post $post      Post object.
+	 * @return mixed
+	 */
 	public static function json_feed_item( $feed_item, $post ) {
 		$mf2_post = new MF2_Post( $post );
 		$kind     = $mf2_post->get( 'kind', true );
@@ -147,7 +203,14 @@ class Kind_View {
 		return $feed_item;
 	}
 
-
+	/**
+	 * Append the post kind display to excerpts.
+	 *
+	 * @access public
+	 *
+	 * @param string $content Excerpt content.
+	 * @return string
+	 */
 	public static function excerpt_response( $content ) {
 		global $post;
 		if ( has_excerpt( get_the_ID() ) ) {
@@ -157,13 +220,29 @@ class Kind_View {
 		}
 	}
 
+	/**
+	 * Extracts a domain name from a URL.
+	 *
+	 * This function will remove the www.prefix if it is part of the URL.
+	 *
+	 * @access public
+	 *
+	 * @param string $url URL to pars and extract domain for.
+	 * @return string|string[]|null
+	 */
 	public static function extract_domain_name( $url ) {
 		$parse = wp_parse_url( $url, PHP_URL_HOST );
 		return preg_replace( '/^www\./', '', $parse );
 	}
 
-
-	// Take an array of attributes and output them as a string
+	/**
+	 * Converts an array of attributes and output them as a string.
+	 *
+	 * @access public
+	 *
+	 * @param array|null $classes Array of classes to convert.
+	 * @return string
+	 */
 	public static function get_attributes( $classes = null ) {
 		if ( ! $classes ) {
 			return '';
@@ -175,7 +254,16 @@ class Kind_View {
 		return $return;
 	}
 
-	// Takes a url and returns it as marked up HTML
+	/**
+	 * Converts a URL into a complete `<a>` link with link text.
+	 *
+	 * @access public
+	 *
+	 * @param string       $url  URL to create an HTML link for.
+	 * @param string       $name Link text to use.
+	 * @param array|string $atr  Array of attributes to include on the link.
+	 * @return string
+	 */
 	public static function get_url_link( $url, $name = '', $atr = '' ) {
 		if ( empty( $url ) ) {
 			return '';
@@ -187,6 +275,17 @@ class Kind_View {
 		return $return;
 	}
 
+	/**
+	 * Create formatted HTML output for a field.
+	 *
+	 * @access public
+	 *
+	 * @param string $field Content to put in the markup
+	 * @param string $attr  Attributes to add to the tag markup.
+	 * @param string $type  HTML tag type to create. Default span.
+	 *
+	 * @return string
+	 */
 	public static function get_formatted( $field, $attr, $type = 'span' ) {
 		if ( ! isset( $field ) ) {
 			return $string;
@@ -195,6 +294,14 @@ class Kind_View {
 		return $string;
 	}
 
+	/**
+	 * Return post kind-wrapped oEmbed content for a provided URL.
+	 *
+	 * @access public
+	 *
+	 * @param string $url URL being output via oEmbed.
+	 * @return string
+	 */
 	public static function get_embed( $url ) {
 		$option = get_option( 'kind_embeds' );
 		if ( 0 === (int) $option ) {
@@ -253,6 +360,9 @@ class Kind_View {
 	/**
 	 * Returns an array of domains with the post type terminologies
 	 *
+	 * @access public
+	 *
+	 * @param string $url URL to use with translation.
 	 * @return array A translated post type string for specific domain or 'a post'
 	 */
 	public static function get_post_type_string( $url ) {
@@ -279,7 +389,7 @@ class Kind_View {
 	/**
 	 * Retrieve/Generate the h-card.
 	 *
-	 * @param mixed $author The author to generate Accepts an array or optionally other info
+	 * @param mixed $author The author to generate Accepts an array or optionally other info.
 	 * @param array $args       {
 	 *    Optional. Extra arguments to retrieve the avatar.
 	 *
@@ -363,6 +473,14 @@ class Kind_View {
 		return $card;
 	}
 
+	/**
+	 * Retrieve a title for a given citation.
+	 *
+	 * @access public
+	 *
+	 * @param array $cite Array of citation data.
+	 * @return bool|string
+	 */
 	public static function get_cite_title( $cite ) {
 		if ( ! $cite ) {
 			return false;
@@ -384,6 +502,14 @@ class Kind_View {
 
 	}
 
+	/**
+	 * Retrieve site name for given citation.
+	 *
+	 * @access public
+	 *
+	 * @param array $cite Array of citation data.
+	 * @return bool|string
+	 */
 	public static function get_site_name( $cite ) {
 		if ( ! $cite || ! is_array( $cite ) ) {
 			return false;
@@ -394,6 +520,16 @@ class Kind_View {
 		return sprintf( '<span class="p-publication">%1s</span>', $cite['publication'] );
 	}
 
+	/**
+	 * Returns a requested RSVP option item.
+	 *
+	 * The returned value will be a printf-ready translated string.
+	 *
+	 * @access
+	 *
+	 * @param string $type RSVP type to return.
+	 * @return mixed|string
+	 */
 	public static function rsvp_text( $type ) {
 		if ( ! $type ) {
 			return '';
@@ -413,6 +549,14 @@ class Kind_View {
 		return $rsvp[ $type ];
 	}
 
+	/**
+	 * Returns a requested read status option item.
+	 *
+	 * @access public
+	 *
+	 * @param string $type Read status to return.
+	 * @return mixed|string
+	 */
 	public static function read_text( $type ) {
 		if ( ! $type ) {
 			return '';
@@ -425,7 +569,15 @@ class Kind_View {
 		return $read[ $type ];
 	}
 
-
+	/**
+	 * Return a string for a requested duration.
+	 *
+	 * @access public
+	 *
+	 * @param string $duration Duration to display.
+	 * @return string
+	 * @throws Exception
+	 */
 	public static function display_duration( $duration ) {
 		if ( ! $duration ) {
 			return '';
