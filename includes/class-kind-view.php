@@ -363,7 +363,7 @@ class Kind_View {
 	 * @access public
 	 *
 	 * @param string $url URL to use with translation.
-	 * @return array A translated post type string for specific domain or 'a post'
+	 * @return string A translated post type string for specific domain or 'a post'
 	 */
 	public static function get_post_type_string( $url ) {
 		if ( ! $url || ! is_string( $url ) ) {
