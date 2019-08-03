@@ -102,26 +102,6 @@ class Parse_This {
 		}
 	}
 
-	private function get_feed_type( $type ) {
-		switch ( $type ) {
-			case 'application/json':
-				return 'jsonfeed';
-			case 'application/rss+xml':
-				return 'rss';
-			case 'application/atom+xml':
-				return 'atom';
-			case 'application/jf2feed+json':
-				return 'jf2feed';
-			case 'application/json+oembed':
-			case 'text/xml+oembed':
-				return '';
-			case 'text/html':
-				return 'microformats';
-			default:
-				return 'microformats';
-		}
-	}
-
 	/* Reproduced version of fetch_feed from core which calls bundled SimplePie instead of older version
 	*/
 	public static function fetch_feed( $url ) {
@@ -190,101 +170,6 @@ class Parse_This {
 			'application/atom+xml',
 		);
 		return in_array( $content_type, $types, true );
-	}
-
-	/**
-	 * Fetches a list of feeds
-	 *
-	 * @param string $url URL to scan
-	 */
-	public function fetch_feeds( $url = null ) {
-		if ( ! $url ) {
-			$url = $this->url;
-		}
-		if ( empty( $url ) ) {
-			return new WP_Error( 'invalid-url', __( 'A valid URL was not provided.', 'indieweb-post-kinds' ) );
-		}
-		$fetch = $this->fetch( $url );
-		if ( is_wp_error( $fetch ) ) {
-			return $fetch;
-		}
-		// A feed was given
-		if ( $this->content instanceof SimplePie ) {
-			return array(
-				'results' => array(
-					array(
-						'url'        => $url,
-						'type'       => 'feed',
-						'_feed_type' => Parse_This_RSS::get_type( $this->content ),
-						'name'       => $this->content->get_title(),
-					),
-				),
-			);
-		}
-		if ( $this->doc instanceof DOMDocument ) {
-			$xpath = new DOMXPath( $this->doc );
-			// Fetch and gather <link> data.
-			$links = array();
-			foreach ( $xpath->query( '(//link|//a)[@rel and @href]' ) as $link ) {
-				$rel   = $link->getAttribute( 'rel' );
-				$href  = $link->getAttribute( 'href' );
-				$title = $link->getAttribute( 'title' );
-				$type  = self::get_feed_type( $link->getAttribute( 'type' ) );
-				if ( in_array( $rel, array( 'alternate', 'feed' ), true ) && ! empty( $type ) ) {
-					$links[] = array_filter(
-						array(
-							'url'        => WP_Http::make_absolute_url( $href, $url ),
-							'type'       => 'feed',
-							'_feed_type' => $type,
-							'name'       => $title,
-						)
-					);
-				}
-			}
-			// Check to see if the current page is an h-feed
-			$this->parse( array( 'return' => 'feed' ) );
-
-			if ( isset( $this->jf2['type'] ) && 'feed' === $this->jf2['type'] ) {
-				$links[] = array_filter(
-					array(
-						'url'        => $url,
-						'type'       => 'feed',
-						'_feed_type' => 'microformats',
-						'name'       => $this->jf2['name'],
-					)
-				);
-			} elseif ( isset( $this->jf2['items'] ) ) {
-				foreach ( $this->jf2['items'] as $item ) {
-					if ( 'feed' === $item['type'] && isset( $item['uid'] ) ) {
-						$links[] = array_filter(
-							array(
-								'url'        => $item['uid'],
-								'type'       => 'feed',
-								'_feed_type' => 'microformats',
-								'name'       => ifset( $item['name'] ),
-							)
-						);
-					}
-				}
-			}
-			// Sort feeds by priority
-			$rank = array(
-				'jf2feed'      => 0,
-				'microformats' => 1,
-				'jsonfeed'     => 2,
-				'atom'         => 3,
-				'rss'          => 4,
-			);
-			usort(
-				$links,
-				function( $a, $b ) use ( $rank ) {
-					return $rank[ $a['_feed_type'] ] > $rank[ $b['_feed_type'] ];
-				}
-			);
-
-			return array( 'results' => $links );
-		}
-		return new WP_Error( 'unknown error', null, $this->content );
 	}
 
 	/**

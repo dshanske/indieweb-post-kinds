@@ -102,14 +102,13 @@ class REST_Parse_This {
 		$return    = $request->get_param( 'return' );
 		$discovery = $request->get_param( 'discovery' );
 		$follow    = $request->get_param( 'follow' );
-
-		$parse = new Parse_This( $url );
 		if ( $discovery ) {
-			return $parse->fetch_feeds();
-
-		} else {
-			$r = $parse->fetch();
+			$parse = new Parse_This_Discovery();
+			return $parse->fetch( $url );
 		}
+		$parse = new Parse_This( $url );
+		$r     = $parse->fetch();
+
 		if ( is_wp_error( $r ) ) {
 			return $r;
 		}

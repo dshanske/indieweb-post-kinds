@@ -212,7 +212,11 @@ class Parse_This_RSS {
 				$return[ $medium ] = $enclosure->get_link();
 			}
 			if ( isset( $return['category'] ) && is_array( $return['category'] ) ) {
-				$return['category'] = array_merge( $return['category'], $enclosure->get_keywords() );
+				$keywords = $enclosure->get_keywords();
+				if ( ! $keywords ) {
+					$keywords = array();
+				}
+				$return['category'] = array_merge( $return['category'], $keywords );
 			} else {
 				$return['category'] = $enclosure->get_keywords();
 			}
@@ -223,6 +227,9 @@ class Parse_This_RSS {
 				}
 			}
 			$credits = $enclosure->get_credits();
+			if ( ! $credits ) {
+				$credits = array();
+			}
 			foreach ( $credits as $credit ) {
 				if ( ! isset( $return['credits'] ) ) {
 					$return['credits'] = array();

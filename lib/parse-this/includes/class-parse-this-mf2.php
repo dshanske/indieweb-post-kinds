@@ -37,7 +37,7 @@ class Parse_This_MF2 {
 		} elseif ( ! is_string( $content ) && is_array( $content ) && array_key_exists( 'value', $content ) ) {
 			if ( array_key_exists( 'html', $content ) ) {
 				$htmlcontent = trim( wp_kses_post( $content['html'] ) );
-				$textcontent = trim( str_replace( '&#xD;', "\r", $content['value'] ) );
+				$textcontent = wp_strip_all_tags( $content['value'] );
 			} else {
 				$textcontent = trim( $content['value'] );
 			}
@@ -318,12 +318,6 @@ class Parse_This_MF2 {
 	 * @param boolean $follow Follow author arrays
 	 */
 	public static function find_author( $item, $mf2, $follow = false ) {
-		$author = array(
-			'type'  => 'card',
-			'name'  => null,
-			'url'   => null,
-			'photo' => null,
-		);
 		// Author Discovery
 		// http://indieweb,org/authorship
 		$authorpage = false;
@@ -340,17 +334,23 @@ class Parse_This_MF2 {
 					} else {
 						// 5.3 "otherwise use the author property as the author name, exit"
 						// We can only set the name, no h-card or URL was found
-						$author['name'] = self::get_plaintext( $item, 'author' );
-						return array_filter( $author );
+						$author = self::get_plaintext( $item, 'author' );
 					}
 				} else {
 					// This case is only hit when the author property is an mf2 object that is not an h-card
-					$author['name'] = self::get_plaintext( $item, 'author' );
-					return array_filter( $author );
+					$author = self::get_plaintext( $item, 'author' );
+				}
+				if ( ! $authorpage ) {
+					return array(
+						'type'       => array( 'h-card' ),
+						'properties' => array(
+							'name' => array( $author ),
+						),
+					);
 				}
 			}
 		}
-		// 6. "if no author page was found" ... check for rel-author link
+			// 6. "if no author page was found" ... check for rel-author link
 		if ( ! $authorpage ) {
 			if ( isset( $mf2['rels'] ) && isset( $mf2['rels']['author'] ) ) {
 				$authorpage = $mf2['rels']['author'][0];
@@ -364,8 +364,12 @@ class Parse_This_MF2 {
 				$parse->parse();
 				return $parse->get();
 			} else {
-				$author['url'] = $authorpage;
-				return array_filter( $author );
+				return array(
+					'type'       => array( 'h-card' ),
+					'properties' => array(
+						'url' => array( $authorpage ),
+					),
+				);
 			}
 		}
 	}
@@ -515,6 +519,38 @@ class Parse_This_MF2 {
 		return array_values( array_filter( $mfs, $callable ) );
 	}
 
+	public static function find_hfeed( $input, $url ) {
+		if ( ! class_exists( 'Mf2\Parser' ) ) {
+			require_once plugin_dir_path( __DIR__ ) . 'lib/mf2/Parser.php';
+		}
+		if ( is_string( $input ) || is_a( $input, 'DOMDocument' ) ) {
+			$parser = new Mf2\Parser( $input, $url );
+			$input  = $parser->parse();
+		}
+		$feeds = self::find_microformats_by_type( $input, 'h-feed', $flatten = true );
+		if ( empty( $feeds ) && array_key_exists( 'items', $input ) ) {
+			if ( 1 < count( $input['items'] ) ) {
+				$feeds[] = array(
+					'type'       => 'h-feed',
+					'properties' => array(
+						'url' => array( $url ),
+					),
+				);
+			}
+		}
+		foreach ( $feeds as $key => $feed ) {
+			if ( ! array_key_exists( 'url', $feed['properties'] ) ) {
+				if ( array_key_exists( 'id', $feed ) ) {
+					$feeds[ $key ]['properties']['url'] = array( $url . '#' . $feed['id'] );
+				} else {
+					$feeds[ $key ]['properties']['url'] = array( $url );
+				}
+			}
+		}
+		return $feeds;
+	}
+
+
 	/*
 	 * Parse MF2 into JF2
 	 *
@@ -642,7 +678,7 @@ class Parse_This_MF2 {
 		);
 		$data['name']   = self::get_plaintext( $entry, 'name' );
 		$author         = self::find_author( $entry, $args['follow'] );
-		$data['author'] = self::parse_hcard( jf2_to_mf2( $author ), $mf, $args );
+		$data['author'] = self::parse_hcard( $author, $mf, $args );
 		$data['uid']    = self::get_plaintext( $entry, 'uid' );
 		if ( isset( $entry['id'] ) && isset( $args['url'] ) && ! $data['uid'] ) {
 			$data['uid'] = $args['url'] . '#' . $entry['id'];
@@ -662,7 +698,7 @@ class Parse_This_MF2 {
 					if ( is_string( $author['url'] ) ) {
 						$author['url'] = array( $author['url'] );
 					}
-					if ( in_array( $item['author']['url'], $author['url'], true ) ) {
+					if ( array_key_exists( 'author', $item ) && in_array( $item['author']['url'], $author['url'], true ) ) {
 						$item['author'] = $author;
 						break;
 					}
@@ -738,7 +774,7 @@ class Parse_This_MF2 {
 		$data['published'] = self::get_published( $entry, true, null );
 		$data['updated']   = self::get_updated( $entry, true, null );
 		$data['url']       = normalize_url( self::get_plaintext( $entry, 'url' ) );
-		$author            = jf2_to_mf2( self::find_author( $entry, $mf, $args['follow'] ) );
+		$author            = self::find_author( $entry, $mf, $args['follow'] );
 		$data['author']    = self::parse_hcard( $author, $mf, $args, $data['url'] );
 		$data['content']   = self::parse_html_value( $entry, 'content' );
 		$data['summary']   = self::get_summary( $entry, $data['content'] );
