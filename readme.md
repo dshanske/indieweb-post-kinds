@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.3.1  
+**Stable tag:** 3.3.2  
 **Requires at least:** 4.9.9  
 **Requires PHP:** 5.4  
 **Tested up to:** 5.2.2  
@@ -264,6 +264,12 @@ through future plugin updates.
 
 
 ## Changelog ##
+
+### 3.3.2 ( 2019-08-03 ) ###
+* Improved logic around no Block Editor support - thanks @tw2113 
+* Fix Settings Link in Plugin page - thanks @glueckpress
+* Update admin notice text for clarity - thanks @glueckpress
+* Fix issue with atom feed
 
 ### 3.3.1 ( 2019-06-23 ) ###
 * Filter issue immediately reported after deploy
