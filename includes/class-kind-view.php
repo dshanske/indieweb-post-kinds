@@ -408,7 +408,7 @@ class Kind_View {
 			/* translators: URL for link to event and name of event */
 			'interested' => __( 'Interested in Attending <a href="%1$s" class=u-in-reply-to">%2$s</a>', 'indieweb-post-kinds' ),
 			/* translators: URL for link to event and name of event */
-			'remote'     => __( 'Attending <a href="%1s" class="u-in-reply-to">%2$s</a>  remotely', 'indieweb-post-kinds' ),
+			'remote'     => __( 'Attending <a href="%1$s" class="u-in-reply-to">%2$s</a> remotely', 'indieweb-post-kinds' ),
 		);
 		return $rsvp[ $type ];
 	}

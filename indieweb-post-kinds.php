@@ -164,10 +164,11 @@ class Post_Kinds_Plugin {
 	public static function settings_link( $links ) {
 		// Because of how Kind_Config::admin_menu() is set up, the settings page
 		// can be located at two different URLs; menu_page_url() finds both.
-		$settings_url = menu_page_url( 'kind_options', false );
-		$settings_link = sprintf( '<a href="%1$s">%2$s</a>',
+		$settings_url  = menu_page_url( 'kind_options', false );
+		$settings_link = sprintf(
+			'<a href="%1$s">%2$s</a>',
 			$settings_url,
-			__( 'Settings' )
+			__( 'Settings', 'indieweb-post-kinds' )
 		);
 		array_unshift( $links, $settings_link );
 		return $links;
