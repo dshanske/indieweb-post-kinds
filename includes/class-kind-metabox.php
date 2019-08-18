@@ -493,8 +493,8 @@ class Kind_Metabox {
 	 *
 	 * @access public
 	 *
-	 * @param string  $new New post status.
-	 * @param string  $old Old post status.
+	 * @param string  $new  New post status.
+	 * @param string  $old  Old post status.
 	 * @param WP_Post $post Post object.
 	 */
 	public static function transition_post_status( $new, $old, $post ) {

@@ -12,7 +12,7 @@ class Kind_Plugins {
 	/**
 	 * Initialize our plugin integrations.
 	 *
-	 * @access public.
+	 * @access public
 	 */
 	public static function init() {
 		// Set Post Kind for Micropub Inputs.
