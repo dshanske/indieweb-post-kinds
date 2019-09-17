@@ -47,6 +47,7 @@ final class Kind_Taxonomy {
 		// Create hook triggered by change of kind
 		add_action( 'set_object_terms', array( 'Kind_Taxonomy', 'set_object_terms' ), 10, 6 );
 
+		add_filter( 'single_post_title', array( 'Kind_Taxonomy', 'single_post_title' ), 9, 2 );
 		add_filter( 'the_title', array( 'Kind_Taxonomy', 'the_title' ), 9, 2 );
 		add_filter( 'get_sample_permalink', array( 'Kind_Taxonomy', 'get_sample_permalink' ), 12, 5 );
 
@@ -166,33 +167,63 @@ final class Kind_Taxonomy {
 	}
 
 	/**
+	 * Generate a post title.
+	 *
+	 * @access public
+	 *
+	 * @param int!WP_Post    $post Post ID or Post Object.
+	 * @return string
+	 */
+	public static function generate_title( $post, $length = 40 ) {
+		$post = get_post( $post );
+		if ( ! $post instanceof WP_Post ) {
+			return null;
+		}
+		$kind    = get_post_kind_slug( $post );
+		$excerpt = wp_strip_all_tags( self::get_excerpt( $post ) );
+		if ( ! in_array( $kind, array( 'note', 'article' ), true ) || ! $kind ) {
+			$mf2_post = new MF2_Post( $post );
+			$type     = self::get_kind_info( $kind, 'property' );
+			$cite     = $mf2_post->fetch( $type );
+			if ( isset( $cite['name'] ) ) {
+				$excerpt = wp_strip_all_tags( $cite['name'] );
+			}
+		}
+		return mb_strimwidth( $excerpt, 0, $length, '...' ); // phpcs:ignore
+	}
+
+	/**
 	 * Filter the post title.
 	 *
 	 * @access public
 	 *
 	 * @param string $title   Current post title
-	 * @param int    $post_id Post ID.
+	 * @param int    $post_id Post ID
 	 * @return string
 	 */
 	public static function the_title( $title, $post_id ) {
 		if ( ! $title && is_admin() ) {
-			$kind = get_post_kind_slug( $post_id );
-			$post = get_post( $post_id );
-			if ( $post instanceof WP_Post ) {
-				$excerpt = self::get_excerpt( $post );
-				if ( ! in_array( $kind, array( 'note', 'article' ), true ) || ! $kind ) {
-					$mf2_post = new MF2_Post( $post );
-					$type     = self::get_kind_info( $kind, 'property' );
-					$cite     = $mf2_post->fetch( $type );
-					if ( isset( $cite['name'] ) ) {
-						$excerpt = $cite['name'];
-					}
-				}
-				return mb_strimwidth( wp_strip_all_tags( $excerpt ), 0, 40, '...' ) . '&diams;'; // phpcs:ignore
-			}
+			return self::generate_title( $post_id, 60 ) . '&diams;';
 		}
 		return $title;
 	}
+
+	/**
+	 * Filter the single post title.
+	 *
+	 * @access public
+	 *
+	 * @param string $title   Current post title
+	 * @param WP_Post    $post Post object
+	 * @return string
+	 */
+	public static function single_post_title( $title, $post ) {
+		if ( ! empty( $title ) ) {
+			return $title;
+		}
+		return self::generate_title( $post );
+	}
+
 
 	/**
 	 * Filter the post excerpt.
