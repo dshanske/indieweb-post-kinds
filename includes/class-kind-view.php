@@ -62,7 +62,7 @@ class Kind_View {
 		}
 		$templates[] = "{$slug}-{$name}.php";
 		$templates[] = "{$slug}.php";
-		$look        = apply_filters( 'kind_view_paths', array( get_stylesheet_directory() . 'kind_views' ) );
+		$look        = apply_filters( 'kind_view_paths', array( get_theme_file_path( 'kind_views/' ) ) );
 		$look[]      = plugin_dir_path( __DIR__ ) . 'views/';
 		$located     = null;
 		foreach ( (array) $templates as $template_name ) {
