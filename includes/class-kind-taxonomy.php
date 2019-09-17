@@ -55,11 +55,26 @@ final class Kind_Taxonomy {
 		add_filter( 'embed_template_hierarchy', array( 'Kind_Taxonomy', 'embed_template_hierarchy' ) );
 	}
 
+	/**
+	 * Add our exclude_kind query variable to query_vars list.
+	 *
+	 * @access public
+	 *
+	 * @param array $qvars Current query_vars.
+	 * @return array
+	 */
 	public static function query_vars( $qvars ) {
 		$qvars[] = 'exclude_kind';
 		return $qvars;
 	}
 
+	/**
+	 * Filter the query for our post kinds.
+	 *
+	 * @access public
+	 *
+	 * @param $query
+	 */
 	public static function kind_filter_query( $query ) {
 		// check if the user is requesting an admin page
 		if ( is_admin() ) {
@@ -87,6 +102,11 @@ final class Kind_Taxonomy {
 
 	}
 
+	/**
+	 * Register our REST API endpoint for post kinds.
+	 *
+	 * @access public
+	 */
 	public static function rest_kind() {
 		register_rest_field(
 			'post',
@@ -102,6 +122,14 @@ final class Kind_Taxonomy {
 		);
 	}
 
+	/**
+	 * Filter template hierarchy to include our template files.
+	 *
+	 * @access public
+	 *
+	 * @param array $templates Array of template file names.
+	 * @return mixed
+	 */
 	public static function embed_template_hierarchy( $templates ) {
 		$object = get_queried_object();
 		if ( ! empty( $object->post_type ) ) {
@@ -113,6 +141,18 @@ final class Kind_Taxonomy {
 		return $templates;
 	}
 
+	/**
+	 * Generate a sample permalink for a post.
+	 *
+	 * @access public
+	 *
+	 * @param string  $permalink Current permalink.
+	 * @param int     $post_id   Post ID.
+	 * @param string  $title     Current post title.
+	 * @param string  $name      Current post name.
+	 * @param WP_Post $post      Post object.
+	 * @return mixed
+	 */
 	public static function get_sample_permalink( $permalink, $post_id, $title, $name, $post ) {
 		if ( 'publish' === $post->post_status || ! empty( $post->post_title ) ) {
 			return $permalink;
@@ -125,6 +165,15 @@ final class Kind_Taxonomy {
 		return $permalink;
 	}
 
+	/**
+	 * Filter the post title.
+	 *
+	 * @access public
+	 *
+	 * @param string $title   Current post title
+	 * @param int    $post_id Post ID.
+	 * @return string
+	 */
 	public static function the_title( $title, $post_id ) {
 		if ( ! $title && is_admin() ) {
 			$kind = get_post_kind_slug( $post_id );
@@ -145,6 +194,14 @@ final class Kind_Taxonomy {
 		return $title;
 	}
 
+	/**
+	 * Filter the post excerpt.
+	 *
+	 * @access public
+	 *
+	 * @param WP_Post $post Post object.
+	 * @return string
+	 */
 	public static function get_excerpt( $post ) {
 		if ( ! $post instanceof WP_Post ) {
 			return '';
@@ -155,6 +212,18 @@ final class Kind_Taxonomy {
 		return $post->post_content;
 	}
 
+	/**
+	 * Set our post object terms.
+	 *
+	 * @access public
+	 *
+	 * @param object $object_id  Current object ID.
+	 * @param array  $terms      Array of object terms.
+	 * @param array  $tt_ids     Array of term taxonomy IDs.
+	 * @param string $taxonomy   Taxonomy slug
+	 * @param bool   $append     If terms should be appended or overwrite.
+	 * @param array  $old_tt_ids Array of original trem taxonomy IDs.
+	 */
 	public static function set_object_terms( $object_id, $terms, $tt_ids, $taxonomy, $append, $old_tt_ids ) {
 		if ( empty( $tt_ids ) && empty( $old_tt_ids ) ) {
 			return;
@@ -287,6 +356,13 @@ final class Kind_Taxonomy {
 		}
 	}
 
+	/**
+	 * Update our post kind if the term already exists.
+	 *
+	 * @access private
+	 *
+	 * @param $term
+	 */
 	private static function update_post_kind( $term ) {
 		$t = get_term_by( 'slug', $term, 'kind' );
 		if ( ! $t ) {
@@ -306,6 +382,13 @@ final class Kind_Taxonomy {
 		}
 	}
 
+	/**
+	 * Create our post kind term.
+	 *
+	 * @access private
+	 *
+	 * @param $term
+	 */
 	private static function create_post_kind( $term ) {
 		$kind = self::get_post_kind_info( $term );
 		if ( $kind ) {
@@ -321,6 +404,16 @@ final class Kind_Taxonomy {
 		}
 	}
 
+	/**
+	 * Filter our post kind permalink.
+	 *
+	 * @access public
+	 *
+	 * @param string $permalink Permalink string to filter.
+	 * @param int    $post_id   Post ID.
+	 * @param bool   $leavename Whether or not to leave the post name.
+	 * @return mixed
+	 */
 	public static function kind_permalink( $permalink, $post_id, $leavename ) {
 		if ( false === strpos( $permalink, '%kind%' ) ) {
 			return $permalink; }
@@ -339,6 +432,13 @@ final class Kind_Taxonomy {
 		return str_replace( '%kind%', $taxonomy_slug, $permalink );
 	}
 
+	/**
+	 * Fetch the current post kind terms from the current query.
+	 *
+	 * @access public
+	 *
+	 * @return array
+	 */
 	public static function get_terms_from_query() {
 		global $wp_query;
 		$terms = array();
@@ -349,7 +449,14 @@ final class Kind_Taxonomy {
 		return $terms;
 	}
 
-
+	/**
+	 * Filters the post kind archive title.
+	 *
+	 * @access public
+	 *
+	 * @param string $title Current archive title value.
+	 * @return string|void
+	 */
 	public static function kind_archive_title( $title ) {
 		$return = array();
 		if ( is_tax( 'kind' ) ) {
@@ -381,6 +488,14 @@ final class Kind_Taxonomy {
 		return $title;
 	}
 
+	/**
+	 * Filters the post kind archive description.
+	 *
+	 * @access public
+	 *
+	 * @param string $title Current archive description.
+	 * @return string
+	 */
 	public static function kind_archive_description( $title ) {
 		$return = array();
 		if ( is_tax( 'kind' ) ) {
@@ -393,15 +508,6 @@ final class Kind_Taxonomy {
 			}
 		}
 		return $title;
-	}
-
-	public static function document_title_parts( $parts ) {
-		$year = get_query_var( 'year' );
-		if ( is_day() && empty( $year ) ) {
-			/* translators: Daily archive title. 1: Date */
-			$parts['title'] = sprintf( __( '%1$1s: %2$2s', 'indieweb-post-kinds' ), __( 'On This Day', 'indieweb-post-kinds' ), get_the_date( _x( 'F j', 'daily archives date format', 'indieweb-post-kinds' ) ) );
-		}
-		return $parts;
 	}
 
 	/**
@@ -418,6 +524,30 @@ final class Kind_Taxonomy {
 		}
 	}
 
+	/**
+	 * Fiters the `<title>` tag parts for the post kind.
+	 *
+	 * @access public
+	 *
+	 * @param array $parts Document title parts.
+	 * @return mixed
+	 */
+	public static function document_title_parts( $parts ) {
+		$year = get_query_var( 'year' );
+		if ( is_day() && empty( $year ) ) {
+			/* translators: Daily archive title. 1: Date */
+			$parts['title'] = sprintf( __( '%1$1s: %2$2s', 'indieweb-post-kinds' ), __( 'On This Day', 'indieweb-post-kinds' ), get_the_date( _x( 'F j', 'daily archives date format', 'indieweb-post-kinds' ) ) );
+		}
+		return $parts;
+	}
+
+	/**
+	 * Callback for the taxonomy meta box for our post kinds taxonomy.
+	 *
+	 * @access public
+	 *
+	 * @param WP_Post $post Post object.
+	 */
 	public static function select_metabox( $post ) {
 		$include = get_option( 'kind_termslist' );
 		$include = array_merge( $include, array( 'note', 'reply', 'article' ) );
@@ -465,6 +595,15 @@ final class Kind_Taxonomy {
 		echo '</ul></div>';
 	}
 
+	/**
+	 * Register our post kinds.
+	 *
+	 * @access public
+	 *
+	 * @param string $slug Post kind slug.
+	 * @param array  $args Post kind arguments.
+	 * @return bool
+	 */
 	public static function register_post_kind( $slug, $args ) {
 		$kind = new Post_Kind( $slug, $args );
 		// Do not allow reregistering existing kinds
@@ -475,6 +614,14 @@ final class Kind_Taxonomy {
 		return true;
 	}
 
+	/**
+	 * Retrieve info on a provided post kind.
+	 *
+	 * @access public
+	 *
+	 * @param string $slug Post kind to retrieve.
+	 * @return bool|mixed
+	 */
 	public static function get_post_kind_info( $slug ) {
 		if ( isset( static::$kinds[ $slug ] ) ) {
 			return static::$kinds[ $slug ];
@@ -483,6 +630,16 @@ final class Kind_Taxonomy {
 	}
 
 	// Enable a hidden post kind
+
+	/**
+	 * Enables a hidden post kind.
+	 *
+	 * @access public
+	 *
+	 * @param string $slug Post kind slug.
+	 * @param bool   $show Whether or not to show the post kind.
+	 * @return bool
+	 */
 	public static function set_post_kind_visibility( $slug, $show = true ) {
 		if ( isset( static::$kinds[ $slug ] ) ) {
 			static::$kinds[ $slug ]->show = ( $show ? true : false );
@@ -491,13 +648,20 @@ final class Kind_Taxonomy {
 		return false;
 	}
 
+	/**
+	 * Retrieve list of registered post kinds.
+	 *
+	 * @access public
+	 * @return array
+	 */
 	public static function get_kind_list() {
 		return array_keys( static::$kinds );
 	}
 
 	/**
 	 * Register Built in Kinds
-
+	 *
+	 * @access public
 	 */
 	public static function register_initial_kinds() {
 		register_post_kind(
@@ -981,8 +1145,8 @@ final class Kind_Taxonomy {
 	/**
 	 * Returns all translated strings.
 	 *
-	 * @param $kind Post Kind to return.
-	 * @param $property The individual property
+	 * @param string $kind     Post Kind to return.
+	 * @param string $property The individual property
 	 * @return string|array Return kind-property. If either is set to all, return all.
 	 */
 	public static function get_kind_info( $kind, $property ) {
@@ -1005,6 +1169,15 @@ final class Kind_Taxonomy {
 		return $k->$property;
 	}
 
+	/**
+	 * Add available webmention links.
+	 *
+	 * @access public
+	 *
+	 * @param array $links   Array of existing webmention links.
+	 * @param int   $post_id Post ID.
+	 * @return array
+	 */
 	public static function webmention_links( $links, $post_id ) {
 		$mf2_post = new MF2_Post( $post_id );
 		$cite     = $mf2_post->fetch( self::get_kind_info( $mf2_post->get( 'kind' ), 'property' ) );
@@ -1019,6 +1192,15 @@ final class Kind_Taxonomy {
 		return $links;
 	}
 
+	/**
+	 * Add available enclosure links.
+	 *
+	 * @access public
+	 *
+	 * @param array $links   Array of existing enclosure links.
+	 * @param int   $post_id Post ID.
+	 * @return array
+	 */
 	public static function enclosure_links( $links, $post_id ) {
 		$mf2_post = new MF2_Post( $post_id );
 		if ( in_array( $mf2_post->kind, array( 'photo', 'video', 'audio' ), true ) ) {
@@ -1035,6 +1217,13 @@ final class Kind_Taxonomy {
 		return $links;
 	}
 
+	/**
+	 * Generate a dropdown of our post kinds for the post list table view.
+	 *
+	 * @access public
+	 * @param string $post_type Current post type being listed.
+	 * @param string $which     Current part of the post list table being rendered.
+	 */
 	public static function kind_dropdown( $post_type, $which ) {
 		if ( 'post' === $post_type ) {
 			$taxonomy      = 'kind';
@@ -1057,6 +1246,13 @@ final class Kind_Taxonomy {
 		}
 	}
 
+	/**
+	 * Set our post kind terms upon publish transition status.
+	 *
+	 * @access public
+	 * @param int          $post_id Current post ID
+	 * @param WP_Post|null $post    Current post object.
+	 */
 	public static function publish( $post_id, $post = null ) {
 		if ( 'post' !== get_post_type( $post_id ) ) {
 			return;
@@ -1067,12 +1263,29 @@ final class Kind_Taxonomy {
 		}
 	}
 
+	/**
+	 * Maybe set our post kind terms upon post status transition.
+	 *
+	 * @access public
+	 *
+	 * @param string  $new  New post status.
+	 * @param string  $old  Old post status.
+	 * @param WP_Post $post Post object.
+	 */
 	public static function transition( $new, $old, $post ) {
 		if ( 'publish' === $new ) {
 			self::publish( $post->ID, $post );
 		}
 	}
 
+	/**
+	 * Filter the classes on a post's markup.
+	 *
+	 * @access public
+	 *
+	 * @param array $classes Current post classes.
+	 * @return array
+	 */
 	public static function post_class( $classes ) {
 		if ( 'post' !== get_post_type() ) {
 			return $classes;
@@ -1082,7 +1295,7 @@ final class Kind_Taxonomy {
 	}
 
 	/**
-	 * Returns a pretty, translated version of a post kind slug
+	 * Returns a pretty, translated version of a post kind slug.
 	 *
 	 * @param string $slug A post format slug.
 	 * @return string The translated post format name.
@@ -1106,6 +1319,14 @@ final class Kind_Taxonomy {
 		return get_term_link( $term );
 	}
 
+	/**
+	 * Retrieve a total count statistic for a given post kind.
+	 *
+	 * @access public
+	 *
+	 * @param string $kind Post kind to get post count for.
+	 * @return bool|int
+	 */
 	public static function get_post_kind_count( $kind ) {
 		$term = get_term_by( 'slug', $kind, 'kind' );
 		if ( ! $term || is_wp_error( $term ) ) {
@@ -1114,6 +1335,14 @@ final class Kind_Taxonomy {
 		return $term->count;
 	}
 
+	/**
+	 * Returns the post kind slug for the current post.
+	 *
+	 * @access public
+	 *
+	 * @param array|null $post Post to retrieve post kind slug for.
+	 * @return bool|string
+	 */
 	public static function get_post_kind_slug( $post = null ) {
 		if ( is_array( $post ) && isset( $post['id'] ) ) {
 			$post = $post['id'];
@@ -1128,6 +1357,15 @@ final class Kind_Taxonomy {
 		} else {
 			return false; }
 	}
+
+	/**
+	 * Returns the post kind name for the current post.
+	 *
+	 * @access public
+	 *
+	 * @param WP_Post|null $post
+	 * @return array|bool|string
+	 */
 	public static function get_post_kind( $post = null ) {
 		$kind = get_post_kind_slug( $post );
 		if ( $kind ) {
@@ -1158,7 +1396,7 @@ final class Kind_Taxonomy {
 	}
 
 	/**
-	 * Assign a kind to a post
+	 * Assign a kind to a post.
 	 *
 	 * @param int|object $post The post for which to assign a kind.
 	 * @param string     $kind A kind to assign. Using an empty string or array will default to article.
@@ -1175,22 +1413,36 @@ final class Kind_Taxonomy {
 		return wp_set_post_terms( $post->ID, $kind, 'kind' );
 	}
 
+	/**
+	 * Update callback for REST API endpoint.
+	 *
+	 * @access public
+	 *
+	 * @param string $kind Post kind being processed.
+	 * @param $post_array
+	 */
 	public static function set_rest_post_kind( $kind, $post_array ) {
 		if ( isset( $post_array['id'] ) ) {
 			self::set_post_kind( $post_array['id'], $kind );
 		}
 	}
 
+	/**
+	 * Whether or not to display the before kind content.
+	 *
+	 * @access public
+	 * @return mixed|void
+	 */
 	public static function before_kind() {
 		return apply_filters( 'kind_icon_display', true );
 	}
 
 	/**
-	 * Display before Kind - either icon text or no display
+	 * Display before Kind - either icon text or no display.
 	 *
-	 * @param string $kind The slug for the kind of the current post
-	 * @param string $display Override display
-	 * @return string Marked up kind information
+	 * @param string $kind    The slug for the kind of the current post.
+	 * @param string $display Override display;
+	 * @return string Marked up kind information.
 	 */
 	public static function get_before_kind( $kind, $display = null ) {
 		if ( ! self::before_kind() ) {
@@ -1217,6 +1469,15 @@ final class Kind_Taxonomy {
 		}
 	}
 
+	/**
+	 * Retrieve the icon SVG for a provided post kind.
+	 *
+	 * @access public
+	 *
+	 * @param string $kind Post kind to retrieve the icon for.
+	 * @param bool   $echo Whether or not the icon should be echo'd.
+	 * @return string
+	 */
 	public static function get_icon( $kind, $echo = false ) {
 		$name = self::get_kind_info( $kind, 'singular_name' );
 		$svg  = sprintf( '%1$ssvgs/%2$s.svg', plugin_dir_path( __DIR__ ), $kind );

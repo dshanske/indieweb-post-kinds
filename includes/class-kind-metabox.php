@@ -6,7 +6,17 @@
  */
 
 class Kind_Metabox {
+
+	/**
+	 * @var string $version
+	 */
 	public static $version;
+
+	/**
+	 * Function to initiate our metabox.
+	 *
+	 * @access public
+	 */
 	public static function init() {
 		self::$version = Post_Kinds_Plugin::$version;
 		add_action( 'edit_form_after_title', array( 'Kind_Metabox', 'after_title_metabox' ) );
@@ -19,6 +29,15 @@ class Kind_Metabox {
 		add_action( 'change_kind', array( 'Kind_Metabox', 'change_kind' ), 10, 3 );
 	}
 
+	/**
+	 * Function to change our post kind.
+	 *
+	 * @access public
+	 *
+	 * @param int    $post_id  Current post ID.
+	 * @param string $old_kind Original post kind.
+	 * @param string $new_kind New post kind to set.
+	 */
 	public static function change_kind( $post_id, $old_kind, $new_kind ) {
 		$mf2_post = new MF2_Post( $post_id );
 		$old_prop = Kind_Taxonomy::get_kind_info( $old_kind, 'property' );
@@ -29,6 +48,16 @@ class Kind_Metabox {
 		$mf2_post->delete( $old_prop );
 	}
 
+	/**
+	 * Function to change if a new post should be considered empty.
+	 *
+	 * @access public
+	 *
+	 * @param bool  $maybe_empty Whether or not the post should be considered empty.
+	 * @param array $postarr     Data for the post to be inserted.
+	 *
+	 * @return bool
+	 */
 	public static function wp_insert_post_empty_content( $maybe_empty, $postarr ) {
 		// Always let updates to trash posts through
 		if ( 'trash' === $postarr['post_status'] ) {
@@ -56,12 +85,22 @@ class Kind_Metabox {
 		return $maybe_empty;
 	}
 
+	/**
+	 * Execute metaboxes for the current screen, after the post title.
+	 *
+	 * @access public
+	 * @param WP_Post $post Post object for the current screen.
+	 */
 	public static function after_title_metabox( $post ) {
 
 			do_meta_boxes( get_current_screen(), 'kind_after_title', $post );
 	}
 
-	/* Meta box setup function. */
+	/**
+	 * Metabox setup.
+	 *
+	 * @access public
+	 */
 	public static function kindbox_setup() {
 		$cls = get_called_class();
 		/* Add meta boxes on the 'add_meta_boxes' hook. */
@@ -70,6 +109,11 @@ class Kind_Metabox {
 
 	}
 
+	/**
+	 * Enqueue our needed assets.
+	 *
+	 * @access public
+	 */
 	public static function enqueue_admin_scripts() {
 		if ( 'post' === get_current_screen()->id ) {
 			wp_enqueue_script( 'jquery-ui-datepicker' );
@@ -122,6 +166,14 @@ class Kind_Metabox {
 		}
 	}
 
+	/**
+	 * Utility function to concatenate a list of post kinds.
+	 *
+	 * @access public
+	 *
+	 * @param array $array Selected post kinds.
+	 * @return array|mixed|string
+	 */
 	public static function implode( $array ) {
 			$array = kind_flatten_array( $array );
 		if ( ! is_array( $array ) ) {
@@ -130,6 +182,14 @@ class Kind_Metabox {
 			return implode( ';', $array );
 	}
 
+	/**
+	 * Utility function to separate out a list of post kinds.
+	 *
+	 * @access public
+	 *
+	 * @param string $string Selected post kinds.
+	 * @return array|mixed
+	 */
 	public static function explode( $string ) {
 		if ( ! is_string( $string ) ) {
 				return $string;
@@ -137,6 +197,17 @@ class Kind_Metabox {
 			return kind_flatten_array( explode( ';', $string ) );
 	}
 
+	/**
+	 * Function to render date/time field inputs.
+	 *
+	 * @access public
+	 *
+	 * @param string $prefix Field prefix.
+	 * @param string $label  Label text.
+	 * @param string $time   Date/time value.
+	 * @param string $class  Class to use for fields.
+	 * @return string
+	 */
 	public static function kind_the_time( $prefix, $label, $time, $class ) {
 		$tz_seconds = get_option( 'gmt_offset' ) * 3600;
 		$offset     = tz_seconds_to_offset( $tz_seconds );
@@ -151,6 +222,15 @@ class Kind_Metabox {
 		return $string;
 	}
 
+	/**
+	 * Function to render our timezone choices.
+	 *
+	 * @access public
+	 *
+	 * @param string $prefix Field prefix.
+	 * @param string $select Selected field type.
+	 * @return string
+	 */
 	public static function select_offset( $prefix, $select ) {
 		$string  = '<select name="' . $prefix . '_offset" id="' . $prefix . '_offset">';
 		$string .= self::timezone_offset_choice( $select );
@@ -158,6 +238,14 @@ class Kind_Metabox {
 		return $string;
 	}
 
+	/**
+	 * Function to render options for a chosen timezone select field.
+	 *
+	 * @access public
+	 *
+	 * @param string $select Selected option.
+	 * @return string
+	 */
 	public static function timezone_offset_choice( $select ) {
 		$tzlist = get_gmt_offsets();
 		$string = '';
@@ -171,6 +259,14 @@ class Kind_Metabox {
 		return $string;
 	}
 
+	/**
+	 * Render the options for the RSVP select field.
+	 *
+	 * @access public
+	 *
+	 * @param string $selected Selected RSVP choice
+	 * @return string
+	 */
 	public static function rsvp_choice( $selected ) {
 		$rsvps  = array(
 			''           => false,
@@ -191,6 +287,14 @@ class Kind_Metabox {
 		return $string;
 	}
 
+	/**
+	 * Render our RSVP select input.
+	 *
+	 * @access public
+	 *
+	 * @param string $selected Selected RSVP option.
+	 * @return string
+	 */
 	public static function rsvp_select( $selected ) {
 		$string  = '<label for="mf2_rsvp">' . __( 'RSVP', 'indieweb-post-kinds' ) . '</label><br/>';
 		$string .= '<select name="mf2_rsvp" id="mf2_rsvp">';
@@ -199,7 +303,11 @@ class Kind_Metabox {
 		return $string;
 	}
 
-	/* Create one or more meta boxes to be displayed on the post editor screen. */
+	/**
+	 * Create one or more meta boxes to be displayed on the post editor screen.
+	 *
+	 * @access public
+	 */
 	public static function add_meta_boxes() {
 		add_meta_box(
 			'replybox-meta', // Unique ID
@@ -215,11 +323,26 @@ class Kind_Metabox {
 		);
 	}
 
+	/**
+	 * Render our reply meta box.
+	 *
+	 * @access public
+	 *
+	 * @param WP_Post $object Post object for the current screen.
+	 * @param array   $box    Array of meta box arguments.
+	 */
 	public static function reply_metabox( $object, $box ) {
 		load_template( plugin_dir_path( __DIR__ ) . 'templates/reply-metabox.php' );
 	}
 
-	/* Save the meta box's post metadata. */
+	/**
+	 * Process and save meta box data.
+	 *
+	 * @access public
+	 *
+	 * @param int    $post_id Saved post ID.
+	 * @param WP_Pos $post    Saved post object.
+	 */
 	public static function save_post( $post_id, $post ) {
 		/*
 		 * We need to verify this came from our screen and with proper authorization,
@@ -365,6 +488,15 @@ class Kind_Metabox {
 		$mf2_post->set( $type, $cite );
 	}
 
+	/**
+	 * Function to handle saving our kind data upon post status transition.
+	 *
+	 * @access public
+	 *
+	 * @param string  $new  New post status.
+	 * @param string  $old  Old post status.
+	 * @param WP_Post $post Post object.
+	 */
 	public static function transition_post_status( $new, $old, $post ) {
 		if ( 'publish' === $new && 'publish' !== $old ) {
 			self::save_post( $post->ID, $post );

@@ -8,6 +8,12 @@
  * @package Post Kinds
  */
 class Kind_Plugins {
+
+	/**
+	 * Initialize our plugin integrations.
+	 *
+	 * @access public
+	 */
 	public static function init() {
 		// Set Post Kind for Micropub Inputs.
 		add_action( 'after_micropub', array( 'Kind_Plugins', 'micropub_set_kind' ), 9, 2 );
@@ -60,17 +66,25 @@ class Kind_Plugins {
 		return $resp;
 	}
 
-	// Replaces need for Replacing the Entire Excerpt
+	/**
+	 * Replaces need for replacing the entire excerpt.
+	 *
+	 * @access public
+	 *
+	 * @param string $post_type Post type slug.
+	 * @param int    $post_id   Post ID.
+	 * @return string
+	 */
 	public static function semantic_post_type( $post_type, $post_id ) {
 		return _x( 'this', 'direct article', 'indieweb-post-kinds' ) . ' ' . strtolower( get_post_kind( $post_id ) );
 	}
 
 	/**
-	 * Take mf2 properties and set a post kind
+	 * Take mf2 properties and set a post kind.
 	 * Implements Post Type Discovery https://www.w3.org/TR/post-type-discovery/
 	 *
-	 * @param array $input Micropub Request in JSON
-	 * @param array $wp_args Arguments passed to insert or update posts
+	 * @param array $input   Micropub Request in JSON.
+	 * @param array $wp_args Arguments passed to insert or update posts.
 	 */
 	public static function micropub_set_kind( $input, $wp_args ) {
 		// Only continue if create or update
@@ -83,11 +97,27 @@ class Kind_Plugins {
 		}
 	}
 
+	/**
+	 * Set our post formats.
+	 *
+	 * @access public
+	 *
+	 * @param $input
+	 * @param $wp_args
+	 */
 	public static function post_formats( $input, $wp_args ) {
 		$kind = get_post_kind_slug( $wp_args['ID'] );
 		set_post_format( $wp_args['ID'], Kind_Taxonomy::get_kind_info( $kind, 'format' ) );
 	}
 
+	/**
+	 * Parse our micropub values.
+	 *
+	 * @access public
+	 *
+	 * @param array $input Array of inputs to parse.
+	 * @return mixed
+	 */
 	public static function micropub_parse( $input ) {
 		if ( ! $input ) {
 			return $input;
