@@ -31,7 +31,7 @@ class Kind_Post_Widget extends WP_Widget {
 		if ( ! empty( $instance['title'] ) ) {
 			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ) . $args['after_title']; // phpcs:ignore
 		}
-		$args  = array(
+		$query = array(
 			'tax_query'   => array(
 				array(
 					'taxonomy' => 'kind',
@@ -41,7 +41,7 @@ class Kind_Post_Widget extends WP_Widget {
 			),
 			'numberposts' => ifset( $instance['number'], 5 ),
 		);
-		$posts = get_posts( $args );
+		$posts = get_posts( $query );
 		if ( 0 === count( $posts ) ) {
 			return;
 		}
@@ -52,10 +52,7 @@ class Kind_Post_Widget extends WP_Widget {
 		}
 		echo '</ul>';
 		echo '</div>';
-		// phpcs:ignore
-		if ( isset( $args['after_widget'] ) ) {
-			echo $args['after_widget']; // phpcs:ignore
-		}
+		echo $args['after_widget']; // phpcs:ignore
 	}
 
 	/**
