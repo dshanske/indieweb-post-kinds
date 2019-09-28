@@ -50,6 +50,7 @@ class Parse_This {
 			'b'          => array(),
 			'br'         => array(),
 			'code'       => array(),
+			'ins'        => array(),
 			'del'        => array(),
 			'em'         => array(),
 			'i'          => array(),
@@ -75,6 +76,10 @@ class Parse_This {
 				'alt'   => array(),
 				'title' => array(),
 			),
+			'video'      => array(),
+			'audio'      => array(),
+			'track'      => array(),
+			'source'     => array(),
 		);
 		return trim( wp_kses( $content, $allowed ) );
 	}
@@ -162,6 +167,7 @@ class Parse_This {
 			'application/mf2+json',
 			'text/html',
 			'application/json',
+			'application/feed+json',
 			'application/xml',
 			'text/xml',
 			'application/jf2+json',
@@ -230,7 +236,7 @@ class Parse_This {
 
 		$content = wp_remote_retrieve_body( $response );
 		// This is an RSS or Atom Feed URL and if it is not we do not know how to deal with XML anyway
-		if ( ( in_array( $content_type, array( 'application/rss+xml', 'application/atom+xml', 'text/xml', 'application/xml', 'text/xml' ), true ) ) ) {
+		if ( class_exists( 'Parse_This_RSS' ) && ( in_array( $content_type, array( 'application/rss+xml', 'application/atom+xml', 'text/xml', 'application/xml', 'text/xml' ), true ) ) ) {
 			// Get a SimplePie feed object from the specified feed source.
 			$content = self::fetch_feed( $url );
 			if ( is_wp_error( $content ) ) {
@@ -245,9 +251,9 @@ class Parse_This {
 			$content = json_decode( $content, true );
 			return true;
 		}
-		if ( 'application/json' === $content_type ) {
+		if ( in_array( $content_type, array( 'application/feed+json', 'application/json' ) ) ) {
 			$content = json_decode( $content, true );
-			if ( $content && isset( $content['version'] ) && 'https://jsonfeed.org/version/1' === $content['version'] ) {
+			if ( class_exists( 'Parse_This_JSONFeed' ) && $content && isset( $content['version'] ) && 'https://jsonfeed.org/version/1' === $content['version'] ) {
 				$content = Parse_This_JSONFeed::to_jf2( $content, $url );
 				$this->set( $content, $url, true );
 			}
@@ -275,7 +281,7 @@ class Parse_This {
 		if ( $this->content instanceof WP_Post ) {
 			$this->jf2 = self::wp_post( $this->content );
 			return;
-		} elseif ( $this->content instanceof SimplePie ) {
+		} elseif ( class_exists( 'Parse_This_RSS' ) && $this->content instanceof SimplePie ) {
 			$this->jf2 = Parse_This_RSS::parse( $this->content, $this->url );
 			return;
 		} elseif ( $this->doc instanceof DOMDocument ) {

@@ -635,13 +635,10 @@ class MF2_Post implements ArrayAccess {
 		}
 		$post_content = ifset( $this->content['html'] );
 		if ( $post_content ) {
-			$att_ids = self::get_img_ids_from_content( $post_content );
+			$att_ids = self::get_img_from_content( $post_content );
 			if ( $att_ids ) {
 				return $content_allow ? $att_ids : array();
 			}
-			// Search the post's content for the <img /> tag and get its URL.
-			$urls    = self::get_img_urls_from_content( $post_content );
-			$att_ids = self::get_attachments_from_urls( $urls );
 			if ( ! empty( $att_ids ) ) {
 				return $content_allow ? array_unique( $att_ids ) : array();
 			}
@@ -663,10 +660,33 @@ class MF2_Post implements ArrayAccess {
 		}
 		$att_ids = array_merge( $att_ids, $this->get_attachments_from_urls( $photos ) );
 		if ( ! empty( $att_ids ) ) {
-			return $att_ids;
+			return array_filter( $att_ids );
 		}
 		return false;
 	}
+
+	private function media_sideload_image( $url, $post_id, $description = null ) {
+		// To prevent sideloading the same image multiple times check for the original URL which will now be stored
+		$ids = get_posts(
+			array(
+				'post_type'        => 'attachment',
+				'suppress_filters' => false,
+				'nopaging'         => true,
+				'meta_key'         => 'mf2_url',
+				'meta_value'       => $url,
+				'fields'           => 'ids',
+			)
+		);
+		if ( ! empty( $ids ) ) {
+			return $ids[0];
+		}
+		$id = media_sideload_image( $url, $post_id, $description, 'id' );
+		if ( $id ) {
+			update_post_meta( $id, 'mf2_url', $url );
+		}
+		return $id;
+	}
+
 
 	private function sideload_images( $photos ) {
 		require_once ABSPATH . 'wp-admin/includes/media.php';
@@ -678,7 +698,7 @@ class MF2_Post implements ArrayAccess {
 					continue;
 				} else {
 					if ( ! attachment_url_to_postid( $value ) ) {
-						$id = media_sideload_image( $value, $this->uid, null, 'id' );
+						$id = self::media_sideload_image( $value, $this->uid );
 						if ( $id ) {
 							$photos[ $key ] = wp_get_attachment_url( $id );
 						}
@@ -690,7 +710,7 @@ class MF2_Post implements ArrayAccess {
 				$value = mf2_to_jf2( $value );
 				$id    = attachment_url_to_postid( $value['url'] );
 				if ( ! $id ) {
-					$id = media_sideload_image( $value['url'], $this->uid, null, 'id' );
+					$id = self::media_sideload_image( $value['url'], $this->uid );
 					if ( $id ) {
 						$value['url'] = wp_get_attachment_url( $id );
 					}
@@ -713,7 +733,7 @@ class MF2_Post implements ArrayAccess {
 		return $photos;
 	}
 
-	public function get_img_ids_from_content( $content ) {
+	public function get_img_from_content( $content ) {
 		$content = wp_unslash( $content );
 		$return  = array();
 		$doc     = pt_load_domdocument( $content );
@@ -724,27 +744,19 @@ class MF2_Post implements ArrayAccess {
 			foreach ( $classes as $class ) {
 				if ( 0 === strpos( $class, 'wp-image-' ) ) {
 					$return[] = (int) str_replace( 'wp-image-', '', $class );
+					break;
 				}
 			}
+			$url      = $image->getAttribute( 'src' );
+			$return[] = attachment_url_to_postid( $url );
+
+		}
+		$return = array_unique( $return );
+		$key    = array_search( 0, $return );
+		if ( $key ) {
+			unset( $key );
 		}
 		return $return;
-	}
-
-	public function get_img_urls_from_content( $content ) {
-		$content = wp_unslash( $content );
-		$urls    = array();
-		if ( preg_match_all( '/<img [^>]+>/', $content, $matches ) ) {
-			foreach ( (array) $matches[0] as $image ) {
-				if ( ! preg_match( '/src="([^"]+)"/', $image, $url_matches ) ) {
-					continue;
-				}
-				if ( ! preg_match( '/[^\?]+\.(?:jpe?g|jpe|gif|png)(?:\?|$)/i', $url_matches[1] ) ) {
-					continue;
-				}
-				$urls[] = $url_matches[1];
-			}
-		}
-		return array_unique( $urls );
 	}
 
 	public function get_attachments_from_urls( $urls ) {

@@ -778,13 +778,10 @@ class Parse_This_MF2 {
 		$data['author']    = self::parse_hcard( $author, $mf, $args, $data['url'] );
 		$data['content']   = self::parse_html_value( $entry, 'content' );
 		$data['summary']   = self::get_summary( $entry, $data['content'] );
+		
 		// If name and content are equal remove name
 		if ( self::compare( $data['name'], $data['content']['text'] ) ) {
 			unset( $data['name'] );
-		}
-		// If summary and content are equal remove summary
-		if ( self::compare( $data['summary'], $data['content']['text'] ) ) {
-			unset( $data['summary'] );
 		}
 
 		if ( isset( $mf['rels']['syndication'] ) ) {
@@ -849,6 +846,7 @@ class Parse_This_MF2 {
 			'checked-in-by',
 			'pk-ate',
 			'pk-drank',
+			'item',
 		);
 		$data         = self::get_prop_array( $entry, $properties );
 		$data['type'] = self::is_type( $entry, 'h-entry' ) ? 'entry' : 'cite';

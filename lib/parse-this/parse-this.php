@@ -16,6 +16,7 @@
 
 if ( ! function_exists( 'parse_this_loader' ) ) {
 	function parse_this_loader() {
+		require_once plugin_dir_path( __FILE__ ) . 'lib/polyfill-mbstring/bootstrap.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/autoload.php';
 
 		require_once plugin_dir_path( __FILE__ ) . 'includes/functions.php';
