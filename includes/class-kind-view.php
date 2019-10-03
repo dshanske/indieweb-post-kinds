@@ -175,6 +175,9 @@ class Kind_View {
 	 * @return string
 	 */
 	public static function content_feed_response( $content, $feed_type ) {
+		if ( 1 === (int) get_option( 'kind_bottom' ) ) {
+			return $content . self::get_display();
+		}
 		return self::get_display() . $content;
 	}
 
