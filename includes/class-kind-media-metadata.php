@@ -61,7 +61,23 @@ class Kind_Media_Metadata {
 	}
 
 	public static function wp_update_attachment_metadata( $data, $attachment_id ) {
-		$data = array_filter( $data );
+		$data       = array_filter( $data );
+		$attachment = get_post( $attachment_id, ARRAY_A );
+		if ( isset( $data['image_meta'] ) ) {
+			$meta = $data['image_meta'];
+			if ( ! empty( $meta['credit'] ) ) {
+				update_post_meta(
+					$attachment_id,
+					'mf2_author',
+					jf2_to_mf2(
+						array(
+							'name' => $meta['credit'],
+							'type' => 'card',
+						)
+					)
+				);
+			}
+		}
 		if ( ! empty( $data['album'] ) ) {
 			update_post_meta( $attachment_id, 'mf2_publication', array( $data['album'] ) );
 		}
