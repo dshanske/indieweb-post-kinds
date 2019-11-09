@@ -12,8 +12,8 @@ class Kind_Media_Metadata {
 	 */
 	public static function init() {
 		$cls = get_called_class();
-		add_filter( 'wp_update_attachment_metadata', array( $cls, 'wp_update_attachment_metadata' ), 33, 2 );
-		if ( ! function_exists( 'wp_sanitize_media_metadata' ) ) {
+		add_filter( 'wp_generate_attachment_metadata', array( $cls, 'wp_generate_attachment_metadata' ), 33, 2 );
+		if ( version_compare( $wp_version, '5.3', '>' ) ) {
 			add_filter( 'wp_update_attachment_metadata', array( $cls, 'wp_sanitize_media_metadata' ), 9, 2 );
 		}
 		add_action( 'wp_enqueue_scripts', array( $cls, 'enqueue' ) );
@@ -60,7 +60,7 @@ class Kind_Media_Metadata {
 		return $metadata;
 	}
 
-	public static function wp_update_attachment_metadata( $data, $attachment_id ) {
+	public static function wp_generate_attachment_metadata( $data, $attachment_id ) {
 		$data       = array_filter( $data );
 		$attachment = get_post( $attachment_id, ARRAY_A );
 		if ( isset( $data['image_meta'] ) ) {
