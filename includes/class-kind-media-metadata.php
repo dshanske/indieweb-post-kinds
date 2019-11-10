@@ -11,6 +11,7 @@ class Kind_Media_Metadata {
 	 * @access public
 	 */
 	public static function init() {
+		$wp_version = get_bloginfo( 'version' );
 		$cls = get_called_class();
 		add_filter( 'wp_generate_attachment_metadata', array( $cls, 'wp_generate_attachment_metadata' ), 33, 2 );
 		if ( version_compare( $wp_version, '5.3', '>' ) ) {
