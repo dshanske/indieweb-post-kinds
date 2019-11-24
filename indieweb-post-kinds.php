@@ -42,7 +42,7 @@ if ( ! file_exists( plugin_dir_path( __FILE__ ) . 'lib/parse-this/parse-this.php
 	add_action( 'admin_notices', array( 'Post_Kinds_Plugin', 'parse_this_error' ) );
 }
 
-if ( ! class_exists( 'Classic_Editor' ) ) {
+if ( Post_Kinds_Plugin::show_editor_error() ) {
 	add_action( 'admin_notices', array( 'Post_Kinds_Plugin', 'classic_editor_error' ) );
 }
 
@@ -61,6 +61,21 @@ class Post_Kinds_Plugin {
 		$class   = 'notice notice-error';
 		$message = __( 'Parse This is not installed. Please advise the developer', 'indieweb-post-kinds' );
 		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
+	}
+
+	public static function show_editor_error() {
+		// Do not show this error in ClassicPress
+		if ( function_exists( 'classicpress_version' ) ) {
+			return false;
+		}
+		// Do not show if less than Version 5
+		if ( version_compare( get_bloginfo( 'version' ), '5.0' ) <= 0 ) {
+			return false;
+		}
+		if ( class_exists( 'Classic_Editor' ) ) {
+			return false;
+		}
+		return true;
 	}
 
 	public static function classic_editor_error() {
