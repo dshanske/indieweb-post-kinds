@@ -42,7 +42,7 @@ class Kind_Plugins {
 			return $resp;
 		}
 		if ( array_key_exists( 'url', $input ) ) {
-			$post_id = url_to_postid( static::$input['url'] );
+			$post_id = url_to_postid( $input['url'] );
 			if ( ! $post_id ) {
 				return $resp;
 			}
