@@ -752,7 +752,7 @@ class MF2_Post implements ArrayAccess {
 
 		}
 		$return = array_unique( $return );
-		$key    = array_search( 0, $return );
+		$key    = array_search( 0, $return, true );
 		if ( $key ) {
 			unset( $key );
 		}

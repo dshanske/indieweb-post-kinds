@@ -7,6 +7,7 @@
 class Parse_This_Discovery {
 	private function get_feed_type( $type ) {
 		switch ( $type ) {
+			case 'application/feed+json':
 			case 'application/json':
 				return 'jsonfeed';
 			case 'application/rss+xml':
@@ -70,6 +71,31 @@ class Parse_This_Discovery {
 		$response      = wp_safe_remote_get( $url, $args );
 		$response_code = wp_remote_retrieve_response_code( $response );
 		$content_type  = wp_remote_retrieve_header( $response, 'content-type' );
+
+		$linkheaders = wp_remote_retrieve_header( $response, 'link' );
+		if ( $linkheaders ) {
+			if ( is_array( $linkheaders ) ) {
+				foreach ( $linkheaderss as $link ) {
+					if ( preg_match( '/<(.[^>]+)>;\s+rel\s?=\s?[\"\']?(https:\/\/)?api.w.org?\/?[\"\']?/i', $link, $result ) ) {
+						$links[] = array(
+							'url'        => sprintf( '%s/wp/v2/posts?per_page=20', untrailingslashit( WP_Http::make_absolute_url( $result[1], $url ) ) ),
+							'type'       => 'feed',
+							'_feed_type' => 'wordpress',
+							'name'       => 'WordPress REST API',
+						);
+					}
+				}
+			} else {
+				if ( preg_match( '/<(.[^>]+)>;\s+rel\s?=\s?[\"\']?(https:\/\/)?api.w.org?\/?[\"\']?/i', $linkheaders, $result ) ) {
+						$links[] = array(
+							'url'        => sprintf( '%s/wp/v2/posts?per_page=20', untrailingslashit( WP_Http::make_absolute_url( $result[1], $url ) ) ),
+							'type'       => 'feed',
+							'_feed_type' => 'wordpress',
+							'name'       => 'WordPress REST API',
+						);
+				}
+			}
+		}
 		if ( in_array( $response_code, array( 403, 415 ), true ) ) {
 			$args['user-agent'] = $user_agent;
 			$response           = wp_safe_remote_get( $url, $args );
@@ -179,8 +205,9 @@ class Parse_This_Discovery {
 				'jf2feed'      => 0,
 				'microformats' => 1,
 				'jsonfeed'     => 2,
-				'atom'         => 3,
-				'rss'          => 4,
+				'wordpress'    => 3,
+				'atom'         => 4,
+				'rss'          => 5,
 			);
 			usort(
 				$links,

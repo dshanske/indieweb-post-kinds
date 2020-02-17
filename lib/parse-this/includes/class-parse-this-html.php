@@ -44,8 +44,8 @@ class Parse_This_HTML {
 		if ( is_numeric( $value ) || is_bool( $value ) ) {
 			$return = $value;
 		} elseif ( is_string( $value ) ) {
-			if ( mb_strlen( $value ) > 5000 ) {
-				$return = mb_substr( $value, 0, 5000 );
+			if ( mb_strlen( $value, mb_internal_encoding( 'UTF-8' ) ) > 5000 ) {
+				$return = mb_substr( $value, 0, 5000, mb_internal_encoding( 'UTF-8' ) );
 			} else {
 				$return = $value;
 			}

@@ -41,6 +41,8 @@ class Parse_This {
 		if ( ! is_string( $content ) ) {
 			return $content;
 		}
+		// Decode escaped entities so that they can be stripped
+		$content = html_entity_decode( $content, ENT_COMPAT | ENT_HTML401, 'UTF-8' );
 		$allowed = array(
 			'a'          => array(
 				'href' => array(),
@@ -251,10 +253,15 @@ class Parse_This {
 			$content = json_decode( $content, true );
 			return true;
 		}
-		if ( in_array( $content_type, array( 'application/feed+json', 'application/json' ) ) ) {
+		if ( in_array( $content_type, array( 'application/feed+json', 'application/json' ), true ) ) {
 			$content = json_decode( $content, true );
 			if ( class_exists( 'Parse_This_JSONFeed' ) && $content && isset( $content['version'] ) && 'https://jsonfeed.org/version/1' === $content['version'] ) {
 				$content = Parse_This_JSONFeed::to_jf2( $content, $url );
+				$this->set( $content, $url, true );
+			}
+			// This header indicates we are probing the WordPress REST API
+			if ( wp_remote_retrieve_header( $response, 'x-wp-total' ) ) {
+				$content = Parse_This_RESTAPI::to_jf2( $content, $url );
 				$this->set( $content, $url, true );
 			}
 			// We do not yet know how to cope with this
