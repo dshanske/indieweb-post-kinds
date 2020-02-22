@@ -313,3 +313,56 @@ function get_datetime_offset( $datetime = null ) {
 	}
 	return ( $seconds < 0 ? '-' : '+' ) . sprintf( '%02d:%02d', abs( $seconds / 60 / 60 ), abs( $seconds / 60 ) % 60 );
 }
+
+
+// Given an ISO8601 duration return an array with the pieces {
+function divide_interval( $interval ) {
+	if ( ! $interval ) {
+		return array();
+	}
+	if ( is_string( $interval ) && ! empty( $interval ) ) {
+		try {
+			$interval = new DateInterval( $interval );
+		} catch ( \Exception $e ) {
+			return array();
+		}
+	}
+	// Reading all non-zero date parts.
+	return array_filter(
+		array(
+			'Y' => $interval->y,
+			'M' => $interval->m,
+			'D' => $interval->d,
+			'H' => $interval->h,
+			'I' => $interval->i,
+			'S' => $interval->s,
+		)
+	);
+}
+
+
+// Given an array with the pieces of a duration build an ISO8601 duration
+function build_interval( $values ) {
+	$date = wp_array_slice_assoc( $values, array( 'Y', 'M', 'D' ) );
+	$time = wp_array_slice_assoc( $values, array( 'H', 'I', 'S' ) );
+	if ( ! $date || ! $time ) {
+		return '';
+	}
+	$spec = 'P';
+	// Adding each part to the spec-string.
+	foreach ( $date as $key => $value ) {
+		$spec .= $value . $key;
+	}
+	if ( count( $time ) > 0 ) {
+		$spec .= 'T';
+		foreach ( $time as $key => $value ) {
+			if ( 'I' === $key ) {
+				$spec .= $value . 'M';
+			} else {
+				$spec .= $value . $key;
+			}
+		}
+	}
+	return $spec;
+}
+

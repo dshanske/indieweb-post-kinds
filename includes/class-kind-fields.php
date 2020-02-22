@@ -7,6 +7,7 @@
  *
  * Fields currently supported and their options{
 	* datetime
+	* duration
 	* author - is a representation of an author and consists of name, url, and photo by default
 	* select
 		* options - associative array of values for the select. Key being the value and the value being the description
@@ -299,7 +300,7 @@ class Kind_Fields {
 	 *
 	 * @access public
 	 *
-	 * @param string|Kind_DateTime $time   Date/time value.
+	 * @param string|DateTime $time   Date/time value.
 	 * @param string $name Property name
 	 * @param array $args
 	 * @param string|array $class  Class to use for fields.
@@ -315,13 +316,49 @@ class Kind_Fields {
 		$return   = array();
 		$time     = divide_datetime( $datetime );
 		$return[] = sprintf( '<label for="%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
-		$return[] = sprintf( '<input class="date" type="date" name="mf2_%1$s_date" id="mf2_%2$s_date" value="%3$s"/>', $args['name'], $args['id'], ifset( $time['date'] ) );
-		$return[] = sprintf( '<input class="time" type="time" name="mf2_%1$s_time" id="mf2_%2$s_time" step="1" value="%3$s"/>', $args['name'], $args['id'], ifset( $time['time'] ) );
+		$return[] = sprintf( '<input type="date" name="mf2_%1$s_date" id="mf2_%2$s_date" value="%3$s"/>', $args['name'], $args['id'], ifset( $time['date'] ) );
+		$return[] = sprintf( '<input type="time" name="mf2_%1$s_time" id="mf2_%2$s_time" step="1" value="%3$s"/>', $args['name'], $args['id'], ifset( $time['time'] ) );
 		$return[] = sprintf( '<select name="%1s_offset" id="%1$s_offset">', $args['name'] );
 		foreach ( self::get_offset_list() as $offset ) {
 			$return[] = sprintf( '<option value="%1$s"%2$s>%3$s</option>', $offset, selected( $offset, $time['offset'], false ), sprintf( 'GMT%1$s', $offset ) );
 		}
 		$return[] = '</select></label>';
+		return implode( '', $return );
+	}
+
+	/**
+	 * Function to render dateinterval field inputs.
+	 *
+	 * @access public
+	 *
+	 * @param string|Kind_DateTime $time   Date/time value.
+	 * @param string $name Property name
+	 * @param array $args
+	 * @param string|array $class  Class to use for fields.
+	 * @return string
+	 */
+	public static function field_duration( $args, $interval ) {
+		if ( is_string( $interval ) ) {
+			$interval = new DateInterval( $interval );
+		}
+		if ( ! $interval ) {
+			$interval = new DateInterval( 'PT0S' );
+		}
+		$return   = array();
+		$duration = divide_interval( $interval );
+		$max      = array(
+			'Y' => 1000,
+			'M' => 11,
+			'D' => 31,
+			'H' => 23,
+			'I' => 59,
+			'S' => 60,
+		);
+		$return[] = sprintf( '<label for="%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
+		foreach ( $args['pieces'] as $piece ) {
+			$return[] = sprintf( '<input type="number" name="mf2_%2$s%1$s" id="mf2_%3$s_year" value="%4$s" step="1" max="%5$s" />', $piece, $args['name'], $args['id'], ifset( $duration['year'], $max[ $piece ] ) );
+		}
+		$return[] = '</label>';
 		return implode( '', $return );
 	}
 
@@ -526,11 +563,20 @@ class Kind_Fields {
 					return false;
 				}
 				break;
+			case 'duration':
+				if ( array_key_exists( 'pieces', $elements ) ) {
+					// Ensure only valid options
+					$element['pieces'] = array_intersect( array( 'Y', 'M', 'D', 'H', 'I', 'S' ), $elements['pieces'] );
+				} else {
+					// By default only show hours, minutes, seconds
+					$element['pieces'] = array( 'H', 'I', 'S' );
+				}
+				break;
 		}
 		return $element;
 	}
 	public static function supported_type( $type ) {
-		return in_array( $type, array( 'cite', 'venue', 'coordinate', 'author', 'datetime', 'text', 'url', 'textarea', 'list', 'section' ), true );
+		return in_array( $type, array( 'cite', 'venue', 'coordinate', 'author', 'datetime', 'duration', 'text', 'url', 'textarea', 'list', 'section' ), true );
 	}
 
 
