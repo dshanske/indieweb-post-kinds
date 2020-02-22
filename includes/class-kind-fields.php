@@ -315,15 +315,15 @@ class Kind_Fields {
 		}
 		$return   = array();
 		$time     = divide_datetime( $datetime );
-		$return[] = sprintf( '<label for="%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
-		$return[] = sprintf( '<input type="date" name="mf2_%1$s_date" id="mf2_%2$s_date" value="%3$s"/>', $args['name'], $args['id'], ifset( $time['date'] ) );
-		$return[] = sprintf( '<input type="time" name="mf2_%1$s_time" id="mf2_%2$s_time" step="1" value="%3$s"/>', $args['name'], $args['id'], ifset( $time['time'] ) );
+		$return[] = sprintf( '<label for="mf2_%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
+		$return[] = sprintf( '<input type="date" name="mf2_%1$s_date" id="mf2_%1$s_date" value="%2$s"/>', $args['name'], ifset( $time['date'] ) );
+		$return[] = sprintf( '<input type="time" name="mf2_%1$s_time" id="mf2_%1$s_time" step="1" value="%2$s"/>', $args['name'], ifset( $time['time'] ) );
 		$return[] = sprintf( '<select name="%1s_offset" id="%1$s_offset">', $args['name'] );
 		foreach ( self::get_offset_list() as $offset ) {
 			$return[] = sprintf( '<option value="%1$s"%2$s>%3$s</option>', $offset, selected( $offset, $time['offset'], false ), sprintf( 'GMT%1$s', $offset ) );
 		}
 		$return[] = '</select></label>';
-		return implode( '', $return );
+		return implode( PHP_EOL, $return );
 	}
 
 	/**
@@ -354,12 +354,12 @@ class Kind_Fields {
 			'I' => 59,
 			'S' => 60,
 		);
-		$return[] = sprintf( '<label for="%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
+		$return[] = sprintf( '<label for="mf2_%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
 		foreach ( $args['pieces'] as $piece ) {
-			$return[] = sprintf( '<input type="number" name="mf2_%2$s%1$s" id="mf2_%3$s_year" value="%4$s" step="1" max="%5$s" />', $piece, $args['name'], $args['id'], ifset( $duration['year'], $max[ $piece ] ) );
+			$return[] = sprintf( '<input type="number" name="mf2_%2$s_%1$s" id="mf2_%3$s_%1$s" value="%4$s" step="1" max="%5$s" />', $piece, $args['name'], $args['id'], ifset( $duration['year'], $max[ $piece ] ) );
 		}
 		$return[] = '</label>';
-		return implode( '', $return );
+		return implode( PHP_EOL, $return );
 	}
 
 	/**
@@ -381,16 +381,16 @@ class Kind_Fields {
 		}
 		$props = array(
 			'name'  => array(
-				'type' => 'text',
-				'name' => __( 'Author Name', 'indieweb-post-kinds' ),
+				'type'  => 'text',
+				'label' => __( 'Author Name', 'indieweb-post-kinds' ),
 			),
 			'url'   => array(
-				'type' => 'url',
-				'name' => __( 'Author URL', 'indieweb-post-kinds' ),
+				'type'  => 'url',
+				'label' => __( 'Author URL', 'indieweb-post-kinds' ),
 			),
 			'photo' => array(
-				'type' => 'url',
-				'name' => __( 'Author Photo', 'indieweb-post-kinds' ),
+				'type'  => 'url',
+				'label' => __( 'Author Photo', 'indieweb-post-kinds' ),
 			),
 		);
 		// Ensure all props are set for values
@@ -415,13 +415,13 @@ class Kind_Fields {
 	public static function field_select( $args, $selected ) {
 		$return = array();
 
-		$return[] = sprintf( '<label for="%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
-		$return[] = sprintf( '<select name="mf2_%1s" id="mf2_%2$s">', $args['name'], $args['id'] );
+		$return[] = sprintf( '<label for="mf2_%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
+		$return[] = sprintf( '<select name="mf2_%1s" id="mf2_%1$s">', $args['name'] );
 		foreach ( $args['options'] as $key => $value ) {
 			$return[] = sprintf( '<option value="%1$s"%2$s>%3$s</option>', $key, selected( $key, $selected, false ), $value );
 		}
 		$return[] = '</select></label>';
-		return implode( ' ', $return );
+		return implode( PHP_EOL, $return );
 	}
 
 	/**
@@ -435,10 +435,10 @@ class Kind_Fields {
 	 */
 	public static function field_url( $args, $url ) {
 		$return   = array();
-		$return[] = sprintf( '<label for="%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
-		$return[] = sprintf( '<input name="mf2_%1s" id="mf2_%2$s" type="url" value="%3$s">', $args['name'], $args['id'], $url );
+		$return[] = sprintf( '<label for="mf2_%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
+		$return[] = sprintf( '<input name="mf2_%1s" id="mf2_%1$s" type="url" value="%2$s">', $args['name'], $url );
 		$return[] = '</label>';
-		return implode( ' ', $return );
+		return implode( PHP_EOL, $return );
 	}
 
 	/**
@@ -452,10 +452,10 @@ class Kind_Fields {
 	 */
 	public static function field_number( $args, $value ) {
 		$return   = array();
-		$return[] = sprintf( '<label for="%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
-		$return[] = sprintf( '<input name="mf2_%1s" id="mf2_%2$s" type="number" step="%3$s" value="%4$s">', $args['name'], $args['id'], $args['step'], $value );
+		$return[] = sprintf( '<label for="mf2_%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
+		$return[] = sprintf( '<input name="mf2_%1s" id="mf2_%1$s" type="number" step="%2$s" value="%3$s">', $args['name'], $args['step'], $value );
 		$return[] = '</label>';
-		return implode( ' ', $return );
+		return implode( PHP_EOL, $return );
 	}
 
 	/**
@@ -469,10 +469,10 @@ class Kind_Fields {
 	 */
 	public static function field_text( $args, $value ) {
 		$return   = array();
-		$return[] = sprintf( '<label for="%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
-		$return[] = sprintf( '<input name="mf2_%1s" id="mf2_%2$s" type="text" value="%3$s">', $args['name'], $args['id'], $value );
+		$return[] = sprintf( '<label for="mf2_%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
+		$return[] = sprintf( '<input name="mf2_%1s" id="mf2_%1$s" type="text" value="%2$s">', $args['name'], $value );
 		$return[] = '</label>';
-		return implode( ' ', $return );
+		return implode( PHP_EOL, $return );
 	}
 
 	/**
@@ -486,14 +486,17 @@ class Kind_Fields {
 	 */
 	public static function field_textarea( $args, $value ) {
 		$return   = array();
-		$return[] = sprintf( '<label for="%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
-		$return[] = sprintf( '<textarea name="mf2_%1s" id="mf2_%2$s">%3$s</textarea>', $args['name'], $args['id'], $value );
+		$return[] = sprintf( '<label for="mf2_%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
+		$return[] = sprintf( '<textarea name="mf2_%1s" id="mf2_%1$s">%2$s</textarea>', $args['name'], $value );
 		$return[] = '</label>';
-		return implode( ' ', $return );
+		return implode( PHP_EOL, $return );
 	}
 
 	public static function field_list( $args, $value ) {
-		return self::field_textarea( $args, implode( ';', $value ) );
+		if ( is_array( $value ) ) {
+			$value = implode( ';', $value );
+		}
+		return self::field_textarea( $args, $value );
 	}
 
 	public static function field_venue( $args, $value ) {
@@ -509,6 +512,9 @@ class Kind_Fields {
 	}
 
 	private static function get( $key, $array ) {
+		if ( ! is_array( $array ) ) {
+			return false;
+		}
 		if ( array_key_exists( $key, $array ) ) {
 			return $array[ $key ];
 		}
@@ -520,13 +526,13 @@ class Kind_Fields {
 		if ( ! self::get( 'type', $element ) ) {
 			return false;
 		}
-		// Everything must have a name
-		if ( ! self::get( 'name', $element ) ) {
+		// Everything must have a label
+		if ( ! self::get( 'label', $element ) ) {
 			return false;
 		}
-		// If no id property then the name property copies over
-		if ( ! self::get( 'id', $element ) ) {
-			$element['id'] = $element['name'];
+		// If no name property then the label property copies over
+		if ( ! self::get( 'name', $element ) ) {
+			$element['name'] = sanitize_title( $element['label'] );
 		}
 		// If no label property then the name property copies over
 		if ( ! self::get( 'label', $element ) ) {
@@ -629,7 +635,8 @@ class Kind_Fields {
 	public static function render( $schema, $values = array() ) {
 		$return = array();
 		foreach ( $schema as $key => $args ) {
-			$args = self::validate( $args );
+			$args['name'] = sanitize_title( $key );
+			$args         = self::validate( $args );
 			if ( ! $args ) {
 				break;
 			}
@@ -639,5 +646,40 @@ class Kind_Fields {
 			}
 		}
 		return implode( '<br />', $return );
+	}
+
+	/* Extracts microformats elements from post data.
+	 * Microformats elements are prefixed by mf2_
+	 * After that, underscore would indicate properties that need to be reconstituted
+	*/
+	public static function rebuild_data( $data ) {
+		$raw = array();
+		foreach ( $data as $key => $value ) {
+			if ( self::str_prefix( $key, 'mf2_' ) ) {
+				$key         = str_replace( 'mf2_', '', $key );
+				$raw[ $key ] = $value;
+			}
+		}
+		foreach ( $raw as $key => $value ) {
+			$pieces = explode( '_', $key );
+			if ( 2 === count( $pieces ) ) {
+				if ( ! array_key_exists( $pieces[0], $raw ) ) {
+					$raw[ $pieces[0] ] = array();
+				}
+				$raw[ $pieces[0] ] = $pieces[1];
+				unset( $raw[ $key ] );
+				// If this has the elements of a duration
+				if ( ! empty( array_intersect( array( 'Y', 'M', 'D', 'H', 'I', 'S' ), $raw[ $pieces[0] ] ) ) ) {
+					$interval          = build_interval( $raw[ $pieces[0] ] );
+					$raw[ $pieces[0] ] = date_interval_to_iso8601( $interval );
+				}
+				// If this has the elements of a datetime
+				if ( ! empty( array_intersect( array( 'date', 'time', 'offset' ), $raw[ $pieces[0] ] ) ) ) {
+					$datetime          = build_datetime( $raw[ $pieces[0] ] );
+					$raw[ $pieces[0] ] = $datetime->format( DATE_W3C );
+				}
+			}
+		}
+		return array_filter( $raw );
 	}
 }
