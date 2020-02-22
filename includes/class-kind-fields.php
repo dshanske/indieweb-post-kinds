@@ -405,6 +405,23 @@ class Kind_Fields {
 	}
 
 	/**
+	 * Function to render a number.
+	 *
+	 * @access public
+	 *
+	 * @param string $name
+	 * @param string $value
+	 * @return string
+	 */
+	public static function field_number( $args, $value ) {
+		$return   = array();
+		$return[] = sprintf( '<label for="%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
+		$return[] = sprintf( '<input name="mf2_%1s" id="mf2_%2$s" type="number" step="%3$s" value="%4$s">', $args['name'], $args['id'], $args['step'], $value );
+		$return[] = '</label>';
+		return implode( ' ', $return );
+	}
+
+	/**
 	 * Function to render a text.
 	 *
 	 * @access public
@@ -440,6 +457,10 @@ class Kind_Fields {
 
 	public static function field_list( $args, $value ) {
 		return self::field_textarea( $args, implode( ';', $value ) );
+	}
+
+	public static function field_venue( $args, $value ) {
+		return self::render( $args['properties'], $value );
 	}
 
 	public static function field_cite( $args, $value ) {
@@ -487,16 +508,29 @@ class Kind_Fields {
 		if ( ! self::supported_type( $type ) ) {
 			$type = 'text';
 		}
-		// These are object elements
-		if ( in_array( $type, array( 'cite' ), true ) ) {
-			if ( ! array_key_exists( 'properties', $element ) ) {
-				return false;
-			}
+		// Type Specific Conditions
+		switch ( $type ) {
+			case 'cite':
+			case 'venue':
+				if ( ! array_key_exists( 'properties', $element ) ) {
+					return false;
+				}
+				break;
+			case 'number':
+				if ( ! array_key_exists( 'step', $element ) ) {
+					$element['step'] = 1; // Defaults to Even Numbers
+				}
+				break;
+			case 'select':
+				if ( ! array_key_exists( 'options', $elements ) ) {
+					return false;
+				}
+				break;
 		}
 		return $element;
 	}
 	public static function supported_type( $type ) {
-		return in_array( $type, array( 'cite', 'author', 'datetime', 'text', 'url', 'textarea', 'list', 'section' ), true );
+		return in_array( $type, array( 'cite', 'venue', 'coordinate', 'author', 'datetime', 'text', 'url', 'textarea', 'list', 'section' ), true );
 	}
 
 

@@ -9,6 +9,7 @@ register_post_kind(
 		'name'            => __( 'Articles', 'indieweb-post-kinds' ), // General name for the kind plural
 		'verb'            => ' ', // The string for the verb or action (liked this)
 		'property'        => '', // microformats 2 property
+		'properties'      => array(),
 		'format'          => '', // Post Format that maps to this
 		'description'     => __( 'traditional long form content: a post with an explicit title and body', 'indieweb-post-kinds' ),
 		'description-url' => 'http://indieweb.org/article',
@@ -24,6 +25,7 @@ register_post_kind(
 		'name'            => __( 'Notes', 'indieweb-post-kinds' ), // General name for the kind plural
 		'verb'            => ' ', // The string for the verb or action (liked this)
 		'property'        => '', // microformats 2 property
+		'properties'      => array(),
 		'format'          => 'aside', // Post Format that maps to this
 		'description'     => __( 'short content: a post or status update with just plain content and typically without a title', 'indieweb-post-kinds' ),
 		'description-url' => 'http://indieweb.org/note',
@@ -35,30 +37,136 @@ register_post_kind(
 register_post_kind(
 	'reply',
 	array(
-		'singular_name'   => __( 'Reply', 'indieweb-post-kinds' ), // Name for one instance of the kind
-		'name'            => __( 'Replies', 'indieweb-post-kinds' ), // General name for the kind plural
-		'verb'            => __( 'Replied to', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
-		'property'        => 'in-reply-to', // microformats 2 property
-		'format'          => 'link', // Post Format that maps to this
-		'description'     => __( 'a reply to content typically on another site', 'indieweb-post-kinds' ),
-		'description-url' => 'http://indieweb.org/reply',
-		'title'           => false, // Should this kind have an explicit title
-		'show'            => true, // Show in Settings
+		'singular_name'     => __( 'Reply', 'indieweb-post-kinds' ), // Name for one instance of the kind
+		'name'              => __( 'Replies', 'indieweb-post-kinds' ), // General name for the kind plural
+		'verb'              => __( 'Replied to', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+		'property'          => 'in-reply-to', // microformats 2 property
+		'properties'        => array(
+			'in-reply-to' => array(
+				'type'       => 'cite',
+				'name'       => __( 'In Reply To', 'indieweb-post-kinds' ),
+				'properties' => array(
+					'name'        => array(
+						'type' => 'text',
+						'name' => __( 'Name', 'indieweb-post-kinds' ),
+					),
+					'url'         => array(
+						'type' => 'url',
+						'name' => __( 'URL', 'indieweb-post-kinds' ),
+					),
+					'author'      => array(
+						'type' => 'author',
+						'name' => __(
+							'Author',
+							'indieweb-post-kinds'
+						),
+					),
+					'summary'     => array(
+						'type' => 'textarea',
+						'name' => __( 'Summary', 'indieweb-post-kinds' ),
+					),
+					'publication' => array(
+						'type' => 'text',
+						'name' => __( 'Publication/Website', 'indieweb-post-kinds' ),
+					),
+					'published'   => array(
+						'type' => 'datetime',
+						'name' => __( 'Publish Date', 'indieweb-post-kinds' ),
+					),
+					'updated'     => array(
+						'type' => 'datetime',
+						'name' => __( 'Updated Time', 'indieweb-post-kinds' ),
+					),
+					'category'    => array(
+						'type' => 'list',
+						'name' => __(
+							'Tags',
+							'indieweb-post-kinds'
+						),
+					),
+					'featured'    => array(
+						'type' => 'url',
+						'name' => __(
+							'Featured Media',
+							'indieweb-post-kinds'
+						),
+					),
+				),
+			),
+		),
+		'format'            => 'link', // Post Format that maps to this
+		'description'       => __( 'a reply to content typically on another site', 'indieweb-post-kinds' ),
+		'description - url' => 'http://indieweb.org/reply',
+		'title'             => false, // Should this kind have an explicit title
+		'show'              => true, // Show in Settings
 	)
 );
 
 register_post_kind(
 	'repost',
 	array(
-		'singular_name'   => __( 'Repost', 'indieweb-post-kinds' ), // Name for one instance of the kind
-		'name'            => __( 'Reposts', 'indieweb-post-kinds' ), // General name for the kind plural
-		'verb'            => __( 'Reposted', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
-		'property'        => 'repost-of', // microformats 2 property
-		'format'          => '', // Post Format that maps to this
-		'description'     => __( 'a complete reposting of content from another site', 'indieweb-post-kinds' ),
-		'description-url' => 'http://indieweb.org/repost',
-		'title'           => true, // Should this kind have an explicit title
-		'show'            => true, // Show in Settings
+		'singular_name'     => __( 'Repost', 'indieweb-post-kinds' ), // Name for one instance of the kind
+		'name'              => __( 'Reposts', 'indieweb-post-kinds' ), // General name for the kind plural
+		'verb'              => __( 'Reposted', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+		'property'          => 'repost-of', // microformats 2 property
+		'properties'        => array(
+			'repost-of' => array(
+				'type'       => 'cite',
+				'name'       => __( 'Repost', 'indieweb-post-kinds' ),
+				'properties' => array(
+					'name'        => array(
+						'type' => 'text',
+						'name' => __( 'Name', 'indieweb-post-kinds' ),
+					),
+					'url'         => array(
+						'type' => 'url',
+						'name' => __( 'URL', 'indieweb-post-kinds' ),
+					),
+					'author'      => array(
+						'type' => 'author',
+						'name' => __(
+							'Author',
+							'indieweb-post-kinds'
+						),
+					),
+					'summary'     => array(
+						'type' => 'textarea',
+						'name' => __( 'Summary', 'indieweb-post-kinds' ),
+					),
+					'publication' => array(
+						'type' => 'text',
+						'name' => __( 'Publication/Website', 'indieweb-post-kinds' ),
+					),
+					'published'   => array(
+						'type' => 'datetime',
+						'name' => __( 'Publish Date', 'indieweb-post-kinds' ),
+					),
+					'updated'     => array(
+						'type' => 'datetime',
+						'name' => __( 'Updated Time', 'indieweb-post-kinds' ),
+					),
+					'category'    => array(
+						'type' => 'list',
+						'name' => __(
+							'Tags',
+							'indieweb-post-kinds'
+						),
+					),
+					'featured'    => array(
+						'type' => 'url',
+						'name' => __(
+							'Featured Media',
+							'indieweb-post-kinds'
+						),
+					),
+				),
+			),
+		),
+		'format'            => '', // Post Format that maps to this
+		'description'       => __( 'a complete reposting of content from another site', 'indieweb-post-kinds' ),
+		'description - url' => 'http://indieweb.org/repost',
+		'title'             => true, // Should this kind have an explicit title
+		'show'              => true, // Show in Settings
 	)
 );
 
@@ -69,6 +177,60 @@ register_post_kind(
 		'name'            => __( 'Likes', 'indieweb-post-kinds' ), // General name for the kind plural
 		'verb'            => __( 'Liked', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
 		'property'        => 'like-of', // microformats 2 property
+		'properties'      => array(),
+		'properties'      => array(
+			'like-of' => array(
+				'type'       => 'cite',
+				'name'       => __( 'Like', 'indieweb-post-kinds' ),
+				'properties' => array(
+					'name'        => array(
+						'type' => 'text',
+						'name' => __( 'Name', 'indieweb-post-kinds' ),
+					),
+					'url'         => array(
+						'type' => 'url',
+						'name' => __( 'URL', 'indieweb-post-kinds' ),
+					),
+					'author'      => array(
+						'type' => 'author',
+						'name' => __(
+							'Author',
+							'indieweb-post-kinds'
+						),
+					),
+					'summary'     => array(
+						'type' => 'textarea',
+						'name' => __( 'Summary', 'indieweb-post-kinds' ),
+					),
+					'publication' => array(
+						'type' => 'text',
+						'name' => __( 'Publication/Website', 'indieweb-post-kinds' ),
+					),
+					'published'   => array(
+						'type' => 'datetime',
+						'name' => __( 'Publish Date', 'indieweb-post-kinds' ),
+					),
+					'updated'     => array(
+						'type' => 'datetime',
+						'name' => __( 'Updated Time', 'indieweb-post-kinds' ),
+					),
+					'category'    => array(
+						'type' => 'list',
+						'name' => __(
+							'Tags',
+							'indieweb-post-kinds'
+						),
+					),
+					'featured'    => array(
+						'type' => 'url',
+						'name' => __(
+							'Featured Media',
+							'indieweb-post-kinds'
+						),
+					),
+				),
+			),
+		),
 		'format'          => 'link', // Post Format that maps to this
 		'description'     => __( 'a way to pay compliments to the original post/poster of external content', 'indieweb-post-kinds' ),
 		'description-url' => 'http://indieweb.org/like',
@@ -84,6 +246,59 @@ register_post_kind(
 		'name'            => __( 'Favorites', 'indieweb-post-kinds' ), // General name for the kind plural
 		'verb'            => __( 'Favorited', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
 		'property'        => 'favorite-of', // microformats 2 property
+		'properties'      => array(
+			'favorite-of' => array(
+				'type'       => 'cite',
+				'name'       => __( 'Favorited', 'indieweb-post-kinds' ),
+				'properties' => array(
+					'name'        => array(
+						'type' => 'text',
+						'name' => __( 'Name', 'indieweb-post-kinds' ),
+					),
+					'url'         => array(
+						'type' => 'url',
+						'name' => __( 'URL', 'indieweb-post-kinds' ),
+					),
+					'author'      => array(
+						'type' => 'author',
+						'name' => __(
+							'Author',
+							'indieweb-post-kinds'
+						),
+					),
+					'summary'     => array(
+						'type' => 'textarea',
+						'name' => __( 'Summary', 'indieweb-post-kinds' ),
+					),
+					'publication' => array(
+						'type' => 'text',
+						'name' => __( 'Publication/Website', 'indieweb-post-kinds' ),
+					),
+					'published'   => array(
+						'type' => 'datetime',
+						'name' => __( 'Publish Date', 'indieweb-post-kinds' ),
+					),
+					'updated'     => array(
+						'type' => 'datetime',
+						'name' => __( 'Updated Time', 'indieweb-post-kinds' ),
+					),
+					'category'    => array(
+						'type' => 'list',
+						'name' => __(
+							'Tags',
+							'indieweb-post-kinds'
+						),
+					),
+					'featured'    => array(
+						'type' => 'url',
+						'name' => __(
+							'Featured Media',
+							'indieweb-post-kinds'
+						),
+					),
+				),
+			),
+		),
 		'format'          => 'link', // Post Format that maps to this
 		'description'     => __( 'special to the author', 'indieweb-post-kinds' ),
 		'description-url' => 'http://indieweb.org/favorite',
@@ -99,6 +314,59 @@ register_post_kind(
 		'name'            => __( 'Bookmarks', 'indieweb-post-kinds' ), // General name for the kind plural
 		'verb'            => __( 'Bookmarked', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
 		'property'        => 'bookmark-of', // microformats 2 property
+		'properties'      => array(
+			'bookmark-of' => array(
+				'type'       => 'cite',
+				'name'       => __( 'Bookmark', 'indieweb-post-kinds' ),
+				'properties' => array(
+					'name'        => array(
+						'type' => 'text',
+						'name' => __( 'Name', 'indieweb-post-kinds' ),
+					),
+					'url'         => array(
+						'type' => 'url',
+						'name' => __( 'URL', 'indieweb-post-kinds' ),
+					),
+					'author'      => array(
+						'type' => 'author',
+						'name' => __(
+							'Author',
+							'indieweb-post-kinds'
+						),
+					),
+					'summary'     => array(
+						'type' => 'textarea',
+						'name' => __( 'Summary', 'indieweb-post-kinds' ),
+					),
+					'publication' => array(
+						'type' => 'text',
+						'name' => __( 'Publication/Website', 'indieweb-post-kinds' ),
+					),
+					'published'   => array(
+						'type' => 'datetime',
+						'name' => __( 'Publish Date', 'indieweb-post-kinds' ),
+					),
+					'updated'     => array(
+						'type' => 'datetime',
+						'name' => __( 'Updated Time', 'indieweb-post-kinds' ),
+					),
+					'category'    => array(
+						'type' => 'list',
+						'name' => __(
+							'Tags',
+							'indieweb-post-kinds'
+						),
+					),
+					'featured'    => array(
+						'type' => 'url',
+						'name' => __(
+							'Featured Media',
+							'indieweb-post-kinds'
+						),
+					),
+				),
+			),
+		),
 		'format'          => 'link', // Post Format that maps to this
 		'description'     => __( 'storing a link/bookmark for personal use or sharing with others', 'indieweb-post-kinds' ),
 		'description-url' => 'http://indieweb.org/bookmark',
@@ -174,6 +442,62 @@ register_post_kind(
 		'name'            => __( 'RSVPs', 'indieweb-post-kinds' ), // General name for the kind plural
 		'verb'            => __( 'RSVPed', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
 		'property'        => 'in-reply-to', // microformats 2 property
+		'properties'      => array(
+			'rsvp'        => array(
+				'type'    => 'select',
+				'options' => array(
+					'yes'        => __( 'Yes', 'indieweb-post-kinds' ),
+					'no'         => __( 'No', 'indieweb-post-kinds' ),
+					'maybe'      => __( 'Maybe', 'indieweb-post-kinds' ),
+					'interested' => __( 'Interested', 'indieweb-post-kinds' ),
+					'remote'     => __( 'Remote', 'indieweb-post-kinds' ),
+				),
+			),
+			'in-reply-to' => array(
+				'type'       => 'cite',
+				'name'       => __( 'Event Details', 'indieweb-post-kinds' ),
+				'properties' => array(
+					'name'        => array(
+						'type' => 'text',
+						'name' => __( 'Name', 'indieweb-post-kinds' ),
+					),
+					'url'         => array(
+						'type' => 'url',
+						'name' => __( 'URL', 'indieweb-post-kinds' ),
+					),
+					'summary'     => array(
+						'type' => 'textarea',
+						'name' => __( 'Summary', 'indieweb-post-kinds' ),
+					),
+					'publication' => array(
+						'type' => 'text',
+						'name' => __( 'Publication/Website', 'indieweb-post-kinds' ),
+					),
+					'start'       => array(
+						'type' => 'datetime',
+						'name' => __( 'Start Date', 'indieweb-post-kinds' ),
+					),
+					'end'         => array(
+						'type' => 'datetime',
+						'name' => __( 'End Date', 'indieweb-post-kinds' ),
+					),
+					'category'    => array(
+						'type' => 'list',
+						'name' => __(
+							'Tags',
+							'indieweb-post-kinds'
+						),
+					),
+					'featured'    => array(
+						'type' => 'url',
+						'name' => __(
+							'Featured Media',
+							'indieweb-post-kinds'
+						),
+					),
+				),
+			),
+		),
 		'format'          => 'link', // Post Format that maps to this
 		'description'     => __( 'a specific type of reply regarding attendance of an event', 'indieweb-post-kinds' ),
 		'description-url' => 'http://indieweb.org/rsvp',
@@ -189,6 +513,55 @@ register_post_kind(
 		'name'            => __( 'Listens', 'indieweb-post-kinds' ), // General name for the kind plural
 		'verb'            => __( 'Listened', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
 		'property'        => 'listen-of', // microformats 2 property
+		'properties'      => array(
+			'listen-of' => array(
+				'type'       => 'cite',
+				'name'       => __( 'Listen To', 'indieweb-post-kinds' ),
+				'properties' => array(
+					'name'        => array(
+						'type' => 'text',
+						'name' => __( 'Name', 'indieweb-post-kinds' ),
+					),
+					'url'         => array(
+						'type' => 'url',
+						'name' => __( 'URL', 'indieweb-post-kinds' ),
+					),
+					'author'      => array(
+						'type' => 'author',
+						'name' => __(
+							'Artist',
+							'indieweb-post-kinds'
+						),
+					),
+					'summary'     => array(
+						'type' => 'textarea',
+						'name' => __( 'Summary', 'indieweb-post-kinds' ),
+					),
+					'publication' => array(
+						'type' => 'text',
+						'name' => __( 'Album', 'indieweb-post-kinds' ),
+					),
+					'published'   => array(
+						'type' => 'datetime',
+						'name' => __( 'Release Date', 'indieweb-post-kinds' ),
+					),
+					'category'    => array(
+						'type' => 'list',
+						'name' => __(
+							'Tags',
+							'indieweb-post-kinds'
+						),
+					),
+					'featured'    => array(
+						'type' => 'url',
+						'name' => __(
+							'Album Art',
+							'indieweb-post-kinds'
+						),
+					),
+				),
+			),
+		),
 		'format'          => 'audio', // Post Format that maps to this
 		'description'     => __( 'listening to audio; sometimes called a scrobble', 'indieweb-post-kinds' ),
 		'description-url' => 'http://indieweb.org/listen',
@@ -204,6 +577,55 @@ register_post_kind(
 		'name'            => __( 'Watches', 'indieweb-post-kinds' ), // General name for the kind plural
 		'verb'            => __( 'Watched', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
 		'property'        => 'watch-of', // microformats 2 property
+		'properties'      => array(
+			'watch-of' => array(
+				'type'       => 'cite',
+				'name'       => __( 'Watching To', 'indieweb-post-kinds' ),
+				'properties' => array(
+					'name'        => array(
+						'type' => 'text',
+						'name' => __( 'Name', 'indieweb-post-kinds' ),
+					),
+					'url'         => array(
+						'type' => 'url',
+						'name' => __( 'URL', 'indieweb-post-kinds' ),
+					),
+					'author'      => array(
+						'type' => 'author',
+						'name' => __(
+							'Artist',
+							'indieweb-post-kinds'
+						),
+					),
+					'summary'     => array(
+						'type' => 'textarea',
+						'name' => __( 'Summary', 'indieweb-post-kinds' ),
+					),
+					'publication' => array(
+						'type' => 'text',
+						'name' => __( 'Series', 'indieweb-post-kinds' ),
+					),
+					'published'   => array(
+						'type' => 'datetime',
+						'name' => __( 'Release Date', 'indieweb-post-kinds' ),
+					),
+					'category'    => array(
+						'type' => 'list',
+						'name' => __(
+							'Tags',
+							'indieweb-post-kinds'
+						),
+					),
+					'featured'    => array(
+						'type' => 'url',
+						'name' => __(
+							'Poster',
+							'indieweb-post-kinds'
+						),
+					),
+				),
+			),
+		),
 		'format'          => 'video', // Post Format that maps to this
 		'description'     => __( 'watching a movie, television show, online video, play or other visual-based event', 'indieweb-post-kinds' ),
 		'description-url' => 'http://indieweb.org/watch',
@@ -219,6 +641,58 @@ register_post_kind(
 		'name'            => __( 'Checkins', 'indieweb-post-kinds' ), // General name for the kind plural
 		'verb'            => __( 'Checked into', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
 		'property'        => 'checkin', // microformats 2 property
+		'properties'      => array(
+			'checkin' => array(
+				'type'       => 'venue',
+				'name'       => __( 'Checked In', 'indieweb-post-kinds' ),
+				'properties' => array(
+					'name'           => array(
+						'type' => 'name',
+						'name' => __( 'Name', 'indieweb-post-kinds' ),
+					),
+					'url'            => array(
+						'type' => 'url',
+						'name' => __( 'URL', 'indieweb-post-kinds' ),
+					),
+					'latitude'       => array(
+						'type' => 'number',
+						'name' => __(
+							'Latitude',
+							'indieweb-post-kinds'
+						),
+						'step' => 0.0000001,
+					),
+					'longitude'      => array(
+						'type' => 'number',
+						'name' => __(
+							'Longitude',
+							'indieweb-post-kinds'
+						),
+						'step' => 0.0000001,
+					),
+					'street-address' => array(
+						'type' => 'text',
+						'name' => __( 'Street Address', 'indieweb-post-kinds' ),
+					),
+					'locality'       => array(
+						'type' => 'text',
+						'name' => __( 'Locality', 'indieweb-post-kinds' ),
+					),
+					'region'         => array(
+						'type' => 'text',
+						'name' => __( 'Region', 'indieweb-post-kinds' ),
+					),
+					'country-name'   => array(
+						'type' => 'text',
+						'name' => __( 'Country Name', 'indieweb-post-kinds' ),
+					),
+					'postal-code'    => array(
+						'type' => 'text',
+						'name' => __( 'Postal Code', 'indieweb-post-kinds' ),
+					),
+				),
+			),
+		),
 		'format'          => 'status', // Post Format that maps to this
 		'description'     => __( 'identifying you are at a particular geographic location', 'indieweb-post-kinds' ),
 		'description-url' => 'http://indieweb.org/checkin',
@@ -317,6 +791,7 @@ register_post_kind(
 	)
 );
 
+
 register_post_kind(
 	'eat',
 	array(
@@ -331,6 +806,7 @@ register_post_kind(
 		'show'            => true, // Show in Settings
 	)
 );
+
 
 register_post_kind(
 	'drink',
@@ -347,6 +823,7 @@ register_post_kind(
 	)
 );
 
+
 register_post_kind(
 	'follow',
 	array(
@@ -361,6 +838,7 @@ register_post_kind(
 		'show'            => false, // Show in Settings
 	)
 );
+
 
 register_post_kind(
 	'jam',
@@ -377,6 +855,7 @@ register_post_kind(
 	)
 );
 
+
 register_post_kind(
 	'read',
 	array(
@@ -391,6 +870,7 @@ register_post_kind(
 		'show'            => true, // Show in Settings
 	)
 );
+
 
 register_post_kind(
 	'quote',
@@ -407,6 +887,7 @@ register_post_kind(
 	)
 );
 
+
 register_post_kind(
 	'mood',
 	array(
@@ -421,6 +902,7 @@ register_post_kind(
 		'show'            => false, // Show in Settings
 	)
 );
+
 
 register_post_kind(
 	'recipe',
@@ -437,6 +919,7 @@ register_post_kind(
 	)
 );
 
+
 register_post_kind(
 	'issue',
 	array(
@@ -451,6 +934,7 @@ register_post_kind(
 		'show'            => true, // Show in Settings
 	)
 );
+
 
 register_post_kind(
 	'question',
@@ -467,6 +951,7 @@ register_post_kind(
 	)
 );
 
+
 register_post_kind(
 	'sleep',
 	array(
@@ -482,6 +967,7 @@ register_post_kind(
 	)
 );
 
+
 register_post_kind(
 	'event',
 	array(
@@ -496,6 +982,7 @@ register_post_kind(
 		'show'            => false, // Show in Settings
 	)
 );
+
 
 register_post_kind(
 	'acquisition',
