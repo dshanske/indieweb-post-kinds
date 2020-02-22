@@ -207,7 +207,8 @@ class Parse_This_HTML {
 		}
 		$xpath = new DOMXPath( $doc );
 
-		$jsonld = array();
+		$jsonld  = array();
+		$content = '';
 		foreach ( $xpath->query( "//script[@type='application/ld+json']" ) as $script ) {
 			$jsonld = json_decode( $script->textContent, true ); // phpcs:ignore
 		}
@@ -324,9 +325,7 @@ class Parse_This_HTML {
 				$videos[] = $url;
 			}
 		}
-
-		// Possibility of finding the content
-		$content = apply_filters( 'parse_this_content', '', $xpath, $url );
+		$content = apply_filters( 'parse_this_content', $content, $xpath, $url );
 
 		$audios = array_unique( $audios );
 		$videos = array_unique( $videos );
@@ -392,7 +391,7 @@ class Parse_This_HTML {
 				if ( isset( $meta[ $type ]['tag'] ) ) {
 					$jf2['category'] = $meta[ $type ]['tag'];
 				}
-				if ( isset( $meta[ $type ]['author'] ) ) {
+				if ( ! empty( $meta[ $type ]['author'] ) ) {
 					$jf2['author'] = $meta[ $type ]['author'];
 				}
 				if ( 'article' === $type ) {
@@ -502,7 +501,7 @@ class Parse_This_HTML {
 			$jf2['published'] = normalize_iso8601( $meta['citation_date'] );
 		}
 
-		if ( ! isset( $jf2['author'] ) && isset( $meta['author'] ) ) {
+		if ( ! isset( $jf2['author'] ) && ! empty( $meta['author'] ) ) {
 			$jf2['author'] = $meta['author'];
 		}
 		if ( ! empty( $raw['audios'] ) && ! isset( $jf2['audio'] ) ) {
@@ -515,7 +514,12 @@ class Parse_This_HTML {
 		if ( isset( $raw['jsonld'] ) ) {
 			$jsonld = $raw['jsonld'];
 			if ( ! isset( $jf2['author'] ) && isset( $jsonld['author'] ) ) {
-				$jf2['author'] = ifset( $jsonld['author']['name'] );
+				if ( wp_is_numeric_array( $jsonld['author'] ) ) {
+					$jf2['author'] = array();
+					foreach ( $jsonld['author'] as $author ) {
+						$jf2['author'][] = $author['name'];
+					}
+				}
 			}
 			if ( ! isset( $jf2['published'] ) && isset( $jsonld['datePublished'] ) ) {
 				$jf2['published'] = normalize_iso8601( $jsonld['datePublished'] );
@@ -527,6 +531,12 @@ class Parse_This_HTML {
 
 			if ( ! isset( $jf2['publication'] ) && isset( $jsonld['publisher'] ) ) {
 				$jf2['publication'] = ifset( $jsonld['publisher']['name'] );
+			}
+			if ( ! isset( $jf2['content'] ) && isset( $jsonld['articleBody'] ) ) {
+				$jf2['content'] = array(
+					'html'  => Parse_This::clean_content( $jsonld['articleBody'] ),
+					'value' => wp_strip_all_tags( $jsonld['articleBody'] ),
+				);
 			}
 		}
 

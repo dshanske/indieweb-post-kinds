@@ -1,55 +1,11 @@
 <?php
 
-// get_feed_build_date introduced in WordPress 5.2
-if ( ! function_exists( 'get_feed_build_date' ) ) {
-
-	function get_feed_build_date( $format ) {
-		global $wp_query;
-
-		if ( empty( $wp_query ) || ! $wp_query->have_posts() ) {
-			// Fallback to last time any post was modified or published.
-			return get_lastpostmodified( 'GMT' );
-		}
-
-			// Extract the post modified times from the posts.
-			$modified_times = wp_list_pluck( $wp_query->posts, 'post_modified_gmt' );
-
-			// If this is a comment feed, check those objects too.
-		if ( $wp_query->is_comment_feed() && $wp_query->comment_count ) {
-			// Extract the comment modified times from the comments.
-			$comment_times = wp_list_pluck( $wp_query->comments, 'comment_date_gmt' );
-
-				// Add the comment times to the post times for comparison.
-				$modified_times = array_merge( $modified_times, $comment_times );
-		}
-
-			// Determine the maximum modified time.
-			$max_modified_time = max(
-				array_map(
-					function ( $time ) use ( $format ) {
-										return mysql2date( $format, $time, false );
-					},
-					$modified_times
-				)
-			);
-
-			/**
-			 * Filters the date the last post or comment in the query was modified.
-			 *
-			 * @since 5.2.0
-			 *
-			 * @param string $max_modified_time Date the last post or comment was modified in the query.
-			 * @param string $format            The date format requested in get_feed_build_date.
-			 */
-			return apply_filters( 'get_feed_build_date', $max_modified_time, $format );
-	}
-}
 
 if ( ! function_exists( 'current_datetime' ) ) {
 	/**
 	 * Retrieves the current time as an object with the timezone from settings.
 	 *
-	 * @since 5.3.0 - Backported and DateTime used for pre PHP 5.5 compatibility for new
+	 * @since 5.3.0 - Backported to Parse This and DateTime used for pre PHP 5.5 compatibility for new
 	 *
 	 * @return DateTime Date and time object.
 	 */
@@ -65,7 +21,7 @@ if ( ! function_exists( 'get_post_timestamp' ) ) {
 	 * Note that this function returns a true Unix timestamp, not summed with timezone offset
 	 * like older WP functions.
 	 *
-	 * @since 5.3.0 - backported
+	 * @since 5.3.0 - backported to Parse This
 	 *
 	 * @param int|WP_Post $post  Optional. WP_Post object or ID. Default is global `$post` object.
 	 * @param string      $field Optional. Post field to use. Accepts 'date' or 'modified'.
@@ -87,7 +43,7 @@ if ( ! function_exists( 'get_post_datetime' ) ) {
 	 *
 	 * The object will be set to the timezone from WordPress settings.
 	 *
-	 * @since 5.3.0 - backported and returns as a DateTime not DateTimeImmutable object for pre PHP 5.5 compat
+	 * @since 5.3.0 - backported to Parse This and returns as a DateTime not DateTimeImmutable object for pre PHP 5.5 compat
 	 *
 	 * @param int|WP_Post $post  Optional. WP_Post object or ID. Default is global `$post` object.
 	 * @param string      $field Optional. Post field to use. Accepts 'date' or 'modified'.
@@ -113,7 +69,7 @@ if ( ! function_exists( 'wp_timezone_string' ) ) {
 	 * Uses the `timezone_string` option to get a proper timezone if available,
 	 * otherwise falls back to an offset.
 	 *
-	 * @since 5.3.0 - backported into Simple Location
+	 * @since 5.3.0 - backported into Parse This
 	 *
 	* @return string PHP timezone string or a ±HH:MM offset.
 	*/
@@ -139,7 +95,7 @@ if ( ! function_exists( 'wp_timezone' ) ) {
 	 *
 	 * Timezone can be based on a PHP timezone string or a ±HH:MM offset.
 	 *
-	 * @since 5.3.0 - backported into Simple Location
+	 * @since 5.3.0 - backported into Parse This
 	 *
 	 * @return DateTimeZone Timezone object.
 	*/
@@ -158,7 +114,7 @@ if ( ! function_exists( 'wp_date' ) ) {
 	 * Note that, unlike `date_i18n()`, this function accepts a true Unix timestamp, not summed
 	 * with timezone offset.
 	 *
-	 * @since 5.3.0 - backported to Simple Location
+	 * @since 5.3.0 - backported to Parse This
 	 *
 	 * @param string       $format    PHP date format.
 	 * @param int          $timestamp Optional. Unix timestamp. Defaults to current time.
@@ -225,7 +181,7 @@ if ( ! function_exists( 'wp_date' ) ) {
 		/**
 		 * Filters the date formatted based on the locale.
 		 *
-		 * @since 5.3.0 but backported to Simple Location
+		 * @since 5.3.0 but backported to Parse This
 		 *
 		 * @param string       $date      Formatted date string.
 		 * @param string       $format    Format to display the date.

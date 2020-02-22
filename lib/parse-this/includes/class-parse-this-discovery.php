@@ -10,19 +10,17 @@ class Parse_This_Discovery {
 			case 'application/feed+json':
 			case 'application/json':
 				return 'jsonfeed';
+			case 'text/xml':
 			case 'application/rss+xml':
 				return 'rss';
 			case 'application/atom+xml':
 				return 'atom';
 			case 'application/jf2feed+json':
 				return 'jf2feed';
-			case 'application/json+oembed':
-			case 'text/xml+oembed':
-				return '';
 			case 'text/html':
 				return 'microformats';
 			default:
-				return 'microformats';
+				return '';
 		}
 	}
 
@@ -75,7 +73,7 @@ class Parse_This_Discovery {
 		$linkheaders = wp_remote_retrieve_header( $response, 'link' );
 		if ( $linkheaders ) {
 			if ( is_array( $linkheaders ) ) {
-				foreach ( $linkheaderss as $link ) {
+				foreach ( $linkheaders as $link ) {
 					if ( preg_match( '/<(.[^>]+)>;\s+rel\s?=\s?[\"\']?(https:\/\/)?api.w.org?\/?[\"\']?/i', $link, $result ) ) {
 						$links[] = array(
 							'url'        => sprintf( '%s/wp/v2/posts?per_page=20', untrailingslashit( WP_Http::make_absolute_url( $result[1], $url ) ) ),
@@ -158,6 +156,16 @@ class Parse_This_Discovery {
 								'type'       => 'feed',
 								'_feed_type' => $type,
 								'name'       => $title,
+							)
+						);
+					}
+					if ( 'https://api.w.org/' === $rel ) {
+						$links[] = array_filter(
+							array(
+								'url'        => sprintf( '%s/wp/v2/posts?per_page=20', untrailingslashit( WP_Http::make_absolute_url( $href, $url ) ) ),
+								'type'       => 'feed',
+								'_feed_type' => 'wordpress',
+								'name'       => 'WordPress REST API',
 							)
 						);
 					}

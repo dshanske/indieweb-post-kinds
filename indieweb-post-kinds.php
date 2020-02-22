@@ -21,7 +21,7 @@ if ( ! defined( 'POST_KINDS_KSES' ) ) {
 spl_autoload_register(
 	function ( $class ) {
 		$base_dir = trailingslashit( __DIR__ ) . 'includes/';
-		$bases    = array( 'Kind', 'Post_Kind' );
+		$bases    = array( 'Kind', 'Post_Kind', 'MF2' );
 
 		foreach ( $bases as $base ) {
 			if ( strncmp( $class, $base, strlen( $base ) ) === 0 ) {

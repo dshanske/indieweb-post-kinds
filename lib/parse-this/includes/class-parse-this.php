@@ -193,18 +193,6 @@ class Parse_This {
 		if ( empty( $url ) || ! wp_http_validate_url( $url ) ) {
 			return new WP_Error( 'invalid-url', __( 'A valid URL was not provided.', 'indieweb-post-kinds' ) );
 		}
-		if ( wp_parse_url( home_url(), PHP_URL_HOST ) === wp_parse_url( $url, PHP_URL_HOST ) ) {
-			$post_id = url_to_postid( $url );
-			if ( $post_id ) {
-				$this->set( get_post( $post_id ), $url );
-				return;
-			}
-			$post_id = attachment_url_to_postid( $url );
-			if ( $post_id ) {
-				$this->set( get_post( $post_id ), $url );
-				return;
-			}
-		}
 		$user_agent = 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:57.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36 Parse This/WP';
 		$args       = array(
 			'timeout'             => 15,
@@ -285,10 +273,7 @@ class Parse_This {
 		if ( ! in_array( $args['return'], array( 'single', 'feed' ), true ) ) {
 			$args['return'] = 'single';
 		}
-		if ( $this->content instanceof WP_Post ) {
-			$this->jf2 = self::wp_post( $this->content );
-			return;
-		} elseif ( class_exists( 'Parse_This_RSS' ) && $this->content instanceof SimplePie ) {
+		if ( class_exists( 'Parse_This_RSS' ) && $this->content instanceof SimplePie ) {
 			$this->jf2 = Parse_This_RSS::parse( $this->content, $this->url );
 			return;
 		} elseif ( $this->doc instanceof DOMDocument ) {
@@ -326,10 +311,4 @@ class Parse_This {
 		}
 
 	}
-
-	public static function wp_post( $post ) {
-		$mf2 = new MF2_Post( $post );
-		return mf2_to_jf2( $mf2->get() );
-	}
-
 }

@@ -70,11 +70,10 @@ class Parse_This_RESTAPI {
 	}
 
 	public static function get_featured( $id, $url ) {
-		$json = self::fetch( $url, sprintf( 'wp/v2/media/?include=%s', $id ) );
+		$json = self::fetch( $url, sprintf( 'wp/v2/media/%s', $id ) );
 		if ( is_wp_error( $json ) ) {
 			return null;
 		}
-		$json = array_pop( $json );
 		return self::ifset( 'source_url', $json );
 	}
 
@@ -141,7 +140,7 @@ class Parse_This_RESTAPI {
 					'published' => self::get_datetime( self::ifset( 'date', $item ), $timezone ),
 					'updated'   => self::get_datetime( self::ifset( 'modified', $item ), $timezone ),
 					'author'    => $authors[ $item['author'] ],
-					'featured'  => self::get_featured( self::ifset( 'featured', $item ), $url ),
+					'featured'  => self::get_featured( self::ifset( 'featured_media', $item ), $url ),
 					'kind'      => self::ifset( 'kind', $item ),
 				)
 			);

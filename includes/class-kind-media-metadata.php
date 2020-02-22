@@ -12,7 +12,7 @@ class Kind_Media_Metadata {
 	 */
 	public static function init() {
 		$wp_version = get_bloginfo( 'version' );
-		$cls = get_called_class();
+		$cls        = get_called_class();
 		add_filter( 'wp_generate_attachment_metadata', array( $cls, 'wp_generate_attachment_metadata' ), 33, 2 );
 		if ( version_compare( $wp_version, '5.3', '>' ) ) {
 			add_filter( 'wp_update_attachment_metadata', array( $cls, 'wp_sanitize_media_metadata' ), 9, 2 );
