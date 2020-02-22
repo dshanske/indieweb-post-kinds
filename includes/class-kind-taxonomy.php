@@ -632,7 +632,18 @@ final class Kind_Taxonomy {
 	 * @access public
 	 *
 	 * @param string $slug Post kind slug.
-	 * @param array  $args Post kind arguments.
+	 * @param array  $args Post kind arguments {
+		 * @param string $singular_name  Name for one instance of the kind.
+		 * @param string $name   General name for the kind plural.
+		 * @param string $verb The string for the verb or action (liked this).
+		 * @param string $property Microformats 2 property, superseded by properties
+		 * @param array $properties Properties is an array outlining the fields for the particular kind. See Kind Fields class for more details
+		 * @param string $format Post Format that maps to this.
+		 * @param string $description Description of the Kind
+		 * @param url $description-url Link to more information
+		 * @param string $title Should this kind have an explicit title.
+		 * @param boolean $show Show in Settings.
+	 * }
 	 * @return bool
 	 */
 	public static function register_post_kind( $slug, $args ) {
