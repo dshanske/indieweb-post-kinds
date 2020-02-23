@@ -54,7 +54,42 @@ final class Kind_Taxonomy {
 		add_action( 'rest_api_init', array( 'Kind_Taxonomy', 'rest_kind' ) );
 
 		add_filter( 'embed_template_hierarchy', array( 'Kind_Taxonomy', 'embed_template_hierarchy' ) );
+
+		add_action( 'rest_api_init', array( 'Kind_Taxonomy', 'register_routes' ) );
 	}
+
+	/**
+	 * Register the Route.
+	 */
+	public static function register_routes() {
+		$cls = get_called_class();
+		register_rest_route(
+			'post-kinds/1.0',
+			'/fields',
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $cls, 'read' ),
+					'args'                => array(
+						'kind' => array(
+							'required'          => true,
+							'sanitize_callback' => 'sanitize_text_field',
+						),
+					),
+					'permission_callback' => function () {
+						return current_user_can( 'read' );
+					},
+				),
+			)
+		);
+	}
+
+	public static function read( $request ) {
+		$kind = $request->get_param( 'kind' );
+		return self::get_kind_info( $kind, 'all' );
+	}
+
+
 
 	/**
 	 * Add our exclude_kind query variable to query_vars list.
