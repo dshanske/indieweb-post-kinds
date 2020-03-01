@@ -23,7 +23,7 @@ class Kind_Metabox {
 		// Add meta box to new post/post pages only
 		add_action( 'load-post.php', array( 'Kind_Metabox', 'kindbox_setup' ) );
 		add_action( 'load-post-new.php', array( 'Kind_Metabox', 'kindbox_setup' ) );
-		add_action( 'save_post', array( 'Kind_Metabox', 'save_post' ), 8, 2 );
+		add_action( 'save_post_post', array( 'Kind_Metabox', 'save_post' ), 8, 2 );
 		add_action( 'transition_post_status', array( 'Kind_Metabox', 'transition_post_status' ), 5, 3 );
 		add_filter( 'wp_insert_post_empty_content', array( 'Kind_Metabox', 'wp_insert_post_empty_content' ), 11, 2 );
 		add_action( 'change_kind', array( 'Kind_Metabox', 'change_kind' ), 10, 3 );
@@ -63,11 +63,15 @@ class Kind_Metabox {
 		if ( 'trash' === $postarr['post_status'] ) {
 			return false;
 		}
+
 		// Let All Micropub Posts through
 		if ( isset( $postarr['meta_input'] ) && isset( $postarr['meta_input']['micropub_auth_response'] ) ) {
 			return false;
 		}
 		if ( ! isset( $postarr['tax_input'] ) && ! isset( $postarr['tax_input']['kind'] ) ) {
+			return $maybe_empty;
+		}
+		if ( ! array_key_exists( 'kind', $postarr['tax_input'] ) ) {
 			return $maybe_empty;
 		}
 		$kind = get_term_by( 'id', $postarr['tax_input']['kind'][0], 'kind' );

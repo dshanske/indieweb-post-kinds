@@ -307,6 +307,9 @@ class Kind_Fields {
 	 * @return string
 	 */
 	public static function field_datetime( $args, $datetime ) {
+		if ( is_array( $datetime ) ) {
+			$datetime = array_pop( $datetime );
+		}
 		if ( is_string( $datetime ) ) {
 			$datetime = new DateTime( $datetime, wp_timezone() );
 		}
@@ -315,14 +318,14 @@ class Kind_Fields {
 		}
 		$return   = array();
 		$time     = divide_datetime( $datetime );
-		$return[] = sprintf( '<label for="mf2_%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
-		$return[] = sprintf( '<input type="date" name="mf2_%1$s_date" id="mf2_%1$s_date" value="%2$s"/>', $args['name'], ifset( $time['date'] ) );
-		$return[] = sprintf( '<input type="time" name="mf2_%1$s_time" id="mf2_%1$s_time" step="1" value="%2$s"/>', $args['name'], ifset( $time['time'] ) );
-		$return[] = sprintf( '<select name="%1s_offset" id="%1$s_offset">', $args['name'] );
+		$return[] = sprintf( '<fieldset class="%1$s"><legend>%2$s</legend>', $args['class'], $args['label'] );
+		$return[] = sprintf( '<input type="date" name="mf2_%1$s[date]" id="mf2_%1$s_date" value="%2$s"/>', $args['name'], ifset( $time['date'] ) );
+		$return[] = sprintf( '<input type="time" name="mf2_%1$s[time]" id="mf2_%1$s_time" step="1" value="%2$s"/>', $args['name'], ifset( $time['time'] ) );
+		$return[] = sprintf( '<select name="mf2_%1s[offset]" id="mf2_%1$s_offset">', $args['name'] );
 		foreach ( self::get_offset_list() as $offset ) {
 			$return[] = sprintf( '<option value="%1$s"%2$s>%3$s</option>', $offset, selected( $offset, $time['offset'], false ), sprintf( 'GMT%1$s', $offset ) );
 		}
-		$return[] = '</select></label>';
+		$return[] = '</select></label></fieldset>';
 		return implode( PHP_EOL, $return );
 	}
 
@@ -368,7 +371,7 @@ class Kind_Fields {
 	 * @access public
 	 *
 	 * @param string $prefix Field prefix.
-	 * @param string|array $author Defautl values. If string, considered to be the name property below. {
+	 * @param string|array $author Default values. If string, considered to be the name property below. {
 		 * @param string $name Author Name
 		 * @param string $url Author URL
 		 * @param string $photo Author Photo
@@ -379,27 +382,29 @@ class Kind_Fields {
 		if ( ! $author ) {
 			$author = array();
 		}
-		$props = array(
-			'name'  => array(
-				'type'  => 'text',
-				'label' => __( 'Author Name', 'indieweb-post-kinds' ),
-			),
-			'url'   => array(
-				'type'  => 'url',
-				'label' => __( 'Author URL', 'indieweb-post-kinds' ),
-			),
-			'photo' => array(
-				'type'  => 'url',
-				'label' => __( 'Author Photo', 'indieweb-post-kinds' ),
-			),
+		$return   = array();
+		$return[] = sprintf( '<fieldset class="%1$s">', $args['class'] );
+		$return[] = sprintf( '<legend class="screen-reader-text">%1$s</legend>', $args['label'] );
+		$return[] = sprintf(
+			'<label>%3$s<input type="text" class="widefat" name="mf2_%1$s_name" id="mf2_%1$s_name" value="%2$s"/></label>',
+			$args['name'],
+			ifset( $author['name'] ),
+			__( 'Author Name', 'indieweb-post-kinds' )
 		);
-		// Ensure all props are set for values
-		foreach ( array_keys( $props ) as $prop ) {
-			if ( ! array_key_exists( $prop, $author ) ) {
-				$author[ $prop ] = '';
-			}
-		}
-		return self::render( $props, $author );
+		$return[] = sprintf(
+			'<label>%3$s<input type="url" class="widefat" name="mf2_%1$s_url" id="mf2_%1$s_url" value="%2$s"/></label>',
+			$args['name'],
+			ifset( $author['url'] ),
+			__( 'Author URL', 'indieweb-post-kinds' )
+		);
+		$return[] = sprintf(
+			'<label>%3$s<input type="url" class="widefat" name="mf2_%1$s_photo" id="mf2_%1$s_photo" value="%2$s"/></label>',
+			$args['name'],
+			ifset( $author['photo'] ),
+			__( 'Author Photo', 'indieweb-post-kinds' )
+		);
+		$return[] = '</fieldset>';
+		return implode( PHP_EOL, $return );
 	}
 
 
@@ -436,7 +441,7 @@ class Kind_Fields {
 	public static function field_url( $args, $url ) {
 		$return   = array();
 		$return[] = sprintf( '<label for="mf2_%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
-		$return[] = sprintf( '<input name="mf2_%1s" id="mf2_%1$s" type="url" value="%2$s">', $args['name'], $url );
+		$return[] = sprintf( '<input size="30" class="widefat" name="mf2_%1s" id="mf2_%1$s" type="url" value="%2$s">', $args['name'], $url );
 		$return[] = '</label>';
 		return implode( PHP_EOL, $return );
 	}
@@ -470,7 +475,7 @@ class Kind_Fields {
 	public static function field_text( $args, $value ) {
 		$return   = array();
 		$return[] = sprintf( '<label for="mf2_%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
-		$return[] = sprintf( '<input name="mf2_%1s" id="mf2_%1$s" type="text" value="%2$s">', $args['name'], $value );
+		$return[] = sprintf( '<input class="widefat" name="mf2_%1s" id="mf2_%1$s" type="text" value="%2$s">', $args['name'], $value );
 		$return[] = '</label>';
 		return implode( PHP_EOL, $return );
 	}
@@ -487,7 +492,7 @@ class Kind_Fields {
 	public static function field_textarea( $args, $value ) {
 		$return   = array();
 		$return[] = sprintf( '<label for="mf2_%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
-		$return[] = sprintf( '<textarea name="mf2_%1s" id="mf2_%1$s">%2$s</textarea>', $args['name'], $value );
+		$return[] = sprintf( '<textarea class="widefat" name="mf2_%1s" id="mf2_%1$s">%2$s</textarea>', $args['name'], $value );
 		$return[] = '</label>';
 		return implode( PHP_EOL, $return );
 	}
@@ -540,7 +545,7 @@ class Kind_Fields {
 		}
 		// If no class property then the class property is set to empty
 		if ( ! self::get( 'class', $element ) ) {
-			$element['class'] = '';
+			$element['class'] = 'widefat';
 		}
 		// Class can be an array
 		if ( is_array( $element['class'] ) ) {
@@ -590,7 +595,7 @@ class Kind_Fields {
 	 * Sets an array with only the mf2 prefixed meta.
 	 *
 	 */
-	private function get_mf2meta( $post ) {
+	public static function get_mf2meta( $post ) {
 		$post = get_post();
 		if ( ! $post ) {
 			return false;
@@ -613,8 +618,12 @@ class Kind_Fields {
 				if ( 1 === count( $value ) ) {
 					$value = array_shift( $value );
 				}
-				if ( is_string( $value ) ) {
-					$meta[ $key ] = array( $value );
+				$explode = explode( '_', $key );
+				if ( 2 === count( $explode ) ) {
+					if ( ! array_key_exists( $explode[0], $meta ) ) {
+						$meta[ $explode[0] ] = array();
+					}
+					$meta[ $explode[0] ] [ $explode[1] ] = $value;
 				} else {
 					$meta[ $key ] = $value;
 				}
@@ -650,34 +659,24 @@ class Kind_Fields {
 
 	/* Extracts microformats elements from post data.
 	 * Microformats elements are prefixed by mf2_
-	 * After that, underscore would indicate properties that need to be reconstituted
 	*/
 	public static function rebuild_data( $data ) {
 		$raw = array();
 		foreach ( $data as $key => $value ) {
 			if ( self::str_prefix( $key, 'mf2_' ) ) {
-				$key         = str_replace( 'mf2_', '', $key );
+				if ( is_array( $value ) ) {
+					// If this has the elements of a duration
+					if ( ! empty( array_intersect( array( 'Y', 'M', 'D', 'H', 'I', 'S' ), $value ) ) ) {
+						$interval = build_interval( $value );
+						$value    = date_interval_to_iso8601( $interval );
+					}
+					// If this has the elements of a datetime
+					if ( array_key_exists( 'date', $value ) && array_key_exists( 'time', $value ) && array_key_exists( 'offset', $value ) ) {
+						$datetime = build_datetime( $value['date'], $value['time'], $value['offset'] );
+						$value    = $datetime->format( DATE_W3C );
+					}
+				}
 				$raw[ $key ] = $value;
-			}
-		}
-		foreach ( $raw as $key => $value ) {
-			$pieces = explode( '_', $key );
-			if ( 2 === count( $pieces ) ) {
-				if ( ! array_key_exists( $pieces[0], $raw ) ) {
-					$raw[ $pieces[0] ] = array();
-				}
-				$raw[ $pieces[0] ] = $pieces[1];
-				unset( $raw[ $key ] );
-				// If this has the elements of a duration
-				if ( ! empty( array_intersect( array( 'Y', 'M', 'D', 'H', 'I', 'S' ), $raw[ $pieces[0] ] ) ) ) {
-					$interval          = build_interval( $raw[ $pieces[0] ] );
-					$raw[ $pieces[0] ] = date_interval_to_iso8601( $interval );
-				}
-				// If this has the elements of a datetime
-				if ( ! empty( array_intersect( array( 'date', 'time', 'offset' ), $raw[ $pieces[0] ] ) ) ) {
-					$datetime          = build_datetime( $raw[ $pieces[0] ] );
-					$raw[ $pieces[0] ] = $datetime->format( DATE_W3C );
-				}
 			}
 		}
 		return array_filter( $raw );
