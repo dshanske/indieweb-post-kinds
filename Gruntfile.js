@@ -3,6 +3,9 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
 	  eslint: {
+	        options: {
+	  	  fix: true
+	        },
           	retrieve: {
 		              src: ['js/kind.js' ]
 	          }

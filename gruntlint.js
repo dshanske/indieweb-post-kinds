@@ -4,6 +4,6 @@ module.exports = {
     "jquery": true,
     "es6": true,
   },
-  "extends": "grunt",
+  "extends": [ "plugin:@wordpress/eslint-plugin/esnext" ],
   "rules": {}
 };
