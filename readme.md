@@ -24,10 +24,10 @@ Many sites will not need all of the kinds set up. What kinds of posts you wish t
 ## Screenshots ##
 
 ### 1. Here is an example of what a like looks like ###
-![Here is an example of what a like looks like](/assets/screenshot-1.png)
+![Here is an example of what a like looks like](/.wordpress-org/screenshot-1.png)
 
 ### 2. Here is a reply to a Youtube video ###
-![Here is a reply to a Youtube video](/assets/screenshot-2.png)
+![Here is a reply to a Youtube video](/.wordpress-org/screenshot-2.png)
 
 
 ## Installation ##
