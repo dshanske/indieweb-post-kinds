@@ -360,6 +360,11 @@ final class Kind_Taxonomy {
 		register_taxonomy( 'kind', array( 'post' ), $args );
 		// Year archive for kinds
 		add_rewrite_rule(
+			'kind/([a-z]+)/([0-9]{4})/page/([0-9]{1,})/?',
+			'index.php?year=$matches[2]&kind=$matches[1]&paged=$matches[3]',
+			'top'
+		);
+		add_rewrite_rule(
 			'kind/([a-z]+)/([0-9]{4})/?$',
 			'index.php?year=$matches[2]&kind=$matches[1]',
 			'top'
@@ -385,6 +390,11 @@ final class Kind_Taxonomy {
 
 		// Exclude/Include Kinds
 		add_rewrite_rule(
+			'exclude/kind/([a-zA-Z,]+)/page/([0-9]{1,})/?',
+			'index.php?exclude_kind=$matches[1]&paged=matches[2]',
+			'top'
+		);
+		add_rewrite_rule(
 			'exclude/kind/([a-zA-Z,]+)/?$',
 			'index.php?exclude_kind=$matches[1]',
 			'top'
@@ -401,6 +411,11 @@ final class Kind_Taxonomy {
 		);
 
 		// On This Day Archive
+		add_rewrite_rule(
+			'onthisday/([0-9]{2})/([0-9]{2})/page/([0-9]{1,})/?',
+			'index.php?monthnum=$matches[1]&day=$matches[2]&paged=$matches[3]',
+			'top'
+		);
 		add_rewrite_rule(
 			'onthisday/([0-9]{2})/([0-9]{2})/?$',
 			'index.php?monthnum=$matches[1]&day=$matches[2]',
