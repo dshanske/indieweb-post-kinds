@@ -16,7 +16,7 @@
     "grunt-git": "~0.3.3",
     "grunt-wp-i18n": "~0.4.9",
     "grunt-wp-readme-to-markdown": "~0.8.0",
-    "moment": "^2.22.1",
-    "timepicker": "^1.11.12"
+    "moment": "^2.27.0",
+    "timepicker": "^1.13.10"
   }
 }
