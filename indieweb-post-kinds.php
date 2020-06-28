@@ -101,8 +101,10 @@ class Post_Kinds_Plugin {
 		$cls = get_called_class();
 		load_plugin_textdomain( 'indieweb-post-kinds', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
-		// Add WordPress Compatibility File for Functions Introduced Post 4.9.9
+		// Add WordPress Compatibility File for Functions Introduced Post 4.9.9.
 		require_once plugin_dir_path( __FILE__ ) . 'includes/compat.php';
+		// Parse this Compat File.
+		require_once plugin_dir_path( __FILE__ ) . 'lib/parse-this/includes/compat-functions.php';
 
 		// Add Kind Global Functions.
 		require_once plugin_dir_path( __FILE__ ) . '/includes/kind-functions.php';
