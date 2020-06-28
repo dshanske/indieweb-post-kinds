@@ -44,48 +44,48 @@ register_post_kind(
 		'properties'        => array(
 			'in-reply-to' => array(
 				'type'       => 'cite',
-				'label'       => __( 'In Reply To', 'indieweb-post-kinds' ),
+				'label'      => __( 'In Reply To', 'indieweb-post-kinds' ),
 				'properties' => array(
 					'name'        => array(
-						'type' => 'text',
+						'type'  => 'text',
 						'label' => __( 'Name', 'indieweb-post-kinds' ),
 					),
 					'url'         => array(
-						'type' => 'url',
+						'type'  => 'url',
 						'label' => __( 'URL', 'indieweb-post-kinds' ),
 					),
 					'author'      => array(
-						'type' => 'author',
+						'type'  => 'author',
 						'label' => __(
 							'Author',
 							'indieweb-post-kinds'
 						),
 					),
 					'summary'     => array(
-						'type' => 'textarea',
+						'type'  => 'textarea',
 						'label' => __( 'Summary', 'indieweb-post-kinds' ),
 					),
 					'publication' => array(
-						'type' => 'text',
+						'type'  => 'text',
 						'label' => __( 'Publication/Website', 'indieweb-post-kinds' ),
 					),
 					'published'   => array(
-						'type' => 'datetime',
+						'type'  => 'datetime',
 						'label' => __( 'Publish Date', 'indieweb-post-kinds' ),
 					),
 					'updated'     => array(
-						'type' => 'datetime',
+						'type'  => 'datetime',
 						'label' => __( 'Updated Time', 'indieweb-post-kinds' ),
 					),
 					'category'    => array(
-						'type' => 'list',
+						'type'  => 'list',
 						'label' => __(
 							'Tags',
 							'indieweb-post-kinds'
 						),
 					),
 					'featured'    => array(
-						'type' => 'url',
+						'type'  => 'url',
 						'label' => __(
 							'Featured Media',
 							'indieweb-post-kinds'
@@ -112,48 +112,48 @@ register_post_kind(
 		'properties'        => array(
 			'repost-of' => array(
 				'type'       => 'cite',
-				'label'       => __( 'Repost', 'indieweb-post-kinds' ),
+				'label'      => __( 'Repost', 'indieweb-post-kinds' ),
 				'properties' => array(
 					'name'        => array(
-						'type' => 'text',
+						'type'  => 'text',
 						'label' => __( 'Name', 'indieweb-post-kinds' ),
 					),
 					'url'         => array(
-						'type' => 'url',
+						'type'  => 'url',
 						'label' => __( 'URL', 'indieweb-post-kinds' ),
 					),
 					'author'      => array(
-						'type' => 'author',
+						'type'  => 'author',
 						'label' => __(
 							'Author',
 							'indieweb-post-kinds'
 						),
 					),
 					'summary'     => array(
-						'type' => 'textarea',
+						'type'  => 'textarea',
 						'label' => __( 'Summary', 'indieweb-post-kinds' ),
 					),
 					'publication' => array(
-						'type' => 'text',
+						'type'  => 'text',
 						'label' => __( 'Publication/Website', 'indieweb-post-kinds' ),
 					),
 					'published'   => array(
-						'type' => 'datetime',
+						'type'  => 'datetime',
 						'label' => __( 'Publish Date', 'indieweb-post-kinds' ),
 					),
 					'updated'     => array(
-						'type' => 'datetime',
+						'type'  => 'datetime',
 						'label' => __( 'Updated Time', 'indieweb-post-kinds' ),
 					),
 					'category'    => array(
-						'type' => 'list',
+						'type'  => 'list',
 						'label' => __(
 							'Tags',
 							'indieweb-post-kinds'
 						),
 					),
 					'featured'    => array(
-						'type' => 'url',
+						'type'  => 'url',
 						'label' => __(
 							'Featured Media',
 							'indieweb-post-kinds'
@@ -181,48 +181,48 @@ register_post_kind(
 		'properties'      => array(
 			'like-of' => array(
 				'type'       => 'cite',
-				'label'       => __( 'Like', 'indieweb-post-kinds' ),
+				'label'      => __( 'Like', 'indieweb-post-kinds' ),
 				'properties' => array(
 					'name'        => array(
-						'type' => 'text',
+						'type'  => 'text',
 						'label' => __( 'Name', 'indieweb-post-kinds' ),
 					),
 					'url'         => array(
-						'type' => 'url',
+						'type'  => 'url',
 						'label' => __( 'URL', 'indieweb-post-kinds' ),
 					),
 					'author'      => array(
-						'type' => 'author',
+						'type'  => 'author',
 						'label' => __(
 							'Author',
 							'indieweb-post-kinds'
 						),
 					),
 					'summary'     => array(
-						'type' => 'textarea',
+						'type'  => 'textarea',
 						'label' => __( 'Summary', 'indieweb-post-kinds' ),
 					),
 					'publication' => array(
-						'type' => 'text',
+						'type'  => 'text',
 						'label' => __( 'Publication/Website', 'indieweb-post-kinds' ),
 					),
 					'published'   => array(
-						'type' => 'datetime',
+						'type'  => 'datetime',
 						'label' => __( 'Publish Date', 'indieweb-post-kinds' ),
 					),
 					'updated'     => array(
-						'type' => 'datetime',
+						'type'  => 'datetime',
 						'label' => __( 'Updated Time', 'indieweb-post-kinds' ),
 					),
 					'category'    => array(
-						'type' => 'list',
+						'type'  => 'list',
 						'label' => __(
 							'Tags',
 							'indieweb-post-kinds'
 						),
 					),
 					'featured'    => array(
-						'type' => 'url',
+						'type'  => 'url',
 						'label' => __(
 							'Featured Media',
 							'indieweb-post-kinds'
@@ -249,48 +249,48 @@ register_post_kind(
 		'properties'      => array(
 			'favorite-of' => array(
 				'type'       => 'cite',
-				'label'       => __( 'Favorited', 'indieweb-post-kinds' ),
+				'label'      => __( 'Favorited', 'indieweb-post-kinds' ),
 				'properties' => array(
 					'name'        => array(
-						'type' => 'text',
+						'type'  => 'text',
 						'label' => __( 'Name', 'indieweb-post-kinds' ),
 					),
 					'url'         => array(
-						'type' => 'url',
+						'type'  => 'url',
 						'label' => __( 'URL', 'indieweb-post-kinds' ),
 					),
 					'author'      => array(
-						'type' => 'author',
+						'type'  => 'author',
 						'label' => __(
 							'Author',
 							'indieweb-post-kinds'
 						),
 					),
 					'summary'     => array(
-						'type' => 'textarea',
+						'type'  => 'textarea',
 						'label' => __( 'Summary', 'indieweb-post-kinds' ),
 					),
 					'publication' => array(
-						'type' => 'text',
+						'type'  => 'text',
 						'label' => __( 'Publication/Website', 'indieweb-post-kinds' ),
 					),
 					'published'   => array(
-						'type' => 'datetime',
+						'type'  => 'datetime',
 						'label' => __( 'Publish Date', 'indieweb-post-kinds' ),
 					),
 					'updated'     => array(
-						'type' => 'datetime',
+						'type'  => 'datetime',
 						'label' => __( 'Updated Time', 'indieweb-post-kinds' ),
 					),
 					'category'    => array(
-						'type' => 'list',
+						'type'  => 'list',
 						'label' => __(
 							'Tags',
 							'indieweb-post-kinds'
 						),
 					),
 					'featured'    => array(
-						'type' => 'url',
+						'type'  => 'url',
 						'label' => __(
 							'Featured Media',
 							'indieweb-post-kinds'
@@ -317,48 +317,48 @@ register_post_kind(
 		'properties'      => array(
 			'bookmark-of' => array(
 				'type'       => 'cite',
-				'label'       => __( 'Bookmark', 'indieweb-post-kinds' ),
+				'label'      => __( 'Bookmark', 'indieweb-post-kinds' ),
 				'properties' => array(
 					'name'        => array(
-						'type' => 'text',
+						'type'  => 'text',
 						'label' => __( 'Name', 'indieweb-post-kinds' ),
 					),
 					'url'         => array(
-						'type' => 'url',
+						'type'  => 'url',
 						'label' => __( 'URL', 'indieweb-post-kinds' ),
 					),
 					'author'      => array(
-						'type' => 'author',
+						'type'  => 'author',
 						'label' => __(
 							'Author',
 							'indieweb-post-kinds'
 						),
 					),
 					'summary'     => array(
-						'type' => 'textarea',
+						'type'  => 'textarea',
 						'label' => __( 'Summary', 'indieweb-post-kinds' ),
 					),
 					'publication' => array(
-						'type' => 'text',
+						'type'  => 'text',
 						'label' => __( 'Publication/Website', 'indieweb-post-kinds' ),
 					),
 					'published'   => array(
-						'type' => 'datetime',
+						'type'  => 'datetime',
 						'label' => __( 'Publish Date', 'indieweb-post-kinds' ),
 					),
 					'updated'     => array(
-						'type' => 'datetime',
+						'type'  => 'datetime',
 						'label' => __( 'Updated Time', 'indieweb-post-kinds' ),
 					),
 					'category'    => array(
-						'type' => 'list',
+						'type'  => 'list',
 						'label' => __(
 							'Tags',
 							'indieweb-post-kinds'
 						),
 					),
 					'featured'    => array(
-						'type' => 'url',
+						'type'  => 'url',
 						'label' => __(
 							'Featured Media',
 							'indieweb-post-kinds'
@@ -455,41 +455,41 @@ register_post_kind(
 			),
 			'in-reply-to' => array(
 				'type'       => 'cite',
-				'label'       => __( 'Event Details', 'indieweb-post-kinds' ),
+				'label'      => __( 'Event Details', 'indieweb-post-kinds' ),
 				'properties' => array(
 					'name'        => array(
-						'type' => 'text',
+						'type'  => 'text',
 						'label' => __( 'Name', 'indieweb-post-kinds' ),
 					),
 					'url'         => array(
-						'type' => 'url',
+						'type'  => 'url',
 						'label' => __( 'URL', 'indieweb-post-kinds' ),
 					),
 					'summary'     => array(
-						'type' => 'textarea',
+						'type'  => 'textarea',
 						'label' => __( 'Summary', 'indieweb-post-kinds' ),
 					),
 					'publication' => array(
-						'type' => 'text',
+						'type'  => 'text',
 						'label' => __( 'Publication/Website', 'indieweb-post-kinds' ),
 					),
 					'start'       => array(
-						'type' => 'datetime',
+						'type'  => 'datetime',
 						'label' => __( 'Start Date', 'indieweb-post-kinds' ),
 					),
 					'end'         => array(
-						'type' => 'datetime',
+						'type'  => 'datetime',
 						'label' => __( 'End Date', 'indieweb-post-kinds' ),
 					),
 					'category'    => array(
-						'type' => 'list',
+						'type'  => 'list',
 						'label' => __(
 							'Tags',
 							'indieweb-post-kinds'
 						),
 					),
 					'featured'    => array(
-						'type' => 'url',
+						'type'  => 'url',
 						'label' => __(
 							'Featured Media',
 							'indieweb-post-kinds'
@@ -516,44 +516,44 @@ register_post_kind(
 		'properties'      => array(
 			'listen-of' => array(
 				'type'       => 'cite',
-				'label'       => __( 'Listen To', 'indieweb-post-kinds' ),
+				'label'      => __( 'Listen To', 'indieweb-post-kinds' ),
 				'properties' => array(
 					'name'        => array(
-						'type' => 'text',
+						'type'  => 'text',
 						'label' => __( 'Name', 'indieweb-post-kinds' ),
 					),
 					'url'         => array(
-						'type' => 'url',
+						'type'  => 'url',
 						'label' => __( 'URL', 'indieweb-post-kinds' ),
 					),
 					'author'      => array(
-						'type' => 'author',
+						'type'  => 'author',
 						'label' => __(
 							'Artist',
 							'indieweb-post-kinds'
 						),
 					),
 					'summary'     => array(
-						'type' => 'textarea',
+						'type'  => 'textarea',
 						'label' => __( 'Summary', 'indieweb-post-kinds' ),
 					),
 					'publication' => array(
-						'type' => 'text',
+						'type'  => 'text',
 						'label' => __( 'Album', 'indieweb-post-kinds' ),
 					),
 					'published'   => array(
-						'type' => 'datetime',
+						'type'  => 'datetime',
 						'label' => __( 'Release Date', 'indieweb-post-kinds' ),
 					),
 					'category'    => array(
-						'type' => 'list',
+						'type'  => 'list',
 						'label' => __(
 							'Tags',
 							'indieweb-post-kinds'
 						),
 					),
 					'featured'    => array(
-						'type' => 'url',
+						'type'  => 'url',
 						'label' => __(
 							'Album Art',
 							'indieweb-post-kinds'
@@ -580,44 +580,44 @@ register_post_kind(
 		'properties'      => array(
 			'watch-of' => array(
 				'type'       => 'cite',
-				'label'       => __( 'Watching To', 'indieweb-post-kinds' ),
+				'label'      => __( 'Watching To', 'indieweb-post-kinds' ),
 				'properties' => array(
 					'name'        => array(
-						'type' => 'text',
+						'type'  => 'text',
 						'label' => __( 'Name', 'indieweb-post-kinds' ),
 					),
 					'url'         => array(
-						'type' => 'url',
+						'type'  => 'url',
 						'label' => __( 'URL', 'indieweb-post-kinds' ),
 					),
 					'author'      => array(
-						'type' => 'author',
+						'type'  => 'author',
 						'label' => __(
 							'Artist',
 							'indieweb-post-kinds'
 						),
 					),
 					'summary'     => array(
-						'type' => 'textarea',
+						'type'  => 'textarea',
 						'label' => __( 'Summary', 'indieweb-post-kinds' ),
 					),
 					'publication' => array(
-						'type' => 'text',
+						'type'  => 'text',
 						'label' => __( 'Series', 'indieweb-post-kinds' ),
 					),
 					'published'   => array(
-						'type' => 'datetime',
+						'type'  => 'datetime',
 						'label' => __( 'Release Date', 'indieweb-post-kinds' ),
 					),
 					'category'    => array(
-						'type' => 'list',
+						'type'  => 'list',
 						'label' => __(
 							'Tags',
 							'indieweb-post-kinds'
 						),
 					),
 					'featured'    => array(
-						'type' => 'url',
+						'type'  => 'url',
 						'label' => __(
 							'Poster',
 							'indieweb-post-kinds'
@@ -644,50 +644,50 @@ register_post_kind(
 		'properties'      => array(
 			'checkin' => array(
 				'type'       => 'venue',
-				'label'       => __( 'Checked In', 'indieweb-post-kinds' ),
+				'label'      => __( 'Checked In', 'indieweb-post-kinds' ),
 				'properties' => array(
 					'name'           => array(
-						'type' => 'name',
+						'type'  => 'name',
 						'label' => __( 'Name', 'indieweb-post-kinds' ),
 					),
 					'url'            => array(
-						'type' => 'url',
+						'type'  => 'url',
 						'label' => __( 'URL', 'indieweb-post-kinds' ),
 					),
 					'latitude'       => array(
-						'type' => 'number',
+						'type'  => 'number',
 						'label' => __(
 							'Latitude',
 							'indieweb-post-kinds'
 						),
-						'step' => 0.0000001,
+						'step'  => 0.0000001,
 					),
 					'longitude'      => array(
-						'type' => 'number',
+						'type'  => 'number',
 						'label' => __(
 							'Longitude',
 							'indieweb-post-kinds'
 						),
-						'step' => 0.0000001,
+						'step'  => 0.0000001,
 					),
 					'street-address' => array(
-						'type' => 'text',
+						'type'  => 'text',
 						'label' => __( 'Street Address', 'indieweb-post-kinds' ),
 					),
 					'locality'       => array(
-						'type' => 'text',
+						'type'  => 'text',
 						'label' => __( 'Locality', 'indieweb-post-kinds' ),
 					),
 					'region'         => array(
-						'type' => 'text',
+						'type'  => 'text',
 						'label' => __( 'Region', 'indieweb-post-kinds' ),
 					),
 					'country-name'   => array(
-						'type' => 'text',
+						'type'  => 'text',
 						'label' => __( 'Country Name', 'indieweb-post-kinds' ),
 					),
 					'postal-code'    => array(
-						'type' => 'text',
+						'type'  => 'text',
 						'label' => __( 'Postal Code', 'indieweb-post-kinds' ),
 					),
 				),
