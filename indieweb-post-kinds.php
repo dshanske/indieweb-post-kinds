@@ -55,6 +55,7 @@ class Post_Kinds_Plugin {
 		// Add Kind Taxonomy.
 		Kind_Taxonomy::init();
 		Kind_Taxonomy::register();
+		Kind_Citation::register();
 	}
 
 	public static function parse_this_error() {
