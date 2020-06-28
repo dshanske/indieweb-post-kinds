@@ -228,7 +228,7 @@ final class Kind_Taxonomy {
 	}
 
 	/**
-	 * Filter the post title.
+	 * Filter the post title. Add a symbol at the end if generated title.
 	 *
 	 * @access public
 	 *
