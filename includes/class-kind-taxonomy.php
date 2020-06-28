@@ -371,17 +371,32 @@ final class Kind_Taxonomy {
 		);
 		// Tag Archive for Kinds
 		add_rewrite_rule(
+			'kind/([a-z]+)/tag/([a-zA-Z0-9]+)/page/([0-9]{1,})/?$',
+			'index.php?tag=$matches[2]&kind=$matches[1]&paged=matches[3]',
+			'top'
+		);
+		add_rewrite_rule(
 			'kind/([a-z]+)/tag/([a-zA-Z0-9]+)/?$',
 			'index.php?tag=$matches[2]&kind=$matches[1]',
 			'top'
 		);
 		// Year and Month Archive for Kind
 		add_rewrite_rule(
+			'kind/([a-z]+)/([0-9]{4})/([0-9]{2})/page/([0-9]{1,})/?$',
+			'index.php?year=$matches[2]&monthnum=$matches[3]&kind=$matches[1]&paged=$matches[4]',
+			'top'
+		);
+		add_rewrite_rule(
 			'kind/([a-z]+)/([0-9]{4})/([0-9]{2})/?$',
 			'index.php?year=$matches[2]&monthnum=$matches[3]&kind=$matches[1]',
 			'top'
 		);
 		// Year Month and Day Archive for Kind
+		add_rewrite_rule(
+			'kind/([a-z]+)/([0-9]{4})/([0-9]{2})/([0-9]{2})/page/([0-9]{1,})/?$',
+			'index.php?year=$matches[2]&monthnum=$matches[3]&day=$matches[4]&kind=$matches[1]&paged=$matches[5]',
+			'top'
+		);
 		add_rewrite_rule(
 			'kind/([a-z]+)/([0-9]{4})/([0-9]{2})/([0-9]{2})/?$',
 			'index.php?year=$matches[2]&monthnum=$matches[3]&day=$matches[4]&kind=$matches[1]',
