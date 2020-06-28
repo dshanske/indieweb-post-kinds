@@ -427,8 +427,18 @@ final class Kind_Taxonomy {
 
 		// On This Day Archive
 		add_rewrite_rule(
+			'onthisday/([0-9]{2})/([0-9]{2})/map/page/([0-9]{1,})/?',
+			'index.php?monthnum=$matches[1]&day=$matches[2]&paged=$matches[3]&map=1',
+			'top'
+		);
+		add_rewrite_rule(
 			'onthisday/([0-9]{2})/([0-9]{2})/page/([0-9]{1,})/?',
 			'index.php?monthnum=$matches[1]&day=$matches[2]&paged=$matches[3]',
+			'top'
+		);
+		add_rewrite_rule(
+			'onthisday/([0-9]{2})/([0-9]{2})/map/?$',
+			'index.php?monthnum=$matches[1]&day=$matches[2]&map=1',
 			'top'
 		);
 		add_rewrite_rule(
