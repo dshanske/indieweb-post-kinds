@@ -1,0 +1,2344 @@
+# Copyright (C) 2020 David Shanske
+# This file is distributed under the same license as the Post Kinds plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: Post Kinds 3.3.3\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/indieweb-post-kinds\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2020-06-28T17:30:40+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.4.0\n"
+"X-Domain: indieweb-post-kinds\n"
+
+#. Plugin Name of the plugin
+#: includes/class-kind-config.php:215
+#: includes/class-kind-config.php:216
+#: includes/class-kind-config.php:222
+#: lib/parse-this/includes/class-rest-parse-this.php:29
+msgid "Post Kinds"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://wordpress.org/plugins/indieweb-post-kinds/"
+msgstr ""
+
+#. Description of the plugin
+msgid "Ever want to reply to someone else's post with a post on your own site? Or to \"like\" someone else's post, but with your own site?"
+msgstr ""
+
+#. Author of the plugin
+msgid "David Shanske"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://david.shanske.com"
+msgstr ""
+
+#: includes/class-kind-config.php:81
+msgid "Content Options"
+msgstr ""
+
+#: includes/class-kind-config.php:90
+msgid "Select All Kinds You Wish to Use"
+msgstr ""
+
+#: includes/class-kind-config.php:97
+msgid "Default Kind for New Posts"
+msgstr ""
+
+#: includes/class-kind-config.php:105
+msgid "Embed Sites into your Response"
+msgstr ""
+
+#: includes/class-kind-config.php:116
+msgid "Move Response to Bottom of Content"
+msgstr ""
+
+#: includes/class-kind-config.php:127
+msgid "Display Before Kind"
+msgstr ""
+
+#: includes/class-kind-config.php:135
+msgid "Show Icon"
+msgstr ""
+
+#: includes/class-kind-config.php:136
+msgid "Show Text"
+msgstr ""
+
+#: includes/class-kind-config.php:137
+msgid "Show Icon and Text"
+msgstr ""
+
+#: includes/class-kind-config.php:138
+msgid "Display Nothing"
+msgstr ""
+
+#: includes/class-kind-config.php:146
+msgid "Response Content Allowed Html Elements"
+msgstr ""
+
+#: includes/class-kind-config.php:329
+msgid "Indieweb Post Kinds"
+msgstr ""
+
+#: includes/class-kind-config.php:330
+msgid "Adds support for responding and interacting with other sites."
+msgstr ""
+
+#: includes/class-kind-config.php:353
+msgid "Post Properties"
+msgstr ""
+
+#: includes/class-kind-config.php:354
+msgid ""
+"\n"
+" \t\t\t\t\t\t\t<p> The Post Properties tab represents the Microformats properties of a Post. For different kinds of posts, the different\n"
+" \t\t\t\t\t\t\tfields mean something different. Example: Artist Name vs Author Name</p>\n"
+" \t\t\t\t\t\t\t<ul><strong>Main</strong>\n"
+" \t\t\t\t\t\t\t\t<li><strong>URL</strong> - The URL the post is responding to</li>\n"
+" \t\t\t\t\t\t\t\t<li><strong>Name/Title</strong> - The name of what is being responded to</li>\n"
+" \t\t\t\t\t\t\t\t<li><strong>Summary/Quote</strong> - Summary of what the post is responding to or quote</li>\n"
+" \t\t\t\t\t\t\t\t<li><strong>Tags</strong> - Tags or categories for the piece to be displayed as hashtags</li>\n"
+" \t\t\t\t\t\t\t</ul>\n"
+" \t\t\t\t\t\t\t<ul><strong>Details</strong>\n"
+" \t\t\t\t\t\t\t\t<li><strong>Site Name/Publication/Album</strong></li>\n"
+" \t\t\t\t\t\t\t\t<li><strong>Featured Image/Site Icon</strong> - The URL of a featured image of what is being responded to or a site icon</li>\n"
+" \t\t\t              \t\t\t\t<li><strong>Published Time</strong></li>\n"
+" \t\t\t              \t\t\t\t<li><strong>Updated Time</strong></li>\n"
+" \t\t\t\t\t\t\t</ul>\n"
+" \t\t\t\t\t\t\t<ul><strong>Author</strong>\n"
+" \t\t\t\t\t\t\t\t<li><strong>Author/Artist Name</strong> </li>\n"
+" \t\t\t\t\t\t\t\t<li><strong>Author/Artist URL</strong></li>\n"
+" \t\t\t\t\t\t\t\t<li><strong>Author/Artist Photo URL</strong></li>\n"
+" \t\t\t\t\t\t\t</ul>\n"
+" \t\t\t\t\t\t\t<ul><strong>Other</strong>\n"
+" \t\t\t              \t\t\t\t<li><strong>Start Time</strong></li>\n"
+" \t\t\t              \t\t\t\t<li><strong>End Time</strong></li>\n"
+" \t\t\t\t\t\t\t\t<li><strong>Duration</strong> - Duration is calculated based on the difference between start and end time. You may just use the time field, \n"
+" \t\t\t\t\t\t\t\tomitting date and timezone and setting start time to 0:00:00 to set a simple duration.</li> \n"
+" \t\t\t\t\t\t\t\t<li><strong>RSVP</strong> - For RSVP posts, you can specify whether you are attending, not attending, unsure, or simply interested.</li>\n"
+" \t\t\t            \t\t\t</ul>\n"
+" \t\t\t\t\t\t"
+msgstr ""
+
+#: includes/class-kind-fields.php:27
+msgid "(GMT-11:00) Niue"
+msgstr ""
+
+#: includes/class-kind-fields.php:28
+msgid "(GMT-11:00) Pago Pago"
+msgstr ""
+
+#: includes/class-kind-fields.php:29
+msgid "(GMT-10:00) Hawaii Time"
+msgstr ""
+
+#: includes/class-kind-fields.php:30
+msgid "(GMT-10:00) Rarotonga"
+msgstr ""
+
+#: includes/class-kind-fields.php:31
+msgid "(GMT-10:00) Tahiti"
+msgstr ""
+
+#: includes/class-kind-fields.php:32
+msgid "(GMT-09:30) Marquesas"
+msgstr ""
+
+#: includes/class-kind-fields.php:33
+msgid "(GMT-09:00) Alaska Time"
+msgstr ""
+
+#: includes/class-kind-fields.php:34
+msgid "(GMT-09:00) Gambier"
+msgstr ""
+
+#: includes/class-kind-fields.php:35
+msgid "(GMT-08:00) Pacific Time"
+msgstr ""
+
+#: includes/class-kind-fields.php:36
+msgid "(GMT-08:00) Pacific Time - Tijuana"
+msgstr ""
+
+#: includes/class-kind-fields.php:37
+msgid "(GMT-08:00) Pacific Time - Vancouver"
+msgstr ""
+
+#: includes/class-kind-fields.php:38
+msgid "(GMT-08:00) Pacific Time - Whitehorse"
+msgstr ""
+
+#: includes/class-kind-fields.php:39
+msgid "(GMT-08:00) Pitcairn"
+msgstr ""
+
+#: includes/class-kind-fields.php:40
+msgid "(GMT-07:00) Mountain Time - Dawson Creek"
+msgstr ""
+
+#: includes/class-kind-fields.php:41
+msgid "(GMT-07:00) Mountain Time"
+msgstr ""
+
+#: includes/class-kind-fields.php:42
+msgid "(GMT-07:00) Mountain Time - Edmonton"
+msgstr ""
+
+#: includes/class-kind-fields.php:43
+msgid "(GMT-07:00) Mountain Time - Hermosillo"
+msgstr ""
+
+#: includes/class-kind-fields.php:44
+msgid "(GMT-07:00) Mountain Time - Chihuahua, Mazatlan"
+msgstr ""
+
+#: includes/class-kind-fields.php:45
+msgid "(GMT-07:00) Mountain Time - Arizona"
+msgstr ""
+
+#: includes/class-kind-fields.php:46
+msgid "(GMT-07:00) Mountain Time - Yellowknife"
+msgstr ""
+
+#: includes/class-kind-fields.php:47
+msgid "(GMT-06:00) Belize"
+msgstr ""
+
+#: includes/class-kind-fields.php:48
+msgid "(GMT-06:00) Central Time"
+msgstr ""
+
+#: includes/class-kind-fields.php:49
+msgid "(GMT-06:00) Costa Rica"
+msgstr ""
+
+#: includes/class-kind-fields.php:50
+msgid "(GMT-06:00) El Salvador"
+msgstr ""
+
+#: includes/class-kind-fields.php:51
+msgid "(GMT-06:00) Guatemala"
+msgstr ""
+
+#: includes/class-kind-fields.php:52
+msgid "(GMT-06:00) Managua"
+msgstr ""
+
+#: includes/class-kind-fields.php:53
+msgid "(GMT-06:00) Central Time - Mexico City"
+msgstr ""
+
+#: includes/class-kind-fields.php:54
+msgid "(GMT-06:00) Central Time - Regina"
+msgstr ""
+
+#: includes/class-kind-fields.php:55
+msgid "(GMT-06:00) Central Time - Tegucigalpa"
+msgstr ""
+
+#: includes/class-kind-fields.php:56
+msgid "(GMT-06:00) Central Time - Winnipeg"
+msgstr ""
+
+#: includes/class-kind-fields.php:57
+msgid "(GMT-06:00) Galapagos"
+msgstr ""
+
+#: includes/class-kind-fields.php:58
+msgid "(GMT-05:00) Bogota"
+msgstr ""
+
+#: includes/class-kind-fields.php:59
+msgid "(GMT-05:00) America Cancun"
+msgstr ""
+
+#: includes/class-kind-fields.php:60
+msgid "(GMT-05:00) Cayman"
+msgstr ""
+
+#: includes/class-kind-fields.php:61
+msgid "(GMT-05:00) Guayaquil"
+msgstr ""
+
+#: includes/class-kind-fields.php:62
+msgid "(GMT-05:00) Havana"
+msgstr ""
+
+#: includes/class-kind-fields.php:63
+msgid "(GMT-05:00) Eastern Time - Iqaluit"
+msgstr ""
+
+#: includes/class-kind-fields.php:64
+msgid "(GMT-05:00) Jamaica"
+msgstr ""
+
+#: includes/class-kind-fields.php:65
+msgid "(GMT-05:00) Lima"
+msgstr ""
+
+#: includes/class-kind-fields.php:66
+msgid "(GMT-05:00) Nassau"
+msgstr ""
+
+#: includes/class-kind-fields.php:67
+msgid "(GMT-05:00) Eastern Time"
+msgstr ""
+
+#: includes/class-kind-fields.php:68
+msgid "(GMT-05:00) Panama"
+msgstr ""
+
+#: includes/class-kind-fields.php:69
+msgid "(GMT-05:00) Port-au-Prince"
+msgstr ""
+
+#: includes/class-kind-fields.php:70
+msgid "(GMT-05:00) Rio Branco"
+msgstr ""
+
+#: includes/class-kind-fields.php:71
+msgid "(GMT-05:00) Eastern Time - Toronto"
+msgstr ""
+
+#: includes/class-kind-fields.php:72
+msgid "(GMT-05:00) Easter Island"
+msgstr ""
+
+#: includes/class-kind-fields.php:73
+msgid "(GMT-04:30) Caracas"
+msgstr ""
+
+#: includes/class-kind-fields.php:74
+msgid "(GMT-03:00) Asuncion"
+msgstr ""
+
+#: includes/class-kind-fields.php:75
+msgid "(GMT-04:00) Barbados"
+msgstr ""
+
+#: includes/class-kind-fields.php:76
+msgid "(GMT-04:00) Boa Vista"
+msgstr ""
+
+#: includes/class-kind-fields.php:77
+msgid "(GMT-03:00) Campo Grande"
+msgstr ""
+
+#: includes/class-kind-fields.php:78
+msgid "(GMT-03:00) Cuiaba"
+msgstr ""
+
+#: includes/class-kind-fields.php:79
+msgid "(GMT-04:00) Curacao"
+msgstr ""
+
+#: includes/class-kind-fields.php:80
+msgid "(GMT-04:00) Grand Turk"
+msgstr ""
+
+#: includes/class-kind-fields.php:81
+msgid "(GMT-04:00) Guyana"
+msgstr ""
+
+#: includes/class-kind-fields.php:82
+msgid "(GMT-04:00) Atlantic Time - Halifax"
+msgstr ""
+
+#: includes/class-kind-fields.php:83
+msgid "(GMT-04:00) La Paz"
+msgstr ""
+
+#: includes/class-kind-fields.php:84
+msgid "(GMT-04:00) Manaus"
+msgstr ""
+
+#: includes/class-kind-fields.php:85
+msgid "(GMT-04:00) Martinique"
+msgstr ""
+
+#: includes/class-kind-fields.php:86
+msgid "(GMT-04:00) Port of Spain"
+msgstr ""
+
+#: includes/class-kind-fields.php:87
+msgid "(GMT-04:00) Porto Velho"
+msgstr ""
+
+#: includes/class-kind-fields.php:88
+msgid "(GMT-04:00) Puerto Rico"
+msgstr ""
+
+#: includes/class-kind-fields.php:89
+msgid "(GMT-04:00) Santo Domingo"
+msgstr ""
+
+#: includes/class-kind-fields.php:90
+msgid "(GMT-04:00) Thule"
+msgstr ""
+
+#: includes/class-kind-fields.php:91
+msgid "(GMT-04:00) Bermuda"
+msgstr ""
+
+#: includes/class-kind-fields.php:92
+msgid "(GMT-03:30) Newfoundland Time - St. Johns"
+msgstr ""
+
+#: includes/class-kind-fields.php:93
+msgid "(GMT-03:00) Araguaina"
+msgstr ""
+
+#: includes/class-kind-fields.php:94
+msgid "(GMT-03:00) Buenos Aires"
+msgstr ""
+
+#: includes/class-kind-fields.php:95
+msgid "(GMT-03:00) Salvador"
+msgstr ""
+
+#: includes/class-kind-fields.php:96
+msgid "(GMT-03:00) Belem"
+msgstr ""
+
+#: includes/class-kind-fields.php:97
+msgid "(GMT-03:00) Cayenne"
+msgstr ""
+
+#: includes/class-kind-fields.php:98
+msgid "(GMT-03:00) Fortaleza"
+msgstr ""
+
+#: includes/class-kind-fields.php:99
+msgid "(GMT-03:00) Godthab"
+msgstr ""
+
+#: includes/class-kind-fields.php:100
+msgid "(GMT-03:00) Maceio"
+msgstr ""
+
+#: includes/class-kind-fields.php:101
+msgid "(GMT-03:00) Miquelon"
+msgstr ""
+
+#: includes/class-kind-fields.php:102
+msgid "(GMT-03:00) Montevideo"
+msgstr ""
+
+#: includes/class-kind-fields.php:103
+msgid "(GMT-03:00) Paramaribo"
+msgstr ""
+
+#: includes/class-kind-fields.php:104
+msgid "(GMT-03:00) Recife"
+msgstr ""
+
+#: includes/class-kind-fields.php:105
+msgid "(GMT-03:00) Santiago"
+msgstr ""
+
+#: includes/class-kind-fields.php:106
+msgid "(GMT-02:00) Sao Paulo"
+msgstr ""
+
+#: includes/class-kind-fields.php:107
+msgid "(GMT-03:00) Palmer"
+msgstr ""
+
+#: includes/class-kind-fields.php:108
+msgid "(GMT-03:00) Rothera"
+msgstr ""
+
+#: includes/class-kind-fields.php:109
+msgid "(GMT-03:00) Stanley"
+msgstr ""
+
+#: includes/class-kind-fields.php:110
+msgid "(GMT-02:00) Noronha"
+msgstr ""
+
+#: includes/class-kind-fields.php:111
+msgid "(GMT-02:00) South Georgia"
+msgstr ""
+
+#: includes/class-kind-fields.php:112
+msgid "(GMT-01:00) Scoresbysund"
+msgstr ""
+
+#: includes/class-kind-fields.php:113
+msgid "(GMT-01:00) Azores"
+msgstr ""
+
+#: includes/class-kind-fields.php:114
+msgid "(GMT-01:00) Cape Verde"
+msgstr ""
+
+#: includes/class-kind-fields.php:115
+msgid "(GMT+00:00) Abidjan"
+msgstr ""
+
+#: includes/class-kind-fields.php:116
+msgid "(GMT+00:00) Accra"
+msgstr ""
+
+#: includes/class-kind-fields.php:117
+msgid "(GMT+00:00) Bissau"
+msgstr ""
+
+#: includes/class-kind-fields.php:118
+msgid "(GMT+00:00) Casablanca"
+msgstr ""
+
+#: includes/class-kind-fields.php:119
+msgid "(GMT+00:00) El Aaiun"
+msgstr ""
+
+#: includes/class-kind-fields.php:120
+msgid "(GMT+00:00) Monrovia"
+msgstr ""
+
+#: includes/class-kind-fields.php:121
+msgid "(GMT+00:00) Danmarkshavn"
+msgstr ""
+
+#: includes/class-kind-fields.php:122
+msgid "(GMT+00:00) Canary Islands"
+msgstr ""
+
+#: includes/class-kind-fields.php:123
+msgid "(GMT+00:00) Faeroe"
+msgstr ""
+
+#: includes/class-kind-fields.php:124
+msgid "(GMT+00:00) Reykjavik"
+msgstr ""
+
+#: includes/class-kind-fields.php:125
+msgid "(GMT+00:00) GMT (no daylight saving)"
+msgstr ""
+
+#: includes/class-kind-fields.php:126
+msgid "(GMT+00:00) Dublin"
+msgstr ""
+
+#: includes/class-kind-fields.php:127
+msgid "(GMT+00:00) Lisbon"
+msgstr ""
+
+#: includes/class-kind-fields.php:128
+msgid "(GMT+00:00) London"
+msgstr ""
+
+#: includes/class-kind-fields.php:129
+msgid "(GMT+01:00) Algiers"
+msgstr ""
+
+#: includes/class-kind-fields.php:130
+msgid "(GMT+01:00) Ceuta"
+msgstr ""
+
+#: includes/class-kind-fields.php:131
+msgid "(GMT+01:00) Lagos"
+msgstr ""
+
+#: includes/class-kind-fields.php:132
+msgid "(GMT+01:00) Ndjamena"
+msgstr ""
+
+#: includes/class-kind-fields.php:133
+msgid "(GMT+01:00) Tunis"
+msgstr ""
+
+#: includes/class-kind-fields.php:134
+msgid "(GMT+02:00) Windhoek"
+msgstr ""
+
+#: includes/class-kind-fields.php:135
+msgid "(GMT+01:00) Amsterdam"
+msgstr ""
+
+#: includes/class-kind-fields.php:136
+msgid "(GMT+01:00) Andorra"
+msgstr ""
+
+#: includes/class-kind-fields.php:137
+msgid "(GMT+01:00) Central European Time - Belgrade"
+msgstr ""
+
+#: includes/class-kind-fields.php:138
+msgid "(GMT+01:00) Berlin"
+msgstr ""
+
+#: includes/class-kind-fields.php:139
+msgid "(GMT+01:00) Brussels"
+msgstr ""
+
+#: includes/class-kind-fields.php:140
+msgid "(GMT+01:00) Budapest"
+msgstr ""
+
+#: includes/class-kind-fields.php:141
+msgid "(GMT+01:00) Copenhagen"
+msgstr ""
+
+#: includes/class-kind-fields.php:142
+msgid "(GMT+01:00) Gibraltar"
+msgstr ""
+
+#: includes/class-kind-fields.php:143
+msgid "(GMT+01:00) Luxembourg"
+msgstr ""
+
+#: includes/class-kind-fields.php:144
+msgid "(GMT+01:00) Madrid"
+msgstr ""
+
+#: includes/class-kind-fields.php:145
+msgid "(GMT+01:00) Malta"
+msgstr ""
+
+#: includes/class-kind-fields.php:146
+msgid "(GMT+01:00) Monaco"
+msgstr ""
+
+#: includes/class-kind-fields.php:147
+msgid "(GMT+01:00) Oslo"
+msgstr ""
+
+#: includes/class-kind-fields.php:148
+msgid "(GMT+01:00) Paris"
+msgstr ""
+
+#: includes/class-kind-fields.php:149
+msgid "(GMT+01:00) Central European Time - Prague"
+msgstr ""
+
+#: includes/class-kind-fields.php:150
+msgid "(GMT+01:00) Rome"
+msgstr ""
+
+#: includes/class-kind-fields.php:151
+msgid "(GMT+01:00) Stockholm"
+msgstr ""
+
+#: includes/class-kind-fields.php:152
+msgid "(GMT+01:00) Tirane"
+msgstr ""
+
+#: includes/class-kind-fields.php:153
+msgid "(GMT+01:00) Vienna"
+msgstr ""
+
+#: includes/class-kind-fields.php:154
+msgid "(GMT+01:00) Warsaw"
+msgstr ""
+
+#: includes/class-kind-fields.php:155
+msgid "(GMT+01:00) Zurich"
+msgstr ""
+
+#: includes/class-kind-fields.php:156
+msgid "(GMT+02:00) Cairo"
+msgstr ""
+
+#: includes/class-kind-fields.php:157
+msgid "(GMT+02:00) Johannesburg"
+msgstr ""
+
+#: includes/class-kind-fields.php:158
+msgid "(GMT+02:00) Maputo"
+msgstr ""
+
+#: includes/class-kind-fields.php:159
+msgid "(GMT+02:00) Tripoli"
+msgstr ""
+
+#: includes/class-kind-fields.php:160
+msgid "(GMT+02:00) Amman"
+msgstr ""
+
+#: includes/class-kind-fields.php:161
+msgid "(GMT+02:00) Beirut"
+msgstr ""
+
+#: includes/class-kind-fields.php:162
+msgid "(GMT+02:00) Damascus"
+msgstr ""
+
+#: includes/class-kind-fields.php:163
+msgid "(GMT+02:00) Gaza"
+msgstr ""
+
+#: includes/class-kind-fields.php:164
+msgid "(GMT+02:00) Jerusalem"
+msgstr ""
+
+#: includes/class-kind-fields.php:165
+msgid "(GMT+02:00) Nicosia"
+msgstr ""
+
+#: includes/class-kind-fields.php:166
+msgid "(GMT+02:00) Athens"
+msgstr ""
+
+#: includes/class-kind-fields.php:167
+msgid "(GMT+02:00) Bucharest"
+msgstr ""
+
+#: includes/class-kind-fields.php:168
+msgid "(GMT+02:00) Chisinau"
+msgstr ""
+
+#: includes/class-kind-fields.php:169
+msgid "(GMT+02:00) Helsinki"
+msgstr ""
+
+#: includes/class-kind-fields.php:170
+msgid "(GMT+02:00) Istanbul"
+msgstr ""
+
+#: includes/class-kind-fields.php:171
+msgid "(GMT+02:00) Moscow-01 - Kaliningrad"
+msgstr ""
+
+#: includes/class-kind-fields.php:172
+msgid "(GMT+02:00) Kiev"
+msgstr ""
+
+#: includes/class-kind-fields.php:173
+msgid "(GMT+02:00) Riga"
+msgstr ""
+
+#: includes/class-kind-fields.php:174
+msgid "(GMT+02:00) Sofia"
+msgstr ""
+
+#: includes/class-kind-fields.php:175
+msgid "(GMT+02:00) Tallinn"
+msgstr ""
+
+#: includes/class-kind-fields.php:176
+msgid "(GMT+02:00) Vilnius"
+msgstr ""
+
+#: includes/class-kind-fields.php:177
+msgid "(GMT+03:00) Khartoum"
+msgstr ""
+
+#: includes/class-kind-fields.php:178
+msgid "(GMT+03:00) Nairobi"
+msgstr ""
+
+#: includes/class-kind-fields.php:179
+msgid "(GMT+03:00) Syowa"
+msgstr ""
+
+#: includes/class-kind-fields.php:180
+msgid "(GMT+03:00) Baghdad"
+msgstr ""
+
+#: includes/class-kind-fields.php:181
+msgid "(GMT+03:00) Qatar"
+msgstr ""
+
+#: includes/class-kind-fields.php:182
+msgid "(GMT+03:00) Riyadh"
+msgstr ""
+
+#: includes/class-kind-fields.php:183
+msgid "(GMT+03:00) Minsk"
+msgstr ""
+
+#: includes/class-kind-fields.php:184
+msgid "(GMT+03:00) Moscow+00 - Moscow"
+msgstr ""
+
+#: includes/class-kind-fields.php:185
+msgid "(GMT+03:30) Tehran"
+msgstr ""
+
+#: includes/class-kind-fields.php:186
+msgid "(GMT+04:00) Baku"
+msgstr ""
+
+#: includes/class-kind-fields.php:187
+msgid "(GMT+04:00) Dubai"
+msgstr ""
+
+#: includes/class-kind-fields.php:188
+msgid "(GMT+04:00) Tbilisi"
+msgstr ""
+
+#: includes/class-kind-fields.php:189
+msgid "(GMT+04:00) Yerevan"
+msgstr ""
+
+#: includes/class-kind-fields.php:190
+msgid "(GMT+04:00) Moscow+01 - Samara"
+msgstr ""
+
+#: includes/class-kind-fields.php:191
+msgid "(GMT+04:00) Mahe"
+msgstr ""
+
+#: includes/class-kind-fields.php:192
+msgid "(GMT+04:00) Mauritius"
+msgstr ""
+
+#: includes/class-kind-fields.php:193
+msgid "(GMT+04:00) Reunion"
+msgstr ""
+
+#: includes/class-kind-fields.php:194
+msgid "(GMT+04:30) Kabul"
+msgstr ""
+
+#: includes/class-kind-fields.php:195
+msgid "(GMT+05:00) Mawson"
+msgstr ""
+
+#: includes/class-kind-fields.php:196
+msgid "(GMT+05:00) Aqtau"
+msgstr ""
+
+#: includes/class-kind-fields.php:197
+msgid "(GMT+05:00) Aqtobe"
+msgstr ""
+
+#: includes/class-kind-fields.php:198
+msgid "(GMT+05:00) Ashgabat"
+msgstr ""
+
+#: includes/class-kind-fields.php:199
+msgid "(GMT+05:00) Dushanbe"
+msgstr ""
+
+#: includes/class-kind-fields.php:200
+msgid "(GMT+05:00) Karachi"
+msgstr ""
+
+#: includes/class-kind-fields.php:201
+msgid "(GMT+05:00) Tashkent"
+msgstr ""
+
+#: includes/class-kind-fields.php:202
+msgid "(GMT+05:00) Moscow+02 - Yekaterinburg"
+msgstr ""
+
+#: includes/class-kind-fields.php:203
+msgid "(GMT+05:00) Kerguelen"
+msgstr ""
+
+#: includes/class-kind-fields.php:204
+msgid "(GMT+05:00) Maldives"
+msgstr ""
+
+#: includes/class-kind-fields.php:205
+msgid "(GMT+05:30) India Standard Time"
+msgstr ""
+
+#: includes/class-kind-fields.php:206
+msgid "(GMT+05:30) Colombo"
+msgstr ""
+
+#: includes/class-kind-fields.php:207
+msgid "(GMT+05:45) Katmandu"
+msgstr ""
+
+#: includes/class-kind-fields.php:208
+msgid "(GMT+06:00) Vostok"
+msgstr ""
+
+#: includes/class-kind-fields.php:209
+msgid "(GMT+06:00) Almaty"
+msgstr ""
+
+#: includes/class-kind-fields.php:210
+msgid "(GMT+06:00) Bishkek"
+msgstr ""
+
+#: includes/class-kind-fields.php:211
+msgid "(GMT+06:00) Dhaka"
+msgstr ""
+
+#: includes/class-kind-fields.php:212
+msgid "(GMT+06:00) Moscow+03 - Omsk, Novosibirsk"
+msgstr ""
+
+#: includes/class-kind-fields.php:213
+msgid "(GMT+06:00) Thimphu"
+msgstr ""
+
+#: includes/class-kind-fields.php:214
+msgid "(GMT+06:00) Chagos"
+msgstr ""
+
+#: includes/class-kind-fields.php:215
+msgid "(GMT+06:30) Rangoon"
+msgstr ""
+
+#: includes/class-kind-fields.php:216
+msgid "(GMT+06:30) Cocos"
+msgstr ""
+
+#: includes/class-kind-fields.php:217
+msgid "(GMT+07:00) Davis"
+msgstr ""
+
+#: includes/class-kind-fields.php:218
+msgid "(GMT+07:00) Bangkok"
+msgstr ""
+
+#: includes/class-kind-fields.php:219
+msgid "(GMT+07:00) Hovd"
+msgstr ""
+
+#: includes/class-kind-fields.php:220
+msgid "(GMT+07:00) Jakarta"
+msgstr ""
+
+#: includes/class-kind-fields.php:221
+msgid "(GMT+07:00) Moscow+04 - Krasnoyarsk"
+msgstr ""
+
+#: includes/class-kind-fields.php:222
+msgid "(GMT+07:00) Hanoi"
+msgstr ""
+
+#: includes/class-kind-fields.php:223
+msgid "(GMT+07:00) Ho Chi Minh"
+msgstr ""
+
+#: includes/class-kind-fields.php:224
+msgid "(GMT+07:00) Christmas"
+msgstr ""
+
+#: includes/class-kind-fields.php:225
+msgid "(GMT+08:00) Casey"
+msgstr ""
+
+#: includes/class-kind-fields.php:226
+msgid "(GMT+08:00) Brunei"
+msgstr ""
+
+#: includes/class-kind-fields.php:227
+msgid "(GMT+08:00) Choibalsan"
+msgstr ""
+
+#: includes/class-kind-fields.php:228
+msgid "(GMT+08:00) Hong Kong"
+msgstr ""
+
+#: includes/class-kind-fields.php:229
+msgid "(GMT+08:00) Moscow+05 - Irkutsk"
+msgstr ""
+
+#: includes/class-kind-fields.php:230
+msgid "(GMT+08:00) Kuala Lumpur"
+msgstr ""
+
+#: includes/class-kind-fields.php:231
+msgid "(GMT+08:00) Macau"
+msgstr ""
+
+#: includes/class-kind-fields.php:232
+msgid "(GMT+08:00) Makassar"
+msgstr ""
+
+#: includes/class-kind-fields.php:233
+msgid "(GMT+08:00) Manila"
+msgstr ""
+
+#: includes/class-kind-fields.php:234
+msgid "(GMT+08:00) China Time - Beijing"
+msgstr ""
+
+#: includes/class-kind-fields.php:235
+msgid "(GMT+08:00) Singapore"
+msgstr ""
+
+#: includes/class-kind-fields.php:236
+msgid "(GMT+08:00) Taipei"
+msgstr ""
+
+#: includes/class-kind-fields.php:237
+msgid "(GMT+08:00) Ulaanbaatar"
+msgstr ""
+
+#: includes/class-kind-fields.php:238
+msgid "(GMT+08:00) Western Time - Perth"
+msgstr ""
+
+#: includes/class-kind-fields.php:239
+msgid "(GMT+08:30) Pyongyang"
+msgstr ""
+
+#: includes/class-kind-fields.php:240
+msgid "(GMT+09:00) Dili"
+msgstr ""
+
+#: includes/class-kind-fields.php:241
+msgid "(GMT+09:00) Jayapura"
+msgstr ""
+
+#: includes/class-kind-fields.php:242
+msgid "(GMT+09:00) Seoul"
+msgstr ""
+
+#: includes/class-kind-fields.php:243
+msgid "(GMT+09:00) Tokyo"
+msgstr ""
+
+#: includes/class-kind-fields.php:244
+msgid "(GMT+09:00) Moscow+06 - Yakutsk"
+msgstr ""
+
+#: includes/class-kind-fields.php:245
+msgid "(GMT+09:00) Palau"
+msgstr ""
+
+#: includes/class-kind-fields.php:246
+msgid "(GMT+10:30) Central Time - Adelaide"
+msgstr ""
+
+#: includes/class-kind-fields.php:247
+msgid "(GMT+09:30) Central Time - Darwin"
+msgstr ""
+
+#: includes/class-kind-fields.php:249
+msgid "(GMT+10:00) Moscow+07 - Magadan"
+msgstr ""
+
+#: includes/class-kind-fields.php:250
+msgid "(GMT+10:00) Moscow+07 - Yuzhno-Sakhalinsk"
+msgstr ""
+
+#: includes/class-kind-fields.php:251
+msgid "(GMT+10:00) Eastern Time - Brisbane"
+msgstr ""
+
+#: includes/class-kind-fields.php:252
+msgid "(GMT+11:00) Eastern Time - Hobart"
+msgstr ""
+
+#: includes/class-kind-fields.php:253
+msgid "(GMT+11:00) Eastern Time - Melbourne, Sydney"
+msgstr ""
+
+#: includes/class-kind-fields.php:254
+msgid "(GMT+10:00) Truk"
+msgstr ""
+
+#: includes/class-kind-fields.php:255
+msgid "(GMT+10:00) Guam"
+msgstr ""
+
+#: includes/class-kind-fields.php:256
+msgid "(GMT+10:00) Port Moresby"
+msgstr ""
+
+#: includes/class-kind-fields.php:257
+msgid "(GMT+11:00) Efate"
+msgstr ""
+
+#: includes/class-kind-fields.php:258
+msgid "(GMT+11:00) Guadalcanal"
+msgstr ""
+
+#: includes/class-kind-fields.php:259
+msgid "(GMT+11:00) Kosrae"
+msgstr ""
+
+#: includes/class-kind-fields.php:260
+msgid "(GMT+11:00) Norfolk"
+msgstr ""
+
+#: includes/class-kind-fields.php:261
+msgid "(GMT+11:00) Noumea"
+msgstr ""
+
+#: includes/class-kind-fields.php:262
+msgid "(GMT+11:00) Ponape"
+msgstr ""
+
+#: includes/class-kind-fields.php:263
+msgid "(GMT+12:00) Moscow+09 - Petropavlovsk-Kamchatskiy"
+msgstr ""
+
+#: includes/class-kind-fields.php:264
+msgid "(GMT+13:00) Auckland"
+msgstr ""
+
+#: includes/class-kind-fields.php:265
+msgid "(GMT+13:00) Fiji"
+msgstr ""
+
+#: includes/class-kind-fields.php:266
+msgid "(GMT+12:00) Funafuti"
+msgstr ""
+
+#: includes/class-kind-fields.php:267
+msgid "(GMT+12:00) Kwajalein"
+msgstr ""
+
+#: includes/class-kind-fields.php:268
+msgid "(GMT+12:00) Majuro"
+msgstr ""
+
+#: includes/class-kind-fields.php:269
+msgid "(GMT+12:00) Nauru"
+msgstr ""
+
+#: includes/class-kind-fields.php:270
+msgid "(GMT+12:00) Tarawa"
+msgstr ""
+
+#: includes/class-kind-fields.php:271
+msgid "(GMT+12:00) Wake"
+msgstr ""
+
+#: includes/class-kind-fields.php:272
+msgid "(GMT+12:00) Wallis"
+msgstr ""
+
+#: includes/class-kind-fields.php:273
+msgid "(GMT+14:00) Apia"
+msgstr ""
+
+#: includes/class-kind-fields.php:274
+msgid "(GMT+13:00) Enderbury"
+msgstr ""
+
+#: includes/class-kind-fields.php:275
+msgid "(GMT+13:00) Fakaofo"
+msgstr ""
+
+#: includes/class-kind-fields.php:276
+msgid "(GMT+13:00) Tongatapu"
+msgstr ""
+
+#: includes/class-kind-fields.php:277
+msgid "(GMT+14:00) Kiritimati"
+msgstr ""
+
+#: includes/class-kind-fields.php:385
+msgid "Author Name"
+msgstr ""
+
+#: includes/class-kind-fields.php:389
+#: templates/reply-author.php:12
+msgid "Author URL"
+msgstr ""
+
+#: includes/class-kind-fields.php:393
+msgid "Author Photo"
+msgstr ""
+
+#: includes/class-kind-menu-widget.php:10
+msgid "Kind Menu Widget"
+msgstr ""
+
+#: includes/class-kind-menu-widget.php:13
+msgid "A widget that allows you to display a menu of kind archives"
+msgstr ""
+
+#. translators: 1. Blog Title 2. Kind Singular Name
+#: includes/class-kind-menu-widget.php:55
+msgid "title=\"%1$s %2$s Feed\""
+msgstr ""
+
+#: includes/class-kind-menu-widget.php:71
+msgid "All Posts"
+msgstr ""
+
+#: includes/class-kind-menu-widget.php:115
+#: includes/class-kind-post-widget.php:128
+msgid "Title: "
+msgstr ""
+
+#: includes/class-kind-menu-widget.php:136
+msgid "Show Link to All:"
+msgstr ""
+
+#: includes/class-kind-menu-widget.php:141
+msgid "Show Count:"
+msgstr ""
+
+#: includes/class-kind-metabox.php:154
+msgid "Your URL has been successfully retrieved and parsed"
+msgstr ""
+
+#: includes/class-kind-metabox.php:155
+msgid "Are you sure you want to clear post properties?"
+msgstr ""
+
+#: includes/class-kind-metabox.php:273
+#: includes/register-kinds.php:449
+msgid "Yes"
+msgstr ""
+
+#: includes/class-kind-metabox.php:274
+#: includes/register-kinds.php:450
+msgid "No"
+msgstr ""
+
+#: includes/class-kind-metabox.php:275
+#: includes/register-kinds.php:451
+msgid "Maybe"
+msgstr ""
+
+#: includes/class-kind-metabox.php:276
+#: includes/register-kinds.php:452
+msgid "Interested"
+msgstr ""
+
+#: includes/class-kind-metabox.php:277
+#: includes/register-kinds.php:453
+msgid "Remote"
+msgstr ""
+
+#: includes/class-kind-metabox.php:299
+#: includes/register-kinds.php:441
+msgid "RSVP"
+msgstr ""
+
+#: includes/class-kind-metabox.php:314
+msgid "Response Properties"
+msgstr ""
+
+#: includes/class-kind-plugins.php:79
+msgctxt "direct article"
+msgid "this"
+msgstr ""
+
+#: includes/class-kind-post-widget.php:10
+msgid "Kind Post Widget"
+msgstr ""
+
+#: includes/class-kind-post-widget.php:13
+msgid "A widget that allows you to display a list of posts by type"
+msgstr ""
+
+#: includes/class-kind-post-widget.php:148
+msgid "Number of Posts:"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:154
+msgid "Post Kind"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:325
+msgctxt "taxonomy general name"
+msgid "Kinds"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:326
+msgctxt "taxonomy singular name"
+msgid "Kind"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:327
+msgctxt "search locations"
+msgid "Search Kinds"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:328
+msgctxt "popular kinds"
+msgid "Popular Kinds"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:329
+msgctxt "all taxonomy items"
+msgid "All Kinds"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:330
+msgctxt "taxonomy parent item"
+msgid "Parent Kind"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:331
+msgctxt "taxonomy parent item with colon"
+msgid "Parent Kind:"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:332
+msgctxt "edit taxonomy item"
+msgid "Edit Kind"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:333
+msgctxt "view taxonomy item"
+msgid "View Kind"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:334
+msgctxt "update taxonomy item"
+msgid "Update Kind"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:335
+msgctxt "add taxonomy item"
+msgid "Add New Kind"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:336
+msgctxt "new taxonomy item"
+msgid "New Kind"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:337
+msgctxt "separate kinds with commas"
+msgid "Separate kinds with commas"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:338
+msgctxt "add or remove items"
+msgid "Add or remove kinds"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:339
+msgctxt "choose most used"
+msgid "Choose from the most used kinds"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:340
+msgctxt "no kinds found"
+msgid "No kinds found"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:341
+msgctxt "no kinds"
+msgid "No kinds"
+msgstr ""
+
+#. translators: 1: Kinds. Yearly archive title. 2: Year
+#. translators: Monthly archive title. 1: Month name and year
+#. translators: Daily archive title. 1: Date
+#: includes/class-kind-taxonomy.php:568
+#: includes/class-kind-taxonomy.php:571
+#: includes/class-kind-taxonomy.php:574
+#: includes/class-kind-taxonomy.php:582
+#: includes/class-kind-taxonomy.php:635
+msgid "%1$1s: %2$2s"
+msgstr ""
+
+#. translators: 1: Kinds. Yearly archive title. 2: Year
+#: includes/class-kind-taxonomy.php:568
+msgctxt "yearly archives date format"
+msgid "Y"
+msgstr ""
+
+#. translators: Monthly archive title. 1: Month name and year
+#: includes/class-kind-taxonomy.php:571
+msgctxt "monthly archives date format"
+msgid "F Y"
+msgstr ""
+
+#. translators: Daily archive title. 1: Date
+#: includes/class-kind-taxonomy.php:574
+msgctxt "daily archives date format"
+msgid "F j, Y"
+msgstr ""
+
+#. translators: Daily archive title. 1: Date
+#: includes/class-kind-taxonomy.php:582
+#: includes/class-kind-taxonomy.php:635
+msgid "On This Day"
+msgstr ""
+
+#. translators: Daily archive title. 1: Date
+#: includes/class-kind-taxonomy.php:582
+#: includes/class-kind-taxonomy.php:635
+msgctxt "daily archives date format"
+msgid "F j"
+msgstr ""
+
+#. translators: All
+#: includes/class-kind-taxonomy.php:858
+msgid "All %1s"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:1031
+msgid "Invalid post"
+msgstr ""
+
+#: includes/class-kind-taxonomy.php:1034
+msgid "Invalid Kind"
+msgstr ""
+
+#: includes/class-kind-view.php:379
+msgctxt "singular Twitter"
+msgid "a tweet"
+msgstr ""
+
+#: includes/class-kind-view.php:380
+msgctxt "singular Vimeo"
+msgid "a video"
+msgstr ""
+
+#: includes/class-kind-view.php:381
+msgctxt "singular Youtube"
+msgid "a video"
+msgstr ""
+
+#: includes/class-kind-view.php:382
+msgctxt "singular Intagram"
+msgid "an image"
+msgstr ""
+
+#: includes/class-kind-view.php:388
+msgctxt "singular post"
+msgid "a post"
+msgstr ""
+
+#: includes/class-kind-view.php:442
+msgid "an author"
+msgstr ""
+
+#. translators: URL for link to event and name of event
+#: includes/class-kind-view.php:542
+msgid "Attending <a href=\"%1$s\" class=\"u-in-reply-to\">%2$s</a>"
+msgstr ""
+
+#. translators: URL for link to event and name of event
+#: includes/class-kind-view.php:544
+msgid "Might be attending <a href=\"%1$s\" class=\"u-in-reply-to\">%2$s</a>"
+msgstr ""
+
+#. translators: URL for link to event and name of event
+#: includes/class-kind-view.php:546
+msgid "Unable to Attend <a href=\"%1$s\" class=\"u-in-reply-to\">%2$s</a>"
+msgstr ""
+
+#. translators: URL for link to event and name of event
+#: includes/class-kind-view.php:548
+msgid "Interested in Attending <a href=\"%1$s\" class=u-in-reply-to\">%2$s</a>"
+msgstr ""
+
+#. translators: URL for link to event and name of event
+#: includes/class-kind-view.php:550
+msgid "Attending <a href=\"%1$s\" class=\"u-in-reply-to\">%2$s</a> remotely"
+msgstr ""
+
+#: includes/class-kind-view.php:568
+msgid "Want to Read: "
+msgstr ""
+
+#: includes/class-kind-view.php:569
+msgid "Reading: "
+msgstr ""
+
+#: includes/class-kind-view.php:570
+msgid "Finished Reading: "
+msgstr ""
+
+#. translators: singular and plural
+#: includes/class-kind-view.php:600
+msgid "%d year"
+msgid_plural "%d years"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: singular and plural
+#: includes/class-kind-view.php:604
+msgid " %d month"
+msgid_plural " %d months"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: singular and plural
+#: includes/class-kind-view.php:608
+msgid " %d day"
+msgid_plural " %d days"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: singular and plural
+#: includes/class-kind-view.php:612
+msgid " %d hour"
+msgid_plural " %d hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: singular and plural
+#: includes/class-kind-view.php:616
+msgid " %d minute"
+msgid_plural " %d minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: singular and plural
+#: includes/class-kind-view.php:620
+msgid " %d second"
+msgid_plural " %d seconds"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/register-kinds.php:8
+msgid "Article"
+msgstr ""
+
+#: includes/register-kinds.php:9
+msgid "Articles"
+msgstr ""
+
+#: includes/register-kinds.php:14
+msgid "traditional long form content: a post with an explicit title and body"
+msgstr ""
+
+#: includes/register-kinds.php:24
+msgid "Note"
+msgstr ""
+
+#: includes/register-kinds.php:25
+msgid "Notes"
+msgstr ""
+
+#: includes/register-kinds.php:30
+msgid "short content: a post or status update with just plain content and typically without a title"
+msgstr ""
+
+#: includes/register-kinds.php:40
+msgid "Reply"
+msgstr ""
+
+#: includes/register-kinds.php:41
+msgid "Replies"
+msgstr ""
+
+#: includes/register-kinds.php:42
+msgid "Replied to"
+msgstr ""
+
+#: includes/register-kinds.php:47
+msgid "In Reply To"
+msgstr ""
+
+#: includes/register-kinds.php:51
+#: includes/register-kinds.php:119
+#: includes/register-kinds.php:188
+#: includes/register-kinds.php:256
+#: includes/register-kinds.php:324
+#: includes/register-kinds.php:462
+#: includes/register-kinds.php:523
+#: includes/register-kinds.php:587
+#: includes/register-kinds.php:651
+#: templates/reply-metabox.php:68
+msgid "Name"
+msgstr ""
+
+#: includes/register-kinds.php:55
+#: includes/register-kinds.php:123
+#: includes/register-kinds.php:192
+#: includes/register-kinds.php:260
+#: includes/register-kinds.php:328
+#: includes/register-kinds.php:466
+#: includes/register-kinds.php:527
+#: includes/register-kinds.php:591
+#: includes/register-kinds.php:655
+#: lib/parse-this/includes/class-rest-parse-this.php:53
+#: templates/reply-metabox.php:62
+msgid "URL"
+msgstr ""
+
+#: includes/register-kinds.php:59
+#: includes/register-kinds.php:127
+#: includes/register-kinds.php:196
+#: includes/register-kinds.php:264
+#: includes/register-kinds.php:332
+#: templates/reply-author.php:6
+#: templates/reply-metabox.php:57
+msgid "Author"
+msgstr ""
+
+#: includes/register-kinds.php:66
+#: includes/register-kinds.php:134
+#: includes/register-kinds.php:203
+#: includes/register-kinds.php:271
+#: includes/register-kinds.php:339
+#: includes/register-kinds.php:470
+#: includes/register-kinds.php:538
+#: includes/register-kinds.php:602
+msgid "Summary"
+msgstr ""
+
+#: includes/register-kinds.php:70
+#: includes/register-kinds.php:138
+#: includes/register-kinds.php:207
+#: includes/register-kinds.php:275
+#: includes/register-kinds.php:343
+#: includes/register-kinds.php:474
+msgid "Publication/Website"
+msgstr ""
+
+#: includes/register-kinds.php:74
+#: includes/register-kinds.php:142
+#: includes/register-kinds.php:211
+#: includes/register-kinds.php:279
+#: includes/register-kinds.php:347
+msgid "Publish Date"
+msgstr ""
+
+#: includes/register-kinds.php:78
+#: includes/register-kinds.php:146
+#: includes/register-kinds.php:215
+#: includes/register-kinds.php:283
+#: includes/register-kinds.php:351
+msgid "Updated Time"
+msgstr ""
+
+#: includes/register-kinds.php:82
+#: includes/register-kinds.php:150
+#: includes/register-kinds.php:219
+#: includes/register-kinds.php:287
+#: includes/register-kinds.php:355
+#: includes/register-kinds.php:427
+#: includes/register-kinds.php:486
+#: includes/register-kinds.php:550
+#: includes/register-kinds.php:614
+msgid "Tags"
+msgstr ""
+
+#: includes/register-kinds.php:89
+#: includes/register-kinds.php:157
+#: includes/register-kinds.php:226
+#: includes/register-kinds.php:294
+#: includes/register-kinds.php:362
+#: includes/register-kinds.php:493
+msgid "Featured Media"
+msgstr ""
+
+#: includes/register-kinds.php:98
+msgid "a reply to content typically on another site"
+msgstr ""
+
+#: includes/register-kinds.php:108
+#: includes/register-kinds.php:115
+msgid "Repost"
+msgstr ""
+
+#: includes/register-kinds.php:109
+msgid "Reposts"
+msgstr ""
+
+#: includes/register-kinds.php:110
+msgid "Reposted"
+msgstr ""
+
+#: includes/register-kinds.php:166
+msgid "a complete reposting of content from another site"
+msgstr ""
+
+#: includes/register-kinds.php:176
+#: includes/register-kinds.php:184
+msgid "Like"
+msgstr ""
+
+#: includes/register-kinds.php:177
+msgid "Likes"
+msgstr ""
+
+#: includes/register-kinds.php:178
+msgid "Liked"
+msgstr ""
+
+#: includes/register-kinds.php:235
+msgid "a way to pay compliments to the original post/poster of external content"
+msgstr ""
+
+#: includes/register-kinds.php:245
+msgid "Favorite"
+msgstr ""
+
+#: includes/register-kinds.php:246
+msgid "Favorites"
+msgstr ""
+
+#: includes/register-kinds.php:247
+#: includes/register-kinds.php:252
+msgid "Favorited"
+msgstr ""
+
+#: includes/register-kinds.php:303
+msgid "special to the author"
+msgstr ""
+
+#: includes/register-kinds.php:313
+#: includes/register-kinds.php:320
+msgid "Bookmark"
+msgstr ""
+
+#: includes/register-kinds.php:314
+msgid "Bookmarks"
+msgstr ""
+
+#: includes/register-kinds.php:315
+msgid "Bookmarked"
+msgstr ""
+
+#: includes/register-kinds.php:371
+msgid "storing a link/bookmark for personal use or sharing with others"
+msgstr ""
+
+#: includes/register-kinds.php:381
+msgid "Photo"
+msgstr ""
+
+#: includes/register-kinds.php:382
+msgid "Photos"
+msgstr ""
+
+#: includes/register-kinds.php:386
+msgid "a post with an embedded image/photo as its primary focus"
+msgstr ""
+
+#: includes/register-kinds.php:396
+msgid "Video"
+msgstr ""
+
+#: includes/register-kinds.php:397
+msgid "Videos"
+msgstr ""
+
+#: includes/register-kinds.php:401
+msgid "a post with an embedded video as its primary focus"
+msgstr ""
+
+#: includes/register-kinds.php:411
+msgid "Audio"
+msgstr ""
+
+#: includes/register-kinds.php:412
+msgid "Audios"
+msgstr ""
+
+#: includes/register-kinds.php:416
+msgid "a post with an embedded audio file as its primary focus"
+msgstr ""
+
+#: includes/register-kinds.php:426
+msgid "Tag"
+msgstr ""
+
+#: includes/register-kinds.php:428
+msgid "Tagged"
+msgstr ""
+
+#: includes/register-kinds.php:431
+msgid "allows you to tag a post as being of a specific category or tag, or for person tagging"
+msgstr ""
+
+#: includes/register-kinds.php:442
+msgid "RSVPs"
+msgstr ""
+
+#: includes/register-kinds.php:443
+msgid "RSVPed"
+msgstr ""
+
+#: includes/register-kinds.php:458
+msgid "Event Details"
+msgstr ""
+
+#: includes/register-kinds.php:478
+msgid "Start Date"
+msgstr ""
+
+#: includes/register-kinds.php:482
+msgid "End Date"
+msgstr ""
+
+#: includes/register-kinds.php:502
+msgid "a specific type of reply regarding attendance of an event"
+msgstr ""
+
+#: includes/register-kinds.php:512
+msgid "Listen"
+msgstr ""
+
+#: includes/register-kinds.php:513
+msgid "Listens"
+msgstr ""
+
+#: includes/register-kinds.php:514
+msgid "Listened"
+msgstr ""
+
+#: includes/register-kinds.php:519
+msgid "Listen To"
+msgstr ""
+
+#: includes/register-kinds.php:531
+#: includes/register-kinds.php:595
+msgid "Artist"
+msgstr ""
+
+#: includes/register-kinds.php:542
+msgid "Album"
+msgstr ""
+
+#: includes/register-kinds.php:546
+#: includes/register-kinds.php:610
+msgid "Release Date"
+msgstr ""
+
+#: includes/register-kinds.php:557
+msgid "Album Art"
+msgstr ""
+
+#: includes/register-kinds.php:566
+msgid "listening to audio; sometimes called a scrobble"
+msgstr ""
+
+#: includes/register-kinds.php:576
+msgid "Watch"
+msgstr ""
+
+#: includes/register-kinds.php:577
+msgid "Watches"
+msgstr ""
+
+#: includes/register-kinds.php:578
+msgid "Watched"
+msgstr ""
+
+#: includes/register-kinds.php:583
+msgid "Watching To"
+msgstr ""
+
+#: includes/register-kinds.php:606
+msgid "Series"
+msgstr ""
+
+#: includes/register-kinds.php:621
+msgid "Poster"
+msgstr ""
+
+#: includes/register-kinds.php:630
+msgid "watching a movie, television show, online video, play or other visual-based event"
+msgstr ""
+
+#: includes/register-kinds.php:640
+msgid "Checkin"
+msgstr ""
+
+#: includes/register-kinds.php:641
+msgid "Checkins"
+msgstr ""
+
+#: includes/register-kinds.php:642
+msgid "Checked into"
+msgstr ""
+
+#: includes/register-kinds.php:647
+msgid "Checked In"
+msgstr ""
+
+#: includes/register-kinds.php:659
+msgid "Latitude"
+msgstr ""
+
+#: includes/register-kinds.php:667
+msgid "Longitude"
+msgstr ""
+
+#: includes/register-kinds.php:675
+msgid "Street Address"
+msgstr ""
+
+#: includes/register-kinds.php:679
+msgid "Locality"
+msgstr ""
+
+#: includes/register-kinds.php:683
+msgid "Region"
+msgstr ""
+
+#: includes/register-kinds.php:687
+msgid "Country Name"
+msgstr ""
+
+#: includes/register-kinds.php:691
+msgid "Postal Code"
+msgstr ""
+
+#: includes/register-kinds.php:697
+msgid "identifying you are at a particular geographic location"
+msgstr ""
+
+#: includes/register-kinds.php:707
+msgid "Wish"
+msgstr ""
+
+#: includes/register-kinds.php:708
+msgid "Wishes"
+msgstr ""
+
+#: includes/register-kinds.php:709
+msgid "Wished"
+msgstr ""
+
+#: includes/register-kinds.php:712
+msgid "a post indicating a desire/wish. The archive of which would be a wishlist, such as a gift registry or similar"
+msgstr ""
+
+#: includes/register-kinds.php:722
+msgid "Play"
+msgstr ""
+
+#: includes/register-kinds.php:723
+msgid "Playing"
+msgstr ""
+
+#: includes/register-kinds.php:724
+msgid "Played"
+msgstr ""
+
+#: includes/register-kinds.php:727
+msgid "playing a game"
+msgstr ""
+
+#: includes/register-kinds.php:737
+#: includes/register-kinds.php:738
+msgid "Weather"
+msgstr ""
+
+#: includes/register-kinds.php:742
+msgid "current weather conditions"
+msgstr ""
+
+#: includes/register-kinds.php:752
+#: includes/register-kinds.php:753
+msgid "Exercise"
+msgstr ""
+
+#: includes/register-kinds.php:754
+msgid "Exercised"
+msgstr ""
+
+#: includes/register-kinds.php:757
+msgid "some form of physical activity or workout (examples: walk, run, cycle, hike, yoga, etc.)"
+msgstr ""
+
+#: includes/register-kinds.php:767
+msgid "Trip"
+msgstr ""
+
+#: includes/register-kinds.php:768
+msgid "Trips"
+msgstr ""
+
+#: includes/register-kinds.php:769
+#: includes/register-kinds.php:784
+msgid "Travelled"
+msgstr ""
+
+#: includes/register-kinds.php:772
+msgid "represents a geographic journey"
+msgstr ""
+
+#: includes/register-kinds.php:782
+msgid "Itinerary"
+msgstr ""
+
+#: includes/register-kinds.php:783
+msgid "Itineraries"
+msgstr ""
+
+#: includes/register-kinds.php:787
+msgid "parts of a scheduled trip including transit by car, plane, train, etc."
+msgstr ""
+
+#: includes/register-kinds.php:798
+#: includes/register-kinds.php:799
+msgid "Eat"
+msgstr ""
+
+#: includes/register-kinds.php:800
+msgid "Ate"
+msgstr ""
+
+#: includes/register-kinds.php:803
+msgid "what you are eating, perhaps for a food diary"
+msgstr ""
+
+#: includes/register-kinds.php:814
+msgid "Drink"
+msgstr ""
+
+#: includes/register-kinds.php:815
+msgid "Drinks"
+msgstr ""
+
+#: includes/register-kinds.php:816
+msgid "Drank"
+msgstr ""
+
+#: includes/register-kinds.php:819
+msgid "what you are drinking, perhaps for a food dairy"
+msgstr ""
+
+#: includes/register-kinds.php:830
+msgid "Follow"
+msgstr ""
+
+#: includes/register-kinds.php:831
+msgid "Follows"
+msgstr ""
+
+#: includes/register-kinds.php:832
+msgid "Followed"
+msgstr ""
+
+#: includes/register-kinds.php:835
+msgid "indicating you are now following or subscribing to another person`s activities online"
+msgstr ""
+
+#: includes/register-kinds.php:846
+msgid "Jam"
+msgstr ""
+
+#: includes/register-kinds.php:847
+msgid "Jams"
+msgstr ""
+
+#: includes/register-kinds.php:848
+msgid "Listened to"
+msgstr ""
+
+#: includes/register-kinds.php:851
+msgid "a particularly personally meaningful song (a listen with added emphasis)"
+msgstr ""
+
+#: includes/register-kinds.php:862
+#: includes/register-kinds.php:864
+msgid "Read"
+msgstr ""
+
+#: includes/register-kinds.php:863
+msgid "Reads"
+msgstr ""
+
+#: includes/register-kinds.php:867
+msgid "reading a book, magazine, newspaper, other physical document, or online post"
+msgstr ""
+
+#: includes/register-kinds.php:878
+msgid "Quote"
+msgstr ""
+
+#: includes/register-kinds.php:879
+msgid "Quotes"
+msgstr ""
+
+#: includes/register-kinds.php:880
+msgid "Quoted"
+msgstr ""
+
+#: includes/register-kinds.php:883
+msgid "quoted content"
+msgstr ""
+
+#: includes/register-kinds.php:894
+msgid "Mood"
+msgstr ""
+
+#: includes/register-kinds.php:895
+msgid "Moods"
+msgstr ""
+
+#: includes/register-kinds.php:896
+msgid "Felt"
+msgstr ""
+
+#: includes/register-kinds.php:899
+msgid "how you are feeling (example: happy, sad, indifferent, etc.)"
+msgstr ""
+
+#: includes/register-kinds.php:910
+msgid "Recipe"
+msgstr ""
+
+#: includes/register-kinds.php:911
+msgid "Recipes"
+msgstr ""
+
+#: includes/register-kinds.php:912
+msgid "Cooked"
+msgstr ""
+
+#: includes/register-kinds.php:915
+msgid "list of ingredients and directions for making food or drink"
+msgstr ""
+
+#: includes/register-kinds.php:926
+msgid "Issue"
+msgstr ""
+
+#: includes/register-kinds.php:927
+msgid "Issues"
+msgstr ""
+
+#: includes/register-kinds.php:928
+msgid "Filed an Issue"
+msgstr ""
+
+#: includes/register-kinds.php:931
+msgid "Issue is a special kind of article post that is a reply to typically some source code, though potentially anything at a source control repository."
+msgstr ""
+
+#: includes/register-kinds.php:942
+msgid "Question"
+msgstr ""
+
+#: includes/register-kinds.php:943
+msgid "Questions"
+msgstr ""
+
+#: includes/register-kinds.php:944
+msgid "Asked a question"
+msgstr ""
+
+#: includes/register-kinds.php:947
+msgid "Question is a post type for soliciting answer replies, which are then typically up/down voted by others and then displayed underneath the question post ordered by highest positive vote count rather than time ordered."
+msgstr ""
+
+#: includes/register-kinds.php:958
+msgid "Sleep"
+msgstr ""
+
+#: includes/register-kinds.php:959
+msgid "Sleeps"
+msgstr ""
+
+#: includes/register-kinds.php:960
+msgid "Slept"
+msgstr ""
+
+#: includes/register-kinds.php:963
+msgid "Sleep is a passive metrics post type that indicates how much time (and often a graph of how deeply) a person has slept."
+msgstr ""
+
+#: includes/register-kinds.php:974
+msgid "Event"
+msgstr ""
+
+#: includes/register-kinds.php:975
+msgid "Events"
+msgstr ""
+
+#: includes/register-kinds.php:976
+msgid "Planned"
+msgstr ""
+
+#: includes/register-kinds.php:979
+msgid "An event is a type of post that in addition to a post name (event title) has a start datetime (likely end datetime), and a location."
+msgstr ""
+
+#: includes/register-kinds.php:990
+msgid "Acquisition"
+msgstr ""
+
+#: includes/register-kinds.php:991
+msgid "Acquisitions"
+msgstr ""
+
+#: includes/register-kinds.php:992
+msgid "Acquired"
+msgstr ""
+
+#: includes/register-kinds.php:995
+msgid "Purchases, gifts, found things, or objects donated"
+msgstr ""
+
+#: indieweb-post-kinds.php:62
+msgid "Parse This is not installed. Please advise the developer"
+msgstr ""
+
+#: indieweb-post-kinds.php:87
+msgid "Classic Editor Plugin is not active. The Post Kinds plugin will not function correctly at this time without using the Classic Editor."
+msgstr ""
+
+#: indieweb-post-kinds.php:186
+msgid "Settings"
+msgstr ""
+
+#: indieweb-post-kinds.php:208
+msgid "For responses to URLs, such as responding to a post or article, this site allows the storage of data around the post/article in order to generate a rich citation. Items such as author name and image, summary of the text, embed provided by third-party site, etc may be stored and are solely to provide this context. We will remove any of this on request."
+msgstr ""
+
+#: lib/parse-this/includes/class-parse-this-discovery.php:56
+#: lib/parse-this/includes/class-parse-this-opml.php:17
+#: lib/parse-this/includes/class-parse-this.php:187
+#: lib/parse-this/includes/class-parse-this.php:220
+msgid "A valid URL was not provided."
+msgstr ""
+
+#: lib/parse-this/includes/class-rest-parse-this.php:22
+#: lib/parse-this/includes/class-rest-parse-this.php:23
+msgid "Parse This"
+msgstr ""
+
+#: lib/parse-this/includes/class-rest-parse-this.php:41
+msgid "Parse This Debugger"
+msgstr ""
+
+#: lib/parse-this/includes/class-rest-parse-this.php:54
+msgid "MF2"
+msgstr ""
+
+#: lib/parse-this/includes/class-rest-parse-this.php:55
+msgid "Feed Discovery"
+msgstr ""
+
+#: lib/parse-this/includes/class-rest-parse-this.php:56
+msgid "References"
+msgstr ""
+
+#: lib/parse-this/includes/class-rest-parse-this.php:57
+msgid "Return Type"
+msgstr ""
+
+#: lib/parse-this/includes/class-rest-parse-this.php:59
+msgid "Single"
+msgstr ""
+
+#: lib/parse-this/includes/class-rest-parse-this.php:60
+msgid "Feed"
+msgstr ""
+
+#: lib/parse-this/includes/class-rest-parse-this.php:63
+msgid "Follow Author Links"
+msgstr ""
+
+#: lib/parse-this/includes/class-rest-parse-this.php:65
+msgid "Parse"
+msgstr ""
+
+#: templates/reply-author.php:2
+msgid "Information on the Author or Artist of the Piece"
+msgstr ""
+
+#: templates/reply-author.php:3
+msgid "(Multiple Entries separated by semicolon)"
+msgstr ""
+
+#: templates/reply-author.php:18
+msgid "Author Photo URL"
+msgstr ""
+
+#: templates/reply-details.php:2
+msgid "Information on what you are responding to"
+msgstr ""
+
+#: templates/reply-details.php:4
+msgid "Summary/Quote/Caption"
+msgstr ""
+
+#: templates/reply-details.php:9
+msgid "Site Name/Publication/Album"
+msgstr ""
+
+#: templates/reply-details.php:14
+msgid "Published/Released"
+msgstr ""
+
+#: templates/reply-details.php:15
+msgid "Updated"
+msgstr ""
+
+#: templates/reply-details.php:18
+msgid "Tags (semicolon separated)"
+msgstr ""
+
+#: templates/reply-details.php:23
+msgid "Featured Image"
+msgstr ""
+
+#: templates/reply-metabox.php:56
+msgid "Details"
+msgstr ""
+
+#: templates/reply-metabox.php:59
+msgid "Clear"
+msgstr ""
+
+#: templates/reply-time.php:2
+msgid "Duration"
+msgstr ""
+
+#: templates/reply-time.php:5
+msgid "Years"
+msgstr ""
+
+#: templates/reply-time.php:9
+msgid "Months"
+msgstr ""
+
+#: templates/reply-time.php:13
+msgid "Days"
+msgstr ""
+
+#: templates/reply-time.php:19
+msgid "Hours"
+msgstr ""
+
+#: templates/reply-time.php:23
+msgid "Minutes"
+msgstr ""
+
+#: templates/reply-time.php:27
+msgid "Seconds"
+msgstr ""
+
+#: templates/reply-time.php:31
+msgid "Start Time and End Time will be Used to Calculate Duration if Duration Not Set"
+msgstr ""
+
+#: templates/reply-time.php:33
+msgid "Start Time"
+msgstr ""
+
+#: templates/reply-time.php:34
+msgid "End Time"
+msgstr ""
+
+#: views/kind-bookmark.php:30
+#: views/kind-favorite.php:31
+#: views/kind-issue.php:30
+#: views/kind-jam.php:31
+#: views/kind-like.php:30
+#: views/kind-listen.php:32
+#: views/kind-read.php:34
+#: views/kind-watch.php:32
+#: views/kind.php:43
+msgid "by"
+msgstr ""
+
+#: views/kind-event.php:22
+msgid "Start"
+msgstr ""
+
+#: views/kind-event.php:25
+msgid "End"
+msgstr ""
+
+#: views/kind-itinerary.php:33
+msgid "Departs: "
+msgstr ""
+
+#: views/kind-itinerary.php:38
+msgid "Arrives: "
+msgstr ""
+
+#: views/kind-jam.php:34
+#: views/kind-listen.php:35
+#: views/kind-watch.php:35
+msgid " from "
+msgstr ""
