@@ -37,29 +37,41 @@ if ( ! function_exists( 'jf2_to_mf2' ) ) {
 if ( ! function_exists( 'mf2_to_jf2' ) ) {
 
 	function mf2_to_jf2( $entry ) {
-		if ( empty( $entry ) ) {
+		if ( empty( $entry ) || is_string( $entry ) ) {
 			return $entry;
 		}
-		if ( wp_is_numeric_array( $entry ) || ! isset( $entry['properties'] ) ) {
-			return $entry;
+		$jf2 = array();
+
+		// If it is a numeric array, run this function through each item
+		if ( wp_is_numeric_array( $entry ) ) {
+			$jf2 = array_map( 'mf2_to_jf2', $entry );
+			if ( 1 === count( $jf2 ) ) {
+				return array_pop( $jf2 );
+			}
+			return $jf2;
 		}
-		$jf2         = array();
-		$type        = is_array( $entry['type'] ) ? array_pop( $entry['type'] ) : $entry['type'];
-		$jf2['type'] = str_replace( 'h-', '', $type );
-		if ( isset( $entry['properties'] ) && is_array( $entry['properties'] ) ) {
+
+		if ( isset( $entry['items'] ) ) {
+			$jf2['items'] = array_map( 'mf2_to_jf2', $entry['items'] );
+		}
+
+		if ( isset( $entry['type'] ) ) {
+			$type        = is_array( $entry['type'] ) ? array_pop( $entry['type'] ) : $entry['type'];
+			$jf2['type'] = str_replace( 'h-', '', $type );
+		}
+		if ( isset( $entry['properties'] ) ) {
 			foreach ( $entry['properties'] as $key => $value ) {
-				if ( is_array( $value ) && 1 === count( $value ) && wp_is_numeric_array( $value ) ) {
-					$value = array_pop( $value );
-				}
-				if ( ! wp_is_numeric_array( $value ) && isset( $value['type'] ) ) {
-					$value = mf2_to_jf2( $value );
+				if ( is_array( $value ) ) {
+					if ( wp_is_numeric_array( $value ) ) {
+						$value = array_map( 'mf2_to_jf2', $value );
+						if ( is_countable( $value ) && 1 === count( $value ) ) {
+							$value = array_pop( $value );
+						}
+					} elseif ( isset( $value['type'] ) ) {
+						$value = mf2_to_jf2( $value );
+					}
 				}
 				$jf2[ $key ] = $value;
-			}
-		} elseif ( isset( $entry['items'] ) ) {
-			$jf2['children'] = array();
-			foreach ( $entry['items'] as $item ) {
-				$jf2['children'][] = mf2_to_jf2( $item );
 			}
 		}
 		return $jf2;
@@ -68,32 +80,40 @@ if ( ! function_exists( 'mf2_to_jf2' ) ) {
 
 
 if ( ! function_exists( 'jf2_references' ) ) {
-	/* Turns nested properties into references per the jf2 spec
+	/*
+	 Turns nested properties into references per the jf2 spec
 	*/
 	function jf2_references( $data ) {
-		foreach ( $data as $key => $value ) {
-			if ( ! is_array( $value ) ) {
+		foreach ( $data as $key => $val ) {
+			if ( ! is_array( $val ) ) {
 				continue;
 			}
-			// Indicates nested type
-			if ( array_key_exists( 'type', $value ) && 'cite' === $value['type'] ) {
-				if ( ! isset( $data['refs'] ) ) {
-					$data['refs'] = array();
-				}
-				if ( isset( $value['url'] ) ) {
-					$data['refs'][ $value['url'] ] = $value;
-					$data[ $key ]                  = array( $value['url'] );
-				}
+			if ( ! wp_is_numeric_array( $val ) ) {
+				$val = array( $val );
 			}
-			if ( 'category' === $key ) {
-				foreach ( $value as $k => $v ) {
-					if ( array_key_exists( 'type', $v ) ) {
+			if ( wp_is_numeric_array( $val ) ) {
+				foreach ( $val as $value ) {
+					// Indicates nested type
+					if ( array_key_exists( 'type', $value ) && 'cite' === $value['type'] ) {
 						if ( ! isset( $data['refs'] ) ) {
 							$data['refs'] = array();
 						}
-						if ( isset( $v['url'] ) ) {
-							$data['refs'][ $v['url'] ] = $v;
-							$data['category'][ $k ]    = $v['url'];
+						if ( isset( $value['url'] ) ) {
+							$data['refs'][ $value['url'] ] = $value;
+							$data[ $key ]                  = array( $value['url'] );
+						}
+					}
+					if ( 'category' === $key ) {
+						foreach ( $value as $k => $v ) {
+							if ( is_array( $v ) && array_key_exists( 'type', $v ) ) {
+								if ( ! isset( $data['refs'] ) ) {
+									$data['refs'] = array();
+								}
+								if ( isset( $v['url'] ) ) {
+									$data['refs'][ $v['url'] ] = $v;
+									$data['category'][ $k ]    = $v['url'];
+								}
+							}
 						}
 					}
 				}
@@ -204,7 +224,8 @@ if ( ! function_exists( 'ifset' ) ) {
 }
 
 
-/* Inverse of wp_parse_url
+/*
+ Inverse of wp_parse_url
  *
  * Slightly modified from p3k-utils (https://github.com/aaronpk/p3k-utils)
  * Copyright 2017 Aaron Parecki, used with permission under MIT License

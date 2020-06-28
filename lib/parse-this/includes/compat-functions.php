@@ -71,8 +71,8 @@ if ( ! function_exists( 'wp_timezone_string' ) ) {
 	 *
 	 * @since 5.3.0 - backported into Parse This
 	 *
-	* @return string PHP timezone string or a ±HH:MM offset.
-	*/
+	 * @return string PHP timezone string or a ±HH:MM offset.
+	 */
 	function wp_timezone_string() {
 		$timezone_string = get_option( 'timezone_string' );
 		if ( $timezone_string ) {
@@ -98,7 +98,7 @@ if ( ! function_exists( 'wp_timezone' ) ) {
 	 * @since 5.3.0 - backported into Parse This
 	 *
 	 * @return DateTimeZone Timezone object.
-	*/
+	 */
 	function wp_timezone() {
 		return new DateTimeZone( wp_timezone_string() );
 	}
@@ -187,7 +187,6 @@ if ( ! function_exists( 'wp_date' ) ) {
 		 * @param string       $format    Format to display the date.
 		 * @param int          $timestamp Unix timestamp.
 		 * @param DateTimeZone $timezone  Timezone.
-		 *
 		 */
 		$date = apply_filters( 'wp_date', $date, $format, $timestamp, $timezone );
 		return $date;

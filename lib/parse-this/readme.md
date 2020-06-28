@@ -6,9 +6,9 @@ Parse This turns URLs into structured jf2 data
 Parse This is based on a variety of projects including the parsing code from Press This, which was removed from WordPress. 
 
 * It supports parsing from MF2 if present
-* For sites that are not marked up with Microformats 2(MF2) it will fall back onto parsing HTML/OpenGraph/Dublin Core Tags/etc. 
+* For sites that are not marked up with Microformats 2(MF2) it will fall back onto parsing JSON-LD, then HTML/OpenGraph/Dublin Core Tags/etc. 
 * It supports parsing of JSONFeed and RSS/Atom feeds
-* Adds several classes to allow retrieving WordPress objects as MF2 data
+* It supports parsing of  WordPress REST API endpoints to generate a site feed
 
 The goal is to produce structured jf2 data that can be used for previewing links as well as feed readers and other options. It is also bundled in the Post Kinds and Yarns Microsub plugins as a library.
 

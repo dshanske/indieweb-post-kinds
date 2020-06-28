@@ -16,16 +16,16 @@
 		}
      },
     "require": {
-	"php": ">=5.4.0",
+	"php": ">=5.6.0",
 	"composer/installers": "~1.0"
     },
     "require-dev": {
-        "dealerdirect/phpcodesniffer-composer-installer": "^0.4.3",
+        "dealerdirect/phpcodesniffer-composer-installer": "*",
 	"squizlabs/php_codesniffer": "*",
         "phpcompatibility/php-compatibility": "*",
         "wp-coding-standards/wpcs": "*",
 	"dshanske/parse-this": "dev-master",
-        "phpcompatibility/phpcompatibility-wp": "^1.0"
+        "phpcompatibility/phpcompatibility-wp": "*"
     },
     "scripts": {
         "lint": "phpcs",

@@ -3,7 +3,6 @@
 /**
  * Parse This class.
  * Originally Derived from the Press This Class with Enhancements.
- *
  */
 class Parse_This {
 	private $url = '';
@@ -42,7 +41,16 @@ class Parse_This {
 			return $content;
 		}
 		// Decode escaped entities so that they can be stripped
-		$content = html_entity_decode( $content, ENT_COMPAT | ENT_HTML401, 'UTF-8' );
+		$content     = html_entity_decode( $content, ENT_COMPAT | ENT_HTML401, 'UTF-8' );
+		$content     = preg_replace( '/<!--(.|\s)*?-->/', '', $content );
+		$domdocument = pt_load_domdocument( $content );
+		$scripts     = $domdocument->getElementsByTagName( 'script' );
+		foreach ( $scripts as $item ) {
+			$item->parentNode->removeChild( $item );
+		}
+
+		$content = $domdocument->saveHTML();
+
 		$allowed = array(
 			'a'          => array(
 				'href' => array(),
@@ -109,7 +117,8 @@ class Parse_This {
 		}
 	}
 
-	/* Reproduced version of fetch_feed from core which calls bundled SimplePie instead of older version
+	/*
+	 Reproduced version of fetch_feed from core which calls bundled SimplePie instead of older version
 	*/
 	public static function fetch_feed( $url ) {
 		if ( ! class_exists( 'SimplePie', false ) ) {
@@ -127,18 +136,11 @@ class Parse_This {
 		require_once ABSPATH . WPINC . '/class-wp-simplepie-sanitize-kses.php';
 		$feed = new SimplePie();
 
-		$feed->set_sanitize_class( 'WP_SimplePie_Sanitize_KSES' );
-
-		// We must manually overwrite $feed->sanitize because SimplePie's
-		// constructor sets it before we have a chance to set the sanitization class
-		$feed->sanitize = new WP_SimplePie_Sanitize_KSES();
-
 		$feed->set_cache_class( 'WP_Feed_Cache' );
 		$feed->set_file_class( 'WP_SimplePie_File' );
 		$feed->enable_cache( false );
-		$feed->strip_htmltags( false );
 		$feed->set_feed_url( $url );
-
+		$feed->strip_htmltags( false );
 		/**
 		 * Fires just before processing the SimplePie feed object.
 		 *
@@ -180,11 +182,35 @@ class Parse_This {
 		return in_array( $content_type, $types, true );
 	}
 
+	public static function redirect( $url, $allowlist = true ) {
+		if ( empty( $url ) || ! wp_http_validate_url( $url ) ) {
+			return new WP_Error( 'invalid-url', __( 'A valid URL was not provided.', 'indieweb-post-kinds' ) );
+		}
+		$domain     = wp_parse_url( $url, PHP_URL_HOST );
+		$shorteners = array( 'fb.me', 't.co', 'youtu.be', 'ow.ly', 'bit.ly', 'tinyurl.com' );
+		if ( ! $allowlist && ! in_array( $domain, $shorteners, true ) ) {
+			return false;
+		}
+		$user_agent    = 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:57.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36 Parse This/WP';
+		$args          = array(
+			'timeout'             => 15,
+			'limit_response_size' => 1048576,
+			'redirection'         => 0,
+		);
+		$response      = wp_safe_remote_get( $url, $args );
+		$response_code = wp_remote_retrieve_response_code( $response );
+		$redirect      = wp_remote_retrieve_header( $response, 'location' );
+		if ( ! $redirect ) {
+			return false;
+		}
+		return ( normalize_url( $redirect ) !== normalize_url( $url ) ) ? $redirect : false;
+	}
+
 	/**
-	 * Downloads the source's via server-side call for the given URL.
+	 * Downloads the source's via server - side call for the given URL .
 	 *
-	 * @param string $url URL to scan.
-	 * @return WP_Error|boolean WP_Error if invalid and true if successful
+	 * @param string $url URL to scan .
+	 * @return WP_Error | boolean WP_Error if invalid and true if successful
 	 */
 	public function fetch( $url = null ) {
 		if ( ! $url ) {
@@ -212,7 +238,9 @@ class Parse_This {
 				return new WP_Error( 'source_error', 'Unable to Retrieve' );
 			}
 		}
-
+		if ( is_array( $content_type ) ) {
+			$content_type = array_pop( $content_type );
+		}
 		// Strip any character set off the content type
 		$ct = explode( ';', $content_type );
 		if ( is_array( $ct ) ) {
@@ -243,7 +271,7 @@ class Parse_This {
 		}
 		if ( in_array( $content_type, array( 'application/feed+json', 'application/json' ), true ) ) {
 			$content = json_decode( $content, true );
-			if ( class_exists( 'Parse_This_JSONFeed' ) && $content && isset( $content['version'] ) && 'https://jsonfeed.org/version/1' === $content['version'] ) {
+			if ( class_exists( 'Parse_This_JSONFeed' ) && $content && isset( $content['version'] ) && false !== strpos( $content['version'], 'https://jsonfeed.org/version/' ) ) {
 				$content = Parse_This_JSONFeed::to_jf2( $content, $url );
 				$this->set( $content, $url, true );
 			}
@@ -265,7 +293,8 @@ class Parse_This {
 			'return'     => 'single', // Options are single, feed or TBC mention
 			'follow'     => false, // If set to true h-card and author properties with external urls will be retrieved parsed and merged into the return
 			'limit'      => 150, // Limit the number of children returned.
-			'html'       => true, // If mf2 parsing does not work look for html parsing
+			'jsonld'     => true,  // Try JSON-LD parsing
+			'html'       => true, // If mf2 parsing does not work look for html parsing which includes OGP, meta tags, and title tags
 			'references' => true, // Store nested citations as references per the JF2 spec
 		);
 		$args     = wp_parse_args( $args, $defaults );
@@ -284,6 +313,14 @@ class Parse_This {
 		if ( ! $content ) {
 			return new WP_Error( 'Missing Content' );
 		}
+
+		if ( ! is_array( $this->jf2 ) ) {
+			$this->jf2 = array(
+				'raw' => $this->jf2,
+				'url' => $this->url,
+			);
+			return;
+		}
 		// Ensure not already preparsed
 		if ( empty( $this->jf2 ) ) {
 			$this->jf2 = Parse_This_MF2::parse( $content, $this->url, $args );
@@ -291,23 +328,47 @@ class Parse_This {
 		if ( ! isset( $this->jf2['url'] ) ) {
 			$this->jf2['url'] = $this->url;
 		}
-		// If the HTML argument is not true return at this point
-		if ( ! $args['html'] ) {
-			return;
-		}
-		// If No MF2
-		if ( empty( $this->jf2 ) ) {
-			$args['alternate'] = true;
-			$this->jf2         = Parse_This_HTML::parse( $content, $this->url, $args );
-			return;
-		}
-		// If the parsed jf2 is missing any sort of content then try to find it in the HTML
-		$more = array_intersect( array_keys( $this->jf2 ), array( 'summary', 'content', 'references' ) );
-		if ( empty( $more ) && $this->doc instanceof DOMDocument ) {
-			$this->jf2 = array_merge( $this->jf2, Parse_This_HTML::parse( $this->doc, $this->url ) );
+		// If No MF2 or if the parsed jf2 is missing any sort of content then try to find it in the HTML
+		$more = array_intersect( array_keys( $this->jf2 ), array( 'summary', 'content', 'refs', 'items' ) );
+		if ( empty( $more ) ) {
+			$alt = null;
+			if ( $args['jsonld'] ) {
+				$alt = Parse_This_JSONLD::parse( $this->doc, $this->url, $args );
+			}
+			if ( empty( $alt ) ) {
+				$empty = true;
+			} elseif ( is_countable( $alt ) && 1 === count( $alt ) && array_key_exists( '_jsonld', $alt ) ) {
+				$empty = true;
+			} else {
+				$empty = false;
+			}
+			if ( $empty && $args['html'] ) {
+				$args['alternate'] = true;
+				if ( in_array( wp_parse_url( $this->url, PHP_URL_HOST ), array( 'youtube.com', 'www.youtube.com', 'm.youtube.com', 'youtu.be' ), true ) ) {
+					$alt = Parse_This_YouTube::parse( $this->content, $this->url, $args );
+				}
+				if ( in_array( wp_parse_url( $this->url, PHP_URL_HOST ), array( 'www.instagram.com', 'instagram.com' ), true ) ) {
+					$alt = Parse_This_Instagram::parse( $this->doc, $this->url, $args );
+				}
+				if ( ! $alt ) {
+					$alt = Parse_This_HTML::parse( $content, $this->url, $args );
+				}
+			}
+			$this->jf2 = array_merge( $this->jf2, $alt );
 		}
 		if ( ! isset( $this->jf2['url'] ) ) {
 			$this->jf2['url'] = $this->url;
+		}
+		// Expand Short URLs in summary
+		if ( isset( $this->jf2['summary'] ) ) {
+			$urls = wp_extract_urls( $this->jf2['summary'] );
+			foreach ( $urls as $url ) {
+				$redirect = self::redirect( $url );
+				if ( $redirect ) {
+					$this->jf2['_urls'][] = $redirect;
+					$this->jf2['summary'] = str_replace( $url, $redirect, $this->jf2['summary'] );
+				}
+			}
 		}
 
 	}

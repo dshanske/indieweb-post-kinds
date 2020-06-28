@@ -1,7 +1,6 @@
 <?php
 /**
  * Provides REST Endpoint to Retrieve the Parsed Data
- *
  */
 
 class REST_Parse_This {
@@ -54,6 +53,7 @@ class REST_Parse_This {
 			<p><label for="url"><?php esc_html_e( 'URL', 'indieweb-post-kinds' ); ?></label><input type="url" class="widefat" name="url" id="url" /></p>
 			<p><label for="mf2"><?php esc_html_e( 'MF2', 'indieweb-post-kinds' ); ?></label><input type="checkbox" name="mf2" id="mf2" /></p>
 			<p><label for="discovery"><?php esc_html_e( 'Feed Discovery', 'indieweb-post-kinds' ); ?></label><input type="checkbox" name="discovery" id="discovery" /></p>
+			<p><label for="discovery"><?php esc_html_e( 'References', 'indieweb-post-kinds' ); ?></label><input type="checkbox" name="references" id="references" checked /></p>
 			<p><label for"return"><?php esc_html_e( 'Return Type', 'indieweb-post-kinds' ); ?></label>
 				<select name="return">
 					<option value="single"><?php esc_html_e( 'Single', 'indieweb-post-kinds' ); ?></option>
@@ -100,6 +100,7 @@ class REST_Parse_This {
 		$url       = $request->get_param( 'url' );
 		$mf2       = $request->get_param( 'mf2' );
 		$return    = $request->get_param( 'return' );
+		$refs      = $request->get_param( 'references' );
 		$discovery = $request->get_param( 'discovery' );
 		$follow    = $request->get_param( 'follow' );
 		if ( $discovery ) {
@@ -114,8 +115,9 @@ class REST_Parse_This {
 		}
 		$parse->parse(
 			array(
-				'return' => $return,
-				'follow' => $follow,
+				'return'     => $return,
+				'follow'     => $follow,
+				'references' => $refs,
 			)
 		);
 		if ( $mf2 ) {

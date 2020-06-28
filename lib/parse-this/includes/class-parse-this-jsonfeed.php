@@ -6,10 +6,13 @@ class Parse_This_JSONFeed {
 	}
 
 	private static function get_author( $array ) {
-		if ( ! isset( $array['author'] ) ) {
-			return array();
+		if ( isset( $array['author'] ) && ! isset( $array['authors'] ) ) {
+			$array['authors'] = $array['author'];
 		}
-		$author = $array['author'];
+		if ( ! isset( $array['authors'] ) ) {
+			return null;
+		}
+		$author = $array['authors'];
 		if ( ! wp_is_numeric_array( $author ) ) {
 			$author = array( $author );
 		}

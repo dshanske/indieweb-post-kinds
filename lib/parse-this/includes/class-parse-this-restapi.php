@@ -15,8 +15,19 @@ class Parse_This_RESTAPI {
 		return null;
 	}
 
-	public static function fetch( $url, $endpoint ) {
-		$url        = str_replace( 'wp/v2/posts', $endpoint, $url );
+	public static function base64url_encode( $data ) {
+		return rtrim( strtr( base64_encode( $data ), '+/', '-_' ), '=' );
+	}
+
+	public static function fetch( $url, $endpoint, $cache = false ) {
+		$url = str_replace( 'wp/v2/posts', $endpoint, $url );
+		$key = 'pt_rest_' . self::base64url_encode( $url );
+		if ( $cache ) {
+			$transient = get_transient( $key );
+			if ( false !== $transient ) {
+				return json_decode( $transient, true );
+			}
+		}
 		$user_agent = 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:57.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36 Parse This/WP';
 		$args       = array(
 			'timeout'             => 15,
@@ -49,6 +60,9 @@ class Parse_This_RESTAPI {
 		}
 
 		$content = wp_remote_retrieve_body( $response );
+		if ( $cache ) {
+			set_transient( $key, $content, WEEK_IN_SECONDS );
+		}
 		return json_decode( $content, true );
 	}
 
@@ -69,12 +83,52 @@ class Parse_This_RESTAPI {
 		return $return;
 	}
 
+
+	public static function get_authors( $url, $ids ) {
+		if ( empty( $ids ) ) {
+			return array();
+		}
+		$json = self::fetch( $url, sprintf( 'wp/v2/users/?include=%1$s', implode( ',', $ids ) ) );
+		if ( is_wp_error( $json ) ) {
+			return null;
+		}
+		$return = array();
+		foreach ( $json as $author ) {
+			$return[ $author['id'] ] = self::format_author( $author );
+		}
+		return $return;
+	}
+
+	public static function format_author( $json ) {
+		$avatar_urls = self::ifset( 'avatar_urls', $json );
+		$avatar_urls = is_array( $avatar_urls ) ? end( $avatar_urls ) : null;
+		$return      = array(
+			'type'  => 'card',
+			'name'  => self::ifset( 'name', $json ),
+			'url'   => self::ifset( 'url', $json ),
+			'note'  => self::ifset( 'description', $json ),
+			'photo' => $avatar_urls,
+		);
+		return $return;
+	}
+
 	public static function get_featured( $id, $url ) {
 		$json = self::fetch( $url, sprintf( 'wp/v2/media/%s', $id ) );
 		if ( is_wp_error( $json ) ) {
 			return null;
 		}
 		return self::ifset( 'source_url', $json );
+	}
+
+	public static function get_media( $url, $ids ) {
+		if ( empty( $ids ) ) {
+			return array();
+		}
+		$json = self::fetch( $url, sprintf( 'wp/v2/media/?include=%1$s', implode( ',', $ids ) ) );
+		if ( is_wp_error( $json ) ) {
+			return null;
+		}
+		return wp_list_pluck( $json, 'guid', 'id' );
 	}
 
 	public static function get_datetime( $time, $timezone = null ) {
@@ -86,7 +140,7 @@ class Parse_This_RESTAPI {
 	}
 
 	public static function feed_data( $url ) {
-		$fetch = self::fetch( $url, '' );
+		$fetch = self::fetch( $url, '', true );
 		return wp_array_slice_assoc( $fetch, array( 'name', 'url', 'timezone_string', 'gmt_offset', 'description' ) );
 	}
 
@@ -116,7 +170,10 @@ class Parse_This_RESTAPI {
 		);
 		$data              = self::feed_data( $url );
 		$timezone          = self::timezone( $data );
-		$authors           = array();
+		$media_ids         = wp_list_pluck( $content, 'featured_media' );
+		$author_ids        = wp_list_pluck( $content, 'author' );
+		$media             = self::get_media( $url, $media_ids );
+		$authors           = self::get_authors( $url, $author_ids );
 		$return['items']   = array();
 		$return['name']    = self::ifset( 'name', $data );
 		$return['summary'] = self::ifset( 'description', $data );
@@ -125,7 +182,7 @@ class Parse_This_RESTAPI {
 			if ( ! array_key_exists( $item['author'], $authors ) ) {
 				$authors[ $item['author'] ] = self::get_author( $item['author'], $url );
 			}
-			$newitem           = array_filter(
+			$newitem = array_filter(
 				array(
 					'uid'       => self::get_rendered( 'guid', $item ),
 					'url'       => self::ifset( 'link', $item ),
@@ -140,10 +197,16 @@ class Parse_This_RESTAPI {
 					'published' => self::get_datetime( self::ifset( 'date', $item ), $timezone ),
 					'updated'   => self::get_datetime( self::ifset( 'modified', $item ), $timezone ),
 					'author'    => $authors[ $item['author'] ],
-					'featured'  => self::get_featured( self::ifset( 'featured_media', $item ), $url ),
 					'kind'      => self::ifset( 'kind', $item ),
 				)
 			);
+			if ( array_key_exists( 'featured_media', $item ) ) {
+				if ( array_key_exists( (int) $item['featured_media'], $media ) ) {
+					$newitem['featured'] = $media[ intval( $item['featured_media'] ) ]['rendered'];
+				} else {
+					$newitem['featured'] = self::get_featured( $item['featured_media'], $url );
+				}
+			}
 			$return['items'][] = $newitem;
 		}
 		return $return;

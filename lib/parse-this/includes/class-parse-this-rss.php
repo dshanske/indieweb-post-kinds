@@ -1,7 +1,7 @@
 <?php
 /**
  * Helpers for Turning RSS/Atom into JF2
-**/
+ **/
 
 class Parse_This_RSS {
 
@@ -156,7 +156,8 @@ class Parse_This_RSS {
 	 * @return JF2
 	 */
 	public static function get_item( $item, $title = '' ) {
-		$return = array(
+		$content = Parse_This::clean_content( $item->get_content( true ) );
+		$return  = array(
 			'type'         => 'entry',
 			'name'         => $item->get_title(),
 			'author'       => self::get_authors( $item->get_authors() ),
@@ -165,8 +166,8 @@ class Parse_This_RSS {
 			'summary'      => wp_strip_all_tags( $item->get_description( true ) ),
 			'content'      => array_filter(
 				array(
-					'html' => Parse_This::clean_content( $item->get_content( true ) ),
-					'text' => wp_strip_all_tags( htmlspecialchars_decode( $item->get_content( true ) ) ),
+					'html' => $content,
+					'text' => wp_strip_all_tags( $content ),
 				)
 			),
 			'_source'      => self::get_source( $item ),
@@ -183,14 +184,23 @@ class Parse_This_RSS {
 			$return['category'] = array();
 		}
 
+		// To cover the non obvious types
+		$medium_map = array(
+			'application/x-shockwave-flash' => 'video',
+		);
+
 		$enclosures = $item->get_enclosures();
 		foreach ( $enclosures as $enclosure ) {
 			$medium = $enclosure->get_type();
 			if ( ! $medium ) {
 				$medium = $enclosure->get_medium();
 			} else {
-				$medium = explode( '/', $medium );
-				$medium = array_shift( $medium );
+				if ( array_key_exists( $medium, $medium_map ) ) {
+					$medium = $medium_map[ $medium ];
+				} else {
+					$medium = explode( '/', $medium );
+					$medium = array_shift( $medium );
+				}
 			}
 			switch ( $medium ) {
 				case 'audio':
@@ -225,6 +235,12 @@ class Parse_This_RSS {
 				if ( 0 < $duration ) {
 					$return['duration'] = seconds_to_iso8601( $duration );
 				}
+			}
+			if ( empty( $return['summary'] ) ) {
+				$return['summary'] = $enclosure->get_description();
+			}
+			if ( empty( $return['featured'] ) ) {
+				$return['featured'] = self::get_thumbnail( $enclosure );
 			}
 			$credits = $enclosure->get_credits();
 			if ( ! $credits ) {
