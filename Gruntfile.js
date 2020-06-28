@@ -22,7 +22,7 @@ module.exports = function(grunt) {
     wp_readme_to_markdown: {
       target: {
       	options: {
-      	  screenshot_url: '/assets/{screenshot}.png'
+      	  screenshot_url: '/.wordpress-org/{screenshot}.png'
         },
         files: {
           'readme.md': 'readme.txt'
