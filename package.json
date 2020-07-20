@@ -9,14 +9,13 @@
     "eslint-config-wordpress": "^2.0.0",
     "eslint-plugin-pabigot": "^1.1.0",
     "eslint-plugin-wordpress": "^0.1.0",
-    "grunt": "^1.0.1",
+    "grunt": "^1.2.1",
     "grunt-contrib-copy": "~0.7.0",
     "grunt-contrib-sass": "~0.8.1",
     "grunt-eslint": "^20.1.0",
-    "grunt-git": "~0.3.3",
-    "grunt-wp-i18n": "~0.4.9",
+    "grunt-git": "^1.0.14",
     "grunt-wp-readme-to-markdown": "~0.8.0",
     "moment": "^2.27.0",
-    "timepicker": "^1.13.10"
+    "timepicker": "^1.13.11"
   }
 }
