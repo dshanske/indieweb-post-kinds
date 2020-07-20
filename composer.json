@@ -24,7 +24,7 @@
 	"squizlabs/php_codesniffer": "*",
         "phpcompatibility/php-compatibility": "*",
         "wp-coding-standards/wpcs": "*",
-	"dshanske/parse-this": "dev-master",
+	"dshanske/parse-this": "dev-trunk",
         "phpcompatibility/phpcompatibility-wp": "*",
         "php-parallel-lint/php-parallel-lint": "^1.2",
         "wp-cli/i18n-command": "^2.2",
