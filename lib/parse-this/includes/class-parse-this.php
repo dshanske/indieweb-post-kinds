@@ -364,7 +364,7 @@ class Parse_This {
 			$urls = wp_extract_urls( $this->jf2['summary'] );
 			foreach ( $urls as $url ) {
 				$redirect = self::redirect( $url );
-				if ( $redirect ) {
+				if ( $redirect && ! is_wp_error( $redirect ) ) {
 					$this->jf2['_urls'][] = $redirect;
 					$this->jf2['summary'] = str_replace( $url, $redirect, $this->jf2['summary'] );
 				}
