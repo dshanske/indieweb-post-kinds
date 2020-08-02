@@ -348,7 +348,7 @@ final class Kind_Taxonomy {
 			'hierarchical'       => false,
 			'show_ui'            => true,
 			'show_in_menu'       => WP_DEBUG,
-			'show_in_nav_menu'   => true,
+			'show_in_nav_menus'  => true,
 			'show_in_rest'       => false,
 			'show_tagcloud'      => true,
 			'show_in_quick_edit' => false,
