@@ -142,10 +142,13 @@ function kind_flatten_array( $array ) {
 	if ( ! is_array( $array ) ) {
 		return $array;
 	}
-	if ( 1 === count( $array ) && wp_is_numeric_array( $array ) ) {
+	if ( wp_is_numeric_array( $array ) ) {
+		$array = array_map( 'kind_flatten_array', $array );
+	}
+	$array = array_filter( $array );
+	if ( 1 === count( $array ) ) {
 		return $array[0];
 	}
-	return array_map( 'kind_flatten_array', $array );
 }
 
 // Return any sort of src urls in content

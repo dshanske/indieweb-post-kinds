@@ -175,11 +175,11 @@ class Kind_Metabox {
 	 * @return array|mixed|string
 	 */
 	public static function implode( $array ) {
-			$array = kind_flatten_array( $array );
-		if ( ! is_array( $array ) ) {
-				return $array;
-		}
+		$array = kind_flatten_array( $array );
+		if ( is_array( $array ) ) {
 			return implode( ';', $array );
+		}
+		return $array;
 	}
 
 	/**
@@ -191,10 +191,10 @@ class Kind_Metabox {
 	 * @return array|mixed
 	 */
 	public static function explode( $string ) {
-		if ( ! is_string( $string ) ) {
-				return $string;
-		}
+		if ( is_string( $string ) ) {
 			return kind_flatten_array( explode( ';', $string ) );
+		}
+		return $string;
 	}
 
 	/**
@@ -454,7 +454,7 @@ class Kind_Metabox {
 		$author          = array_filter( $author );
 		if ( ! empty( $author ) ) {
 			$author['type'] = 'card';
-			$cite['author'] = jf2_to_mf2( $author );
+			$cite['author'] = $author;
 		}
 		$kind = $mf2_post->get( 'kind', true );
 		$type = Kind_Taxonomy::get_kind_info( $kind, 'property' );

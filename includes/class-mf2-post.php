@@ -573,7 +573,7 @@ class MF2_Post implements ArrayAccess {
 		if ( ! $property || ! $this->has_key( $property ) ) {
 			return false;
 		}
-		$return = $this->get( $property );
+		$return = $this->get( $property, false );
 		if ( wp_is_numeric_array( $return ) ) {
 			$return = array_shift( $return );
 		}
