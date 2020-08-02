@@ -35,6 +35,7 @@
 	"lint:phpcpd": "./vendor/bin/phpcpd --fuzzy --exclude .git --exclude vendor --exclude node_modules .",
         "lint:wpcs": "./vendor/bin/phpcs",
         "lint:wpcs-fix": "./vendor/bin/phpcbf",
+	"lint": "./vendor/bin/phpcs -n -q",
         "make-pot": "./vendor/bin/wp i18n make-pot . languages/indieweb-post-kinds.pot",
 	"lint:php": "@php ./vendor/bin/parallel-lint --exclude .git --exclude vendor --exclude node_modules .",
 	"install-codestandards": [

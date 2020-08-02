@@ -1,6 +1,13 @@
-sudo: false
-dist: trusty
+dist: xenial
 language: php
+
+services:   
+  - mysql
+
+branches:   
+  only:
+    - trunk
+
 notifications:
   email:
     on_success: never
@@ -14,19 +21,32 @@ env:
   - WP_VERSION=latest WP_MULTISITE=0
   global:
   - WP_TRAVISCI=travis:phpunit
-matrix:
-  include:
 
+php:
+  - 5.6
+  - 7.0
+  - 7.2
+  - 7.3
+  - 7.4
+
+jobs:
   include:
-  - php: 7.4
-    env: WP_TRAVISCI=travis:phpcs
-  - php: 7.3
-  - php: 7.2
-  - php: 7.0
-  - php: 5.6
-  - php: 5.4
+  - stage: lint
+    php: 7.4
+    script:
+      - composer install
+      - composer lint
+  - stage: previousversion
+    php: 7.4
+    env: WP_VERSION=5.3 WP_MULTISITE=0
+  - stage: oldestsupport
+    php: 5.6
     env: WP_VERSION=4.9.9 WP_MULTISITE=0
-    # WordPress 5.2 removes support for WordPress 5.4. Testing for 4.9.9 as many people did not move to 5.0 due Gutenberg concerns
+   # WordPress 5.2 removes support for WordPress 5.4. Testing for 4.9.9 as many people did not move to 5.0 due Gutenberg concerns
+  - stage: multisite
+    php: 7.4
+    env: WP_VERSION=latest WP_MULTISITE=1
+
 before_script:
 - |
   # Remove Xdebug for a huge performance increase:
@@ -43,26 +63,22 @@ before_script:
   # Install the specified version of PHPUnit depending on the PHP version:
   if [[ "$WP_TRAVISCI" == "travis:phpunit" ]]; then
     case "$TRAVIS_PHP_VERSION" in
-      7.4|7.3|7.2|7.1|7.0|nightly)
+      7.4|7.3|7.2|7.1|nightly)
+        echo "Using PHPUnit 7.x"
+        composer global require "phpunit/phpunit:^7"
+        ;;
+      7.0)
         echo "Using PHPUnit 6.x"
         composer global require "phpunit/phpunit:^6"
         ;;
-      5.6|5.5|5.4|5.3)
-        echo "Using PHPUnit 4.x"
-        composer global require "phpunit/phpunit:^4"
-        ;;
-      5.2)
-        # Do nothing, use default PHPUnit 3.6.x
-        echo "Using default PHPUnit, hopefully 3.6"
-        ;;
+      5.6)
+        echo "Using PHPUnit 5.x"
+        composer global require "phpunit/phpunit:^5"
       *)
         echo "No PHPUnit version handling for PHP version $TRAVIS_PHP_VERSION"
         exit 1
         ;;
     esac
-  fi
-  if [[ "$WP_TRAVISCI" == "travis:phpcs" ]] ; then
-      composer install
   fi
 
 - mysql --version
@@ -97,6 +113,3 @@ script:
       WP_MULTISITE=1 phpunit || exit 1
     fi
   - |
-    if [[ "$WP_TRAVISCI" == "travis:phpcs" ]] ; then
-      ./vendor/bin/phpcs -p -s -v -n --standard=./phpcs.xml --extensions=php
-    fi
