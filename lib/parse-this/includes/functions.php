@@ -37,13 +37,37 @@ if ( ! function_exists( 'jf2_to_mf2' ) ) {
 if ( ! function_exists( 'mf2_to_jf2' ) ) {
 
 	function mf2_to_jf2( $entry ) {
-		if ( empty( $entry ) || is_string( $entry ) ) {
+
+		// Check if string.
+		if ( is_string( $entry ) ) {
 			return $entry;
 		}
+
 		$jf2 = array();
 
-		// If it is a numeric array, run this function through each item
-		if ( wp_is_numeric_array( $entry ) ) {
+
+		// Check if this has a type and properties indicating a microformats array.
+		if ( array_key_exists( 'type', $entry ) && array_key_exists( 'properties', $entry ) ) {
+			if ( isset( $entry['items'] ) ) {
+				$jf2['items'] = array_map( 'mf2_to_jf2', $entry['items'] );
+			}	
+			$type        = is_array( $entry['type'] ) ? array_pop( $entry['type'] ) : $entry['type'];
+		
+			$jf2['type'] = str_replace( 'h-', '', $type );
+		
+			foreach ( $entry['properties'] as $key => $value ) {
+				if ( wp_is_numeric_array( $value ) ) {
+					$value = array_map( 'mf2_to_jf2', $value );
+					if ( is_countable( $value ) && 1 === count( $value ) ) {
+						$value = array_pop( $value );
+					}
+				} else if ( is_array( $value ) && array_key_exists( 'type', $value ) && array_key_exists( 'properties', $value ) ) {
+					$value = mf2_to_jf2( $value );
+				}
+				$jf2[ $key ] = $value;
+			}
+		} else if ( wp_is_numeric_array( $entry ) ) {
+			// If it is a numeric array, run this function through each item
 			$jf2 = array_map( 'mf2_to_jf2', $entry );
 			if ( 1 === count( $jf2 ) ) {
 				return array_pop( $jf2 );
@@ -51,29 +75,6 @@ if ( ! function_exists( 'mf2_to_jf2' ) ) {
 			return $jf2;
 		}
 
-		if ( isset( $entry['items'] ) ) {
-			$jf2['items'] = array_map( 'mf2_to_jf2', $entry['items'] );
-		}
-
-		if ( isset( $entry['type'] ) ) {
-			$type        = is_array( $entry['type'] ) ? array_pop( $entry['type'] ) : $entry['type'];
-			$jf2['type'] = str_replace( 'h-', '', $type );
-		}
-		if ( isset( $entry['properties'] ) ) {
-			foreach ( $entry['properties'] as $key => $value ) {
-				if ( is_array( $value ) ) {
-					if ( wp_is_numeric_array( $value ) ) {
-						$value = array_map( 'mf2_to_jf2', $value );
-						if ( is_countable( $value ) && 1 === count( $value ) ) {
-							$value = array_pop( $value );
-						}
-					} elseif ( isset( $value['type'] ) ) {
-						$value = mf2_to_jf2( $value );
-					}
-				}
-				$jf2[ $key ] = $value;
-			}
-		}
 		return $jf2;
 	}
 }

@@ -39,10 +39,11 @@ class REST_Parse_This {
 		?>
 				<div class="wrap">
 						<h2> <?php esc_html_e( 'Parse This Debugger', 'indieweb-post-kinds' ); ?> </h2>
-						<p> <?php esc_html_e( 'Test the Parse Tools Debugger. You can report sites to the developer for possibly improvement in future', 'parse-this' ); ?>
+						<p> <?php esc_html_e( 'Test the Parse Tools Debugger. You can report sites to the developer for possibly improvement in future.', 'parse-this' ); ?>
+							<a href="https://github.com/dshanske/parse-this/issues"><?php esc_html_e( 'Open an Issue', 'parse-this' ); ?></a>
 						</p>
-						<a href="https://github.com/dshanske/parse-this/issues"><?php esc_html_e( 'Open an Issue', 'parse-this' ); ?></a>
-							<p> 
+
+							<p>
 							<?php
 							if ( is_plugin_active( 'parse-this/parse-this.php' ) ) {
 								esc_html_e( 'You are using the plugin version of Parse This as opposed to a version built into any plugin', 'parse-this' );
@@ -50,17 +51,56 @@ class REST_Parse_This {
 							?>
 						<hr />
 			<form method="get" action="<?php echo esc_url( rest_url( '/parse-this/1.0/parse/' ) ); ?> ">
-			<p><label for="url"><?php esc_html_e( 'URL', 'indieweb-post-kinds' ); ?></label><input type="url" class="widefat" name="url" id="url" /></p>
-			<p><label for="mf2"><?php esc_html_e( 'MF2', 'indieweb-post-kinds' ); ?></label><input type="checkbox" name="mf2" id="mf2" /></p>
-			<p><label for="discovery"><?php esc_html_e( 'Feed Discovery', 'indieweb-post-kinds' ); ?></label><input type="checkbox" name="discovery" id="discovery" /></p>
-			<p><label for="discovery"><?php esc_html_e( 'References', 'indieweb-post-kinds' ); ?></label><input type="checkbox" name="references" id="references" checked /></p>
-			<p><label for"return"><?php esc_html_e( 'Return Type', 'indieweb-post-kinds' ); ?></label>
-				<select name="return">
-					<option value="single"><?php esc_html_e( 'Single', 'indieweb-post-kinds' ); ?></option>
-					<option value="feed"><?php esc_html_e( 'Feed', 'indieweb-post-kinds' ); ?></option>
-				</select>
-			</p>
-			<p><label for="follow"><?php esc_html_e( 'Follow Author Links', 'indieweb-post-kinds' ); ?></label><input type="checkbox" name="follow" id="follow" /></p>
+				<p>
+					<label for="url"><?php esc_html_e( 'URL', 'indieweb-post-kinds' ); ?></label><input type="url" class="widefat" name="url" id="url" />
+				</p>
+				<table class="form-table" role="presentation">
+					<tbody>
+					<tr>
+						<th scope="row">
+							<label for="mf2"><?php esc_html_e( 'MF2', 'indieweb-post-kinds' ); ?></label>
+						</th>
+						<td>
+							<input type="checkbox" name="mf2" id="mf2" />
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">
+							<label for="discovery"><?php esc_html_e( 'Feed Discovery', 'indieweb-post-kinds' ); ?></label>
+						</th>
+						<td>
+							<input type="checkbox" name="discovery" id="discovery" />
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">
+							<label for="discovery"><?php esc_html_e( 'References', 'indieweb-post-kinds' ); ?></label>
+						</th>
+						<td>
+							<input type="checkbox" name="references" id="references" checked />
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">
+							<label for"return"><?php esc_html_e( 'Return Type', 'indieweb-post-kinds' ); ?></label>
+						</th>
+						<td>
+							<select name="return">
+								<option value="single"><?php esc_html_e( 'Single', 'indieweb-post-kinds' ); ?></option>
+								<option value="feed"><?php esc_html_e( 'Feed', 'indieweb-post-kinds' ); ?></option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">
+							<label for="follow"><?php esc_html_e( 'Follow Author Links', 'indieweb-post-kinds' ); ?></label>
+						</th>
+						<td>
+							<input type="checkbox" name="follow" id="follow" />
+						</td>
+					</tr>
+					</tbody>
+				</table>
 			<?php wp_nonce_field( 'wp_rest' ); ?>
 			<?php submit_button( __( 'Parse', 'indieweb-post-kinds' ) ); ?>
 						</form>
