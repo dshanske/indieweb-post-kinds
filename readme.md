@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.3.4  
+**Stable tag:** 3.3.5  
 **Requires at least:** 4.9.9  
 **Requires PHP:** 5.6  
 **Tested up to:** 5.4.2  
@@ -264,6 +264,12 @@ through future plugin updates.
 
 
 ## Changelog ##
+
+### 3.3.5 ( 2020-08-02 ) ###
+* Parse This refresh
+* Try to fix author saving issue where author was not saving if not both name and url
+* Add offset support to Post Kinds implementation of q=source for Micropub
+* Fix Kinds showing as option in Menu Customizer
 
 ### 3.3.4 ( 2020-06-28 ) ###
 * Maintenance Release
