@@ -49,14 +49,15 @@ class Kind_Plugins {
 			$mf2_post = new MF2_Post( $post_id );
 			$resp     = $mf2_post->get();
 		} else {
-			$numberposts = ifset( $input['limit'], 10 );
-			$posts       = get_posts(
-				array(
-					'posts_per_page' => $numberposts,
-					'fields'         => 'ids',
-				)
+			$args = array(
+				'posts_per_page' => ifset( $input['limit'], 10 ),
+				'fields'         => 'ids',
 			);
-			$resp        = array();
+			if ( array_key_exists( 'offset', $input ) ) {
+				$args['offset'] = $input['offset'];
+			}
+			$posts = get_posts( $args );
+			$resp  = array();
 			foreach ( $posts as $post ) {
 				$mf2_post = new MF2_Post( $post );
 				$resp[]   = jf2_to_mf2( $mf2_post->get() );
