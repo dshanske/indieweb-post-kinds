@@ -356,6 +356,9 @@ final class Kind_Taxonomy {
 			'meta_box_cb'        => array( 'Kind_Taxonomy', 'select_metabox' ),
 			'rewrite'            => true,
 			'query_var'          => true,
+			'default_term'       => array( 
+							'name' => __( 'Article', 'indieweb-post-kinds' ), 
+							'slug' => 'article' ),
 		);
 		register_taxonomy( 'kind', array( 'post' ), $args );
 		// Year archive for kinds
