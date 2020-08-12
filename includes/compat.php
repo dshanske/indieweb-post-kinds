@@ -44,3 +44,11 @@ if ( ! function_exists( 'get_feed_build_date' ) ) {
 			return apply_filters( 'get_feed_build_date', $max_modified_time, $format );
 	}
 }
+
+// Backcompat for wp_filter_content_tags introduced in 5.5.
+if ( ! function_exists( 'wp_filter_content_tags' ) ) {
+	function wp_filter_content_tags( $content ) {
+		return wp_make_content_images_responsive( $content );
+	}
+}
+

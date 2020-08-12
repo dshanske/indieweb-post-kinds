@@ -99,7 +99,7 @@ class Kind_View {
 		include $located;
 		$return = ob_get_contents();
 		ob_end_clean();
-		return wp_make_content_images_responsive( $return );
+		return wp_filter_content_tags( $return );
 	}
 
 	/**
