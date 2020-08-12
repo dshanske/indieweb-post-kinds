@@ -310,25 +310,21 @@ class Kind_View {
 		if ( 0 === (int) $option ) {
 				return '';
 		}
-		$host      = self::extract_domain_name( $url );
-		$whitelist = array(
+		$host        = self::extract_domain_name( $url );
+		$approvelist = array(
 			'animoto.com',
 			'blip.tv',
 			'cloudup.com',
-			'collegehumor.com',
+			'crowdsignal.com',
 			'dailymotion.com',
 			'facebook.com',
 			'flickr.com',
-			'funnyordie.com',
-			'hulu.com',
 			'imgur.com',
 			'instagram.com',
 			'issuu.com',
 			'kickstarter.com',
 			'meetup.com',
 			'mixcloud.com',
-			'photobucket.com',
-			'polldaddy.com',
 			'reddit.com',
 			'reverbnation.com',
 			'scribd.com',
@@ -338,6 +334,7 @@ class Kind_View {
 			'speakerdeck.com',
 			'spotify.com',
 			'ted.com',
+			'tiktok.com',
 			'tumblr.com',
 			'twitter.com',
 			'videopress.com',
@@ -345,8 +342,8 @@ class Kind_View {
 			'wordpress.tv',
 			'youtube.com',
 		);
-		$whitelist = apply_filters( 'post_kind_embed_whitelist', $whitelist );
-		if ( ! in_array( $host, $whitelist, true ) ) {
+		$approvelist = apply_filters( 'post_kind_embed_approvelist', $approvelist );
+		if ( ! in_array( $host, $approvelist, true ) ) {
 			return '';
 		}
 		if ( isset( $GLOBALS['wp_embed'] ) ) {
