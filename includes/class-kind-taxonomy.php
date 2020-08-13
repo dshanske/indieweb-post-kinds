@@ -358,7 +358,9 @@ final class Kind_Taxonomy {
 			'query_var'          => true,
 			'default_term'       => array( 
 							'name' => __( 'Article', 'indieweb-post-kinds' ), 
-							'slug' => 'article' ),
+							'slug' => 'article' 
+						),
+						
 		);
 		register_taxonomy( 'kind', array( 'post' ), $args );
 		// Year archive for kinds
