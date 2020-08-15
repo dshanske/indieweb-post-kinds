@@ -15,19 +15,13 @@ class REST_Parse_This {
 		 * @access public
 		 */
 	public function admin_menu() {
-		// If the IndieWeb Plugin is installed use its menu.
-		if ( class_exists( 'IndieWeb_Plugin' ) ) {
-			add_submenu_page(
-				'indieweb',
-				__( 'Parse This', 'indieweb-post-kinds' ), // page title
-				__( 'Parse This', 'indieweb-post-kinds' ), // menu title
-				'manage_options', // access capability
-				'parse_this',
-				array( $this, 'debug' )
-			);
-		} else {
-			add_management_page( '', __( 'Post Kinds', 'indieweb-post-kinds' ), 'manage_options', 'parse_this', array( $this, 'debug' ) );
-		}
+		add_management_page(
+			__( 'Parse This', 'indieweb-post-kinds' ), // page title
+			__( 'Parse This', 'indieweb-post-kinds' ), // menu title
+			'manage_options', // access capability
+			'parse_this',
+			array( $this, 'debug' )
+		);
 	}
 
 	/**

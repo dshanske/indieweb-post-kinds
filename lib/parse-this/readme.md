@@ -1,7 +1,7 @@
+
 Parse This turns URLs into structured jf2 data
 
-
-## Description 
+## Description
 
 Parse This is based on a variety of projects including the parsing code from Press This, which was removed from WordPress. 
 
@@ -14,14 +14,13 @@ The goal is to produce structured jf2 data that can be used for previewing links
 
 It can be installed as a standalone plugin which will provide the necessary libraries and functionality as well as the REST API endpoint for getting JF2 data from an arbitrary URL or a WordPress Post. 
 
+## Frequently Asked Questions
 
 
-## Frequently Asked Questions 
 
+## Changelog
 
-## Changelog 
+### 1.0.0 ( 2019-xx-xx )
 
-
-### 1.0.0 ( 2019-xx-xx ) 
 * Initial Release
 
