@@ -1,10 +1,10 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.3.5  
+**Stable tag:** 3.3.6  
 **Requires at least:** 4.9.9  
 **Requires PHP:** 5.6  
-**Tested up to:** 5.4.2  
+**Tested up to:** 5.5  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -264,6 +264,10 @@ through future plugin updates.
 
 
 ## Changelog ##
+
+### 3.3.6 ( 2020-08-15 ) ###
+* Fix deprecation issues from WordPress 5.5
+* Update embed provider approval list
 
 ### 3.3.5 ( 2020-08-02 ) ###
 * Parse This refresh
