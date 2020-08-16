@@ -100,6 +100,16 @@ class Parse_This_MF2_Utils {
 	}
 
 	/**
+	 * Verifies if $p is an array without numeric keys and has key 'value' and 'alt' set.
+	 *
+	 * @param $p
+	 * @return bool
+	 */
+	public static function is_embedded_img( $p ) {
+		return is_array( $p ) && ! wp_is_numeric_array( $p ) && isset( $p['value'] ) && isset( $p['alt'] );
+	}
+
+	/**
 	 * Verifies if property named $propname is in array $mf.
 	 *
 	 * @param array    $mf
@@ -142,7 +152,7 @@ class Parse_This_MF2_Utils {
 	 * @return mixed
 	 */
 	public static function to_plaintext( $v ) {
-		if ( self::is_microformat( $v ) || self::is_embedded_html( $v ) ) {
+		if ( self::is_microformat( $v ) || self::is_embedded_html( $v ) || self::is_embedded_img( $v ) ) {
 			return $v['value'];
 		} elseif ( is_array( $v ) && isset( $v['text'] ) ) {
 			return $v['text'];
