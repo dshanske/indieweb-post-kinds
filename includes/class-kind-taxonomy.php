@@ -15,61 +15,60 @@ final class Kind_Taxonomy {
 		require_once plugin_dir_path( __FILE__ ) . '/register-kinds.php';
 
 		// Add the Correct Archive Title to Kind Archives.
-		add_filter( 'get_the_archive_title', array( 'Kind_Taxonomy', 'kind_archive_title' ), 10 );
-		add_filter( 'get_the_archive_description', array( 'Kind_Taxonomy', 'kind_archive_description' ), 10 );
-		add_filter( 'document_title_parts', array( 'Kind_Taxonomy', 'document_title_parts' ), 10 );
+		add_filter( 'get_the_archive_title', array( static::class, 'kind_archive_title' ), 10 );
+		add_filter( 'get_the_archive_description', array( static::class, 'kind_archive_description' ), 10 );
+		add_filter( 'document_title_parts', array( static::class, 'document_title_parts' ), 10 );
 
 		// Add Kind Permalinks.
-		add_filter( 'post_link', array( 'Kind_Taxonomy', 'kind_permalink' ), 10, 3 );
-		add_filter( 'post_type_link', array( 'Kind_Taxonomy', 'kind_permalink' ), 10, 3 );
+		add_filter( 'post_link', array( static::class, 'kind_permalink' ), 10, 3 );
+		add_filter( 'post_type_link', array( static::class, 'kind_permalink' ), 10, 3 );
 
 		// Query Variable to Exclude Kinds from Feed
-		add_filter( 'query_vars', array( 'Kind_Taxonomy', 'query_vars' ) );
-		add_action( 'pre_get_posts', array( 'Kind_Taxonomy', 'kind_filter_query' ) );
+		add_filter( 'query_vars', array( static::class, 'query_vars' ) );
+		add_action( 'pre_get_posts', array( static::class, 'kind_filter_query' ) );
 
 		// Add Dropdown
-		add_action( 'restrict_manage_posts', array( 'Kind_Taxonomy', 'kind_dropdown' ), 10, 2 );
+		add_action( 'restrict_manage_posts', array( static::class, 'kind_dropdown' ), 10, 2 );
 
 		// Add Links to Ping to the Webmention Sender.
-		add_filter( 'webmention_links', array( 'Kind_Taxonomy', 'webmention_links' ), 11, 2 );
+		add_filter( 'webmention_links', array( static::class, 'webmention_links' ), 11, 2 );
 
 		// Add Links to Enclosures if Appropriate
-		add_filter( 'enclosure_links', array( 'Kind_Taxonomy', 'enclosure_links' ), 11, 2 );
+		add_filter( 'enclosure_links', array( static::class, 'enclosure_links' ), 11, 2 );
 
 		// Add Classes to Post.
-		add_filter( 'post_class', array( 'Kind_Taxonomy', 'post_class' ) );
+		add_filter( 'post_class', array( static::class, 'post_class' ) );
 
 		// Trigger Webmention on Change in Post Status.
-		add_filter( 'transition_post_status', array( 'Kind_Taxonomy', 'transition' ), 10, 3 );
+		add_filter( 'transition_post_status', array( static::class, 'transition' ), 10, 3 );
 		// On Post Save Set Post Format
-		add_action( 'save_post', array( 'Kind_Taxonomy', 'post_formats' ), 99, 3 );
+		add_action( 'save_post', array( static::class, 'post_formats' ), 99, 3 );
 
 		// Create hook triggered by change of kind
-		add_action( 'set_object_terms', array( 'Kind_Taxonomy', 'set_object_terms' ), 10, 6 );
+		add_action( 'set_object_terms', array( static::class, 'set_object_terms' ), 10, 6 );
 
-		add_filter( 'single_post_title', array( 'Kind_Taxonomy', 'single_post_title' ), 9, 2 );
-		add_filter( 'the_title', array( 'Kind_Taxonomy', 'the_title' ), 9, 2 );
-		add_filter( 'get_sample_permalink', array( 'Kind_Taxonomy', 'get_sample_permalink' ), 12, 5 );
+		add_filter( 'single_post_title', array( static::class, 'single_post_title' ), 9, 2 );
+		add_filter( 'the_title', array( static::class, 'the_title' ), 9, 2 );
+		add_filter( 'get_sample_permalink', array( static::class, 'get_sample_permalink' ), 12, 5 );
 
-		add_action( 'rest_api_init', array( 'Kind_Taxonomy', 'rest_kind' ) );
+		add_action( 'rest_api_init', array( static::class, 'rest_kind' ) );
 
-		add_filter( 'embed_template_hierarchy', array( 'Kind_Taxonomy', 'embed_template_hierarchy' ) );
+		add_filter( 'embed_template_hierarchy', array( static::class, 'embed_template_hierarchy' ) );
 
-		add_action( 'rest_api_init', array( 'Kind_Taxonomy', 'register_routes' ) );
+		add_action( 'rest_api_init', array( static::class, 'register_routes' ) );
 	}
 
 	/**
 	 * Register the Route.
 	 */
 	public static function register_routes() {
-		$cls = get_called_class();
 		register_rest_route(
 			'post-kinds/1.0',
 			'/fields',
 			array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $cls, 'read' ),
+					'callback'            => array( static::class, 'read' ),
 					'args'                => array(
 						'kind' => array(
 							'required'          => true,
@@ -148,8 +147,8 @@ final class Kind_Taxonomy {
 			'post',
 			'kind',
 			array(
-				'get_callback'    => array( 'Kind_Taxonomy', 'get_post_kind_slug' ),
-				'update_callback' => array( 'Kind_Taxonomy', 'set_rest_post_kind' ),
+				'get_callback'    => array( static::class, 'get_post_kind_slug' ),
+				'update_callback' => array( static::class, 'set_rest_post_kind' ),
 				'schema'          => array(
 					'kind' => __( 'Post Kind', 'indieweb-post-kinds' ),
 					'type' => 'string',
@@ -353,14 +352,14 @@ final class Kind_Taxonomy {
 			'show_tagcloud'      => true,
 			'show_in_quick_edit' => false,
 			'show_admin_column'  => true,
-			'meta_box_cb'        => array( 'Kind_Taxonomy', 'select_metabox' ),
+			'meta_box_cb'        => array( static::class, 'select_metabox' ),
 			'rewrite'            => true,
 			'query_var'          => true,
-			'default_term'       => array( 
-							'name' => __( 'Article', 'indieweb-post-kinds' ), 
-							'slug' => 'article' 
-						),
-						
+			'default_term'       => array(
+				'name' => __( 'Article', 'indieweb-post-kinds' ),
+				'slug' => 'article',
+			),
+
 		);
 		register_taxonomy( 'kind', array( 'post' ), $args );
 		// Year archive for kinds
