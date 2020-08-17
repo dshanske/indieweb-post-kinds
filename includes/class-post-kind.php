@@ -20,6 +20,7 @@ final class Post_Kind {
 	public $show; // Show in Settings
 	public $property; // Primary Property
 	public $properties; // Array of Properties
+	public $shortlink; // Shortlink Coding per http://tantek.pbworks.com/w/page/21743973/Whistle#design
 
 	public function __construct( $slug, $args = array() ) {
 		$this->slug = $slug;
