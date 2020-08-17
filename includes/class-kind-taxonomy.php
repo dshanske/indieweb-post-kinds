@@ -57,38 +57,8 @@ final class Kind_Taxonomy {
 
 		add_action( 'rest_api_init', array( static::class, 'register_routes' ) );
 
-		// Hum Compatibility Filters
-		add_action( 'hum_local_types', array( static::class, 'hum_local_types' ), 11 );
-		add_action( 'hum_type_prefix', array( static::class, 'hum_type_prefix' ), 11, 2 );
 	}
 
-	public static function hum_local_types( $types ) {
-		// http://tantek.pbworks.com/w/page/21743973/Whistle#design - Some of the uses are modified based on design considerations noted.
-		$types[] = 'f'; // Favorited, Likes, etc
-		$types[] = 'e'; // Events
-		$types[] = 'g'; // Geo Checkin
-		$types[] = 'h'; // Link
-		$types[] = 'm'; // Metric
-		$types[] = 'q'; // Question
-		$types[] = 'r'; // Review
-		$types[] = 'x'; // Experience
-		$types[] = 'u'; // Status Update
-		return $types;
-	}
-
-	public static function hum_type_prefix( $prefix, $post_id ) {
-		$post_type = get_post_type( $post_id );
-		if ( 'post' !== $post_type ) {
-			return $prefix;
-		}
-
-		$kind      = get_post_kind_slug( $post_id );
-		$shortlink = self::get_kind_info( $kind, 'shortlink' );
-		if ( ! empty( $shortlink ) ) {
-			return $shortlink;
-		}
-		return $prefix;
-	}
 
 	/**
 	 * Register the Route.
