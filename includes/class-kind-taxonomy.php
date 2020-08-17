@@ -1064,7 +1064,7 @@ final class Kind_Taxonomy {
 	/**
 	 * Assign a kind to a post.
 	 *
-	 * @param int|object $post The post for which to assign a kind.
+	 * @param int|WP_Post $post The post for which to assign a kind.
 	 * @param string     $kind A kind to assign. Using an empty string or array will default to article.
 	 * @return mixed WP_Error on error. Array of affected term IDs on success.
 	 */
