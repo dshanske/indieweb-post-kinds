@@ -19,10 +19,10 @@ class Kind_Config {
 	 * @access public
 	 */
 	public static function init() {
-		add_action( 'admin_init', array( 'Kind_Config', 'admin_init' ) );
-		add_action( 'admin_menu', array( 'Kind_Config', 'admin_menu' ), 11 );
+		add_action( 'admin_init', array( static::class, 'admin_init' ) );
+		add_action( 'admin_menu', array( static::class, 'admin_menu' ), 11 );
 		// Add post help tab
-		add_action( 'load-post.php', array( 'Kind_Config', 'add_post_help_tab' ), 20 );
+		add_action( 'load-post.php', array( static::class, 'add_post_help_tab' ), 20 );
 
 		$args = array(
 			'type'         => 'array',
@@ -74,28 +74,28 @@ class Kind_Config {
 	 * @access public
 	 */
 	public static function admin_init() {
-		add_action( 'admin_bar_menu', array( 'Kind_Config', 'dashbar_links' ), 20 );
-		add_action( 'admin_bar_menu', array( 'Kind_Config', 'remove_dashbar_post' ), 200 );
+		add_action( 'admin_bar_menu', array( static::class, 'dashbar_links' ), 20 );
+		add_action( 'admin_bar_menu', array( static::class, 'remove_dashbar_post' ), 200 );
 		add_settings_section(
 			'iwt-content',
 			__(
 				'Content Options',
 				'indieweb-post-kinds'
 			),
-			array( 'Kind_Config', 'options_callback' ),
+			array( static::class, 'options_callback' ),
 			'iwt_options'
 		);
 		add_settings_field(
 			'termslist',
 			__( 'Select All Kinds You Wish to Use', 'indieweb-post-kinds' ),
-			array( 'Kind_Config', 'termcheck_callback' ),
+			array( static::class, 'termcheck_callback' ),
 			'iwt_options',
 			'iwt-content'
 		);
 		add_settings_field(
 			'defaultkind',
 			__( 'Default Kind for New Posts', 'indieweb-post-kinds' ),
-			array( 'Kind_Config', 'defaultkind_callback' ),
+			array( static::class, 'defaultkind_callback' ),
 			'iwt_options',
 			'iwt-content'
 		);
@@ -103,7 +103,7 @@ class Kind_Config {
 		add_settings_field(
 			'embeds',
 			__( 'Embed Sites into your Response', 'indieweb-post-kinds' ),
-			array( 'Kind_Config', 'checkbox_callback' ),
+			array( static::class, 'checkbox_callback' ),
 			'iwt_options',
 			'iwt-content',
 			array(
@@ -114,7 +114,7 @@ class Kind_Config {
 		add_settings_field(
 			'bottom',
 			__( 'Move Response to Bottom of Content', 'indieweb-post-kinds' ),
-			array( 'Kind_Config', 'checkbox_callback' ),
+			array( static::class, 'checkbox_callback' ),
 			'iwt_options',
 			'iwt-content',
 			array(
@@ -125,7 +125,7 @@ class Kind_Config {
 		add_settings_field(
 			'display',
 			__( 'Display Before Kind', 'indieweb-post-kinds' ),
-			array( 'Kind_Config', 'radio_callback' ),
+			array( static::class, 'radio_callback' ),
 			'iwt_options',
 			'iwt-content',
 			array(
@@ -144,7 +144,7 @@ class Kind_Config {
 			add_settings_field(
 				'contentelements',
 				__( 'Response Content Allowed Html Elements', 'indieweb-post-kinds' ) . ' <a href="http://codex.wordpress.org/Function_Reference/wp_kses">*</a>',
-				array( 'Kind_Config', 'textbox_callback' ),
+				array( static::class, 'textbox_callback' ),
 				'iwt_options',
 				'iwt-content',
 				array(
@@ -153,7 +153,7 @@ class Kind_Config {
 			);
 		}
 		// Add Query Var to Admin
-		add_filter( 'query_vars', array( 'Kind_Config', 'query_var' ) );
+		add_filter( 'query_vars', array( static::class, 'query_var' ) );
 	}
 
 	/**
@@ -216,10 +216,10 @@ class Kind_Config {
 				__( 'Post Kinds', 'indieweb-post-kinds' ), // menu title
 				'manage_options', // access capability
 				'kind_options',
-				array( 'Kind_Config', 'options_form' )
+				array( static::class, 'options_form' )
 			);
 		} else {
-			add_options_page( '', __( 'Post Kinds', 'indieweb-post-kinds' ), 'manage_options', 'kind_options', array( 'Kind_Config', 'options_form' ) );
+			add_options_page( '', __( 'Post Kinds', 'indieweb-post-kinds' ), 'manage_options', 'kind_options', array( static::class, 'options_form' ) );
 		}
 	}
 

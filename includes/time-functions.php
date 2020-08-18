@@ -172,8 +172,8 @@ if ( ! function_exists( 'calculate_duration' ) ) {
 		if ( $start_string === $end_string ) {
 			return false;
 		}
-		$start = date_create_from_format( 'Y-m-d\TH:i:sP', $start_string );
-		$end   = date_create_from_format( 'Y-m-d\TH:i:sP', $end_string );
+		$start = date_create_immutable_from_format( 'Y-m-d\TH:i:sP', $start_string );
+		$end   = date_create_immutable_from_format( 'Y-m-d\TH:i:sP', $end_string );
 		if ( ( $start instanceof DateTime ) && ( $end instanceof DateTime ) ) {
 			$duration = $start->diff( $end );
 			return $duration;
@@ -237,7 +237,7 @@ if ( ! function_exists( 'date_interval_to_iso8601' ) ) {
 }
 
 function display_formatted_datetime( $string ) {
-	$date = new DateTime( $string );
+	$date = new DateTimeImmutable( $string );
 	return $date->format( get_option( 'date_format' ) ) . ' ' . $date->format( get_option( 'time_format' ) );
 }
 
@@ -274,7 +274,7 @@ function divide_datetime( $datetime ) {
  * @param string $time Time in H:i:s format.
  * @param Kind_DateTimeZone $timezone Timezone object.
  *
- * @return DateTime|false DateTime object or false if not valid
+ * @return DateTimeImmutable|false DateTime object or false if not valid
  */
 function build_datetime( $date, $time, $offset = null ) {
 	if ( empty( $date ) && empty( $time ) ) {
@@ -290,7 +290,7 @@ function build_datetime( $date, $time, $offset = null ) {
 	if ( ! $timezone ) {
 		$timezone = wp_timezone();
 	}
-	return new DateTime( $date . 'T' . $time, $timezone );
+	return new DateTimeImmutable( $date . 'T' . $time, $timezone );
 }
 
 
@@ -305,7 +305,7 @@ function build_datetime( $date, $time, $offset = null ) {
  */
 function get_datetime_offset( $datetime = null ) {
 	if ( ! $datetime ) {
-		$datetime = new DateTime( 'now', wp_timezone() );
+		$datetime = new DateTimeImmutable( 'now', wp_timezone() );
 	}
 	$seconds = $datetime->getOffset();
 	if ( false === $seconds ) {

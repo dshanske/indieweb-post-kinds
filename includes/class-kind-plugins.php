@@ -61,7 +61,7 @@ class Kind_Plugins {
 		}
 
 		$kind      = get_post_kind_slug( $post_id );
-		$shortlink = self::get_kind_info( $kind, 'shortlink' );
+		$shortlink = Kind_Taxonomy::get_kind_info( $kind, 'shortlink' );
 		if ( ! empty( $shortlink ) ) {
 			return $shortlink;
 		}

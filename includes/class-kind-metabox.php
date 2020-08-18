@@ -19,14 +19,14 @@ class Kind_Metabox {
 	 */
 	public static function init() {
 		self::$version = Post_Kinds_Plugin::$version;
-		add_action( 'edit_form_after_title', array( 'Kind_Metabox', 'after_title_metabox' ) );
+		add_action( 'edit_form_after_title', array( static::class, 'after_title_metabox' ) );
 		// Add meta box to new post/post pages only
-		add_action( 'load-post.php', array( 'Kind_Metabox', 'kindbox_setup' ) );
-		add_action( 'load-post-new.php', array( 'Kind_Metabox', 'kindbox_setup' ) );
-		add_action( 'save_post', array( 'Kind_Metabox', 'save_post' ), 8, 2 );
-		add_action( 'transition_post_status', array( 'Kind_Metabox', 'transition_post_status' ), 5, 3 );
-		add_filter( 'wp_insert_post_empty_content', array( 'Kind_Metabox', 'wp_insert_post_empty_content' ), 11, 2 );
-		add_action( 'change_kind', array( 'Kind_Metabox', 'change_kind' ), 10, 3 );
+		add_action( 'load-post.php', array( static::class, 'kindbox_setup' ) );
+		add_action( 'load-post-new.php', array( static::class, 'kindbox_setup' ) );
+		add_action( 'save_post', array( static::class, 'save_post' ), 8, 2 );
+		add_action( 'transition_post_status', array( static::class, 'transition_post_status' ), 5, 3 );
+		add_filter( 'wp_insert_post_empty_content', array( static::class, 'wp_insert_post_empty_content' ), 11, 2 );
+		add_action( 'change_kind', array( static::class, 'change_kind' ), 10, 3 );
 	}
 
 	/**
@@ -312,7 +312,7 @@ class Kind_Metabox {
 		add_meta_box(
 			'replybox-meta', // Unique ID
 			esc_html__( 'Response Properties', 'indieweb-post-kinds' ), // Title
-			array( 'Kind_Metabox', 'reply_metabox' ), // Callback function
+			array( static::class, 'reply_metabox' ), // Callback function
 			'post',
 			'kind_after_title', // Context
 			'default', // Priority
