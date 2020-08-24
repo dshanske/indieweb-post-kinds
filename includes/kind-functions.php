@@ -127,11 +127,12 @@ function set_post_kind( $post, $kind ) {
  *
  * @param $slug
  * @param $name
+ * @param $args
  * @return string
  */
 
-function get_kind_view_part( $slug, $name = null ) {
-	Kind_View::get_view_part( $slug, $name );
+function get_kind_view_part( $slug, $name = null, $args = null ) {
+	Kind_View::get_view_part( $slug, $name, $args );
 }
 
 function kind_display( $post_id = null ) {

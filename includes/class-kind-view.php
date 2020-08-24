@@ -44,18 +44,14 @@ class Kind_View {
 		return $attr;
 	}
 
-	/**
-	 * Post kind version of get_template_part WordPress function.
+	/*
+	 * Function will locate the correct template and return it.
 	 *
-	 * Function will locate the correct template file to load and return the output.
-	 *
-	 * @access public
-	 *
-	 * @param string $slug Post kind slug.
-	 * @param string $name Post kind term name.
-	 * @return string
+	 * @param string $slug Post Kind Slug.
+	 * @param string $name Post Kind Term Name.
+	 * @return string|null File if located or null if unable to find.
 	 */
-	public static function get_view_part( $slug, $name ) {
+	public static function locate_view( $slug, $name ) {
 		$name = (string) $name;
 		if ( empty( $name ) ) {
 			return '';
@@ -79,7 +75,34 @@ class Kind_View {
 				break;
 			}
 		}
-		$mf2_post = new MF2_Post( get_the_ID() );
+		return $located;
+	}
+
+	/**
+	 * Post kind version of get_template_part WordPress function.
+	 *
+	 * Function will return the output.
+	 *
+	 * @access public
+	 *
+	 * @param string $slug Post kind slug.
+	 * @param string $name Post kind term name.
+	 * @param array $args Optional Arguments
+	 * @return string
+	 */
+	public static function get_view_part( $slug, $name, $args = null ) {
+		$located = self::locate_view( $slug, $name );
+		// This should never happen.
+		if ( empty( $located ) ) {
+			return '';
+		}
+
+		$defaults = array(
+			'post_id' => get_the_ID(),
+		);
+		$args     = is_null( $args ) ? $defaults : wp_parse_args( $args, $defaults );
+
+		$mf2_post = new MF2_Post( $args['post_id'] );
 		$kind     = $mf2_post->get( 'kind', true );
 		$type     = Kind_Taxonomy::get_kind_info( $kind, 'property' );
 		$cite     = $mf2_post->fetch( $type );
