@@ -18,8 +18,7 @@ class Kind_Media_Metadata {
 		}
 		add_action( 'wp_enqueue_scripts', array( static::class, 'enqueue' ) );
 
-		add_action( 'save_post', array( static::class, 'save_post' ) );
-		add_action( 'updated_postmeta', array( static::class, 'updated_postmeta' ), 10, 4 );
+		add_action( 'save_post', array( static::class, 'save_post' ), 20 );
 	}
 
 	public static function enqueue() {
