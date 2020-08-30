@@ -635,7 +635,11 @@ class MF2_Post implements ArrayAccess {
 		}
 		$post_content = ifset( $this->content['html'] );
 		if ( $post_content ) {
-			$att_ids = self::get_img_from_content( $post_content );
+			$att_ids = get_post_meta( $this->id, '_content_img_ids', true );
+			if ( false === $att_ids ) {
+				$att_ids = Kind_Media_Metadata::get_img_from_content( $post->post_content );
+				update_post_meta( $this->id, '_content_img_ids', $att_ids );
+			}
 			if ( $att_ids ) {
 				return $content_allow ? $att_ids : array();
 			}
@@ -731,32 +735,6 @@ class MF2_Post implements ArrayAccess {
 			}
 		}
 		return $photos;
-	}
-
-	public function get_img_from_content( $content ) {
-		$content = wp_unslash( $content );
-		$return  = array();
-		$doc     = pt_load_domdocument( $content );
-		$images  = $doc->getElementsByTagName( 'img' );
-		foreach ( $images as $image ) {
-			$classes = $image->getAttribute( 'class' );
-			$classes = explode( ' ', $classes );
-			foreach ( $classes as $class ) {
-				if ( 0 === strpos( $class, 'wp-image-' ) ) {
-					$return[] = (int) str_replace( 'wp-image-', '', $class );
-					break;
-				}
-			}
-			$url      = $image->getAttribute( 'src' );
-			$return[] = attachment_url_to_postid( $url );
-
-		}
-		$return = array_unique( $return );
-		$key    = array_search( 0, $return, true );
-		if ( $key ) {
-			unset( $key );
-		}
-		return $return;
 	}
 
 	public function get_attachments_from_urls( $urls ) {

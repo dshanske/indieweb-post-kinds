@@ -17,10 +17,13 @@ class Kind_Media_Metadata {
 			add_filter( 'wp_update_attachment_metadata', array( static::class, 'wp_sanitize_media_metadata' ), 9, 2 );
 		}
 		add_action( 'wp_enqueue_scripts', array( static::class, 'enqueue' ) );
+
+		add_action( 'save_post', array( static::class, 'save_post' ) );
+		add_action( 'updated_postmeta', array( static::class, 'updated_postmeta' ), 10, 4 );
 	}
 
 	public static function enqueue() {
-		if ( is_singular() ) {
+		if ( ! is_front_page() && is_singular() ) {
 			wp_enqueue_script(
 				'media-fragment',
 				plugins_url( 'js/clone-media-fragment.js', dirname( __FILE__ ) ),
@@ -28,6 +31,113 @@ class Kind_Media_Metadata {
 				'1.0',
 				true
 			);
+		}
+	}
+
+	/*
+	 * Determine Attached Images from a Content Block.
+	 *
+	 * @param string $content Content.
+	 * @return array Array of Attachment IDs.
+	*/
+	public static function get_img_from_content( $content ) {
+		$content = wp_unslash( $content );
+		$return  = array();
+		$doc     = pt_load_domdocument( $content );
+		$images  = $doc->getElementsByTagName( 'img' );
+		foreach ( $images as $image ) {
+			$classes = $image->getAttribute( 'class' );
+			$classes = explode( ' ', $classes );
+			foreach ( $classes as $class ) {
+				if ( 0 === strpos( $class, 'wp-image-' ) ) {
+					$id = (int) str_replace( 'wp-image-', '', $class );
+					if ( 0 !== $id ) {
+						$return[] = $id;
+					}
+					break;
+				}
+			}
+			$url = $image->getAttribute( 'src' );
+			$id  = attachment_url_to_postid( $url );
+			if ( 0 !== $id ) {
+				$return[] = $id;
+			}
+		}
+		return array_unique( $return );
+	}
+
+	/*
+	 * Determine Attached Audio from a Content Block.
+	 *
+	 * @param string $content Content.
+	 * @return array Array of Attachment IDs.
+	*/
+	public static function get_audio_from_content( $content ) {
+		$content = wp_unslash( $content );
+		$return  = array();
+		$doc     = pt_load_domdocument( $content );
+		$audios  = $doc->getElementsByTagName( 'audio' );
+		foreach ( $audios as $audio ) {
+			$sources = $audio->getElementsByTagName( 'source' );
+			foreach ( $sources as $source ) {
+				$url = remove_query_arg( '_', $source->getAttribute( 'src' ) );
+				$id  = attachment_url_to_postid( $url );
+				if ( 0 !== $id ) {
+					$return[] = $id;
+				}
+			}
+		}
+		return array_unique( $return );
+	}
+
+	/*
+	 * Determine Attached Videos from a Content Block.
+	 *
+	 * @param string $content Content.
+	 * @return array Array of Attachment IDs.
+	*/
+	public static function get_video_from_content( $content ) {
+		$content = wp_unslash( $content );
+		$return  = array();
+		$doc     = pt_load_domdocument( $content );
+		$videos  = $doc->getElementsByTagName( 'video' );
+		foreach ( $videos as $video ) {
+			$sources = $video->getElementsByTagName( 'source' );
+			foreach ( $sources as $source ) {
+				$url = remove_query_arg( '_', $source->getAttribute( 'src' ) );
+				error_log( $url );
+				$id = attachment_url_to_postid( $url );
+				if ( 0 !== $id ) {
+					$return[] = $id;
+				}
+			}
+		}
+		return array_unique( $return );
+	}
+
+	/**
+	 * Every time the post is saved check for all
+	*/
+	public static function save_post( $post_id ) {
+		$post    = get_post( $post_id );
+		$content = do_shortcode( $post->post_content );
+		$ids     = self::get_img_from_content( $content );
+		if ( ! $ids ) {
+			delete_post_meta( $post_id, '_content_img_ids' );
+		} else {
+			update_post_meta( $post_id, '_content_img_ids', $ids );
+		}
+		$ids = self::get_video_from_content( $content );
+		if ( ! $ids ) {
+			delete_post_meta( $post_id, '_content_video_ids' );
+		} else {
+			update_post_meta( $post_id, '_content_video_ids', $ids );
+		}
+		$ids = self::get_audio_from_content( $content );
+		if ( ! $ids ) {
+			delete_post_meta( $post_id, '_content_audio_ids' );
+		} else {
+			update_post_meta( $post_id, '_content_audio_ids', $ids );
 		}
 	}
 
