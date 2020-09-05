@@ -19,6 +19,9 @@ class Kind_Media_Metadata {
 		add_action( 'wp_enqueue_scripts', array( static::class, 'enqueue' ) );
 
 		add_action( 'save_post', array( static::class, 'save_post' ), 20 );
+
+		add_filter( 'attachment_fields_to_edit', array( static::class, 'attachment_fields_to_edit' ), 10, 2 );
+		add_filter( 'attachment_fields_to_save', array( static::class, 'attachment_fields_to_save' ), 10, 2 );
 	}
 
 	public static function enqueue() {
@@ -30,6 +33,63 @@ class Kind_Media_Metadata {
 				'1.0',
 				true
 			);
+		}
+	}
+
+
+	/**
+	 * Displays the Media Creator Description on the Attachment Page.
+	 *
+	 * @param array   $form_fields See attachment_fields_to_edit filter in WordPress.
+	 * @param WP_Post $post Attachment post object.
+	 * @return array $form_fields Updated with extra fields.
+	 */
+	public static function attachment_fields_to_edit( $form_fields, $post ) {
+
+		$author = get_post_meta( $post->ID, 'mf2_author', true );
+		if ( Parse_This_MF2_Utils::is_microformat( $author ) ) {
+			$author = mf2_to_jf2( $author );
+		} else {
+			$author = array();
+		}
+
+		if ( wp_attachment_is( 'image', $post ) ) {
+			$form_fields['author_name'] = array(
+				'value'        => ifset( $author['name'] ),
+				'label'        => __( 'Artist', 'indieweb-post-kinds' ),
+				'helps'        => __( 'The creator of the image', 'indieweb-post-kinds' ),
+				'show_in_edit' => true,
+			);
+			$form_fields['author_url']  = array(
+				'value'        => ifset( $author['url'] ),
+				'label'        => __( 'Artist URL', 'indieweb-post-kinds' ),
+				'helps'        => __( 'The Artists URL or webpage', 'indieweb-post-kinds' ),
+				'show_in_edit' => true,
+			);
+		}
+		return $form_fields;
+	}
+
+	/**
+	 * Saves Extra Fields.
+	 *
+	 * @param array $post Attachment post data.
+	 * @param array   $attachment data.
+	 */
+	public static function attachment_fields_to_save( $post, $attachment ) {
+		$author = array();
+		if ( isset( $attachment['author_name'] ) && ! empty( $attachment['author_name'] ) ) {
+			$author['name'] = $attachment['author_name'];
+		}
+		if ( isset( $attachment['author_url'] ) && ! empty( $attachment['author_url'] ) ) {
+			$author['url'] = $attachment['author_url'];
+		}
+		$author = array_filter( $author );
+		if ( empty( $author ) ) {
+			delete_post_meta( $post['ID'], 'mf2_author' );
+		} else {
+			$author['type'] = 'card';
+			update_post_meta( $post['ID'], 'mf2_author', jf2_to_mf2( $author ) );
 		}
 	}
 
@@ -104,8 +164,7 @@ class Kind_Media_Metadata {
 			$sources = $video->getElementsByTagName( 'source' );
 			foreach ( $sources as $source ) {
 				$url = remove_query_arg( '_', $source->getAttribute( 'src' ) );
-				error_log( $url );
-				$id = attachment_url_to_postid( $url );
+				$id  = attachment_url_to_postid( $url );
 				if ( 0 !== $id ) {
 					$return[] = $id;
 				}
@@ -115,7 +174,7 @@ class Kind_Media_Metadata {
 	}
 
 	/**
-	 * Every time the post is saved check for all
+	 * Every time the post is saved check for media embedded in content and save a list of attachment IDs.
 	*/
 	public static function save_post( $post_id ) {
 		$post    = get_post( $post_id );
