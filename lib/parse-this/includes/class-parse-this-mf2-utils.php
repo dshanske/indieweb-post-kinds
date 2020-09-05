@@ -18,6 +18,15 @@ class Parse_This_MF2_Utils {
 		return ( is_array( $mf ) && ! wp_is_numeric_array( $mf ) && ! empty( $mf['type'] ) && isset( $mf['properties'] ) );
 	}
 
+	/**
+	 * Verifies if $mf is a microformat and has children
+	 *
+	 * @param $mf
+	 * @return bool
+	 */
+	public static function has_children( $mf ) {
+		return ( self::is_microformat( $mf ) && isset( $mf['children'] ) );
+	}
 
 	/**
 	 * Verifies if $mf has an 'items' key which is also an array, returns true.
@@ -48,11 +57,11 @@ class Parse_This_MF2_Utils {
 	 */
 	public static function get_type( $mf, $strip = false ) {
 		$type = false;
-		if( self::is_microformat( $mf ) && is_array( $mf['type'] ) ) {
+		if ( self::is_microformat( $mf ) && is_array( $mf['type'] ) ) {
 			$type = $mf['type'][0];
 			if ( $strip ) {
 				$type = str_replace( 'h-', '', $type );
-			} 
+			}
 		}
 		return $type;
 	}

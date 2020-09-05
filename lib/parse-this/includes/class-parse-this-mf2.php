@@ -8,6 +8,50 @@
 
 class Parse_This_MF2 extends Parse_This_MF2_Utils {
 
+	public static function find_hfeed( $input, $url ) {
+		if ( ! class_exists( 'Mf2\Parser' ) ) {
+					require_once plugin_dir_path( __DIR__ ) . 'lib/mf2/Parser.php';
+		}
+		if ( is_string( $input ) || is_a( $input, 'DOMDocument' ) ) {
+			$parser = new Mf2\Parser( $input, $url );
+			$input  = $parser->parse();
+		}
+
+		$feeds = array();
+
+		if ( array_key_exists( 'items', $input ) ) {
+			foreach ( $input['items'] as $item ) {
+				if ( self::is_type( $item, 'h-feed' ) ) {
+					$feeds[] = $item;
+				} elseif ( self::has_children( $item ) ) {
+					foreach ( $item['children'] as $child ) {
+						if ( self::is_type( $child, 'h-feed' ) ) {
+							$feeds[] = $child;
+						}
+					}
+				}
+			}
+			if ( empty( $feeds ) && 1 <= count( $input['items'] ) ) {
+				$feeds[] = array(
+					'type'       => 'h-feed',
+					'properties' => array(
+						'url' => array( $url ),
+					),
+				);
+			}
+		}
+		foreach ( $feeds as $key => $feed ) {
+			if ( ! array_key_exists( 'url', $feed['properties'] ) ) {
+				if ( array_key_exists( 'id', $feed ) ) {
+					$feeds[ $key ]['properties']['url'] = array( $url . '#' . $feed['id'] );
+				} else {
+					$feeds[ $key ]['properties']['url'] = array( $url );
+				}
+			}
+		}
+		return $feeds;
+	}
+
 	/**
 	 * Large function for fishing out author of $mf from various possible array elements.
 	 *
