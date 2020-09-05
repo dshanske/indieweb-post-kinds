@@ -236,8 +236,11 @@ if ( ! function_exists( 'date_interval_to_iso8601' ) ) {
 	}
 }
 
-function display_formatted_datetime( $string ) {
-	$date = new DateTimeImmutable( $string );
+function display_formatted_datetime( $date ) {
+	if ( is_string( $date ) ) {
+		$date = new DateTimeImmutable( $date );
+	}
+		
 	return $date->format( get_option( 'date_format' ) ) . ' ' . $date->format( get_option( 'time_format' ) );
 }
 

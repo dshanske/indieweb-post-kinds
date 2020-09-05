@@ -10,7 +10,7 @@ if ( ! $cite ) {
 $author = Kind_View::get_hcard( ifset( $cite['author'] ) );
 $url    = ifset( $cite['url'] );
 $embed  = self::get_embed( $url );
-$read   = $mf2_post->get( 'read-status', true );
+$read   = $kind_post->get( 'read-status', true );
 
 ?>
 

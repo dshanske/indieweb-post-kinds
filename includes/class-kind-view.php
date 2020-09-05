@@ -102,22 +102,13 @@ class Kind_View {
 		);
 		$args     = is_null( $args ) ? $defaults : wp_parse_args( $args, $defaults );
 
-		$mf2_post = new MF2_Post( $args['post_id'] );
-		$kind     = $mf2_post->get( 'kind', true );
+		$kind_post = new Kind_Post( $args['post_id'] );
+		$kind     = $kind_post->get_kind();
 		$type     = Kind_Taxonomy::get_kind_info( $kind, 'property' );
-		$cite     = $mf2_post->fetch( $type );
-		if ( in_array( $type, array( 'video', 'audio', 'photo' ), true ) ) {
-			if ( is_array( $cite ) && array_key_exists( 'url', $cite ) ) {
-				$u = attachment_url_to_postid( $cite['url'] );
-				if ( $u ) {
-					$attachment = new MF2_Post( $u );
-					$attachment->set( $cite );
-					$mf2_post->set( array( $cite['url'] ) );
-				}
-			}
-		}
+		$cite = mf2_to_jf2( $kind_post->get_cite() );
 		$url   = null;
 		$embed = null;
+
 		ob_start();
 		include $located;
 		$return = ob_get_contents();

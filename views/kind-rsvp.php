@@ -11,7 +11,7 @@ $author = Kind_View::get_hcard( ifset( $cite['author'] ) );
 $url    = $cite['url'];
 $embed  = self::get_embed( $url );
 $title  = isset( $cite['name'] ) ? $cite['name'] : $url;
-$rsvp   = $mf2_post->get( 'rsvp', true );
+$rsvp   = $kind_post->get( 'rsvp', true );
 
 ?>
 

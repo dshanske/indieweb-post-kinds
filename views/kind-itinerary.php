@@ -5,7 +5,7 @@
  */
 
 
-$itineraries = $mf2_post->get( 'itinerary', false );
+$itineraries = $kind_post->get( 'itinerary', false );
 
 foreach( $itineraries as $key => $value ) {
 	$itineraries [ $key ] = mf2_to_jf2( $value );

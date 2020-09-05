@@ -15,11 +15,11 @@ if ( isset( $cite['url'] ) ) {
 $site_name = Kind_View::get_site_name( $cite );
 $title     = Kind_View::get_cite_title( $cite );
 $embed     = self::get_embed( $url );
-$duration  = $mf2_post->get( 'duration', true );
+$duration  = $kind_post->get( 'duration', true );
 if ( ! $duration ) {
-		$duration = calculate_duration( $mf2_post->get( 'dt-start' ), $mf2_post->get( 'dt-end' ) );
+		$duration = calculate_duration( $kind_post->get( 'start' ), $kind_post->get( 'end' ) );
 }
-$rsvp = $mf2_post->get( 'rsvp', true );
+$rsvp = $kind_post->get( 'rsvp', true );
 
 if ( ! $kind ) {
 	return;

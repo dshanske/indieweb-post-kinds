@@ -3,8 +3,8 @@
  * Audio Template
  *
  */
-$audios = $mf2_post->get_audios();
-$a = $mf2_post->get( 'audio' );
+$audios = $kind_post->get_audios();
+$a = $kind_post->get( 'audio' );
 $author = null;
 $duration = null;
 $publication = null;
@@ -14,7 +14,7 @@ if ( $audios && is_array( $audios ) ) {
 			$audio = attachment_url_to_postid( $audio );
 		}
 		if ( is_numeric( $audio ) ) {
-			$audio_attachment = new MF2_Post( $audio );
+			$audio_attachment = new Kind_Post( $audio );
 		}
 	}
 }

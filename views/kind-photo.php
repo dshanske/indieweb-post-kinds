@@ -4,7 +4,7 @@
  *
  */
 
-$photos = $mf2_post->get_images();
+$photos = $kind_post->get_images();
 $embed  = null;
 if ( ! $photos && is_array( $cite ) ) {
 	$url   = ifset( $cite['url'] );

@@ -635,10 +635,10 @@ class MF2_Post implements ArrayAccess {
 		}
 		$post_content = ifset( $this->content['html'] );
 		if ( $post_content ) {
-			$att_ids = get_post_meta( $this->id, '_content_img_ids', true );
+			$att_ids = get_post_meta( $this->uid, '_content_img_ids', true );
 			if ( false === $att_ids ) {
 				$att_ids = Kind_Media_Metadata::get_img_from_content( $post->post_content );
-				update_post_meta( $this->id, '_content_img_ids', $att_ids );
+				update_post_meta( $this->uid, '_content_img_ids', $att_ids );
 			}
 			if ( $att_ids ) {
 				return $content_allow ? $att_ids : array();

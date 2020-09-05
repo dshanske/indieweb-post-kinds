@@ -8,8 +8,8 @@ $photos = get_attached_media( 'image', get_the_ID() );
 if ( ! $cite ) {
 	return;
 }
-$url   = $mf2_post->get_single( ifset( $cite['url'], array() ) );
-$name  = $mf2_post->get_single( $cite['name'] );
+$url   = ifset( $cite['url'] );
+$name  = ifset( $cite['name'] );
 $embed = self::get_embed( $url );
 
 ?>
