@@ -139,6 +139,9 @@ class Kind_Plugins {
 	 * @param $wp_args
 	 */
 	public static function post_formats( $input, $wp_args ) {
+		if ( empty( $wp_args ) || empty( $input ) ) {
+			return;
+		}
 		$kind = get_post_kind_slug( $wp_args['ID'] );
 		set_post_format( $wp_args['ID'], Kind_Taxonomy::get_kind_info( $kind, 'format' ) );
 	}

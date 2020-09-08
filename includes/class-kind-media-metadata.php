@@ -173,6 +173,31 @@ class Kind_Media_Metadata {
 		return array_unique( $return );
 	}
 
+	private function media_sideload_image( $url, $post_id, $description = null ) {
+		// To prevent sideloading the same URL multiple times check for the original URL which will now be stored
+		$ids = get_posts(
+			array(
+				'post_type'        => 'attachment',
+				'suppress_filters' => false,
+				'nopaging'         => true,
+				'meta_key'         => '_source_url',
+				'meta_value'       => $url,
+				'fields'           => 'ids',
+			)
+		);
+		if ( ! empty( $ids ) ) {
+			return $ids[0];
+		}
+		$id = media_sideload_image( $url, $post_id, $description, 'id' );
+		// Version 5.4 adds this automatically.
+		if ( $id && version_compare( $wp_version, '5.3', '>' ) ) {
+			update_post_meta( $id, '_source_url', $url );
+		}
+		return $id;
+	}
+
+
+
 	/**
 	 * Every time the post is saved check for media embedded in content and save a list of attachment IDs.
 	*/
