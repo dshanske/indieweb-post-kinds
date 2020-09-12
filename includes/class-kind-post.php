@@ -119,7 +119,7 @@ class Kind_Post {
 	 */
 	public function get_featured() {
 		if ( has_post_thumbnail( $this->id ) ) {
-			$this->featured = wp_get_attachment_url( get_post_thumbnail_id( $this->ID ) );
+			return wp_get_attachment_url( get_post_thumbnail_id( $this->ID ) );
 		}
 		return false;
 	}
@@ -283,6 +283,55 @@ class Kind_Post {
 	}
 
 	/*
+	 * Return Attached Photos.
+	 *
+	 * Looks in both attached media and the photo property.
+	 *
+	 * @param boolean $content If true then return empty if there are any images in content.
+	 * @return array Array of Media IDs.
+	 *
+	 */
+	public function get_photo( $content = true ) {
+		// Check if the post itself is an image attachment.
+		if ( wp_attachment_is( 'image', $this->id ) ) {
+			return array( $this->id );
+		}
+
+		$content_ids = get_post_meta( $this->id, '_content_img_ids', true );
+
+		if ( false === $content_ids ) {
+			$post = $this->get_post();
+			if ( $post->post_content ) {
+				$content_ids = Kind_Media_Metadata::get_img_from_content( $post->post_content );
+				update_post_meta( $this->id, '_content_img_ids', $content_ids );
+			}
+		}
+
+		// If there are photos in the content then end here.
+		if ( ! empty( $content_ids ) && $content ) {
+			return $content_ids;
+		}
+
+		// If there is a featured image return nothing on the assumption that photo and featured should not appear on the same post.
+		$featured = $this->get_featured();
+		if ( $featured ) {
+			return array();
+		}
+
+		$att_ids = $this->get_attached_media( 'image', $this->id );
+		if ( ! $att_ids ) {
+			$att_ids = array();
+		}
+		$photos = get_post_meta( $this->id, 'mf2_photo', true );
+
+		$att_ids = array_merge( $att_ids, $this->get_attachments_from_urls( $photos ) );
+		if ( ! empty( $att_ids ) ) {
+			return array_filter( $att_ids );
+		}
+		return false;
+	}
+
+	/*
 	 * Return Attached Audio.
 	 *
 	 * Looks in both attached media and the audio property.
@@ -297,10 +346,10 @@ class Kind_Post {
 		}
 
 		$content_ids = get_post_meta( $this->id, '_content_audio_ids', true );
-		$post        = get_post();
 
-		if ( $post->post_content ) {
-			if ( false === $content_ids ) {
+		if ( false === $content_ids ) {
+			$post = get_post();
+			if ( $post->post_content ) {
 				$content_ids = Kind_Media_Metadata::get_audio_from_content( $post->post_content );
 				update_post_meta( $this->id, '_content_audio_ids', $content_ids );
 			}
@@ -331,10 +380,10 @@ class Kind_Post {
 			return array( $this->id );
 		}
 		$content_ids = get_post_meta( $this->id, '_content_video_ids', true );
-		$post        = get_post();
 
-		if ( $post->post_content ) {
-			if ( false === $content_ids ) {
+		if ( false === $content_ids ) {
+			$post = get_post();
+			if ( $post->post_content ) {
 				$content_ids = Kind_Media_Metadata::get_video_from_content( $post->post_content );
 				update_post_meta( $this->id, '_content_video_ids', $content_ids );
 			}
@@ -347,57 +396,6 @@ class Kind_Post {
 		}
 		if ( ! empty( $att_ids ) ) {
 			return array_unique( $att_ids );
-		}
-		return false;
-	}
-
-	/*
-	 * Return Attached Photos.
-	 *
-	 * Looks in both attached media and the photo property.
-	 *
-	 * @return array Array of Media IDs.
-	 *
-	 */
-	public function get_photos() {
-		// Check if the post itself is an image attachment.
-		if ( wp_attachment_is( 'image', $this->id ) ) {
-			return array( $this->id );
-		}
-
-		$post = $this->get_post();
-
-		$content_ids = get_post_meta( $this->id, '_content_img_ids', true );
-		if ( $post->post_content ) {
-			if ( false === $content_ids ) {
-				$content_ids = Kind_Media_Metadata::get_img_from_content( $post->post_content );
-				update_post_meta( $this->id, '_content_img_ids', $content_ids );
-			}
-			if ( $att_ids ) {
-				return $content_allow ? $att_ids : array();
-			}
-			if ( ! empty( $att_ids ) ) {
-				return $content_allow ? array_unique( $att_ids ) : array();
-			}
-		}
-		// If there is a featured image return only that. Otherwise return all images
-		$featured = $this->get_featured();
-		if ( $featured ) {
-			return array( $featured );
-		}
-		$att_ids = $this->get_attached_media( 'image', $this->id );
-		$photos  = get_post_meta( $this->id, 'mf2_photo', true );
-		if ( is_array( $photos ) ) {
-			if ( ! wp_is_numeric_array( $photos ) ) {
-				$photos = array( $photos );
-			}
-
-			$photos = $this->sideload_images( $photos );
-			$this->set( 'photo', $photos );
-		}
-		$att_ids = array_merge( $att_ids, $this->get_attachments_from_urls( $photos ) );
-		if ( ! empty( $att_ids ) ) {
-			return array_filter( $att_ids );
 		}
 		return false;
 	}
@@ -475,17 +473,9 @@ class Kind_Post {
 			return false;
 		}
 
-		/* if ( in_array( $type, array( 'video', 'audio', 'photo' ), true ) ) {
-			if ( is_array( $cite ) && array_key_exists( 'url', $cite ) ) {
-				$u = attachment_url_to_postid( $cite['url'] );
-				if ( $u ) {
-					$attachment = new MF2_Post( $u );
-					$attachment->set( $cite );
-					$mf2_post->set( array( $cite['url'] ) );
-				}
-			}
-		} */
-		return $this->get( $property );
+		$cite = $this->get( $property );
+
+		return $cite;
 	}
 
 
