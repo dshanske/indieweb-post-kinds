@@ -83,7 +83,7 @@ class Kind_Post {
 	 * @return array with HTML and Plaintext Version of Content or Summary
 	 */
 	public function get_html( $property ) {
-		if ( ! in_array( $property, array( 'summary', 'content' ) ) ) {
+		if ( ! in_array( $property, array( 'summary', 'content' ), true ) ) {
 			return false;
 		}
 
@@ -134,7 +134,7 @@ class Kind_Post {
 	 */
 	public function get_datetime_property( $property ) {
 		// In an attachment the post date properties reflect when the item was uploaded not when the piece was created.
-		if ( 'attachment' !== get_post_type( $this->id ) && in_array( $property, array( 'published', 'updated' ) ) ) {
+		if ( 'attachment' !== get_post_type( $this->id ) && in_array( $property, array( 'published', 'updated' ), true ) ) {
 			if ( 'published' === $property ) {
 				return get_post_datetime( $this->id );
 			} else {
@@ -272,7 +272,7 @@ class Kind_Post {
 	 */
 	public function get_attached_media( $type ) {
 		$type = strtolower( $type );
-		if ( ! in_array( $type, array( 'photo', 'video', 'audio' ) ) ) {
+		if ( ! in_array( $type, array( 'photo', 'video', 'audio' ), true ) ) {
 			return false;
 		}
 		if ( 'photo' === $type ) {
@@ -307,9 +307,9 @@ class Kind_Post {
 			}
 		}
 
-		// If there are photos in the content then end here.
+		// If there are photos in the content then end here if this is true.
 		if ( ! empty( $content_ids ) && $content ) {
-			return $content_ids;
+			return array();
 		}
 
 		// If there is a featured image return nothing on the assumption that photo and featured should not appear on the same post.
@@ -324,7 +324,11 @@ class Kind_Post {
 		}
 		$photos = get_post_meta( $this->id, 'mf2_photo', true );
 
-		$att_ids = array_merge( $att_ids, $this->get_attachments_from_urls( $photos ) );
+		if ( ! is_array( $content_ids ) ) {
+			$content_ids = array();
+		}
+
+		$att_ids = array_merge( $att_ids, $this->get_attachments_from_urls( $photos ), $content_ids );
 		if ( ! empty( $att_ids ) ) {
 			return array_filter( $att_ids );
 		}
@@ -336,10 +340,11 @@ class Kind_Post {
 	 *
 	 * Looks in both attached media and the audio property.
 	 *
+	 * @param boolean $content If true then return empty if there are any audio files in content.
 	 * @return array Array of Media IDs.
 	 *
 	 */
-	public function get_audio() {
+	public function get_audio( $content = true ) {
 		// Check if the post itself if an audio attachment.
 		if ( wp_attachment_is( 'audio', $this->id ) ) {
 			return array( $this->id );
@@ -355,10 +360,19 @@ class Kind_Post {
 			}
 		}
 
+		// If there are ids in the content then end here if this is true.
+		if ( ! empty( $content_ids ) && $content ) {
+			return array();
+		}
+
+		if ( ! is_array( $content_ids ) ) {
+			$content_ids = array();
+		}
+
 		$att_ids = $this->get_attached_media( 'audio', $this->id );
 		$audios  = get_post_meta( $this->id, 'mf2_audio' );
 		if ( is_array( $audios ) ) {
-			$att_ids = array_merge( $att_ids, $this->get_attachments_from_urls( $audios ) );
+			$att_ids = array_merge( $att_ids, $this->get_attachments_from_urls( $audios ), $content_ids );
 		}
 		if ( ! empty( $att_ids ) ) {
 			return array_unique( $att_ids );
@@ -371,10 +385,11 @@ class Kind_Post {
 	 *
 	 * Looks in both attached media and the audio property.
 	 *
+	 * @param boolean $content If true then return empty if there are any video files in content.
 	 * @return array Array of Media IDs.
 	 *
 	 */
-	public function get_video() {
+	public function get_video( $content = true ) {
 		// Check if the post itself if an audio attachment.
 		if ( wp_attachment_is( 'video', $this->id ) ) {
 			return array( $this->id );
@@ -389,10 +404,19 @@ class Kind_Post {
 			}
 		}
 
+		// If there are ids in the content then end here if this is true.
+		if ( ! empty( $content_ids ) && $content ) {
+			return array();
+		}
+
+		if ( ! is_array( $content_ids ) ) {
+			$content_ids = array();
+		}
+
 		$att_ids = $this->get_attached_media( 'video', $this->id );
 		$videos  = get_post_meta( $this->id, 'mf2_video' );
 		if ( is_array( $videos ) ) {
-			$att_ids = array_merge( $att_ids, $this->get_attachments_from_urls( $videos ) );
+			$att_ids = array_merge( $att_ids, $this->get_attachments_from_urls( $videos ), $content_ids );
 		}
 		if ( ! empty( $att_ids ) ) {
 			return array_unique( $att_ids );
@@ -416,6 +440,8 @@ class Kind_Post {
 					if ( isset( $url['url'] ) ) {
 						$att_ids[] = attachment_url_to_postid( $url['url'] );
 					}
+				} elseif ( is_numeric( $url ) ) {
+					$att_ids[] = $url;
 				} else {
 					$att_ids[] = attachment_url_to_postid( $url );
 				}
@@ -451,7 +477,7 @@ class Kind_Post {
 				return $this->get_name();
 			case 'publication':
 				return $this->get_publication();
-			case 'url';
+			case 'url':
 				return $this->get_url();
 			case 'summary':
 			case 'content':
