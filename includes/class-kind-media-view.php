@@ -41,7 +41,7 @@ class Kind_Media_View {
 	 * Return a media view for the audio post kind.
 	 *
 	 * @access private
-	 * @param int   $id   Audio attachment ID.
+	 * @param int|string   $id   Audio attachment ID or audio URL
 	 * @param mixed $args Arguments for the audio media view.
 	 *
 	 * @return array|string|void
@@ -58,6 +58,8 @@ class Kind_Media_View {
 			return implode( ' ', $return );
 		} elseif ( wp_http_validate_url( $id ) ) {
 			$args['src'] = $id;
+		} if ( 0 === $id ) {
+			return '';
 		} else {
 			$args['src'] = wp_get_attachment_url( (int) $id );
 		}
@@ -72,7 +74,7 @@ class Kind_Media_View {
 	 * Return a media view for the video post kind.
 	 *
 	 * @access private
-	 * @param int   $id   Video attachment ID.
+	 * @param int|string   $id   Video attachment ID or URL.
 	 * @param mixed $args Arguments for the video media view.
 	 *
 	 * @return array|string|void
@@ -89,6 +91,8 @@ class Kind_Media_View {
 			return implode( ' ', $return );
 		} elseif ( wp_http_validate_url( $id ) ) {
 			$args['src'] = $id;
+		} if ( 0 === $id ) {
+			return '';
 		} else {
 			$args['src'] = wp_get_attachment_url( (int) $id );
 		}
