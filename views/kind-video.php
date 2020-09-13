@@ -4,14 +4,14 @@
  *
  */
 
-$videos = $kind_post->get_videos();
-if ( is_array( $videos ) && ( count( $videos ) > 1 ) ) {
-	foreach ( $videos as $video ) {
-		$video_attachment = new MF2_Post( $video );
-		$cite             = $video_attachment->get();
+$videos = $kind_post->get_video();
+if ( is_array( $videos ) ) {
+	if ( 1 === count( $videos ) ) {
+		$video_attachment = new Kind_Post( $videos[0] );
+		$cite = $video_attachment->get_cite();
 	}
 }
-$photos      = $kind_post->get_images();
+$photos      = $kind_post->get_photo();
 $first_photo = null;
 if ( is_countable( $photos ) ) {
 	$first_photo = $photos[0];

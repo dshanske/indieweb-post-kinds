@@ -3,21 +3,16 @@
  * Audio Template
  *
  */
-$audios = $kind_post->get_audios();
-$a = $kind_post->get( 'audio' );
+$audios = $kind_post->get_audio();
+if ( is_array( $audios ) ) {
+	if ( 1 === count( $audios ) ) {
+		$audio_attachment = new Kind_Post( $audios[0] );
+		$cite = $video_attachment->get_cite();
+	}
+}
 $author = null;
 $duration = null;
 $publication = null;
-if ( $audios && is_array( $audios ) ) {
-	foreach( $audios as $audio ) {
-		if ( wp_http_validate_url( $audio ) ) {
-			$audio = attachment_url_to_postid( $audio );
-		}
-		if ( is_numeric( $audio ) ) {
-			$audio_attachment = new Kind_Post( $audio );
-		}
-	}
-}
 
 ?>
 <section class="response">
