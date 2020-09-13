@@ -19,7 +19,6 @@ class Kind_Plugins {
 		add_action( 'after_micropub', array( static::class, 'micropub_set_kind' ), 9, 2 );
 		add_action( 'after_micropub', array( static::class, 'post_formats' ), 11, 2 );
 		add_filter( 'before_micropub', array( static::class, 'micropub_parse' ), 11 );
-		add_filter( 'micropub_query', array( static::class, 'micropub_query_source' ), 11, 2 );
 		// Override Post Type in Semantic Linkbacks.
 		add_filter( 'semantic_linkbacks_post_type', array( static::class, 'semantic_post_type' ), 11, 2 );
 
@@ -66,37 +65,6 @@ class Kind_Plugins {
 			return $shortlink;
 		}
 		return $prefix;
-	}
-
-	public static function micropub_query_source( $resp, $input ) {
-		// Only modify source
-		if ( 'source' !== $input['q'] ) {
-			return $resp;
-		}
-		if ( array_key_exists( 'url', $input ) ) {
-			$post_id = url_to_postid( $input['url'] );
-			if ( ! $post_id ) {
-				return $resp;
-			}
-			$mf2_post = new MF2_Post( $post_id );
-			$resp     = $mf2_post->get();
-		} else {
-			$args = array(
-				'posts_per_page' => ifset( $input['limit'], 10 ),
-				'fields'         => 'ids',
-			);
-			if ( array_key_exists( 'offset', $input ) ) {
-				$args['offset'] = $input['offset'];
-			}
-			$posts = get_posts( $args );
-			$resp  = array();
-			foreach ( $posts as $post ) {
-				$mf2_post = new MF2_Post( $post );
-				$resp[]   = jf2_to_mf2( $mf2_post->get() );
-			}
-			$resp = array( 'items' => $resp );
-		}
-		return $resp;
 	}
 
 	/**
