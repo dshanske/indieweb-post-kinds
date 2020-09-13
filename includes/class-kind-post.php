@@ -70,8 +70,8 @@ class Kind_Post {
 	 * @return string Return name.
 	 */
 	public function get_name() {
-		$post = get_post( $this - id );
-		if ( ! empty( $post->post_title ) && ( $this->id === (int) $post->post_title ) ) {
+		$post = get_post( $this->id );
+		if ( ! empty( $post->post_title ) && ( $this->id !== (int) $post->post_title ) ) {
 			return $post->post_title;
 		}
 		return false;
@@ -341,7 +341,7 @@ class Kind_Post {
 	 * Looks in both attached media and the audio property.
 	 *
 	 * @param boolean $content If true then return empty if there are any audio files in content.
-	 * @return array Array of Media IDs.
+	 * @return array Array of Media IDs or URLs.
 	 *
 	 */
 	public function get_audio( $content = true ) {
@@ -371,12 +371,18 @@ class Kind_Post {
 
 		$att_ids = $this->get_attached_media( 'audio', $this->id );
 		$audios  = get_post_meta( $this->id, 'mf2_audio' );
-		if ( is_array( $audios ) ) {
-			$att_ids = array_merge( $att_ids, $this->get_attachments_from_urls( $audios ), $content_ids );
+		$audio_ids = is_array( $audios ) ? $this->get_attachments_from_urls( $audios ) : array();
+
+		// If there are ids found return them
+		if ( ! empty( $audio_ids ) || ! empty( $att_ids ) || ! empty( $content_ids ) ) {
+			return array_unique( array_merge( $att_ids, $this->get_attachments_from_urls( $audios ), $content_ids ) );
 		}
-		if ( ! empty( $att_ids ) ) {
-			return array_unique( $att_ids );
+
+		// This means there are external URLs for audio provided.
+		if ( ! empty( $audios ) ) {
+			return $audios;
 		}
+
 		return false;
 	}
 
@@ -494,6 +500,17 @@ class Kind_Post {
 	}
 
 	public function get_cite() {
+		if ( 'attachment' === get_post_type( $this->id ) ) {
+			return array_filter( 
+				array(
+					'name' => $this->get_name(),
+					'url' => $this->get_url(),
+					'summary' => $this->get_html( 'summary' ),
+					'published' => $this->get_datetime_property( 'published' ),
+				)
+			);
+		}
+
 		$property = Kind_Taxonomy::get_kind_info( $this->get_kind(), 'property' );
 		if ( empty( $property ) ) {
 			return false;
