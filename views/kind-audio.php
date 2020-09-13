@@ -7,7 +7,7 @@ $audios = $kind_post->get_audio();
 if ( is_array( $audios ) ) {
 	if ( 1 === count( $audios ) ) {
 		$audio_attachment = new Kind_Post( $audios[0] );
-		$cite = $video_attachment->get_cite();
+		$cite = $audio_attachment->get_cite();
 	}
 }
 $author = null;
@@ -17,7 +17,11 @@ $publication = null;
 ?>
 <section class="response">
 <header>
-<?php echo Kind_Taxonomy::get_before_kind( 'audio' ); ?>
+<?php echo Kind_Taxonomy::get_before_kind( 'audio' );
+if ( isset( $cite['name'] ) ) {
+	echo sprintf( '<span class="p-name">%1s</a>', $cite['name'] );
+}
+?>
 </header>
 </section>
 <?php

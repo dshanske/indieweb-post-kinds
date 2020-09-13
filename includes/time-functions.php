@@ -240,7 +240,7 @@ function display_formatted_datetime( $date ) {
 	if ( is_string( $date ) ) {
 		$date = new DateTimeImmutable( $date );
 	}
-		
+
 	return $date->format( get_option( 'date_format' ) ) . ' ' . $date->format( get_option( 'time_format' ) );
 }
 

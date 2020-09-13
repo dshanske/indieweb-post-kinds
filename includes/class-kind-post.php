@@ -369,8 +369,8 @@ class Kind_Post {
 			$content_ids = array();
 		}
 
-		$att_ids = $this->get_attached_media( 'audio', $this->id );
-		$audios  = get_post_meta( $this->id, 'mf2_audio' );
+		$att_ids   = $this->get_attached_media( 'audio', $this->id );
+		$audios    = get_post_meta( $this->id, 'mf2_audio' );
 		$audio_ids = is_array( $audios ) ? $this->get_attachments_from_urls( $audios ) : array();
 
 		// If there are ids found return them
@@ -501,11 +501,11 @@ class Kind_Post {
 
 	public function get_cite() {
 		if ( 'attachment' === get_post_type( $this->id ) ) {
-			return array_filter( 
+			return array_filter(
 				array(
-					'name' => $this->get_name(),
-					'url' => $this->get_url(),
-					'summary' => $this->get_html( 'summary' ),
+					'name'      => $this->get_name(),
+					'url'       => $this->get_url(),
+					'summary'   => $this->get_html( 'summary' ),
 					'published' => $this->get_datetime_property( 'published' ),
 				)
 			);
