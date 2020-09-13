@@ -141,9 +141,7 @@ class Kind_Media_Metadata {
 			foreach ( $sources as $source ) {
 				$url = remove_query_arg( '_', $source->getAttribute( 'src' ) );
 				$id  = attachment_url_to_postid( $url );
-				if ( 0 !== $id ) {
-					$return[] = $id;
-				}
+				$return[] = $id;
 			}
 		}
 		return array_unique( $return );
@@ -165,9 +163,7 @@ class Kind_Media_Metadata {
 			foreach ( $sources as $source ) {
 				$url = remove_query_arg( '_', $source->getAttribute( 'src' ) );
 				$id  = attachment_url_to_postid( $url );
-				if ( 0 !== $id ) {
-					$return[] = $id;
-				}
+				$return[] = $id;
 			}
 		}
 		return array_unique( $return );
