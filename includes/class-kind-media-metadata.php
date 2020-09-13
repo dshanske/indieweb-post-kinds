@@ -139,8 +139,8 @@ class Kind_Media_Metadata {
 		foreach ( $audios as $audio ) {
 			$sources = $audio->getElementsByTagName( 'source' );
 			foreach ( $sources as $source ) {
-				$url = remove_query_arg( '_', $source->getAttribute( 'src' ) );
-				$id  = attachment_url_to_postid( $url );
+				$url      = remove_query_arg( '_', $source->getAttribute( 'src' ) );
+				$id       = attachment_url_to_postid( $url );
 				$return[] = $id;
 			}
 		}
@@ -161,8 +161,8 @@ class Kind_Media_Metadata {
 		foreach ( $videos as $video ) {
 			$sources = $video->getElementsByTagName( 'source' );
 			foreach ( $sources as $source ) {
-				$url = remove_query_arg( '_', $source->getAttribute( 'src' ) );
-				$id  = attachment_url_to_postid( $url );
+				$url      = remove_query_arg( '_', $source->getAttribute( 'src' ) );
+				$id       = attachment_url_to_postid( $url );
 				$return[] = $id;
 			}
 		}

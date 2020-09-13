@@ -99,7 +99,7 @@ register_post_kind(
 		'format'            => 'link', // Post Format that maps to this
 		'description'       => __( 'a reply to content typically on another site', 'indieweb-post-kinds' ),
 		'description - url' => 'http://indieweb.org/reply',
-		'shortlink'       => 't',
+		'shortlink'         => 't',
 		'title'             => false, // Should this kind have an explicit title
 		'show'              => true, // Show in Settings
 	)
@@ -168,7 +168,7 @@ register_post_kind(
 		'format'            => '', // Post Format that maps to this
 		'description'       => __( 'a complete reposting of content from another site', 'indieweb-post-kinds' ),
 		'description - url' => 'http://indieweb.org/repost',
-		'shortlink'       => 'b',
+		'shortlink'         => 'b',
 		'title'             => true, // Should this kind have an explicit title
 		'show'              => true, // Show in Settings
 	)
