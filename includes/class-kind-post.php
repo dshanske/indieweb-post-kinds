@@ -521,8 +521,82 @@ class Kind_Post {
 		return $cite;
 	}
 
+	public function set_datetime_property( $key, $value ) {
+		// In an attachment the post date properties reflect when the item was uploaded not when the piece was created.
+		if ( ! $value instanceof DateTime ) {
+			$value = new DateTime( $value );
+		}
+		if ( ! $value ) {
+			return false;
+		}
+		if ( 'attachment' !== get_post_type( $this->id ) && in_array( $key, array( 'published', 'updated' ), true ) ) {
+			$k    = 'published' === $key ? 'post_date' : 'post_modified';
+			$args = array( 'ID' => $this->id );
+			$wptz = wp_timezone();
+			$value->setTimeZone( $wptz );
+			$args[ $k ] = $value->format( 'Y-m-d H:i:s' );
+			$value->setTimeZone( new DateTimeZone( 'GMT' ) );
+			$args[ $k . '_gmt' ] = $value->format( 'Y-m-d H:i:s' );
+			return wp_update_post( $args, true );
+		}
 
-	public function set( $key, $value = null ) {
+		return update_post_meta( $this->id, 'mf2_' . $key, $value->format( DATE_W3C ) );
+	}
+
+	/**
+	 * Set author
+	 *
+	 * @param array $value Author microformat.
+	 * @return boolean|WP_Error
+	 */
+	public function set_author( $value ) {
+		// Attachments may have been uploaded by a user but may have metadata for original author
+		if ( 'attachment' === get_post_type( $this->id ) ) {
+			return update_post_meta( $this->ID, 'mf2_author', $value );
+		}
+	}
+
+	public function set( $key, $value ) {
+		$args = array( 'ID' => $this->id );
+
+		switch ( $key ) {
+			case 'published':
+			case 'updated':
+			case 'start':
+			case 'end':
+				return $this->set_datetime_property( $key, $value );
+			case 'author':
+				return $this->set_author( $value );
+			case 'featured':
+				if ( wp_http_validate_url( $value ) ) {
+					$featured = attachment_url_to_postid( $value );
+					if ( $featured ) {
+						$value = $featured;
+					}
+				}
+				if ( is_numeric( $value ) ) {
+					return set_post_thumbnail( $this->id, $value );
+				} else {
+					return false;
+				}
+			case 'name':
+				$args['post_title'] = $value;
+				return wp_update_post( $args, true );
+			case 'summary':
+			case 'content':
+				if ( is_array( $value ) ) {
+					if ( array_key_exists( 'html', $value ) ) {
+						$value = $value['html'];
+					} elseif ( wp_is_numeric_array( $value ) ) {
+						$value = $value[0];
+					}
+				}
+				$k          = 'summary' === $key ? 'post_excerpt' : 'post_content';
+				$args[ $k ] = $value;
+				return wp_update_post( $args, true );
+			default:
+				return update_post_meta( $this->id, 'mf2_' . $key, $value );
+		}
 	}
 
 	public function delete( $key ) {
