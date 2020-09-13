@@ -103,11 +103,11 @@ class Kind_View {
 		$args     = is_null( $args ) ? $defaults : wp_parse_args( $args, $defaults );
 
 		$kind_post = new Kind_Post( $args['post_id'] );
-		$kind     = $kind_post->get_kind();
-		$type     = Kind_Taxonomy::get_kind_info( $kind, 'property' );
-		$cite = mf2_to_jf2( $kind_post->get_cite() );
-		$url   = null;
-		$embed = null;
+		$kind      = $kind_post->get_kind();
+		$type      = Kind_Taxonomy::get_kind_info( $kind, 'property' );
+		$cite      = mf2_to_jf2( $kind_post->get_cite() );
+		$url       = null;
+		$embed     = null;
 
 		ob_start();
 		include $located;
@@ -207,9 +207,9 @@ class Kind_View {
 	public static function json_feed_item( $feed_item, $post ) {
 
 		$kind_post = new Kind_Post( $args['post_id'] );
-		$kind     = $kind_post->get_kind();
-		$type     = Kind_Taxonomy::get_kind_info( $kind, 'property' );
-		$cite = mf2_to_jf2( $kind_post->get_cite() );
+		$kind      = $kind_post->get_kind();
+		$type      = Kind_Taxonomy::get_kind_info( $kind, 'property' );
+		$cite      = mf2_to_jf2( $kind_post->get_cite() );
 
 		if ( wp_is_numeric_array( $cite ) ) {
 			$url = array_pop( $cite );

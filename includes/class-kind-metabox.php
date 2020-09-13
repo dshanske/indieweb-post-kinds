@@ -39,13 +39,24 @@ class Kind_Metabox {
 	 * @param string $new_kind New post kind to set.
 	 */
 	public static function change_kind( $post_id, $old_kind, $new_kind ) {
-		$mf2_post = new MF2_Post( $post_id );
+		if ( empty( $old_kind ) || empty( $new_kind ) ) {
+			return;
+		}
+		$kind_post = new Kind_Post( $post_id );
+		if ( ! $kind_post ) {
+			return;
+		}
 		$old_prop = Kind_Taxonomy::get_kind_info( $old_kind, 'property' );
 		$new_prop = Kind_Taxonomy::get_kind_info( $new_kind, 'property' );
-		if ( $mf2_post->has_key( $old_prop ) && ! $mf2_post->has_key( $new_prop ) ) {
-			$mf2_post->set( $new_prop, $mf2_post->get( $old_prop ) );
+		if ( empty( $new_prop ) ) {
+			return;
 		}
-		$mf2_post->delete( $old_prop );
+		$new = $kind_post->get( $old_prop );
+		$old = $kind_post->get( $new_prop );
+		if ( empty( $new ) && ! empty( $old ) ) {
+			$kind_post->set( $new_prop, $old );
+		}
+		$kind_post->delete( $old_prop );
 	}
 
 	/**
@@ -374,30 +385,30 @@ class Kind_Metabox {
 				return;
 			}
 		}
-		$mf2_post = new MF2_Post( $post );
-		$cite     = array();
-		$start    = '';
-		$end      = '';
+		$kind_post = new Kind_Post( $post );
+		$cite      = array();
+		$start     = '';
+		$end       = '';
 
 		if ( isset( $_POST['mf2_start_date'] ) || isset( $_POST['mf2_start_time'] ) ) {
 			$start = build_iso8601_time( $_POST['mf2_start_date'], $_POST['mf2_start_time'], $_POST['mf2_start_offset'] );
 			if ( ! $start ) {
-				$mf2_post->delete( 'dt-start' );
+				$kind_post->delete( 'dt-start' );
 			}
 		} else {
-			$mf2_post->delete( 'dt-start' );
+			$kind_post->delete( 'dt-start' );
 		}
 		if ( isset( $_POST['mf2_end_date'] ) || isset( $_POST['mf2_end_time'] ) ) {
 			$end = build_iso8601_time( $_POST['mf2_end_date'], $_POST['mf2_end_time'], $_POST['mf2_end_offset'] );
 			if ( ! $end ) {
-				$mf2_post->delete( 'dt-end' );
+				$kind_post->delete( 'dt-end' );
 			}
 		} else {
-			$mf2_post->delete( 'dt-end' );
+			$kind_post->delete( 'dt-end' );
 		}
 		if ( $start !== $end ) {
-			$mf2_post->set( 'dt-start', $start );
-			$mf2_post->set( 'dt-end', $end );
+			$kind_post->set_datetime_property( 'start', $start );
+			$kind_post->set_datetime_property( 'end', $end );
 		}
 		$duration_keys = array(
 			'duration_years'   => '',
@@ -425,12 +436,12 @@ class Kind_Metabox {
 			}
 		}
 		if ( ! empty( $duration ) ) {
-			$mf2_post->set( 'duration', $duration );
+			$kind_post->set( 'duration', $duration );
 		} else {
-			$mf2_post->delete( 'duration' );
+			$kind_post->delete( 'duration' );
 		}
 
-		$mf2_post->set( 'rsvp', $_POST['mf2_rsvp'] );
+		$kind_post->set( 'rsvp', $_POST['mf2_rsvp'] );
 
 		if ( isset( $_POST['cite_published_date'] ) || isset( $_POST['published_time'] ) ) {
 			$cite['published'] = build_iso8601_time( $_POST['cite_published_date'], $_POST['cite_published_time'], $_POST['cite_published_offset'] );
@@ -456,10 +467,10 @@ class Kind_Metabox {
 			$author['type'] = 'card';
 			$cite['author'] = $author;
 		}
-		$kind = $mf2_post->get( 'kind', true );
+		$kind = $kind_post->get_kind();
 		$type = Kind_Taxonomy::get_kind_info( $kind, 'property' );
 		// Make sure there is no overwrite of properties that might not be handled by the plugin
-		$fetch = $mf2_post->fetch( $type );
+		$fetch = $kind_post->get_cite();
 		if ( ! $fetch ) {
 			$fetch = array();
 		} else {
@@ -485,7 +496,7 @@ class Kind_Metabox {
 			}
 		}
 		$cite = jf2_to_mf2( $cite );
-		$mf2_post->set( $type, $cite );
+		$kind_post->set( $type, $cite );
 	}
 
 	/**

@@ -218,9 +218,8 @@ final class Kind_Taxonomy {
 		$kind    = get_post_kind_slug( $post );
 		$excerpt = wp_strip_all_tags( self::get_excerpt( $post ) );
 		if ( ! in_array( $kind, array( 'note', 'article' ), true ) || ! $kind ) {
-			$mf2_post = new MF2_Post( $post );
-			$type     = self::get_kind_info( $kind, 'property' );
-			$cite     = $mf2_post->fetch( $type );
+			$kind_post = new Kind_Post( $post );
+			$cite      = $kind_post->get_cite();
 			if ( isset( $cite['name'] ) ) {
 				$excerpt = wp_strip_all_tags( $cite['name'] );
 			}
@@ -818,9 +817,9 @@ final class Kind_Taxonomy {
 	 * @return array
 	 */
 	public static function webmention_links( $links, $post_id ) {
-		$mf2_post = new MF2_Post( $post_id );
-		$cite     = $mf2_post->fetch( self::get_kind_info( $mf2_post->get( 'kind' ), 'property' ) );
-		$cites    = ifset( $cite['url'] );
+		$kind_post = new Kind_Post( $post_id );
+		$cite      = $kind_post->get_cite();
+		$cites     = ifset( $cite['url'] );
 		if ( is_string( $cites ) ) {
 			$links[] = $cites;
 		}
@@ -841,9 +840,9 @@ final class Kind_Taxonomy {
 	 * @return array
 	 */
 	public static function enclosure_links( $links, $post_id ) {
-		$mf2_post = new MF2_Post( $post_id );
-		if ( in_array( $mf2_post->kind, array( 'photo', 'video', 'audio' ), true ) ) {
-			$cite  = $mf2_post->fetch( self::get_kind_info( $mf2_post->get( 'kind' ), 'property' ) );
+		$kind_post = new Kind_Post( $post_id );
+		if ( in_array( $kind_post->get_kind(), array( 'photo', 'video', 'audio' ), true ) ) {
+			$cite  = $kind_post->get_cite();
 			$cites = ifset( $cite['url'] );
 			if ( is_string( $cites ) ) {
 				$links[] = $cites;

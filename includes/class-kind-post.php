@@ -557,6 +557,9 @@ class Kind_Post {
 	}
 
 	public function set( $key, $value ) {
+		if ( empty( $key ) || empty( $value ) ) {
+			return;
+		}
 		$args = array( 'ID' => $this->id );
 
 		switch ( $key ) {

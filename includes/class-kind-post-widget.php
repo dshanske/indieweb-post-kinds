@@ -81,10 +81,9 @@ class Kind_Post_Widget extends WP_Widget {
 			return $title;
 		}
 		if ( ! in_array( $kind, array( 'note', 'article' ), true ) ) {
-			$mf2_post = new MF2_Post( $post );
-			$type     = Kind_Taxonomy::get_kind_info( $kind, 'property' );
-			$cite     = $mf2_post->fetch( $type );
-			$content  = ifset( $cite['name'], Kind_View::get_post_type_string( ifset( $cite['url'] ) ) );
+			$kind_post = new Kind_Post( $post );
+			$cite      = $kind_post->get_cite();
+			$content   = ifset( $cite['name'], Kind_View::get_post_type_string( ifset( $cite['url'] ) ) );
 		} else {
 			$content = $post->post_excerpt;
 			// If no excerpt use content
