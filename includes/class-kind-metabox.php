@@ -51,9 +51,8 @@ class Kind_Metabox {
 		if ( empty( $new_prop ) ) {
 			return;
 		}
-		$new = $kind_post->get( $old_prop );
-		$old = $kind_post->get( $new_prop );
-		if ( empty( $new ) && ! empty( $old ) ) {
+		$old = $kind_post->get( $old_prop );
+		if ( ! empty( $old ) ) {
 			$kind_post->set( $new_prop, $old );
 		}
 		$kind_post->delete( $old_prop );
