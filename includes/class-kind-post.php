@@ -170,6 +170,14 @@ class Kind_Post {
 		}
 	}
 
+	public function get_duration() {
+		$duration = get_post_meta( $this->id, 'mf2_duration', true );
+		if ( $duration ) {
+			return new DateInterval( $duration );
+		}
+		return false;
+	}
+
 	/*
 	 * Return Categories which are a combination of Tags and Categories.
 	 *
@@ -485,6 +493,8 @@ class Kind_Post {
 				return $this->get_publication();
 			case 'url':
 				return $this->get_url();
+			case 'duration':
+				return $this->get_duration();
 			case 'summary':
 			case 'content':
 				return $this->get_html( $key );
@@ -543,6 +553,19 @@ class Kind_Post {
 		return update_post_meta( $this->id, 'mf2_' . $key, $value->format( DATE_W3C ) );
 	}
 
+	public function set_duration( $value ) {
+		if ( ! $value instanceof DateInterval ) {
+			$value = new DateInterval( $value );
+		}
+		if ( ! $value ) {
+			return false;
+		}
+
+		$duration = date_interval_to_iso8601( $value );
+
+		return update_post_meta( $this->id, 'mf2_duration', $duration );
+	}
+
 	/**
 	 * Set author
 	 *
@@ -585,6 +608,8 @@ class Kind_Post {
 			case 'name':
 				$args['post_title'] = $value;
 				return wp_update_post( $args, true );
+			case 'duration':
+				return $this->set_duration( $value );
 			case 'summary':
 			case 'content':
 				if ( is_array( $value ) ) {
