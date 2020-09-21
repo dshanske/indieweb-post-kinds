@@ -632,7 +632,7 @@ class Kind_View {
 			/* translators: singular and plural */
 			$return .= sprintf( _n( ' %d second', ' %d seconds', $bits['second'], 'indieweb-post-kinds' ), $bits['second'] );
 		}
-		return trim( $return );
+		return sprintf( '<time class="dt-duration" value="%1$s">%2$s</time>', date_interval_to_iso8601( $interval ), $return );
 	}
 
 }  // End Class
