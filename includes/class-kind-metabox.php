@@ -409,15 +409,8 @@ class Kind_Metabox {
 			$kind_post->set_datetime_property( 'start', $start );
 			$kind_post->set_datetime_property( 'end', $end );
 		}
-		$duration_keys = array(
-			'duration_years'   => '',
-			'duration_months'  => '',
-			'duration_days'    => '',
-			'duration_hours'   => '',
-			'duration_minutes' => '',
-			'duration_seconds' => '',
-		);
-		$durations     = array(
+
+		$durations = array(
 			'Y' => ifset( $_POST['duration_years'] ),
 			'M' => ifset( $_POST['duration_months'] ),
 			'D' => ifset( $_POST['duration_days'] ),
@@ -425,17 +418,17 @@ class Kind_Metabox {
 			'I' => ifset( $_POST['duration_minutes'] ),
 			'S' => ifset( $_POST['duration_seconds'] ),
 		);
-		$durations     = array_filter( $durations );
-		if ( ! empty( $durations ) ) {
-			$duration = build_iso8601_duration( $durations );
-		} elseif ( isset( $start ) && isset( $end ) ) {
+		$duration  = build_iso8601_duration( $durations );
+		error_log( $duration );
+
+		if ( ! $duration && isset( $start ) && isset( $end ) ) {
 			$duration = calculate_duration( $start, $end );
 			if ( $duration instanceof DateInterval ) {
 				$duration = date_interval_to_iso8601( $duration );
 			}
 		}
 		if ( ! empty( $duration ) ) {
-			$kind_post->set( 'duration', $duration );
+			$kind_post->set_duration( $duration );
 		} else {
 			$kind_post->delete( 'duration' );
 		}

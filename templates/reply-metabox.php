@@ -1,11 +1,10 @@
 <?php
 wp_nonce_field( 'replykind_metabox', 'replykind_metabox_nonce' );
-$mf2_post = new MF2_Post( get_post() );
-$kind = $mf2_post->get( 'kind', true );
+$kind_post = new Kind_Post( get_the_ID() );
+$kind = $kind_post->get_kind();
 $type     = Kind_Taxonomy::get_kind_info( $kind, 'property' );
-$cite     = $mf2_post->fetch( $type );
-$duration = divide_iso8601_duration( $mf2_post->get( 'duration' ) );
-
+$cite     = mf2_to_jf2( $kind_post->get_cite() );
+$duration = divide_iso8601_duration( $kind_post->get_duration() );
 if ( ! isset( $cite['url'] ) ) {
 	if ( array_key_exists( 'kindurl', $_GET ) && wp_http_validate_url( $_GET['kindurl'] ) ) {
 		$cite = array( 'url' => $_GET['kindurl'] );
@@ -18,7 +17,7 @@ if ( isset( $cite['url'] ) && in_array( $kind, array( 'audio', 'video', 'photo' 
 	$attachment = 0;
 }
 if ( $attachment ) {
-	$attachment_post = new MF2_Post( $attachment );
+	$attachment_post = new Kind_Post( $attachment );
 	$cite = $attachment_post->get();
 }
 $author = ifset( $cite['author'], array() );
@@ -70,7 +69,7 @@ if ( isset( $cite['url'] ) && is_array( $cite['url'] ) ) {
 	</label>
 </p>
 <p class="field-row hide-if-js" id="rsvp-option">
-	<?php echo Kind_Metabox::rsvp_select( $mf2_post->get( 'rsvp', true ) ); ?>
+	<?php echo Kind_Metabox::rsvp_select( $kind_post->get( 'rsvp' ) ); ?>
 </p>
 <p id="kind-media hide-if-no-js">
 <?php $show_media = ( isset( $cite['url'] ) && in_array( $kind, array( 'photo', 'audio', 'video' ) ) ); ?>

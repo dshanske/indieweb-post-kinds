@@ -110,15 +110,22 @@ if ( ! function_exists( 'divide_iso8601_time' ) ) {
 if ( ! function_exists( 'build_iso8601_duration' ) ) {
 	// Given an array with the pieces of a duration build an ISO8601 duration
 	function build_iso8601_duration( $values ) {
+		$values = array_filter( $values );
+		if ( empty( $values ) ) {
+			return '';
+		}
+
 		$date = wp_array_slice_assoc( $values, array( 'Y', 'M', 'D' ) );
 		$time = wp_array_slice_assoc( $values, array( 'H', 'I', 'S' ) );
-		if ( ! $date || ! $time ) {
+		if ( ! $date && ! $time ) {
 			return '';
 		}
 		$spec = 'P';
 		// Adding each part to the spec-string.
-		foreach ( $date as $key => $value ) {
-			$spec .= $value . $key;
+		if ( count( $date ) > 0 ) {
+			foreach ( $date as $key => $value ) {
+				$spec .= $value . $key;
+			}
 		}
 		if ( count( $time ) > 0 ) {
 			$spec .= 'T';

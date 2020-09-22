@@ -30,7 +30,7 @@
 	</p>
 	<h4> <?php _e( 'Start Time and End Time will be Used to Calculate Duration if Duration Not Set', 'indieweb-post-kinds' ); ?> </h4>
 	<p class="field-row">
-                <?php echo Kind_Metabox::kind_the_time( 'mf2_start', __( 'Start Time', 'indieweb-post-kinds' ), divide_iso8601_time( $mf2_post->get( 'dt-start', true ) ), 'start' ); ?>
-                <?php echo Kind_Metabox::kind_the_time( 'mf2_end', __( 'End Time', 'indieweb-post-kinds' ), divide_iso8601_time( $mf2_post->get( 'dt-end', true ) ), 'end' ); ?>
+                <?php echo Kind_Metabox::kind_the_time( 'mf2_start', __( 'Start Time', 'indieweb-post-kinds' ), divide_iso8601_time( $kind_post->get( 'start', true ) ), 'start' ); ?>
+                <?php echo Kind_Metabox::kind_the_time( 'mf2_end', __( 'End Time', 'indieweb-post-kinds' ), divide_iso8601_time( $kind_post->get( 'end', true ) ), 'end' ); ?>
         </p>
 </div>
