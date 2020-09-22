@@ -89,24 +89,6 @@ if ( ! function_exists( 'build_iso8601_time' ) ) {
 	}
 }
 
-if ( ! function_exists( 'divide_iso8601_time' ) ) {
-	// Divides an ISO8601 string into an array with date time and offset
-	function divide_iso8601_time( $time_string ) {
-		$time     = array();
-		$datetime = date_create_from_format( 'Y-m-d\TH:i:sP', $time_string );
-		if ( ! $datetime ) {
-			return;
-		}
-		$time['date'] = $datetime->format( 'Y-m-d' );
-		if ( '0000-01-01' === $time['date'] ) {
-			$time['date'] = '';
-		}
-		$time['time']   = $datetime->format( 'H:i:s' );
-		$time['offset'] = $datetime->format( 'P' );
-		return $time;
-	}
-}
-
 if ( ! function_exists( 'build_iso8601_duration' ) ) {
 	// Given an array with the pieces of a duration build an ISO8601 duration
 	function build_iso8601_duration( $values ) {
@@ -265,6 +247,10 @@ function display_formatted_datetime( $date ) {
  * }
  */
 function divide_datetime( $datetime ) {
+	if ( ! $datetime ) {
+		return false;
+	} 
+
 	$time         = array();
 	$time['date'] = $datetime->format( 'Y-m-d' );
 	if ( '0000-01-01' === $time['date'] ) {
@@ -272,6 +258,7 @@ function divide_datetime( $datetime ) {
 	}
 	$time['time']   = $datetime->format( 'H:i:s' );
 	$time['offset'] = get_datetime_offset( $datetime );
+	$time['class'] = get_class( $datetime );
 	return $time;
 }
 

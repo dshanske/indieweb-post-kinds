@@ -11,8 +11,8 @@
 	</label>
 	</p>
 	<p class="field-row">
-			<?php echo Kind_Metabox::kind_the_time( 'cite_published', __( 'Published/Released', 'indieweb-post-kinds' ), divide_iso8601_time( ifset( $cite['published'] ) ), 'published' ); ?>
-		<?php echo Kind_Metabox::kind_the_time( 'cite_updated', __( 'Updated', 'indieweb-post-kinds' ), divide_iso8601_time( ifset( $cite['updated'] ) ), 'updated' ); ?>
+			<?php echo Kind_Metabox::kind_the_time( 'cite_published', __( 'Published/Released', 'indieweb-post-kinds' ), ifset( $cite['published'] ), 'published' ); ?>
+		<?php echo Kind_Metabox::kind_the_time( 'cite_updated', __( 'Updated', 'indieweb-post-kinds' ), ifset( $cite['updated'] ), 'updated' ); ?>
 	</p>
 	<label for="cite_tags">
 		<?php _e( 'Tags (semicolon separated)', 'indieweb-post-kinds' ); ?>

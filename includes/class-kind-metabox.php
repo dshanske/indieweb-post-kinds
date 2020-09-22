@@ -214,13 +214,14 @@ class Kind_Metabox {
 	 *
 	 * @param string $prefix Field prefix.
 	 * @param string $label  Label text.
-	 * @param string $time   Date/time value.
+	 * @param string $datetime   Date/time value.
 	 * @param string $class  Class to use for fields.
 	 * @return string
 	 */
-	public static function kind_the_time( $prefix, $label, $time, $class ) {
+	public static function kind_the_time( $prefix, $label, $datetime, $class ) {
 		$tz_seconds = get_option( 'gmt_offset' ) * 3600;
 		$offset     = tz_seconds_to_offset( $tz_seconds );
+		$time = divide_datetime( $datetime );
 		if ( isset( $time['offset'] ) ) {
 			$offset = $time['offset'];
 		}
