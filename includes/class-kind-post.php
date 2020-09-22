@@ -495,6 +495,17 @@ class Kind_Post {
 				return $this->get_url();
 			case 'duration':
 				return $this->get_duration();
+			case 'audio':
+			case 'video':
+			case 'photo':
+				$id = attachment_url_to_postid( get_post_meta( $this->id, 'mf2_' . $key, true ) );
+				if ( $id ) {
+					$attachment = new Kind_Post( $id );
+					return $attachment->get_cite();
+				}
+				return array(
+					'url' => get_post_meta( $this->id, 'mf2_' . $key, true ),
+				);
 			case 'summary':
 			case 'content':
 				return $this->get_html( $key );
