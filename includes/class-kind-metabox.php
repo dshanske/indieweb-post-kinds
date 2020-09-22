@@ -420,9 +420,8 @@ class Kind_Metabox {
 			'S' => ifset( $_POST['duration_seconds'] ),
 		);
 		$duration  = build_iso8601_duration( $durations );
-		error_log( $duration );
 
-		if ( ! $duration && isset( $start ) && isset( $end ) ) {
+		if ( empty( $duration ) && isset( $start ) && isset( $end ) ) {
 			$duration = calculate_duration( $start, $end );
 			if ( $duration instanceof DateInterval ) {
 				$duration = date_interval_to_iso8601( $duration );

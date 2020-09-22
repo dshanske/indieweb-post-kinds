@@ -590,15 +590,17 @@ class Kind_View {
 	 *
 	 * @access public
 	 *
-	 * @param string $duration Duration to display.
+	 * @param string|Dateinterval $interval Duration to display.
 	 * @return string
 	 * @throws Exception
 	 */
-	public static function display_duration( $duration ) {
-		if ( ! $duration ) {
+	public static function display_duration( $interval ) {
+		if ( ! $interval instanceof DateInterval ) {
+			$interval = new DateInterval( $interval );
+		}
+		if ( ! $interval ) {
 			return '';
 		}
-		$interval = new DateInterval( $duration );
 		$bits     = array(
 			'year'   => $interval->y,
 			'month'  => $interval->m,
@@ -632,7 +634,7 @@ class Kind_View {
 			/* translators: singular and plural */
 			$return .= sprintf( _n( ' %d second', ' %d seconds', $bits['second'], 'indieweb-post-kinds' ), $bits['second'] );
 		}
-		return sprintf( '<time class="dt-duration" value="%1$s">%2$s</time>', date_interval_to_iso8601( $interval ), $return );
+		return sprintf( '<time class="dt-duration" datetime="%1$s">%2$s</time>', date_interval_to_iso8601( $interval ), $return );
 	}
 
 }  // End Class
