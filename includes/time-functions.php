@@ -161,8 +161,8 @@ if ( ! function_exists( 'calculate_duration' ) ) {
 		if ( $start_string === $end_string ) {
 			return false;
 		}
-		$start = date_create_immutable_from_format( 'Y-m-d\TH:i:sP', $start_string );
-		$end   = date_create_immutable_from_format( 'Y-m-d\TH:i:sP', $end_string );
+		$start = date_create_from_format( 'Y-m-d\TH:i:sP', $start_string );
+		$end   = date_create_from_format( 'Y-m-d\TH:i:sP', $end_string );
 		if ( ( $start instanceof DateTime ) && ( $end instanceof DateTime ) ) {
 			$duration = $start->diff( $end );
 			return $duration;
