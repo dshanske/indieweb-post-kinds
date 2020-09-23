@@ -3,46 +3,54 @@ wp_nonce_field( 'replykind_metabox', 'replykind_metabox_nonce' );
 $kind_post = new Kind_Post( get_the_ID() );
 $kind = $kind_post->get_kind();
 $type     = Kind_Taxonomy::get_kind_info( $kind, 'property' );
-$cite     = mf2_to_jf2( $kind_post->get_cite() );
-$duration = divide_iso8601_duration( $kind_post->get_duration() );
-if ( ! isset( $cite['url'] ) ) {
+$cite     = $kind_post->get_cite();
+$attachment = 0;
+$time = array();
+
+if ( empty( $cite ) ) {
 	if ( array_key_exists( 'kindurl', $_GET ) && wp_http_validate_url( $_GET['kindurl'] ) ) {
 		$cite = array( 'url' => $_GET['kindurl'] );
 	}
 }
 
-if ( isset( $cite['url'] ) && in_array( $kind, array( 'audio', 'video', 'photo' ) ) ) {
-	$attachment = attachment_url_to_postid( $cite['url'] );
-} else {
-	$attachment = 0;
-}
+$duration = divide_iso8601_duration( $kind_post->get_duration() );
+if ( in_array( $kind, array( 'audio', 'video', 'photo' ) ) ) {
+	if ( isset( $cite['url'] ) ) {
+		$attachment = attachment_url_to_postid( $cite['url'] );
+	} else if ( wp_is_numeric_array( $cite ) ) {
+		$attachment = attachment_url_to_postid( $cite[0] );
+	}
+} 
 if ( $attachment ) {
 	$attachment_post = new Kind_Post( $attachment );
-	$cite = $attachment_post->get();
-}
-$author = ifset( $cite['author'], array() );
-if ( 1 === count( $author ) && wp_is_numeric_array( $author ) ) {
-	$author = array_pop( $author );
-}
-if ( is_string( $author ) ) {
-	$author = array( 'name' => $author );
+	$cite = $attachment_post->get_cite();
 }
 
-if ( isset( $author['name'] ) && is_array( $author['name'] ) ) {
-	$author['name'] = implode( ';', $author['name'] );
-}
-if ( isset( $author['url'] ) && is_array( $author['url'] ) ) {
-	$author['url'] = implode( ';', $author['url'] );
-}
-
-$time = array();
-if ( isset( $cite['category'] ) ) {
-		$tags = $cite['category'];
-	if ( is_array( $tags ) ) {
-			$tags = implode( ';', $tags );
+if ( ! wp_is_numeric_array( $cite ) ) {
+	$cite = mf2_to_jf2( $cite );
+	$author = ifset( $cite['author'], array() );
+	if ( 1 === count( $author ) && wp_is_numeric_array( $author ) ) {
+		$author = array_pop( $author );
 	}
-} else {
+	if ( is_string( $author ) ) {
+		$author = array( 'name' => $author );
+	}
+
+	if ( isset( $author['name'] ) && is_array( $author['name'] ) ) {
+		$author['name'] = implode( ';', $author['name'] );
+	}
+	if ( isset( $author['url'] ) && is_array( $author['url'] ) ) {
+		$author['url'] = implode( ';', $author['url'] );
+	}
+
+	if ( isset( $cite['category'] ) ) {
+			$tags = $cite['category'];
+		if ( is_array( $tags ) ) {
+			$tags = implode( ';', $tags );
+		}
+	} else {
 		$tags = '';
+	}
 }
 
 

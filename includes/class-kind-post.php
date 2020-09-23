@@ -495,17 +495,6 @@ class Kind_Post {
 				return $this->get_url();
 			case 'duration':
 				return $this->get_duration();
-			case 'audio':
-			case 'video':
-			case 'photo':
-				$id = attachment_url_to_postid( get_post_meta( $this->id, 'mf2_' . $key, true ) );
-				if ( $id ) {
-					$attachment = new Kind_Post( $id );
-					return $attachment->get_cite();
-				}
-				return array(
-					'url' => get_post_meta( $this->id, 'mf2_' . $key, true ),
-				);
 			case 'summary':
 			case 'content':
 				return $this->get_html( $key );
@@ -522,12 +511,16 @@ class Kind_Post {
 
 	public function get_cite() {
 		if ( 'attachment' === get_post_type( $this->id ) ) {
-			return array_filter(
-				array(
-					'name'      => $this->get_name(),
-					'url'       => $this->get_url(),
-					'summary'   => $this->get_html( 'summary' ),
-					'published' => $this->get_datetime_property( 'published' ),
+			return jf2_to_mf2(
+				array_filter(
+					array(
+						'type'      => 'cite',
+						'name'      => $this->get_name(),
+						'url'       => $this->get_url(),
+						'summary'   => $this->get_html( 'summary' ),
+						'published' => $this->get_datetime_property( 'published' ),
+						'uid'       => $this->id
+					)
 				)
 			);
 		}
