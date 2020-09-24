@@ -7,6 +7,9 @@ $cite     = $kind_post->get_cite();
 $attachment = 0;
 $time = array();
 
+if ( ! is_array( $cite ) ) {
+	$cite = array();
+}
 if ( empty( $cite ) ) {
 	if ( array_key_exists( 'kindurl', $_GET ) && wp_http_validate_url( $_GET['kindurl'] ) ) {
 		$cite = array( 'url' => $_GET['kindurl'] );
