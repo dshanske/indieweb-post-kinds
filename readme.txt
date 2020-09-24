@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like, scrobble
-Stable tag: 3.3.6
+Stable tag: 3.4.0
 Requires at least: 4.9.9
 Requires PHP: 5.6
 Tested up to: 5.5
@@ -260,6 +260,16 @@ through future plugin updates.
 
 
 == Changelog ==
+
+= 3.4.0 ( 2020-09-24 ) =
+* Add support for the Hum URL shortener to adjust prefix based on post kind. Implementation is not strictly as per the Whistle spec as it uses some suggested prefixes.
+* When a post is updated, go through the content and extract any image, video, or audio IDs from the content and save them to meta so they do not need to be parsed each time. If there are any media items in content this will disable auto-embedding.
+* Add an Artist Name and Artist URL field to the Image Media Metadata.
+* Introduce Kind_Post class that will replace MF2_Post. Difference between the two is that MF2_Post generates all properties when you instantiate it. Kind_Post gets each property on demand.
+* Move all sideloading functions to the Media Metadata class
+* Lots of fixes to avoid duplicate media display.
+* Remove custom Micropub query source code.
+* Switch duration display to dt-duration from p-duration
 
 = 3.3.6 ( 2020-08-15 ) =
 * Fix deprecation issues from WordPress 5.5

@@ -599,7 +599,7 @@ class Kind_View {
 		if ( ! $interval ) {
 			return '';
 		}
-		$bits     = array(
+		$bits   = array(
 			'year'   => $interval->y,
 			'month'  => $interval->m,
 			'day'    => $interval->d,
@@ -607,7 +607,7 @@ class Kind_View {
 			'minute' => $interval->i,
 			'second' => $interval->s,
 		);
-		$return   = '';
+		$return = '';
 		if ( $bits['year'] > 0 ) {
 			/* translators: singular and plural */
 			$return .= sprintf( _n( '%d year', '%d years', $bits['year'], 'indieweb-post-kinds' ), $bits['year'] );

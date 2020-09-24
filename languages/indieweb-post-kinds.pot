@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the Post Kinds plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Kinds 3.3.6\n"
+"Project-Id-Version: Post Kinds 3.4.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/indieweb-post-kinds\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2020-08-16T00:11:33+00:00\n"
+"POT-Creation-Date: 2020-09-24T00:24:58+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: indieweb-post-kinds\n"
@@ -1138,6 +1138,24 @@ msgstr ""
 msgid "Author Photo"
 msgstr ""
 
+#: includes/class-kind-media-metadata.php:59
+#: includes/register-kinds.php:543
+#: includes/register-kinds.php:608
+msgid "Artist"
+msgstr ""
+
+#: includes/class-kind-media-metadata.php:60
+msgid "The creator of the image"
+msgstr ""
+
+#: includes/class-kind-media-metadata.php:65
+msgid "Artist URL"
+msgstr ""
+
+#: includes/class-kind-media-metadata.php:66
+msgid "The Artists URL or webpage"
+msgstr ""
+
 #: includes/class-kind-menu-widget.php:10
 msgid "Kind Menu Widget"
 msgstr ""
@@ -1156,7 +1174,7 @@ msgid "All Posts"
 msgstr ""
 
 #: includes/class-kind-menu-widget.php:115
-#: includes/class-kind-post-widget.php:128
+#: includes/class-kind-post-widget.php:127
 msgid "Title: "
 msgstr ""
 
@@ -1168,45 +1186,45 @@ msgstr ""
 msgid "Show Count:"
 msgstr ""
 
-#: includes/class-kind-metabox.php:154
+#: includes/class-kind-metabox.php:164
 msgid "Your URL has been successfully retrieved and parsed"
 msgstr ""
 
-#: includes/class-kind-metabox.php:155
+#: includes/class-kind-metabox.php:165
 msgid "Are you sure you want to clear post properties?"
 msgstr ""
 
-#: includes/class-kind-metabox.php:273
-#: includes/register-kinds.php:449
+#: includes/class-kind-metabox.php:284
+#: includes/register-kinds.php:460
 msgid "Yes"
 msgstr ""
 
-#: includes/class-kind-metabox.php:274
-#: includes/register-kinds.php:450
+#: includes/class-kind-metabox.php:285
+#: includes/register-kinds.php:461
 msgid "No"
 msgstr ""
 
-#: includes/class-kind-metabox.php:275
-#: includes/register-kinds.php:451
+#: includes/class-kind-metabox.php:286
+#: includes/register-kinds.php:462
 msgid "Maybe"
 msgstr ""
 
-#: includes/class-kind-metabox.php:276
-#: includes/register-kinds.php:452
+#: includes/class-kind-metabox.php:287
+#: includes/register-kinds.php:463
 msgid "Interested"
 msgstr ""
 
-#: includes/class-kind-metabox.php:277
-#: includes/register-kinds.php:453
+#: includes/class-kind-metabox.php:288
+#: includes/register-kinds.php:464
 msgid "Remote"
 msgstr ""
 
-#: includes/class-kind-metabox.php:299
-#: includes/register-kinds.php:441
+#: includes/class-kind-metabox.php:310
+#: includes/register-kinds.php:452
 msgid "RSVP"
 msgstr ""
 
-#: includes/class-kind-metabox.php:314
+#: includes/class-kind-metabox.php:325
 msgid "Response Properties"
 msgstr ""
 
@@ -1223,11 +1241,11 @@ msgstr ""
 msgid "A widget that allows you to display a list of posts by type"
 msgstr ""
 
-#: includes/class-kind-post-widget.php:148
+#: includes/class-kind-post-widget.php:147
 msgid "Number of Posts:"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:154
+#: includes/class-kind-taxonomy.php:155
 msgid "Post Kind"
 msgstr ""
 
@@ -1368,117 +1386,117 @@ msgstr ""
 msgid "All %1s"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:1046
+#: includes/class-kind-taxonomy.php:1043
 msgid "Invalid post"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:1049
+#: includes/class-kind-taxonomy.php:1046
 msgid "Invalid Kind"
 msgstr ""
 
-#: includes/class-kind-view.php:376
+#: includes/class-kind-view.php:390
 msgctxt "singular Twitter"
 msgid "a tweet"
 msgstr ""
 
-#: includes/class-kind-view.php:377
+#: includes/class-kind-view.php:391
 msgctxt "singular Vimeo"
 msgid "a video"
 msgstr ""
 
-#: includes/class-kind-view.php:378
+#: includes/class-kind-view.php:392
 msgctxt "singular Youtube"
 msgid "a video"
 msgstr ""
 
-#: includes/class-kind-view.php:379
+#: includes/class-kind-view.php:393
 msgctxt "singular Intagram"
 msgid "an image"
 msgstr ""
 
-#: includes/class-kind-view.php:385
+#: includes/class-kind-view.php:399
 msgctxt "singular post"
 msgid "a post"
 msgstr ""
 
-#: includes/class-kind-view.php:439
+#: includes/class-kind-view.php:453
 msgid "an author"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:539
+#: includes/class-kind-view.php:553
 msgid "Attending <a href=\"%1$s\" class=\"u-in-reply-to\">%2$s</a>"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:541
+#: includes/class-kind-view.php:555
 msgid "Might be attending <a href=\"%1$s\" class=\"u-in-reply-to\">%2$s</a>"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:543
+#: includes/class-kind-view.php:557
 msgid "Unable to Attend <a href=\"%1$s\" class=\"u-in-reply-to\">%2$s</a>"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:545
+#: includes/class-kind-view.php:559
 msgid "Interested in Attending <a href=\"%1$s\" class=u-in-reply-to\">%2$s</a>"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:547
+#: includes/class-kind-view.php:561
 msgid "Attending <a href=\"%1$s\" class=\"u-in-reply-to\">%2$s</a> remotely"
 msgstr ""
 
-#: includes/class-kind-view.php:565
+#: includes/class-kind-view.php:579
 msgid "Want to Read: "
 msgstr ""
 
-#: includes/class-kind-view.php:566
+#: includes/class-kind-view.php:580
 msgid "Reading: "
 msgstr ""
 
-#: includes/class-kind-view.php:567
+#: includes/class-kind-view.php:581
 msgid "Finished Reading: "
 msgstr ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:597
+#: includes/class-kind-view.php:613
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:601
+#: includes/class-kind-view.php:617
 msgid " %d month"
 msgid_plural " %d months"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:605
+#: includes/class-kind-view.php:621
 msgid " %d day"
 msgid_plural " %d days"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:609
+#: includes/class-kind-view.php:625
 msgid " %d hour"
 msgid_plural " %d hours"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:613
+#: includes/class-kind-view.php:629
 msgid " %d minute"
 msgid_plural " %d minutes"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:617
+#: includes/class-kind-view.php:633
 msgid " %d second"
 msgid_plural " %d seconds"
 msgstr[0] ""
@@ -1492,668 +1510,663 @@ msgstr ""
 msgid "traditional long form content: a post with an explicit title and body"
 msgstr ""
 
-#: includes/register-kinds.php:24
+#: includes/register-kinds.php:25
 msgid "Note"
 msgstr ""
 
-#: includes/register-kinds.php:25
+#: includes/register-kinds.php:26
 msgid "Notes"
 msgstr ""
 
-#: includes/register-kinds.php:30
+#: includes/register-kinds.php:31
 msgid "short content: a post or status update with just plain content and typically without a title"
 msgstr ""
 
-#: includes/register-kinds.php:40
+#: includes/register-kinds.php:42
 msgid "Reply"
 msgstr ""
 
-#: includes/register-kinds.php:41
+#: includes/register-kinds.php:43
 msgid "Replies"
 msgstr ""
 
-#: includes/register-kinds.php:42
+#: includes/register-kinds.php:44
 msgid "Replied to"
 msgstr ""
 
-#: includes/register-kinds.php:47
+#: includes/register-kinds.php:49
 msgid "In Reply To"
 msgstr ""
 
-#: includes/register-kinds.php:51
-#: includes/register-kinds.php:119
-#: includes/register-kinds.php:188
-#: includes/register-kinds.php:256
-#: includes/register-kinds.php:324
-#: includes/register-kinds.php:462
-#: includes/register-kinds.php:523
-#: includes/register-kinds.php:587
-#: includes/register-kinds.php:651
-#: templates/reply-metabox.php:68
+#: includes/register-kinds.php:53
+#: includes/register-kinds.php:122
+#: includes/register-kinds.php:192
+#: includes/register-kinds.php:261
+#: includes/register-kinds.php:330
+#: includes/register-kinds.php:473
+#: includes/register-kinds.php:535
+#: includes/register-kinds.php:600
+#: includes/register-kinds.php:665
+#: templates/reply-metabox.php:75
 msgid "Name"
 msgstr ""
 
-#: includes/register-kinds.php:55
-#: includes/register-kinds.php:123
-#: includes/register-kinds.php:192
-#: includes/register-kinds.php:260
-#: includes/register-kinds.php:328
-#: includes/register-kinds.php:466
-#: includes/register-kinds.php:527
-#: includes/register-kinds.php:591
-#: includes/register-kinds.php:655
+#: includes/register-kinds.php:57
+#: includes/register-kinds.php:126
+#: includes/register-kinds.php:196
+#: includes/register-kinds.php:265
+#: includes/register-kinds.php:334
+#: includes/register-kinds.php:477
+#: includes/register-kinds.php:539
+#: includes/register-kinds.php:604
+#: includes/register-kinds.php:669
 #: lib/parse-this/includes/class-rest-parse-this.php:49
-#: templates/reply-metabox.php:62
+#: templates/reply-metabox.php:69
 msgid "URL"
 msgstr ""
 
-#: includes/register-kinds.php:59
-#: includes/register-kinds.php:127
-#: includes/register-kinds.php:196
-#: includes/register-kinds.php:264
-#: includes/register-kinds.php:332
+#: includes/register-kinds.php:61
+#: includes/register-kinds.php:130
+#: includes/register-kinds.php:200
+#: includes/register-kinds.php:269
+#: includes/register-kinds.php:338
 #: templates/reply-author.php:6
-#: templates/reply-metabox.php:57
+#: templates/reply-metabox.php:64
 msgid "Author"
 msgstr ""
 
-#: includes/register-kinds.php:66
-#: includes/register-kinds.php:134
-#: includes/register-kinds.php:203
-#: includes/register-kinds.php:271
-#: includes/register-kinds.php:339
-#: includes/register-kinds.php:470
-#: includes/register-kinds.php:538
-#: includes/register-kinds.php:602
+#: includes/register-kinds.php:68
+#: includes/register-kinds.php:137
+#: includes/register-kinds.php:207
+#: includes/register-kinds.php:276
+#: includes/register-kinds.php:345
+#: includes/register-kinds.php:481
+#: includes/register-kinds.php:550
+#: includes/register-kinds.php:615
 msgid "Summary"
 msgstr ""
 
-#: includes/register-kinds.php:70
-#: includes/register-kinds.php:138
-#: includes/register-kinds.php:207
-#: includes/register-kinds.php:275
-#: includes/register-kinds.php:343
-#: includes/register-kinds.php:474
+#: includes/register-kinds.php:72
+#: includes/register-kinds.php:141
+#: includes/register-kinds.php:211
+#: includes/register-kinds.php:280
+#: includes/register-kinds.php:349
+#: includes/register-kinds.php:485
 msgid "Publication/Website"
 msgstr ""
 
-#: includes/register-kinds.php:74
-#: includes/register-kinds.php:142
-#: includes/register-kinds.php:211
-#: includes/register-kinds.php:279
-#: includes/register-kinds.php:347
+#: includes/register-kinds.php:76
+#: includes/register-kinds.php:145
+#: includes/register-kinds.php:215
+#: includes/register-kinds.php:284
+#: includes/register-kinds.php:353
 msgid "Publish Date"
 msgstr ""
 
-#: includes/register-kinds.php:78
-#: includes/register-kinds.php:146
-#: includes/register-kinds.php:215
-#: includes/register-kinds.php:283
-#: includes/register-kinds.php:351
+#: includes/register-kinds.php:80
+#: includes/register-kinds.php:149
+#: includes/register-kinds.php:219
+#: includes/register-kinds.php:288
+#: includes/register-kinds.php:357
 msgid "Updated Time"
 msgstr ""
 
-#: includes/register-kinds.php:82
-#: includes/register-kinds.php:150
-#: includes/register-kinds.php:219
-#: includes/register-kinds.php:287
-#: includes/register-kinds.php:355
-#: includes/register-kinds.php:427
-#: includes/register-kinds.php:486
-#: includes/register-kinds.php:550
-#: includes/register-kinds.php:614
+#: includes/register-kinds.php:84
+#: includes/register-kinds.php:153
+#: includes/register-kinds.php:223
+#: includes/register-kinds.php:292
+#: includes/register-kinds.php:361
+#: includes/register-kinds.php:437
+#: includes/register-kinds.php:497
+#: includes/register-kinds.php:562
+#: includes/register-kinds.php:627
 msgid "Tags"
 msgstr ""
 
-#: includes/register-kinds.php:89
-#: includes/register-kinds.php:157
-#: includes/register-kinds.php:226
-#: includes/register-kinds.php:294
-#: includes/register-kinds.php:362
-#: includes/register-kinds.php:493
+#: includes/register-kinds.php:91
+#: includes/register-kinds.php:160
+#: includes/register-kinds.php:230
+#: includes/register-kinds.php:299
+#: includes/register-kinds.php:368
+#: includes/register-kinds.php:504
 msgid "Featured Media"
 msgstr ""
 
-#: includes/register-kinds.php:98
+#: includes/register-kinds.php:100
 msgid "a reply to content typically on another site"
 msgstr ""
 
-#: includes/register-kinds.php:108
-#: includes/register-kinds.php:115
+#: includes/register-kinds.php:111
+#: includes/register-kinds.php:118
 msgid "Repost"
 msgstr ""
 
-#: includes/register-kinds.php:109
+#: includes/register-kinds.php:112
 msgid "Reposts"
 msgstr ""
 
-#: includes/register-kinds.php:110
+#: includes/register-kinds.php:113
 msgid "Reposted"
 msgstr ""
 
-#: includes/register-kinds.php:166
+#: includes/register-kinds.php:169
 msgid "a complete reposting of content from another site"
 msgstr ""
 
-#: includes/register-kinds.php:176
-#: includes/register-kinds.php:184
+#: includes/register-kinds.php:180
+#: includes/register-kinds.php:188
 msgid "Like"
 msgstr ""
 
-#: includes/register-kinds.php:177
+#: includes/register-kinds.php:181
 msgid "Likes"
 msgstr ""
 
-#: includes/register-kinds.php:178
+#: includes/register-kinds.php:182
 msgid "Liked"
 msgstr ""
 
-#: includes/register-kinds.php:235
+#: includes/register-kinds.php:239
 msgid "a way to pay compliments to the original post/poster of external content"
 msgstr ""
 
-#: includes/register-kinds.php:245
+#: includes/register-kinds.php:250
 msgid "Favorite"
 msgstr ""
 
-#: includes/register-kinds.php:246
+#: includes/register-kinds.php:251
 msgid "Favorites"
 msgstr ""
 
-#: includes/register-kinds.php:247
 #: includes/register-kinds.php:252
+#: includes/register-kinds.php:257
 msgid "Favorited"
 msgstr ""
 
-#: includes/register-kinds.php:303
+#: includes/register-kinds.php:308
 msgid "special to the author"
 msgstr ""
 
-#: includes/register-kinds.php:313
-#: includes/register-kinds.php:320
+#: includes/register-kinds.php:319
+#: includes/register-kinds.php:326
 msgid "Bookmark"
 msgstr ""
 
-#: includes/register-kinds.php:314
+#: includes/register-kinds.php:320
 msgid "Bookmarks"
 msgstr ""
 
-#: includes/register-kinds.php:315
+#: includes/register-kinds.php:321
 msgid "Bookmarked"
 msgstr ""
 
-#: includes/register-kinds.php:371
+#: includes/register-kinds.php:377
 msgid "storing a link/bookmark for personal use or sharing with others"
 msgstr ""
 
-#: includes/register-kinds.php:381
+#: includes/register-kinds.php:388
 msgid "Photo"
 msgstr ""
 
-#: includes/register-kinds.php:382
+#: includes/register-kinds.php:389
 msgid "Photos"
 msgstr ""
 
-#: includes/register-kinds.php:386
+#: includes/register-kinds.php:393
 msgid "a post with an embedded image/photo as its primary focus"
 msgstr ""
 
-#: includes/register-kinds.php:396
+#: includes/register-kinds.php:404
 msgid "Video"
 msgstr ""
 
-#: includes/register-kinds.php:397
+#: includes/register-kinds.php:405
 msgid "Videos"
 msgstr ""
 
-#: includes/register-kinds.php:401
+#: includes/register-kinds.php:409
 msgid "a post with an embedded video as its primary focus"
 msgstr ""
 
-#: includes/register-kinds.php:411
+#: includes/register-kinds.php:420
 msgid "Audio"
 msgstr ""
 
-#: includes/register-kinds.php:412
+#: includes/register-kinds.php:421
 msgid "Audios"
 msgstr ""
 
-#: includes/register-kinds.php:416
+#: includes/register-kinds.php:425
 msgid "a post with an embedded audio file as its primary focus"
 msgstr ""
 
-#: includes/register-kinds.php:426
+#: includes/register-kinds.php:436
 msgid "Tag"
 msgstr ""
 
-#: includes/register-kinds.php:428
+#: includes/register-kinds.php:438
 msgid "Tagged"
 msgstr ""
 
-#: includes/register-kinds.php:431
+#: includes/register-kinds.php:441
 msgid "allows you to tag a post as being of a specific category or tag, or for person tagging"
 msgstr ""
 
-#: includes/register-kinds.php:442
+#: includes/register-kinds.php:453
 msgid "RSVPs"
 msgstr ""
 
-#: includes/register-kinds.php:443
+#: includes/register-kinds.php:454
 msgid "RSVPed"
 msgstr ""
 
-#: includes/register-kinds.php:458
+#: includes/register-kinds.php:469
 msgid "Event Details"
 msgstr ""
 
-#: includes/register-kinds.php:478
+#: includes/register-kinds.php:489
 msgid "Start Date"
 msgstr ""
 
-#: includes/register-kinds.php:482
+#: includes/register-kinds.php:493
 msgid "End Date"
 msgstr ""
 
-#: includes/register-kinds.php:502
+#: includes/register-kinds.php:513
 msgid "a specific type of reply regarding attendance of an event"
 msgstr ""
 
-#: includes/register-kinds.php:512
+#: includes/register-kinds.php:524
 msgid "Listen"
 msgstr ""
 
-#: includes/register-kinds.php:513
+#: includes/register-kinds.php:525
 msgid "Listens"
 msgstr ""
 
-#: includes/register-kinds.php:514
+#: includes/register-kinds.php:526
 msgid "Listened"
 msgstr ""
 
-#: includes/register-kinds.php:519
+#: includes/register-kinds.php:531
 msgid "Listen To"
 msgstr ""
 
-#: includes/register-kinds.php:531
-#: includes/register-kinds.php:595
-msgid "Artist"
-msgstr ""
-
-#: includes/register-kinds.php:542
+#: includes/register-kinds.php:554
 msgid "Album"
 msgstr ""
 
-#: includes/register-kinds.php:546
-#: includes/register-kinds.php:610
+#: includes/register-kinds.php:558
+#: includes/register-kinds.php:623
 msgid "Release Date"
 msgstr ""
 
-#: includes/register-kinds.php:557
+#: includes/register-kinds.php:569
 msgid "Album Art"
 msgstr ""
 
-#: includes/register-kinds.php:566
+#: includes/register-kinds.php:578
 msgid "listening to audio; sometimes called a scrobble"
 msgstr ""
 
-#: includes/register-kinds.php:576
+#: includes/register-kinds.php:589
 msgid "Watch"
 msgstr ""
 
-#: includes/register-kinds.php:577
+#: includes/register-kinds.php:590
 msgid "Watches"
 msgstr ""
 
-#: includes/register-kinds.php:578
+#: includes/register-kinds.php:591
 msgid "Watched"
 msgstr ""
 
-#: includes/register-kinds.php:583
+#: includes/register-kinds.php:596
 msgid "Watching To"
 msgstr ""
 
-#: includes/register-kinds.php:606
+#: includes/register-kinds.php:619
 msgid "Series"
 msgstr ""
 
-#: includes/register-kinds.php:621
+#: includes/register-kinds.php:634
 msgid "Poster"
 msgstr ""
 
-#: includes/register-kinds.php:630
+#: includes/register-kinds.php:643
 msgid "watching a movie, television show, online video, play or other visual-based event"
 msgstr ""
 
-#: includes/register-kinds.php:640
+#: includes/register-kinds.php:654
 msgid "Checkin"
 msgstr ""
 
-#: includes/register-kinds.php:641
+#: includes/register-kinds.php:655
 msgid "Checkins"
 msgstr ""
 
-#: includes/register-kinds.php:642
+#: includes/register-kinds.php:656
 msgid "Checked into"
 msgstr ""
 
-#: includes/register-kinds.php:647
+#: includes/register-kinds.php:661
 msgid "Checked In"
 msgstr ""
 
-#: includes/register-kinds.php:659
+#: includes/register-kinds.php:673
 msgid "Latitude"
 msgstr ""
 
-#: includes/register-kinds.php:667
+#: includes/register-kinds.php:681
 msgid "Longitude"
 msgstr ""
 
-#: includes/register-kinds.php:675
+#: includes/register-kinds.php:689
 msgid "Street Address"
 msgstr ""
 
-#: includes/register-kinds.php:679
+#: includes/register-kinds.php:693
 msgid "Locality"
 msgstr ""
 
-#: includes/register-kinds.php:683
+#: includes/register-kinds.php:697
 msgid "Region"
 msgstr ""
 
-#: includes/register-kinds.php:687
+#: includes/register-kinds.php:701
 msgid "Country Name"
 msgstr ""
 
-#: includes/register-kinds.php:691
+#: includes/register-kinds.php:705
 msgid "Postal Code"
 msgstr ""
 
-#: includes/register-kinds.php:697
+#: includes/register-kinds.php:711
 msgid "identifying you are at a particular geographic location"
 msgstr ""
 
-#: includes/register-kinds.php:707
+#: includes/register-kinds.php:722
 msgid "Wish"
 msgstr ""
 
-#: includes/register-kinds.php:708
+#: includes/register-kinds.php:723
 msgid "Wishes"
 msgstr ""
 
-#: includes/register-kinds.php:709
+#: includes/register-kinds.php:724
 msgid "Wished"
 msgstr ""
 
-#: includes/register-kinds.php:712
+#: includes/register-kinds.php:727
 msgid "a post indicating a desire/wish. The archive of which would be a wishlist, such as a gift registry or similar"
 msgstr ""
 
-#: includes/register-kinds.php:722
+#: includes/register-kinds.php:738
 msgid "Play"
 msgstr ""
 
-#: includes/register-kinds.php:723
+#: includes/register-kinds.php:739
 msgid "Playing"
 msgstr ""
 
-#: includes/register-kinds.php:724
+#: includes/register-kinds.php:740
 msgid "Played"
 msgstr ""
 
-#: includes/register-kinds.php:727
+#: includes/register-kinds.php:743
 msgid "playing a game"
 msgstr ""
 
-#: includes/register-kinds.php:737
-#: includes/register-kinds.php:738
+#: includes/register-kinds.php:754
+#: includes/register-kinds.php:755
 msgid "Weather"
 msgstr ""
 
-#: includes/register-kinds.php:742
+#: includes/register-kinds.php:759
 msgid "current weather conditions"
 msgstr ""
 
-#: includes/register-kinds.php:752
-#: includes/register-kinds.php:753
+#: includes/register-kinds.php:770
+#: includes/register-kinds.php:771
 msgid "Exercise"
 msgstr ""
 
-#: includes/register-kinds.php:754
+#: includes/register-kinds.php:772
 msgid "Exercised"
 msgstr ""
 
-#: includes/register-kinds.php:757
+#: includes/register-kinds.php:775
 msgid "some form of physical activity or workout (examples: walk, run, cycle, hike, yoga, etc.)"
 msgstr ""
 
-#: includes/register-kinds.php:767
+#: includes/register-kinds.php:786
 msgid "Trip"
 msgstr ""
 
-#: includes/register-kinds.php:768
+#: includes/register-kinds.php:787
 msgid "Trips"
 msgstr ""
 
-#: includes/register-kinds.php:769
-#: includes/register-kinds.php:784
+#: includes/register-kinds.php:788
+#: includes/register-kinds.php:804
 msgid "Travelled"
 msgstr ""
 
-#: includes/register-kinds.php:772
+#: includes/register-kinds.php:791
 msgid "represents a geographic journey"
 msgstr ""
 
-#: includes/register-kinds.php:782
+#: includes/register-kinds.php:802
 msgid "Itinerary"
 msgstr ""
 
-#: includes/register-kinds.php:783
+#: includes/register-kinds.php:803
 msgid "Itineraries"
 msgstr ""
 
-#: includes/register-kinds.php:787
+#: includes/register-kinds.php:807
 msgid "parts of a scheduled trip including transit by car, plane, train, etc."
 msgstr ""
 
-#: includes/register-kinds.php:798
-#: includes/register-kinds.php:799
+#: includes/register-kinds.php:819
+#: includes/register-kinds.php:820
 msgid "Eat"
 msgstr ""
 
-#: includes/register-kinds.php:800
+#: includes/register-kinds.php:821
 msgid "Ate"
 msgstr ""
 
-#: includes/register-kinds.php:803
+#: includes/register-kinds.php:824
 msgid "what you are eating, perhaps for a food diary"
 msgstr ""
 
-#: includes/register-kinds.php:814
+#: includes/register-kinds.php:836
 msgid "Drink"
 msgstr ""
 
-#: includes/register-kinds.php:815
+#: includes/register-kinds.php:837
 msgid "Drinks"
 msgstr ""
 
-#: includes/register-kinds.php:816
+#: includes/register-kinds.php:838
 msgid "Drank"
 msgstr ""
 
-#: includes/register-kinds.php:819
+#: includes/register-kinds.php:841
 msgid "what you are drinking, perhaps for a food dairy"
 msgstr ""
 
-#: includes/register-kinds.php:830
+#: includes/register-kinds.php:853
 msgid "Follow"
 msgstr ""
 
-#: includes/register-kinds.php:831
+#: includes/register-kinds.php:854
 msgid "Follows"
 msgstr ""
 
-#: includes/register-kinds.php:832
+#: includes/register-kinds.php:855
 msgid "Followed"
 msgstr ""
 
-#: includes/register-kinds.php:835
+#: includes/register-kinds.php:858
 msgid "indicating you are now following or subscribing to another person`s activities online"
 msgstr ""
 
-#: includes/register-kinds.php:846
+#: includes/register-kinds.php:870
 msgid "Jam"
 msgstr ""
 
-#: includes/register-kinds.php:847
+#: includes/register-kinds.php:871
 msgid "Jams"
 msgstr ""
 
-#: includes/register-kinds.php:848
+#: includes/register-kinds.php:872
 msgid "Listened to"
 msgstr ""
 
-#: includes/register-kinds.php:851
+#: includes/register-kinds.php:875
 msgid "a particularly personally meaningful song (a listen with added emphasis)"
 msgstr ""
 
-#: includes/register-kinds.php:862
-#: includes/register-kinds.php:864
+#: includes/register-kinds.php:887
+#: includes/register-kinds.php:889
 msgid "Read"
 msgstr ""
 
-#: includes/register-kinds.php:863
+#: includes/register-kinds.php:888
 msgid "Reads"
 msgstr ""
 
-#: includes/register-kinds.php:867
+#: includes/register-kinds.php:892
 msgid "reading a book, magazine, newspaper, other physical document, or online post"
 msgstr ""
 
-#: includes/register-kinds.php:878
+#: includes/register-kinds.php:904
 msgid "Quote"
 msgstr ""
 
-#: includes/register-kinds.php:879
+#: includes/register-kinds.php:905
 msgid "Quotes"
 msgstr ""
 
-#: includes/register-kinds.php:880
+#: includes/register-kinds.php:906
 msgid "Quoted"
 msgstr ""
 
-#: includes/register-kinds.php:883
+#: includes/register-kinds.php:909
 msgid "quoted content"
 msgstr ""
 
-#: includes/register-kinds.php:894
+#: includes/register-kinds.php:921
 msgid "Mood"
 msgstr ""
 
-#: includes/register-kinds.php:895
+#: includes/register-kinds.php:922
 msgid "Moods"
 msgstr ""
 
-#: includes/register-kinds.php:896
+#: includes/register-kinds.php:923
 msgid "Felt"
 msgstr ""
 
-#: includes/register-kinds.php:899
+#: includes/register-kinds.php:926
 msgid "how you are feeling (example: happy, sad, indifferent, etc.)"
 msgstr ""
 
-#: includes/register-kinds.php:910
+#: includes/register-kinds.php:938
 msgid "Recipe"
 msgstr ""
 
-#: includes/register-kinds.php:911
+#: includes/register-kinds.php:939
 msgid "Recipes"
 msgstr ""
 
-#: includes/register-kinds.php:912
+#: includes/register-kinds.php:940
 msgid "Cooked"
 msgstr ""
 
-#: includes/register-kinds.php:915
+#: includes/register-kinds.php:943
 msgid "list of ingredients and directions for making food or drink"
 msgstr ""
 
-#: includes/register-kinds.php:926
+#: includes/register-kinds.php:955
 msgid "Issue"
 msgstr ""
 
-#: includes/register-kinds.php:927
+#: includes/register-kinds.php:956
 msgid "Issues"
 msgstr ""
 
-#: includes/register-kinds.php:928
+#: includes/register-kinds.php:957
 msgid "Filed an Issue"
 msgstr ""
 
-#: includes/register-kinds.php:931
+#: includes/register-kinds.php:960
 msgid "Issue is a special kind of article post that is a reply to typically some source code, though potentially anything at a source control repository."
 msgstr ""
 
-#: includes/register-kinds.php:942
+#: includes/register-kinds.php:972
 msgid "Question"
 msgstr ""
 
-#: includes/register-kinds.php:943
+#: includes/register-kinds.php:973
 msgid "Questions"
 msgstr ""
 
-#: includes/register-kinds.php:944
+#: includes/register-kinds.php:974
 msgid "Asked a question"
 msgstr ""
 
-#: includes/register-kinds.php:947
+#: includes/register-kinds.php:977
 msgid "Question is a post type for soliciting answer replies, which are then typically up/down voted by others and then displayed underneath the question post ordered by highest positive vote count rather than time ordered."
 msgstr ""
 
-#: includes/register-kinds.php:958
+#: includes/register-kinds.php:989
 msgid "Sleep"
 msgstr ""
 
-#: includes/register-kinds.php:959
+#: includes/register-kinds.php:990
 msgid "Sleeps"
 msgstr ""
 
-#: includes/register-kinds.php:960
+#: includes/register-kinds.php:991
 msgid "Slept"
 msgstr ""
 
-#: includes/register-kinds.php:963
+#: includes/register-kinds.php:994
 msgid "Sleep is a passive metrics post type that indicates how much time (and often a graph of how deeply) a person has slept."
 msgstr ""
 
-#: includes/register-kinds.php:974
+#: includes/register-kinds.php:1006
 msgid "Event"
 msgstr ""
 
-#: includes/register-kinds.php:975
+#: includes/register-kinds.php:1007
 msgid "Events"
 msgstr ""
 
-#: includes/register-kinds.php:976
+#: includes/register-kinds.php:1008
 msgid "Planned"
 msgstr ""
 
-#: includes/register-kinds.php:979
+#: includes/register-kinds.php:1011
 msgid "An event is a type of post that in addition to a post name (event title) has a start datetime (likely end datetime), and a location."
 msgstr ""
 
-#: includes/register-kinds.php:990
+#: includes/register-kinds.php:1023
 msgid "Acquisition"
 msgstr ""
 
-#: includes/register-kinds.php:991
+#: includes/register-kinds.php:1024
 msgid "Acquisitions"
 msgstr ""
 
-#: includes/register-kinds.php:992
+#: includes/register-kinds.php:1025
 msgid "Acquired"
 msgstr ""
 
-#: includes/register-kinds.php:995
+#: includes/register-kinds.php:1028
 msgid "Purchases, gifts, found things, or objects donated"
 msgstr ""
 
@@ -2261,11 +2274,11 @@ msgstr ""
 msgid "Featured Image"
 msgstr ""
 
-#: templates/reply-metabox.php:56
+#: templates/reply-metabox.php:63
 msgid "Details"
 msgstr ""
 
-#: templates/reply-metabox.php:59
+#: templates/reply-metabox.php:66
 msgid "Clear"
 msgstr ""
 
@@ -2298,7 +2311,7 @@ msgid "Seconds"
 msgstr ""
 
 #: templates/reply-time.php:31
-msgid "Start Time and End Time will be Used to Calculate Duration if Duration Not Set"
+msgid "Start Time and End Time will be Used to Calculate Duration if Duration Not Set."
 msgstr ""
 
 #: templates/reply-time.php:33

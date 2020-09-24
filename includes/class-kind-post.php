@@ -519,7 +519,7 @@ class Kind_Post {
 						'url'       => $this->get_url(),
 						'summary'   => $this->get_html( 'summary' ),
 						'published' => $this->get_datetime_property( 'published' ),
-						'uid'       => $this->id
+						'uid'       => $this->id,
 					)
 				)
 			);

@@ -249,7 +249,7 @@ function display_formatted_datetime( $date ) {
 function divide_datetime( $datetime ) {
 	if ( ! $datetime ) {
 		return false;
-	} 
+	}
 
 	$time         = array();
 	$time['date'] = $datetime->format( 'Y-m-d' );
@@ -258,7 +258,7 @@ function divide_datetime( $datetime ) {
 	}
 	$time['time']   = $datetime->format( 'H:i:s' );
 	$time['offset'] = get_datetime_offset( $datetime );
-	$time['class'] = get_class( $datetime );
+	$time['class']  = get_class( $datetime );
 	return $time;
 }
 

@@ -221,7 +221,7 @@ class Kind_Metabox {
 	public static function kind_the_time( $prefix, $label, $datetime, $class ) {
 		$tz_seconds = get_option( 'gmt_offset' ) * 3600;
 		$offset     = tz_seconds_to_offset( $tz_seconds );
-		$time = divide_datetime( $datetime );
+		$time       = divide_datetime( $datetime );
 		if ( isset( $time['offset'] ) ) {
 			$offset = $time['offset'];
 		}
