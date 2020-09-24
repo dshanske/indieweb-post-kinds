@@ -2,7 +2,7 @@
         <h4><?php _e( 'Information on what you are responding to', 'indieweb-post-kinds' ); ?></h4>
 	<label for="cite_summary">
 		<?php _e( 'Summary/Quote/Caption', 'indieweb-post-kinds' ); ?>
-	<textarea name="cite_summary" id="cite_summary" data-role="none" class="widefat"><?php echo ifset( $cite['summary'] ); ?></textarea>
+	<textarea name="cite_summary" id="cite_summary" data-role="none" class="widefat"><?php echo $summary; ?></textarea>
 	</label>
 	<p class="field-row">
 	<label for="cite_publication" class="three-quarters">

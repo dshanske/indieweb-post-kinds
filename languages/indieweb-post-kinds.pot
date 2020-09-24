@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the Post Kinds plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Kinds 3.4.0\n"
+"Project-Id-Version: Post Kinds 3.4.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/indieweb-post-kinds\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2020-09-24T00:24:58+00:00\n"
+"POT-Creation-Date: 2020-09-24T03:41:10+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: indieweb-post-kinds\n"
@@ -1547,7 +1547,7 @@ msgstr ""
 #: includes/register-kinds.php:535
 #: includes/register-kinds.php:600
 #: includes/register-kinds.php:665
-#: templates/reply-metabox.php:75
+#: templates/reply-metabox.php:86
 msgid "Name"
 msgstr ""
 
@@ -1561,7 +1561,7 @@ msgstr ""
 #: includes/register-kinds.php:604
 #: includes/register-kinds.php:669
 #: lib/parse-this/includes/class-rest-parse-this.php:49
-#: templates/reply-metabox.php:69
+#: templates/reply-metabox.php:80
 msgid "URL"
 msgstr ""
 
@@ -1571,7 +1571,7 @@ msgstr ""
 #: includes/register-kinds.php:269
 #: includes/register-kinds.php:338
 #: templates/reply-author.php:6
-#: templates/reply-metabox.php:64
+#: templates/reply-metabox.php:75
 msgid "Author"
 msgstr ""
 
@@ -2274,11 +2274,11 @@ msgstr ""
 msgid "Featured Image"
 msgstr ""
 
-#: templates/reply-metabox.php:63
+#: templates/reply-metabox.php:74
 msgid "Details"
 msgstr ""
 
-#: templates/reply-metabox.php:66
+#: templates/reply-metabox.php:77
 msgid "Clear"
 msgstr ""
 

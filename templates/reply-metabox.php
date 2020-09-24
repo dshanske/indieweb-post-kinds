@@ -6,9 +6,10 @@ $type     = Kind_Taxonomy::get_kind_info( $kind, 'property' );
 $cite     = $kind_post->get_cite();
 $attachment = 0;
 $time = array();
+$summary = '';
 
 if ( ! is_array( $cite ) ) {
-	$cite = array();
+	$cite = empty( $cite ) ? array() : array( $cite );
 }
 if ( empty( $cite ) ) {
 	if ( array_key_exists( 'kindurl', $_GET ) && wp_http_validate_url( $_GET['kindurl'] ) ) {
@@ -21,7 +22,7 @@ if ( in_array( $kind, array( 'audio', 'video', 'photo' ) ) ) {
 	if ( isset( $cite['url'] ) ) {
 		$attachment = attachment_url_to_postid( $cite['url'] );
 	} else if ( wp_is_numeric_array( $cite ) ) {
-		$attachment = attachment_url_to_postid( $cite[0] );
+		$attachment = attachment_url_to_postid( $cite[0]  );
 	}
 } 
 if ( $attachment ) {
@@ -44,6 +45,13 @@ if ( ! wp_is_numeric_array( $cite ) ) {
 	}
 	if ( isset( $author['url'] ) && is_array( $author['url'] ) ) {
 		$author['url'] = implode( ';', $author['url'] );
+	}
+	if ( isset( $cite['summary'] ) ) {
+		if ( is_array( $cite['summary'] ) && array_key_exists( 'html', $cite['summary'] ) ) {
+			$summary = $cite['summary']['html'];
+		} else if ( is_string( $cite['summary'] ) ) {
+			$summary = $cite['summary'];
+		}
 	}
 
 	if ( isset( $cite['category'] ) ) {

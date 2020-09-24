@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like, scrobble
-Stable tag: 3.4.0
+Stable tag: 3.4.1
 Requires at least: 4.9.9
 Requires PHP: 5.6
 Tested up to: 5.5
@@ -260,6 +260,9 @@ through future plugin updates.
 
 
 == Changelog ==
+
+= 3.4.1 ( 2020-09-24 ) =
+* Introduced two bugs not discovered in testing.
 
 = 3.4.0 ( 2020-09-24 ) =
 * Add support for the Hum URL shortener to adjust prefix based on post kind. Implementation is not strictly as per the Whistle spec as it uses some suggested prefixes.

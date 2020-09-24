@@ -514,12 +514,14 @@ class Kind_Post {
 			return jf2_to_mf2(
 				array_filter(
 					array(
-						'type'      => 'cite',
-						'name'      => $this->get_name(),
-						'url'       => $this->get_url(),
-						'summary'   => $this->get_html( 'summary' ),
-						'published' => $this->get_datetime_property( 'published' ),
-						'uid'       => $this->id,
+						'type'        => 'cite',
+						'name'        => $this->get_name(),
+						'url'         => $this->get_url(),
+						'summary'     => $this->get_html( 'summary' ),
+						'published'   => $this->get_datetime_property( 'published' ),
+						'uid'         => $this->id,
+						'author'      => $this->get_author(),
+						'publication' => $this->get_publication(),
 					)
 				)
 			);
@@ -579,7 +581,7 @@ class Kind_Post {
 	public function set_author( $value ) {
 		// Attachments may have been uploaded by a user but may have metadata for original author
 		if ( 'attachment' === get_post_type( $this->id ) ) {
-			return update_post_meta( $this->ID, 'mf2_author', $value );
+			return update_post_meta( $this->id, 'mf2_author', $value );
 		}
 	}
 
@@ -626,6 +628,23 @@ class Kind_Post {
 				$k          = 'summary' === $key ? 'post_excerpt' : 'post_content';
 				$args[ $k ] = $value;
 				return wp_update_post( $args, true );
+			case 'audio':
+			case 'video':
+			case 'photo':
+				if ( Parse_This_MF2::is_microformat( $value ) ) {
+					$url = Parse_This_MF2::get_plaintext( $value, 'url' );
+					$id  = attachment_url_to_postid( $url );
+					if ( $id ) {
+						$value = mf2_to_jf2( $value );
+						unset( $value['type'] );
+						$attachment = new Kind_Post( $id );
+						foreach ( $value as $k => $v ) {
+							$attachment->set( $k, $v );
+						}
+					}
+
+					return update_post_meta( $this->id, 'mf2_' . $key, array( $url ) );
+				}
 			default:
 				return update_post_meta( $this->id, 'mf2_' . $key, $value );
 		}
