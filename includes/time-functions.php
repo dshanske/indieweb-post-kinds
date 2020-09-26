@@ -247,6 +247,11 @@ function display_formatted_datetime( $date ) {
  * }
  */
 function divide_datetime( $datetime ) {
+
+	if ( is_string( $datetime ) ) {
+		$datetime = new DateTime( $datetime );
+	}
+
 	if ( ! $datetime ) {
 		return false;
 	}
