@@ -194,10 +194,13 @@ final class Kind_Taxonomy {
 		if ( 'publish' === $post->post_status || ! empty( $post->post_title ) ) {
 			return $permalink;
 		}
-		$excerpt = self::get_excerpt( $post );
-		$excerpt = sanitize_title( mb_strimwidth( wp_strip_all_tags( $excerpt ), 0, 40 ) ); // phpcs:ignore
-		if ( ! empty( $excerpt ) ) {
-			$permalink[1] = wp_unique_post_slug( $excerpt, $post_id, $post->post_status, $post->post_type, $post->post_parent );
+		// Only kick in if the permalink would be the post_id otherwise.
+		if ( is_numeric( $permalink[1] ) && $post_id === intval( $permalink[1] ) ) {
+			$excerpt = self::get_excerpt( $post );
+			$excerpt = sanitize_title( mb_strimwidth( wp_strip_all_tags( $excerpt ), 0, 40 ) ); // phpcs:ignore
+			if ( ! empty( $excerpt ) ) {
+				$permalink[1] = wp_unique_post_slug( $excerpt, $post_id, $post->post_status, $post->post_type, $post->post_parent );
+			}
 		}
 		return $permalink;
 	}
@@ -220,8 +223,13 @@ final class Kind_Taxonomy {
 		if ( ! in_array( $kind, array( 'note', 'article' ), true ) || ! $kind ) {
 			$kind_post = new Kind_Post( $post );
 			$cite      = $kind_post->get_cite();
-			if ( isset( $cite['name'] ) ) {
-				$excerpt = wp_strip_all_tags( $cite['name'] );
+			if ( Parse_This_MF2::is_microformat( $cite ) ) {
+				if ( array_key_exists( 'name', $cite['properties'] ) ) {
+					$excerpt = $cite['properties']['name'];
+					if ( is_array( $excerpt ) ) {
+						$excerpt = $excerpt[0];
+					}
+				}
 			}
 		}
 		return mb_strimwidth( $excerpt, 0, $length, '...' ); // phpcs:ignore

@@ -5,7 +5,6 @@ $kind = $kind_post->get_kind();
 $type     = Kind_Taxonomy::get_kind_info( $kind, 'property' );
 $cite     = $kind_post->get_cite();
 $attachment = 0;
-$time = array();
 $summary = '';
 
 if ( ! is_array( $cite ) ) {

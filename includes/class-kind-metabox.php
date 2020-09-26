@@ -477,17 +477,21 @@ class Kind_Metabox {
 			if ( 1 === count( $cite ) && array_key_exists( 'url', $cite ) ) {
 				$cite = $cite['url'];
 			} else {
+				$build = array();
+				foreach ( $cite as $key => $value ) {
+					$build[ $key ] = is_array( $value ) ? $value : array( $value );
+				}
+				$cite = array( 'properties' => $build );
 				// Temporary code which assumes everything except a checkin is a citation
 				if ( 'checkin' === $kind ) {
-					$cite['type'] = 'card';
+					$cite['type'] = array( 'h-card' );
 				} elseif ( in_array( $kind, array( 'drink', 'eat' ), true ) ) {
-					$cite['type'] = 'food';
+					$cite['type'] = array( 'h-food' );
 				} else {
-					$cite['type'] = 'cite';
+					$cite['type'] = array( 'h-cite' );
 				}
 			}
 		}
-		$cite = jf2_to_mf2( $cite );
 		$kind_post->set( $type, $cite );
 	}
 
