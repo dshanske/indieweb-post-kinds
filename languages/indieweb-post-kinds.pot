@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the Post Kinds plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Kinds 3.4.1\n"
+"Project-Id-Version: Post Kinds 3.4.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/indieweb-post-kinds\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2020-09-24T03:41:10+00:00\n"
+"POT-Creation-Date: 2020-09-30T02:02:10+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: indieweb-post-kinds\n"
@@ -1174,7 +1174,7 @@ msgid "All Posts"
 msgstr ""
 
 #: includes/class-kind-menu-widget.php:115
-#: includes/class-kind-post-widget.php:127
+#: includes/class-kind-post-widget.php:140
 msgid "Title: "
 msgstr ""
 
@@ -1241,7 +1241,7 @@ msgstr ""
 msgid "A widget that allows you to display a list of posts by type"
 msgstr ""
 
-#: includes/class-kind-post-widget.php:147
+#: includes/class-kind-post-widget.php:160
 msgid "Number of Posts:"
 msgstr ""
 
@@ -1249,92 +1249,92 @@ msgstr ""
 msgid "Post Kind"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:325
+#: includes/class-kind-taxonomy.php:333
 msgctxt "taxonomy general name"
 msgid "Kinds"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:326
+#: includes/class-kind-taxonomy.php:334
 msgctxt "taxonomy singular name"
 msgid "Kind"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:327
+#: includes/class-kind-taxonomy.php:335
 msgctxt "search locations"
 msgid "Search Kinds"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:328
+#: includes/class-kind-taxonomy.php:336
 msgctxt "popular kinds"
 msgid "Popular Kinds"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:329
+#: includes/class-kind-taxonomy.php:337
 msgctxt "all taxonomy items"
 msgid "All Kinds"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:330
+#: includes/class-kind-taxonomy.php:338
 msgctxt "taxonomy parent item"
 msgid "Parent Kind"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:331
+#: includes/class-kind-taxonomy.php:339
 msgctxt "taxonomy parent item with colon"
 msgid "Parent Kind:"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:332
+#: includes/class-kind-taxonomy.php:340
 msgctxt "edit taxonomy item"
 msgid "Edit Kind"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:333
+#: includes/class-kind-taxonomy.php:341
 msgctxt "view taxonomy item"
 msgid "View Kind"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:334
+#: includes/class-kind-taxonomy.php:342
 msgctxt "update taxonomy item"
 msgid "Update Kind"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:335
+#: includes/class-kind-taxonomy.php:343
 msgctxt "add taxonomy item"
 msgid "Add New Kind"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:336
+#: includes/class-kind-taxonomy.php:344
 msgctxt "new taxonomy item"
 msgid "New Kind"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:337
+#: includes/class-kind-taxonomy.php:345
 msgctxt "separate kinds with commas"
 msgid "Separate kinds with commas"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:338
+#: includes/class-kind-taxonomy.php:346
 msgctxt "add or remove items"
 msgid "Add or remove kinds"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:339
+#: includes/class-kind-taxonomy.php:347
 msgctxt "choose most used"
 msgid "Choose from the most used kinds"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:340
+#: includes/class-kind-taxonomy.php:348
 msgctxt "no kinds found"
 msgid "No kinds found"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:341
+#: includes/class-kind-taxonomy.php:349
 msgctxt "no kinds"
 msgid "No kinds"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:360
+#: includes/class-kind-taxonomy.php:368
 #: includes/register-kinds.php:8
 msgid "Article"
 msgstr ""
@@ -1342,55 +1342,55 @@ msgstr ""
 #. translators: 1: Kinds. Yearly archive title. 2: Year
 #. translators: Monthly archive title. 1: Month name and year
 #. translators: Daily archive title. 1: Date
-#: includes/class-kind-taxonomy.php:583
-#: includes/class-kind-taxonomy.php:586
-#: includes/class-kind-taxonomy.php:589
+#: includes/class-kind-taxonomy.php:591
+#: includes/class-kind-taxonomy.php:594
 #: includes/class-kind-taxonomy.php:597
-#: includes/class-kind-taxonomy.php:650
+#: includes/class-kind-taxonomy.php:605
+#: includes/class-kind-taxonomy.php:658
 msgid "%1$1s: %2$2s"
 msgstr ""
 
 #. translators: 1: Kinds. Yearly archive title. 2: Year
-#: includes/class-kind-taxonomy.php:583
+#: includes/class-kind-taxonomy.php:591
 msgctxt "yearly archives date format"
 msgid "Y"
 msgstr ""
 
 #. translators: Monthly archive title. 1: Month name and year
-#: includes/class-kind-taxonomy.php:586
+#: includes/class-kind-taxonomy.php:594
 msgctxt "monthly archives date format"
 msgid "F Y"
 msgstr ""
 
 #. translators: Daily archive title. 1: Date
-#: includes/class-kind-taxonomy.php:589
+#: includes/class-kind-taxonomy.php:597
 msgctxt "daily archives date format"
 msgid "F j, Y"
 msgstr ""
 
 #. translators: Daily archive title. 1: Date
-#: includes/class-kind-taxonomy.php:597
-#: includes/class-kind-taxonomy.php:650
+#: includes/class-kind-taxonomy.php:605
+#: includes/class-kind-taxonomy.php:658
 msgid "On This Day"
 msgstr ""
 
 #. translators: Daily archive title. 1: Date
-#: includes/class-kind-taxonomy.php:597
-#: includes/class-kind-taxonomy.php:650
+#: includes/class-kind-taxonomy.php:605
+#: includes/class-kind-taxonomy.php:658
 msgctxt "daily archives date format"
 msgid "F j"
 msgstr ""
 
 #. translators: All
-#: includes/class-kind-taxonomy.php:873
+#: includes/class-kind-taxonomy.php:881
 msgid "All %1s"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:1043
+#: includes/class-kind-taxonomy.php:1051
 msgid "Invalid post"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:1046
+#: includes/class-kind-taxonomy.php:1054
 msgid "Invalid Kind"
 msgstr ""
 
@@ -1547,7 +1547,7 @@ msgstr ""
 #: includes/register-kinds.php:535
 #: includes/register-kinds.php:600
 #: includes/register-kinds.php:665
-#: templates/reply-metabox.php:86
+#: templates/reply-metabox.php:85
 msgid "Name"
 msgstr ""
 
@@ -1561,7 +1561,7 @@ msgstr ""
 #: includes/register-kinds.php:604
 #: includes/register-kinds.php:669
 #: lib/parse-this/includes/class-rest-parse-this.php:49
-#: templates/reply-metabox.php:80
+#: templates/reply-metabox.php:79
 msgid "URL"
 msgstr ""
 
@@ -1571,7 +1571,7 @@ msgstr ""
 #: includes/register-kinds.php:269
 #: includes/register-kinds.php:338
 #: templates/reply-author.php:6
-#: templates/reply-metabox.php:75
+#: templates/reply-metabox.php:74
 msgid "Author"
 msgstr ""
 
@@ -2274,11 +2274,11 @@ msgstr ""
 msgid "Featured Image"
 msgstr ""
 
-#: templates/reply-metabox.php:74
+#: templates/reply-metabox.php:73
 msgid "Details"
 msgstr ""
 
-#: templates/reply-metabox.php:77
+#: templates/reply-metabox.php:76
 msgid "Clear"
 msgstr ""
 
