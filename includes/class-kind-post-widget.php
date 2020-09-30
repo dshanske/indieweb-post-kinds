@@ -83,7 +83,20 @@ class Kind_Post_Widget extends WP_Widget {
 		if ( ! in_array( $kind, array( 'note', 'article' ), true ) ) {
 			$kind_post = new Kind_Post( $post );
 			$cite      = $kind_post->get_cite();
-			$content   = ifset( $cite['name'], Kind_View::get_post_type_string( ifset( $cite['url'] ) ) );
+			if ( ! is_array( $cite ) ) {
+				$cite = empty( $cite ) ? array() : array( $cite );
+			}
+
+			if ( wp_is_numeric_array( $cite ) && ! empty( $cite ) ) {
+				$content = $cite[0];
+				if ( wp_http_validate_url( $content ) ) {
+					$parse   = wp_parse_url( $content );
+					$content = $parse['host'] . $parse['path'];
+				}
+			} else {
+				$cite    = mf2_to_jf2( $cite );
+				$content = array_key_exists( 'name', $cite ) ? $cite['name'] : Kind_View::get_post_type_string( ifset( $cite['url'] ) );
+			}
 		} else {
 			$content = $post->post_excerpt;
 			// If no excerpt use content
