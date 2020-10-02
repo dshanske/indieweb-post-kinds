@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like, scrobble
-Stable tag: 3.4.3
+Stable tag: 3.4.4
 Requires at least: 4.9.9
 Requires PHP: 5.6
 Tested up to: 5.5
@@ -260,6 +260,10 @@ through future plugin updates.
 
 
 == Changelog ==
+
+= 3.4.4 ( 2020-10-01 ) =
+* Fix save and retrieve issues.
+* Parse This version now offers Twitter parsing again, using Oembed data.
 
 = 3.4.3 ( 2020-09-29 ) =
 * Fix issue with Kind Post Widget
