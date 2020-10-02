@@ -149,11 +149,11 @@ class Parse_This_HTML extends Parse_This_Base {
 		if ( WP_DEBUG ) {
 			$jf2['_meta'] = $meta;
 		}
-		return $jf2;
+		return array_filter( $jf2 );
 	}
 
 	public static function meta_to_jf2( $meta ) {
-		if ( empty( $raw ) ) {
+		if ( empty( $meta ) ) {
 			return array();
 		}
 		$jf2 = array();

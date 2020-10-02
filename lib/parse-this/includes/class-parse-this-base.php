@@ -39,7 +39,7 @@ class Parse_This_Base {
 	 */
 	protected static function limit_string( $value ) {
 		$return   = '';
-		$encoding = mb_internal_encoding( 'UTF-8' );
+		$encoding = mb_internal_encoding();
 
 		if ( is_numeric( $value ) || is_bool( $value ) ) {
 			$return = $value;

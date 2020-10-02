@@ -254,10 +254,13 @@ if ( ! function_exists( 'build_url' ) ) {
 
 if ( ! function_exists( 'normalize_url' ) ) {
 	// Adds slash if no path is in the URL, and convert hostname to lowercase
-	function normalize_url( $url ) {
-			$parts = wp_parse_url( $url );
+	function normalize_url( $url, $strip = false ) {
+		$parts = wp_parse_url( $url );
 		if ( empty( $parts['path'] ) ) {
 				$parts['path'] = '/';
+		}
+		if ( $strip ) {
+			$parts['query'] = '';
 		}
 		if ( isset( $parts['host'] ) ) {
 				$parts['host'] = strtolower( $parts['host'] );

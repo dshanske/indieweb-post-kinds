@@ -351,6 +351,9 @@ class Parse_This {
 				if ( in_array( wp_parse_url( $this->url, PHP_URL_HOST ), array( 'www.instagram.com', 'instagram.com' ), true ) ) {
 					$alt = Parse_This_Instagram::parse( $this->doc, $this->url, $args );
 				}
+				if ( in_array( wp_parse_url( $this->url, PHP_URL_HOST ), array( 'twitter.com', 'mobile.twitter.com' ), true ) ) {
+					$alt = Parse_This_Twitter::parse( $this->url, $args );
+				}
 				if ( ! $alt ) {
 					$alt = Parse_This_HTML::parse( $content, $this->url, $args );
 				}
