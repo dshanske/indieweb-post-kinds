@@ -61,6 +61,8 @@ if ( ! wp_is_numeric_array( $cite ) ) {
 	} else {
 		$tags = '';
 	}
+} else {
+	$cite['url'] = $cite[0];
 }
 
 

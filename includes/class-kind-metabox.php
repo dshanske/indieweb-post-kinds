@@ -456,8 +456,9 @@ class Kind_Metabox {
 		$author['photo'] = self::explode( ifset( $_POST['cite_author_photo'] ) );
 		$author          = array_filter( $author );
 		if ( ! empty( $author ) ) {
+
 			$author['type'] = 'card';
-			$cite['author'] = $author;
+			$cite['author'] = jf2_to_mf2( $author );
 		}
 		$kind = $kind_post->get_kind();
 		$type = Kind_Taxonomy::get_kind_info( $kind, 'property' );
