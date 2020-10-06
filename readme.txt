@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like, scrobble
-Stable tag: 3.4.4
+Stable tag: 3.4.5
 Requires at least: 4.9.9
 Requires PHP: 5.6
 Tested up to: 5.5
@@ -260,6 +260,10 @@ through future plugin updates.
 
 
 == Changelog ==
+
+= 3.4.5 ( 2020-10-05 ) =
+* Added additional unit tests for mf2/jf2 conversion in Parse This to see if this was causing some inconsistency issues.
+* Centralized retrieval of embed, author, and url before the view template is loaded instead of in it. Believe that this process needs to be simplified, possibly through some functions as this is what keeps causing PHP Notices and Save Errors.
 
 = 3.4.4 ( 2020-10-01 ) =
 * Fix save and retrieve issues.
