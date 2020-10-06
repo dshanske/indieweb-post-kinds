@@ -7,9 +7,6 @@
 if ( ! $cite ) {
 	return;
 }
-$author = Kind_View::get_hcard( ifset( $cite['author'] ) );
-$url    = $cite['url'];
-$embed  = self::get_embed( $url );
 $title  = isset( $cite['name'] ) ? $cite['name'] : $url;
 $rsvp   = $kind_post->get( 'rsvp', true );
 

@@ -5,10 +5,8 @@
  */
 
 $photos = $kind_post->get_photo();
-$embed  = null;
-if ( ! $photos && is_array( $cite ) ) {
-	$url   = ifset( $cite['url'] );
-	$embed = self::get_embed( $url );
+if ( $photos ) {
+	$embed = null;
 }
 
 if ( is_array( $photos ) ) {

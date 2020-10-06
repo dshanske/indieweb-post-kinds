@@ -7,9 +7,6 @@
 if ( ! $cite ) {
 	return;
 }
-$author = Kind_View::get_hcard( ifset( $cite['author'] ) );
-$url    = ifset( $cite['url'] );
-$embed  = self::get_embed( $url );
 $read   = $kind_post->get( 'read-status', true );
 
 ?>

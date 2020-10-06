@@ -8,9 +8,7 @@ $photos = get_attached_media( 'image', get_the_ID() );
 if ( ! $cite ) {
 	return;
 }
-$url   = ifset( $cite['url'] );
 $name  = ifset( $cite['name'] );
-$embed = self::get_embed( $url );
 
 ?>
 

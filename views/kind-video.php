@@ -16,10 +16,7 @@ $first_photo = null;
 if ( is_countable( $photos ) ) {
 	$first_photo = $photos[0];
 }
-$embed = null;
 if ( is_array( $cite ) && ! $videos ) {
-	$url   = ifset( $cite['url'] );
-	$embed = self::get_embed( $url );
 	if ( ! $embed ) {
 		$view = new Kind_Media_View( $url, 'video' );
 		$embed = $view->get();

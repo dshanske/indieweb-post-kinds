@@ -106,8 +106,21 @@ class Kind_View {
 		$kind      = $kind_post->get_kind();
 		$type      = Kind_Taxonomy::get_kind_info( $kind, 'property' );
 		$cite      = mf2_to_jf2( $kind_post->get_cite() );
-		$url       = null;
-		$embed     = null;
+		if ( array_key_exists( 'author', $cite ) ) {
+			$author = Kind_View::get_hcard( $cite['author'] );
+		} else {
+			$author    = null;
+		}
+		if ( array_key_exists( 'url', $cite ) ) {
+			$url = $cite['url'];
+		} else if ( wp_is_numeric_array( $url ) ) {
+			$url = $cite[0];
+		} else {
+			$url       = null;
+		}
+
+		$embed     = self::get_embed( $url );
+		$kind      = $kind_post->get_kind();
 
 		ob_start();
 		include $located;
@@ -322,6 +335,9 @@ class Kind_View {
 	 * @return string
 	 */
 	public static function get_embed( $url ) {
+		if ( ! wp_http_validate_url( $url ) ) {
+			return '';
+		}
 		$option = get_option( 'kind_embeds' );
 		if ( 0 === (int) $option ) {
 				return '';

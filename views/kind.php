@@ -4,17 +4,8 @@
  *	The Goal of this Template is to be a general all-purpose model that will be replaced by customization in other templates
  */
 
-$author = array();
-if ( isset( $cite['author'] ) ) {
-	$author = Kind_View::get_hcard( $cite['author'] );
-}
-$url = '';
-if ( isset( $cite['url'] ) ) {
-	$url = $cite['url'];
-}
 $site_name = Kind_View::get_site_name( $cite );
 $title     = Kind_View::get_cite_title( $cite );
-$embed     = self::get_embed( $url );
 $duration  = $kind_post->get( 'duration', true );
 if ( ! $duration ) {
 		$duration = calculate_duration( $kind_post->get( 'start' ), $kind_post->get( 'end' ) );

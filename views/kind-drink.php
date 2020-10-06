@@ -7,7 +7,6 @@
 if ( ! $cite ) {
 	return;
 }
-$url    = ifset( $cite['url'] );
 ?>
 
 <section class="response h-food p-drank">

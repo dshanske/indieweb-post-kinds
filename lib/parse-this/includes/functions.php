@@ -3,65 +3,82 @@
 
 
 if ( ! function_exists( 'jf2_to_mf2' ) ) {
-	function jf2_to_mf2( $entry ) {
-		if ( ! $entry || ! is_array( $entry ) | isset( $entry['properties'] ) ) {
+	function jf2_to_mf2( $jf2 ) {
+		if ( ! $jf2 || ! is_array( $jf2 ) ) {
 			return $entry;
 		}
-		$return               = array();
-		$return['type']       = array( 'h-' . $entry['type'] );
-		$return['properties'] = array();
-		unset( $entry['type'] );
-		foreach ( $entry as $key => $value ) {
-			// Exclude  values
+		if ( 1 === count( $jf2 ) && array_key_exists( 'items', $jf2 ) ) {
+			return array(
+				'items' => array_map( 'jf2_to_mf2', $jf2['items'] )
+			);
+		}
+			
+		if ( array_key_exists( 'properties', $jf2 ) || ! array_key_exists( 'type', $jf2 ) )  {
+			return $jf2;
+		}
+
+		$mf2               = array();
+		if ( array_key_exists( 'type', $jf2 ) ) {
+			$mf2['type']       = array( 'h-' . $jf2['type'] );
+			unset( $jf2['type'] );
+		}
+		if ( array_key_exists( 'children', $jf2 ) ) {
+			$mf2['children'] = array_map( 'jf2_to_mf2', $jf2['children'] );
+			unset( $jf2['children'] );
+		}
+
+		$mf2['properties'] = array();
+
+		foreach ( $jf2 as $key => $value ) {
+			// Exclude values
 			if ( empty( $value ) || ( '_raw' === $key ) ) {
 				continue;
 			}
 			if ( ! wp_is_numeric_array( $value ) && is_array( $value ) && array_key_exists( 'type', $value ) ) {
-				$value = jf2_to_mf2( $value );
+				$value = array( jf2_to_mf2( $value ) );
 			} elseif ( wp_is_numeric_array( $value ) ) {
-				if ( is_array( $value[0] ) && array_key_exists( 'type', $value[0] ) ) {
-					foreach ( $value as $item ) {
-						$items[] = jf2_to_mf2( $item );
-					}
-					$value = $items;
-				}
-			} elseif ( ! wp_is_numeric_array( $value ) ) {
+				$value = array_map( 'jf2_to_mf2', $value );
+			} else if ( ! wp_is_numeric_array( $value ) ) {
 				$value = array( $value );
 			}
-			$return['properties'][ $key ] = $value;
+			$mf2['properties'][ $key ] = $value;
 		}
-		return $return;
+		return $mf2;
 	}
 }
 
 if ( ! function_exists( 'mf2_to_jf2' ) ) {
 
-	function mf2_to_jf2( $entry ) {
-		if ( empty( $entry ) || is_string( $entry ) ) {
-			return $entry;
+	function mf2_to_jf2( $mf2 ) {
+		if ( empty( $mf2 ) || is_string( $mf2 ) ) {
+			return $mf2;
 		}
 
 		$jf2 = array();
 
 		// If it is a numeric array, run this function through each item
-		if ( wp_is_numeric_array( $entry ) ) {
-			$jf2 = array_map( 'mf2_to_jf2', $entry );
+		if ( wp_is_numeric_array( $mf2 ) ) {
+			$jf2 = array_map( 'mf2_to_jf2', $mf2 );
 			if ( 1 === count( $jf2 ) ) {
 				return array_pop( $jf2 );
 			}
 			return $jf2;
 		}
 
-		if ( isset( $entry['items'] ) ) {
-			$jf2['items'] = array_map( 'mf2_to_jf2', $entry['items'] );
+		if ( isset( $mf2['items'] ) ) {
+			$jf2['items'] = array_map( 'mf2_to_jf2', $mf2['items'] );
 		}
 
-		if ( isset( $entry['type'] ) ) {
-			$type        = is_array( $entry['type'] ) ? array_pop( $entry['type'] ) : $entry['type'];
+		if ( isset( $mf2['children'] ) ) {
+			$jf2['children'] = array_map( 'mf2_to_jf2', $mf2['children'] );
+		}
+
+		if ( isset( $mf2['type'] ) ) {
+			$type        = is_array( $mf2['type'] ) ? array_pop( $mf2['type'] ) : $mf2['type'];
 			$jf2['type'] = str_replace( 'h-', '', $type );
 		}
-		if ( isset( $entry['properties'] ) ) {
-			foreach ( $entry['properties'] as $key => $value ) {
+		if ( isset( $mf2['properties'] ) ) {
+			foreach ( $mf2['properties'] as $key => $value ) {
 				if ( is_array( $value ) ) {
 					if ( wp_is_numeric_array( $value ) ) {
 						$value = array_map( 'mf2_to_jf2', $value );

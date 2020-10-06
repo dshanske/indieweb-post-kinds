@@ -10,7 +10,6 @@ if ( is_array( $audios ) ) {
 		$cite = $audio_attachment->get_cite();
 	}
 }
-$author = null;
 $duration = null;
 $publication = null;
 

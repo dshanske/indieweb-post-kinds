@@ -61,8 +61,11 @@ if ( ! wp_is_numeric_array( $cite ) ) {
 	} else {
 		$tags = '';
 	}
+} else if ( is_string( $cite ) ) {
+	$cite['url'] = $cite;
 } else {
-	$cite['url'] = $cite[0];
+	reset( $cite );
+	$cite['url'] = current( $cite );
 }
 
 
