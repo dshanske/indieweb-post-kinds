@@ -105,15 +105,22 @@ class Kind_View {
 		$kind_post = new Kind_Post( $args['post_id'] );
 		$kind      = $kind_post->get_kind();
 		$type      = Kind_Taxonomy::get_kind_info( $kind, 'property' );
-		$cite      = mf2_to_jf2( $kind_post->get_cite() );
+		$cite      = $kind_post->get_cite();
+		if ( ! is_array( $cite ) ) {
+			$cite = array( $cite );
+		}
 		if ( array_key_exists( 'author', $cite ) ) {
 			$author = Kind_View::get_hcard( $cite['author'] );
 		} else {
 			$author    = null;
 		}
+		if ( ! wp_is_numeric_array( $cite ) ) {
+			$cite = mf2_to_jf2( $cite );
+		}
+
 		if ( array_key_exists( 'url', $cite ) ) {
 			$url = $cite['url'];
-		} else if ( wp_is_numeric_array( $url ) ) {
+		} else if ( wp_is_numeric_array( $cite ) && ! empty( $cite ) ) {
 			$url = $cite[0];
 		} else {
 			$url       = null;
