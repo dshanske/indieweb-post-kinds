@@ -9,17 +9,17 @@ if ( ! function_exists( 'jf2_to_mf2' ) ) {
 		}
 		if ( 1 === count( $jf2 ) && array_key_exists( 'items', $jf2 ) ) {
 			return array(
-				'items' => array_map( 'jf2_to_mf2', $jf2['items'] )
+				'items' => array_map( 'jf2_to_mf2', $jf2['items'] ),
 			);
 		}
-			
-		if ( array_key_exists( 'properties', $jf2 ) || ! array_key_exists( 'type', $jf2 ) )  {
+
+		if ( array_key_exists( 'properties', $jf2 ) || ! array_key_exists( 'type', $jf2 ) ) {
 			return $jf2;
 		}
 
-		$mf2               = array();
+		$mf2 = array();
 		if ( array_key_exists( 'type', $jf2 ) ) {
-			$mf2['type']       = array( 'h-' . $jf2['type'] );
+			$mf2['type'] = array( 'h-' . $jf2['type'] );
 			unset( $jf2['type'] );
 		}
 		if ( array_key_exists( 'children', $jf2 ) ) {
@@ -38,7 +38,7 @@ if ( ! function_exists( 'jf2_to_mf2' ) ) {
 				$value = array( jf2_to_mf2( $value ) );
 			} elseif ( wp_is_numeric_array( $value ) ) {
 				$value = array_map( 'jf2_to_mf2', $value );
-			} else if ( ! wp_is_numeric_array( $value ) ) {
+			} elseif ( ! wp_is_numeric_array( $value ) ) {
 				$value = array( $value );
 			}
 			$mf2['properties'][ $key ] = $value;
@@ -50,7 +50,7 @@ if ( ! function_exists( 'jf2_to_mf2' ) ) {
 if ( ! function_exists( 'mf2_to_jf2' ) ) {
 
 	function mf2_to_jf2( $mf2 ) {
-		if ( empty( $mf2 ) || is_string( $mf2 ) ) {
+		if ( empty( $mf2 ) || is_string( $mf2 ) || is_object( $mf2 ) ) {
 			return $mf2;
 		}
 
@@ -112,7 +112,7 @@ if ( ! function_exists( 'jf2_references' ) ) {
 			if ( wp_is_numeric_array( $val ) ) {
 				foreach ( $val as $value ) {
 					// Indicates nested type
-					if ( array_key_exists( 'type', $value ) && 'cite' === $value['type'] ) {
+					if ( is_array( $value ) && array_key_exists( 'type', $value ) && 'cite' === $value['type'] ) {
 						if ( ! isset( $data['refs'] ) ) {
 							$data['refs'] = array();
 						}

@@ -7,7 +7,8 @@
 class Parse_This {
 	private $url = '';
 	private $doc;
-	private $jf2 = array();
+	private $links = array();
+	private $jf2   = array();
 
 	private $domain = '';
 
@@ -225,10 +226,25 @@ class Parse_This {
 			'timeout'             => 15,
 			'limit_response_size' => 1048576,
 			'redirection'         => 5,
-			// Use an explicit user-agent for Parse This
+		// Use an explicit user-agent for Parse This
 		);
 
-		$response      = wp_safe_remote_get( $url, $args );
+		$response = wp_safe_remote_get( $url, $args );
+
+		$raw = wp_remote_retrieve_header( $response, 'link' );
+		if ( is_array( $raw ) && 1 <= count( raw ) ) {
+			foreach ( $raw as $link ) {
+				$pieces              = explode( '; ', $link );
+				$uri                 = trim( array_shift( $pieces ), '<>' );
+				$this->links[ $uri ] = array();
+				foreach ( $pieces as $p ) {
+					$elements                            = explode( '=', $p );
+					$this->links[ $uri ][ $elements[0] ] = trim( $elements[1], '"' );
+				}
+			}
+			ksort( $this->links );
+		}
+
 		$response_code = wp_remote_retrieve_response_code( $response );
 		$content_type  = wp_remote_retrieve_header( $response, 'content-type' );
 		if ( in_array( $response_code, array( 403, 415 ), true ) ) {
@@ -242,19 +258,19 @@ class Parse_This {
 		if ( is_array( $content_type ) ) {
 			$content_type = array_pop( $content_type );
 		}
-		// Strip any character set off the content type
-		$ct = explode( ';', $content_type );
+						// Strip any character set off the content type
+						$ct = explode( ';', $content_type );
 		if ( is_array( $ct ) ) {
 			$content_type = array_shift( $ct );
 		}
-		$content_type = trim( $content_type );
-		// List of content types we know how to handle
+						$content_type = trim( $content_type );
+						// List of content types we know how to handle
 		if ( ! self::supported_content( $content_type ) ) {
 			return new WP_Error( 'content-type', 'Content Type is Not Supported', array( 'content-type' => $content_type ) );
 		}
 
-		$content = wp_remote_retrieve_body( $response );
-		// This is an RSS or Atom Feed URL and if it is not we do not know how to deal with XML anyway
+						$content = wp_remote_retrieve_body( $response );
+						// This is an RSS or Atom Feed URL and if it is not we do not know how to deal with XML anyway
 		if ( class_exists( 'Parse_This_RSS' ) && ( in_array( $content_type, array( 'application/rss+xml', 'application/atom+xml', 'text/xml', 'application/xml', 'text/xml' ), true ) ) ) {
 			// Get a SimplePie feed object from the specified feed source.
 			$content = self::fetch_feed( $url );
@@ -284,8 +300,8 @@ class Parse_This {
 			// We do not yet know how to cope with this
 			return true;
 		}
-		$this->set( $content, $url, ( 'application/jf2+json' === $content_type ) );
-		return true;
+						$this->set( $content, $url, ( 'application/jf2+json' === $content_type ) );
+						return true;
 	}
 
 	public function parse( $args = array() ) {
@@ -330,40 +346,41 @@ class Parse_This {
 			$this->jf2['url'] = $this->url;
 		}
 		// If No MF2 or if the parsed jf2 is missing any sort of content then try to find it in the HTML
-		$more = array_intersect( array_keys( $this->jf2 ), array( 'summary', 'content', 'refs', 'items' ) );
+		$more = array();
+		// $more = array_intersect( array_keys( $this->jf2 ), array( 'summary', 'content', 'refs', 'items' ) );
 		if ( empty( $more ) ) {
 			$alt = null;
+
 			if ( $args['jsonld'] ) {
 				$alt = Parse_This_JSONLD::parse( $this->doc, $this->url, $args );
 			}
+
 			if ( empty( $alt ) ) {
 				$empty = true;
 			} elseif ( is_countable( $alt ) && 1 === count( $alt ) && array_key_exists( '_jsonld', $alt ) ) {
 				$empty = true;
 			} else {
-				$empty = false;
+					$empty = false;
 			}
 			if ( $empty && $args['html'] ) {
 				$args['alternate'] = true;
 				if ( in_array( wp_parse_url( $this->url, PHP_URL_HOST ), array( 'youtube.com', 'www.youtube.com', 'm.youtube.com', 'youtu.be' ), true ) ) {
 					$alt = Parse_This_YouTube::parse( $this->content, $this->url, $args );
-				}
-				if ( in_array( wp_parse_url( $this->url, PHP_URL_HOST ), array( 'www.instagram.com', 'instagram.com' ), true ) ) {
+				} elseif ( in_array( wp_parse_url( $this->url, PHP_URL_HOST ), array( 'www.instagram.com', 'instagram.com' ), true ) ) {
 					$alt = Parse_This_Instagram::parse( $this->doc, $this->url, $args );
-				}
-				if ( in_array( wp_parse_url( $this->url, PHP_URL_HOST ), array( 'twitter.com', 'mobile.twitter.com' ), true ) ) {
+				} elseif ( in_array( wp_parse_url( $this->url, PHP_URL_HOST ), array( 'twitter.com', 'mobile.twitter.com' ), true ) ) {
 					$alt = Parse_This_Twitter::parse( $this->url, $args );
 				}
 				if ( ! $alt ) {
 					$alt = Parse_This_HTML::parse( $content, $this->url, $args );
 				}
 			}
-			$this->jf2 = array_merge( $this->jf2, $alt );
+				$this->jf2 = array_merge( $this->jf2, $alt );
 		}
 		if ( ! isset( $this->jf2['url'] ) ) {
 			$this->jf2['url'] = $this->url;
 		}
-		// Expand Short URLs in summary
+			// Expand Short URLs in summary
 		if ( isset( $this->jf2['summary'] ) ) {
 			$urls = wp_extract_urls( $this->jf2['summary'] );
 			foreach ( $urls as $url ) {

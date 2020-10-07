@@ -377,8 +377,10 @@ class Parse_This_MF2 extends Parse_This_MF2_Utils {
 		$data['summary']   = self::get_summary( $entry, $data['content'] );
 
 		// If name and content are equal remove name
-		if ( self::compare( $data['name'], $data['content']['text'] ) ) {
-			unset( $data['name'] );
+		if ( is_array( $data['content'] ) && array_key_exists( 'text', $data['content'] ) ) {
+			if ( self::compare( $data['name'], $data['content']['text'] ) ) {
+				unset( $data['name'] );
+			}
 		}
 
 		if ( isset( $mf['rels']['syndication'] ) ) {

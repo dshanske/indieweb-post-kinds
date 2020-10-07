@@ -243,11 +243,14 @@ class Parse_This_MF2_Utils {
 		if ( ! $content ) {
 			$content = self::parse_html_value( $mf, 'content' );
 		}
-		$summary = substr( $content['text'], 0, 300 );
-		if ( 300 < strlen( $content['text'] ) ) {
-			$summary .= '...';
+		if ( is_array( $content ) && array_key_exists( 'text', $content ) ) {
+			$summary = substr( $content['text'], 0, 300 );
+			if ( 300 < strlen( $content['text'] ) ) {
+				$summary .= '...';
+			}
+			return $summary;
 		}
-		return $summary;
+		return '';
 	}
 
 
