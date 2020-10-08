@@ -511,6 +511,10 @@ class Kind_Post {
 
 	public function get_cite() {
 		if ( 'attachment' === get_post_type( $this->id ) ) {
+			$published = $this->get_datetime_property( 'published' );
+			if ( $published instanceof DateTimeImmutable ) {
+				$published = $published->format( DATE_W3C );
+			}
 			return jf2_to_mf2(
 				array_filter(
 					array(
@@ -518,7 +522,7 @@ class Kind_Post {
 						'name'        => $this->get_name(),
 						'url'         => $this->get_url(),
 						'summary'     => $this->get_html( 'summary' ),
-						'published'   => $this->get_datetime_property( 'published' ),
+						'published'   => $published,
 						'uid'         => $this->id,
 						'author'      => $this->get_author(),
 						'publication' => $this->get_publication(),
