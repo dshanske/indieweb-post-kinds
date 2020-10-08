@@ -8,7 +8,7 @@ $videos = $kind_post->get_video();
 if ( is_array( $videos ) ) {
 	if ( 1 === count( $videos ) ) {
 		$video_attachment = new Kind_Post( $videos[0] );
-		$cite = $video_attachment->get_cite();
+		$cite = mf2_to_jf2( $video_attachment->get_cite() );
 	}
 }
 $photos      = $kind_post->get_photo();

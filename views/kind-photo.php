@@ -12,7 +12,7 @@ if ( $photos ) {
 if ( is_array( $photos ) ) {
 	if ( 1 === count( $photos ) ) {
 		$photos_attachment = new Kind_Post( $photos[0] );
-		$cite = $photos_attachment->get_cite();
+		$cite = mf2_to_jf2( $photos_attachment->get_cite() );
 	}
 }
 

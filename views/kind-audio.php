@@ -7,7 +7,7 @@ $audios = $kind_post->get_audio();
 if ( is_array( $audios ) ) {
 	if ( 1 === count( $audios ) ) {
 		$audio_attachment = new Kind_Post( $audios[0] );
-		$cite = $audio_attachment->get_cite();
+		$cite = mf2_to_jf2( $audio_attachment->get_cite() );
 	}
 }
 $duration = null;
