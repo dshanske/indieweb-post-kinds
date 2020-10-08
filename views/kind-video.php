@@ -9,6 +9,11 @@ if ( is_array( $videos ) ) {
 	if ( 1 === count( $videos ) ) {
 		$video_attachment = new Kind_Post( $videos[0] );
 		$cite = mf2_to_jf2( $video_attachment->get_cite() );
+		if ( array_key_exists( 'author', $cite ) ) {
+			$author = Kind_View::get_hcard( $cite['author'] );
+		} else {
+			$author    = null;
+		}
 	}
 }
 $photos      = $kind_post->get_photo();
@@ -31,6 +36,10 @@ if ( is_array( $cite ) && ! $videos ) {
 echo Kind_Taxonomy::get_before_kind( 'video' );
 if ( isset( $cite['name'] ) ) {
 	echo sprintf( '<span class="p-name">%1s</a>', $cite['name'] );
+}
+
+if ( $author ) {
+	echo ' ' . __( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
 }
 
 ?>
