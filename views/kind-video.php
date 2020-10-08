@@ -5,14 +5,23 @@
  */
 
 $videos = $kind_post->get_video();
+$duration = null;
 if ( is_array( $videos ) ) {
-	if ( 1 === count( $videos ) ) {
+	if ( 1 === count( $videos ) && 0 !== $videos[0] ) {
 		$video_attachment = new Kind_Post( $videos[0] );
 		$cite = mf2_to_jf2( $video_attachment->get_cite() );
+		if ( ! $cite ) {
+			$cite = array();
+		}
 		if ( array_key_exists( 'author', $cite ) ) {
 			$author = Kind_View::get_hcard( $cite['author'] );
 		} else {
 			$author    = null;
+		}
+		if ( array_key_exists( 'duration', $cite ) ) {
+			$duration = Kind_View::display_duration( $cite['duration'] );
+		} else {
+			$duration = null;
 		}
 	}
 }
@@ -40,6 +49,9 @@ if ( isset( $cite['name'] ) ) {
 
 if ( $author ) {
 	echo ' ' . __( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
+}
+if ( $duration ) {
+	printf( '(%1$s)', $duration );
 }
 
 ?>

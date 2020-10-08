@@ -172,6 +172,9 @@ class Kind_Post {
 
 	public function get_duration() {
 		$duration = get_post_meta( $this->id, 'mf2_duration', true );
+		if ( is_array( $duration ) ) {
+			$duration = $duration[0];
+		}
 		if ( $duration ) {
 			return new DateInterval( $duration );
 		}
@@ -515,6 +518,10 @@ class Kind_Post {
 			if ( $published instanceof DateTimeImmutable ) {
 				$published = $published->format( DATE_W3C );
 			}
+			$duration    = $this->get_duration();
+			if ( $duration instanceof DateInterval ) {
+				$duration = date_interval_to_iso8601( $duration );
+			}
 			return jf2_to_mf2(
 				array_filter(
 					array(
@@ -526,6 +533,7 @@ class Kind_Post {
 						'uid'         => $this->id,
 						'author'      => $this->get_author(),
 						'publication' => $this->get_publication(),
+						'duration'    => $duration
 					)
 				)
 			);
