@@ -91,6 +91,7 @@ class Kind_Media_Metadata {
 			$author['type'] = 'card';
 			update_post_meta( $post['ID'], 'mf2_author', jf2_to_mf2( $author ) );
 		}
+		return $post;
 	}
 
 	/*
