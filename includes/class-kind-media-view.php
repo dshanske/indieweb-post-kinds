@@ -52,13 +52,19 @@ class Kind_Media_View {
 			'class' => 'wp-audio-shortcode u-audio',
 		);
 		if ( is_array( $id ) ) {
-			foreach ( $id as $i ) {
-				$return[] = $this->audio( $i, $args );
+			if ( 1 === count( $id ) ) {
+				$id = array_shift( $id );
+			} else {
+				foreach ( $id as $i ) {
+					$return[] = $this->audio( $i, $args );
+				}
+				return implode( ' ', $return );
 			}
-			return implode( ' ', $return );
-		} elseif ( wp_http_validate_url( $id ) ) {
+		}
+		
+		if ( wp_http_validate_url( $id ) ) {
 			$args['src'] = $id;
-		} if ( 0 === $id ) {
+		} else if ( 0 === $id ) {
 			return '';
 		} else {
 			$args['src'] = wp_get_attachment_url( (int) $id );
