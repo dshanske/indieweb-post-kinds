@@ -597,7 +597,14 @@ class Kind_Post {
 		}
 	}
 
-	public function set( $key, $value ) {
+	public function set( $key, $value = null ) {
+		if ( is_array( $key ) ) {
+			foreach( $key as $k => $v ) {
+				$this->set( $k, $v );
+			}
+			return true;
+		}
+
 		if ( empty( $key ) || empty( $value ) ) {
 			return;
 		}
