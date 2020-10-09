@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the Post Kinds plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Kinds 3.4.4\n"
+"Project-Id-Version: Post Kinds 3.4.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/indieweb-post-kinds\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2020-10-02T03:58:22+00:00\n"
+"POT-Creation-Date: 2020-10-09T16:18:48+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: indieweb-post-kinds\n"
@@ -1394,109 +1394,109 @@ msgstr ""
 msgid "Invalid Kind"
 msgstr ""
 
-#: includes/class-kind-view.php:390
+#: includes/class-kind-view.php:413
 msgctxt "singular Twitter"
 msgid "a tweet"
 msgstr ""
 
-#: includes/class-kind-view.php:391
+#: includes/class-kind-view.php:414
 msgctxt "singular Vimeo"
 msgid "a video"
 msgstr ""
 
-#: includes/class-kind-view.php:392
+#: includes/class-kind-view.php:415
 msgctxt "singular Youtube"
 msgid "a video"
 msgstr ""
 
-#: includes/class-kind-view.php:393
+#: includes/class-kind-view.php:416
 msgctxt "singular Intagram"
 msgid "an image"
 msgstr ""
 
-#: includes/class-kind-view.php:399
+#: includes/class-kind-view.php:422
 msgctxt "singular post"
 msgid "a post"
 msgstr ""
 
-#: includes/class-kind-view.php:453
+#: includes/class-kind-view.php:476
 msgid "an author"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:553
+#: includes/class-kind-view.php:576
 msgid "Attending <a href=\"%1$s\" class=\"u-in-reply-to\">%2$s</a>"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:555
+#: includes/class-kind-view.php:578
 msgid "Might be attending <a href=\"%1$s\" class=\"u-in-reply-to\">%2$s</a>"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:557
+#: includes/class-kind-view.php:580
 msgid "Unable to Attend <a href=\"%1$s\" class=\"u-in-reply-to\">%2$s</a>"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:559
+#: includes/class-kind-view.php:582
 msgid "Interested in Attending <a href=\"%1$s\" class=u-in-reply-to\">%2$s</a>"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:561
+#: includes/class-kind-view.php:584
 msgid "Attending <a href=\"%1$s\" class=\"u-in-reply-to\">%2$s</a> remotely"
 msgstr ""
 
-#: includes/class-kind-view.php:579
+#: includes/class-kind-view.php:602
 msgid "Want to Read: "
 msgstr ""
 
-#: includes/class-kind-view.php:580
+#: includes/class-kind-view.php:603
 msgid "Reading: "
 msgstr ""
 
-#: includes/class-kind-view.php:581
+#: includes/class-kind-view.php:604
 msgid "Finished Reading: "
 msgstr ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:613
+#: includes/class-kind-view.php:636
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:617
+#: includes/class-kind-view.php:640
 msgid " %d month"
 msgid_plural " %d months"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:621
+#: includes/class-kind-view.php:644
 msgid " %d day"
 msgid_plural " %d days"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:625
+#: includes/class-kind-view.php:648
 msgid " %d hour"
 msgid_plural " %d hours"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:629
+#: includes/class-kind-view.php:652
 msgid " %d minute"
 msgid_plural " %d minutes"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:633
+#: includes/class-kind-view.php:656
 msgid " %d second"
 msgid_plural " %d seconds"
 msgstr[0] ""
@@ -1547,7 +1547,7 @@ msgstr ""
 #: includes/register-kinds.php:535
 #: includes/register-kinds.php:600
 #: includes/register-kinds.php:665
-#: templates/reply-metabox.php:87
+#: templates/reply-metabox.php:90
 msgid "Name"
 msgstr ""
 
@@ -1561,7 +1561,7 @@ msgstr ""
 #: includes/register-kinds.php:604
 #: includes/register-kinds.php:669
 #: lib/parse-this/includes/class-rest-parse-this.php:49
-#: templates/reply-metabox.php:81
+#: templates/reply-metabox.php:84
 msgid "URL"
 msgstr ""
 
@@ -1571,7 +1571,7 @@ msgstr ""
 #: includes/register-kinds.php:269
 #: includes/register-kinds.php:338
 #: templates/reply-author.php:6
-#: templates/reply-metabox.php:76
+#: templates/reply-metabox.php:79
 msgid "Author"
 msgstr ""
 
@@ -2188,8 +2188,8 @@ msgstr ""
 
 #: lib/parse-this/includes/class-parse-this-discovery.php:56
 #: lib/parse-this/includes/class-parse-this-opml.php:17
-#: lib/parse-this/includes/class-parse-this.php:188
-#: lib/parse-this/includes/class-parse-this.php:221
+#: lib/parse-this/includes/class-parse-this.php:189
+#: lib/parse-this/includes/class-parse-this.php:222
 msgid "A valid URL was not provided."
 msgstr ""
 
@@ -2274,11 +2274,11 @@ msgstr ""
 msgid "Featured Image"
 msgstr ""
 
-#: templates/reply-metabox.php:75
+#: templates/reply-metabox.php:78
 msgid "Details"
 msgstr ""
 
-#: templates/reply-metabox.php:78
+#: templates/reply-metabox.php:81
 msgid "Clear"
 msgstr ""
 
@@ -2322,15 +2322,18 @@ msgstr ""
 msgid "End Time"
 msgstr ""
 
-#: views/kind-bookmark.php:30
-#: views/kind-favorite.php:31
-#: views/kind-issue.php:30
-#: views/kind-jam.php:31
-#: views/kind-like.php:30
-#: views/kind-listen.php:32
-#: views/kind-read.php:34
-#: views/kind-watch.php:32
-#: views/kind.php:43
+#: views/kind-audio.php:37
+#: views/kind-bookmark.php:27
+#: views/kind-favorite.php:27
+#: views/kind-issue.php:27
+#: views/kind-jam.php:28
+#: views/kind-like.php:27
+#: views/kind-listen.php:29
+#: views/kind-photo.php:33
+#: views/kind-read.php:31
+#: views/kind-video.php:51
+#: views/kind-watch.php:29
+#: views/kind.php:34
 msgid "by"
 msgstr ""
 
@@ -2350,8 +2353,8 @@ msgstr ""
 msgid "Arrives: "
 msgstr ""
 
-#: views/kind-jam.php:34
-#: views/kind-listen.php:35
-#: views/kind-watch.php:35
+#: views/kind-jam.php:31
+#: views/kind-listen.php:32
+#: views/kind-watch.php:32
 msgid " from "
 msgstr ""

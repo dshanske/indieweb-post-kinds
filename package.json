@@ -15,7 +15,7 @@
     "grunt-eslint": "^20.1.0",
     "grunt-git": "^1.0.14",
     "grunt-wp-readme-to-markdown": "~0.8.0",
-    "moment": "^2.29.0",
-    "timepicker": "^1.13.14"
+    "moment": "^2.29.1",
+    "timepicker": "^1.13.15"
   }
 }

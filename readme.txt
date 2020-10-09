@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like, scrobble
-Stable tag: 3.4.5
+Stable tag: 3.4.6
 Requires at least: 4.9.9
 Requires PHP: 5.6
 Tested up to: 5.5
@@ -260,6 +260,12 @@ through future plugin updates.
 
 
 == Changelog ==
+
+= 3.4.6 ( 2020-10-09 ) =
+* Add authorship display for media files
+* Add duration display for media files
+* Fix issue with saving attachment files
+* Check and enhance media metadata display options
 
 = 3.4.5 ( 2020-10-05 ) =
 * Added additional unit tests for mf2/jf2 conversion in Parse This to see if this was causing some inconsistency issues.
