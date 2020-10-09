@@ -5,7 +5,7 @@
 if ( ! function_exists( 'jf2_to_mf2' ) ) {
 	function jf2_to_mf2( $jf2 ) {
 		if ( ! $jf2 || ! is_array( $jf2 ) ) {
-			return $entry;
+			return $jf2;
 		}
 		if ( 1 === count( $jf2 ) && array_key_exists( 'items', $jf2 ) ) {
 			return array(
