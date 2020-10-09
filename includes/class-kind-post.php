@@ -518,7 +518,7 @@ class Kind_Post {
 			if ( $published instanceof DateTimeImmutable ) {
 				$published = $published->format( DATE_W3C );
 			}
-			$duration    = $this->get_duration();
+			$duration = $this->get_duration();
 			if ( $duration instanceof DateInterval ) {
 				$duration = date_interval_to_iso8601( $duration );
 			}
@@ -533,7 +533,7 @@ class Kind_Post {
 						'uid'         => $this->id,
 						'author'      => $this->get_author(),
 						'publication' => $this->get_publication(),
-						'duration'    => $duration
+						'duration'    => $duration,
 					)
 				)
 			);

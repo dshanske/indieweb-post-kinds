@@ -61,10 +61,10 @@ class Kind_Media_View {
 				return implode( ' ', $return );
 			}
 		}
-		
+
 		if ( wp_http_validate_url( $id ) ) {
 			$args['src'] = $id;
-		} else if ( 0 === $id ) {
+		} elseif ( 0 === $id ) {
 			return '';
 		} else {
 			$args['src'] = wp_get_attachment_url( (int) $id );

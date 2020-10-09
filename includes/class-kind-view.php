@@ -110,9 +110,9 @@ class Kind_View {
 			$cite = array( $cite );
 		}
 		if ( array_key_exists( 'author', $cite ) ) {
-			$author = Kind_View::get_hcard( $cite['author'] );
+			$author = self::get_hcard( $cite['author'] );
 		} else {
-			$author    = null;
+			$author = null;
 		}
 		if ( ! wp_is_numeric_array( $cite ) ) {
 			$cite = mf2_to_jf2( $cite );
@@ -120,14 +120,14 @@ class Kind_View {
 
 		if ( array_key_exists( 'url', $cite ) ) {
 			$url = $cite['url'];
-		} else if ( wp_is_numeric_array( $cite ) && ! empty( $cite ) ) {
+		} elseif ( wp_is_numeric_array( $cite ) && ! empty( $cite ) ) {
 			$url = $cite[0];
 		} else {
-			$url       = null;
+			$url = null;
 		}
 
-		$embed     = self::get_embed( $url );
-		$kind      = $kind_post->get_kind();
+		$embed = self::get_embed( $url );
+		$kind  = $kind_post->get_kind();
 
 		ob_start();
 		include $located;
