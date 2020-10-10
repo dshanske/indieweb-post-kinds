@@ -512,7 +512,7 @@ class Kind_Post {
 		}
 	}
 
-	public function get_cite() {
+	public function get_cite( $key = null ) {
 		if ( 'attachment' === get_post_type( $this->id ) ) {
 			$published = $this->get_datetime_property( 'published' );
 			if ( $published instanceof DateTimeImmutable ) {
@@ -522,7 +522,7 @@ class Kind_Post {
 			if ( $duration instanceof DateInterval ) {
 				$duration = date_interval_to_iso8601( $duration );
 			}
-			return jf2_to_mf2(
+			$cite = jf2_to_mf2(
 				array_filter(
 					array(
 						'type'        => 'cite',
@@ -537,16 +537,43 @@ class Kind_Post {
 					)
 				)
 			);
+		} else {
+			$property = Kind_Taxonomy::get_kind_info( $this->get_kind(), 'property' );
+			if ( empty( $property ) ) {
+				return false;
+			}
+			$cite = $this->get( $property, false );
+		}
+		if ( ! $key ) {
+			return $cite;
 		}
 
-		$property = Kind_Taxonomy::get_kind_info( $this->get_kind(), 'property' );
-		if ( empty( $property ) ) {
-			return false;
+		if ( wp_is_numeric_array( $cite ) && 1 === count( $cite ) ) {
+			$cite = $cite[0];
+		}
+		// If this is a Microformat, then try to return the property.
+		if ( is_array( $cite ) && array_key_exists( 'type', $cite ) && array_key_exists( 'properties', $cite ) ) {
+			if ( array_key_exists( $key, $cite['properties'] ) ) {
+				return $this->single_array( $cite['properties'][ $key ] );
+			} else {
+				return false;
+			}
+		}
+		if ( is_string( $cite ) ) {
+			if ( 'url' === $key && wp_http_validate_url( $cite ) ) {
+				return $cite;
+			}
+			if ( 'name' === $key ) {
+				if ( ! wp_http_validate_url( $cite ) ) {
+					return $cite;
+				} else {
+					$parse = wp_parse_url( $cite );
+					return $parse['host'] . $parse['path'];
+				}
+			}
 		}
 
-		$cite = $this->get( $property );
-
-		return $cite;
+		return false;
 	}
 
 	public function set_datetime_property( $key, $value ) {
@@ -599,7 +626,7 @@ class Kind_Post {
 
 	public function set( $key, $value = null ) {
 		if ( is_array( $key ) ) {
-			foreach( $key as $k => $v ) {
+			foreach ( $key as $k => $v ) {
 				$this->set( $k, $v );
 			}
 			return true;
@@ -648,7 +675,11 @@ class Kind_Post {
 				$args[ $k ] = $value;
 				return wp_update_post( $args, true );
 			case 'audio':
+				/* All media is handled identically.
+				*/
 			case 'video':
+				/* All Media is handled identically.
+				*/
 			case 'photo':
 				if ( Parse_This_MF2::is_microformat( $value ) ) {
 					$url = Parse_This_MF2::get_plaintext( $value, 'url' );
@@ -664,6 +695,8 @@ class Kind_Post {
 
 					return update_post_meta( $this->id, 'mf2_' . $key, array( $url ) );
 				}
+				/* If it is not a microformat handle as default.
+				*/
 			default:
 				return update_post_meta( $this->id, 'mf2_' . $key, $value );
 		}

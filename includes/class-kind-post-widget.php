@@ -82,20 +82,11 @@ class Kind_Post_Widget extends WP_Widget {
 		}
 		if ( ! in_array( $kind, array( 'note', 'article' ), true ) ) {
 			$kind_post = new Kind_Post( $post );
-			$cite      = $kind_post->get_cite();
-			if ( ! is_array( $cite ) ) {
-				$cite = empty( $cite ) ? array() : array( $cite );
-			}
-
-			if ( wp_is_numeric_array( $cite ) && ! empty( $cite ) ) {
-				$content = $cite[0];
-				if ( wp_http_validate_url( $content ) ) {
-					$parse   = wp_parse_url( $content );
-					$content = $parse['host'] . $parse['path'];
-				}
+			$cite      = $kind_post->get_cite( 'name' );
+			if ( false == $cite ) {
+				$content = Kind_View::get_post_type_string( $kind_post->get_cite( 'url' ) );
 			} else {
-				$cite    = mf2_to_jf2( $cite );
-				$content = array_key_exists( 'name', $cite ) ? $cite['name'] : Kind_View::get_post_type_string( ifset( $cite['url'] ) );
+				$content = $cite;
 			}
 		} else {
 			$content = $post->post_excerpt;
@@ -107,6 +98,9 @@ class Kind_Post_Widget extends WP_Widget {
 			if ( $content ) {
 				$content = mb_strimwidth( wp_strip_all_tags( $content ), 0, 40, '...' );
 			}
+		}
+		if ( is_array( $content ) ) {
+			$content = wp_json_encode( $content );
 		}
 		return trim( sprintf( '%1$s %2$s', Kind_Taxonomy::get_before_kind( $kind ), $content ) );
 	}

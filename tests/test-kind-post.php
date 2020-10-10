@@ -16,6 +16,44 @@ class KindPostTest extends WP_UnitTestCase {
 		$this->assertEquals( array( 'http://www.example.com', 'http://www.example2.com' ), $kind_post->get( 'like-of' ) );
 	}
 
+	public function test_set_and_get_cite_reply() {
+		$post = self::factory()->post->create();
+		$kind_post = new Kind_Post( $post );
+		$cite = array(
+				'type' => array( 'h-cite' ),
+				'properties' => array( 
+						'url' => array( 'http://www.example.com' ),
+						'name' => array( 'Example Post' ),
+				)
+			);
+		$kind_post->set( 'like-of', $cite );
+		$kind_post = new Kind_Post( $post );
+		$this->assertEquals( $cite, $kind_post->get( 'like-of', false ) );
+	}
+
+	public function test_set_and_get_nested_cite_reply() {
+		$post = self::factory()->post->create();
+		$kind_post = new Kind_Post( $post );
+		$cite = array(
+				'type' => array( 'h-cite' ),
+				'properties' => array( 
+						'url' => array( 'http://www.example.com' ),
+						'name' => array( 'Example Post' ),
+						'author' => array(
+							'type' => array( 'h-card' ),
+							'properties' => array(
+								'url' => array( 'https://www.example.com/author/doe' ),
+								'name' => array( 'John Doe' ),
+								'photo' => array( 'https://www.example.com/author/doe/photo.jpg' )
+							)
+						)
+				)
+			);
+		$kind_post->set( 'like-of', $cite );
+		$kind_post = new Kind_Post( $post );
+		$this->assertEquals( $cite, $kind_post->get( 'like-of', false ) );
+	}
+
 	public function test_set_and_get_published() {
 		$post = self::factory()->post->create();
 		$kind_post = new Kind_Post( $post );
