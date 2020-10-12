@@ -29,9 +29,9 @@ if ( ! function_exists( 'tz_seconds_to_timezone' ) ) {
 			return timezone_name_from_abbr( '', $seconds, 0 );
 		}
 		if ( 0 !== $seconds ) {
-			$tz = new DateTimeZone( tz_seconds_to_offset( $seconds ) );
+			$tz = timezone_open( tz_seconds_to_offset( $seconds ) );
 		} else {
-			$tz = new DateTimeZone( 'UTC' );
+			$tz = timezone_open( 'UTC' );
 		}
 		return $tz;
 	}
@@ -40,8 +40,11 @@ if ( ! function_exists( 'tz_seconds_to_timezone' ) ) {
 
 if ( ! function_exists( 'tz_timezone_to_seconds' ) ) {
 	function tz_timezone_to_seconds( $timezone ) {
-		$tz = new DateTimeZone( $timezone );
-		return $tz->getOffset();
+		$tz = timezone_open( $timezone );
+		if ( $tz ) {
+			return $tz->getOffset();
+		}
+		return false;
 	}
 }
 
@@ -274,7 +277,7 @@ function divide_datetime( $datetime ) {
  *
  * @param string $date Date in Y-m-d format.
  * @param string $time Time in H:i:s format.
- * @param Kind_DateTimeZone $timezone Timezone object.
+ * @param DateTimeZone $timezone Timezone object.
  *
  * @return DateTimeImmutable|false DateTime object or false if not valid
  */
@@ -283,7 +286,7 @@ function build_datetime( $date, $time, $offset = null ) {
 		return false;
 	}
 	if ( is_string( $offset ) ) {
-		$timezone = new DateTimeZone( $offset );
+		$timezone = timezone_open( $offset );
 	} elseif ( $offset instanceof DateTimeZone ) {
 		$timezone = $offset;
 	} else {
@@ -292,9 +295,8 @@ function build_datetime( $date, $time, $offset = null ) {
 	if ( ! $timezone ) {
 		$timezone = wp_timezone();
 	}
-	return new DateTimeImmutable( $date . 'T' . $time, $timezone );
+	return date_create_immutable_from_format( 'Y-m-d\TH:i:sP', $date . 'T' . $time, $timezone );
 }
-
 
 /**
  * Return a formatted offset from a datetime object
