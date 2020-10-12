@@ -547,6 +547,9 @@ class Kind_Post {
 			// Look in old location.
 			if ( empty( array_filter( $cite ) ) ) {
 				$cite = $this->get( 'cite', false );
+				if ( ! $cite ) {
+					return false;
+				}
 				if ( wp_is_numeric_array( $cite ) && 1 === count( $cite ) ) {
 					$cite = $cite[0];
 				}
