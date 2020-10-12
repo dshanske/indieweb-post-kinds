@@ -544,8 +544,12 @@ class Kind_Post {
 			}
 			$cite = $this->get( $property, false );
 
+			if ( is_array( $cite ) ) {
+				$cite = array_filter( $cite );
+			}
+
 			// Look in old location.
-			if ( empty( array_filter( $cite ) ) ) {
+			if ( empty( $cite ) ) {
 				$cite = $this->get( 'cite', false );
 				if ( ! $cite ) {
 					return false;
