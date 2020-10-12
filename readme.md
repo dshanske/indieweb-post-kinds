@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.4.6  
+**Stable tag:** 3.4.7  
 **Requires at least:** 4.9.9  
 **Requires PHP:** 5.6  
 **Tested up to:** 5.5  
@@ -264,6 +264,11 @@ through future plugin updates.
 
 
 ## Changelog ##
+
+### 3.4.7 ( 2020-10-12 ) ###
+* Fix Parse This issue with normalization of atypical datetime strings to ISO8601.
+* Add additional validation to DateTime conversion in Post Kinds to check that input is a valid string and fail if it is not instead of PHP Notice
+* Add tests for Kind_Post class and add argument to get_cite to allow a specific key to be retrieved from the cite property, eliminating some duplicate code.
 
 ### 3.4.6 ( 2020-10-09 ) ###
 * Add authorship display for media files
