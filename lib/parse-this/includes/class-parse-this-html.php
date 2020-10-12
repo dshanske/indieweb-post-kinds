@@ -282,7 +282,7 @@ class Parse_This_HTML extends Parse_This_Base {
 				$jf2['summary'] = $dc['Description'];
 			}
 			if ( isset( $dc['Date'] ) && ! isset( $jf2['published'] ) ) {
-				$jf2['published'] = $dc['Date'];
+				$jf2['published'] = normalize_iso8601( $dc['Date'] );
 			}
 		}
 		if ( isset( $meta['parsely-page'] ) ) {

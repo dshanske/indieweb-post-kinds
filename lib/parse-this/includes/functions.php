@@ -291,7 +291,7 @@ if ( ! function_exists( 'normalize_iso8601' ) ) {
 	function normalize_iso8601( $string ) {
 		$date = new DateTime( $string );
 		if ( $date ) {
-			$date->format( DATE_W3C );
+			return $date->format( DATE_W3C );
 		}
 		return $string;
 	}
