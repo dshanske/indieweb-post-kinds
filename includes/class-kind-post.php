@@ -543,7 +543,25 @@ class Kind_Post {
 				return false;
 			}
 			$cite = $this->get( $property, false );
+
+			// Look in old location.
+			if ( empty( array_filter( $cite ) ) ) {
+				$cite = $this->get( 'cite', false );
+				if ( wp_is_numeric_array( $cite ) && 1 === count( $cite ) ) {
+					$cite = $cite[0];
+				}
+				$this->delete( 'cite' );
+			}
 		}
+
+		// If this is formatted as JF2 try to convert it to MF2 and update.
+		if ( is_array( $cite ) && ! wp_is_numeric_array( $cite ) ) {
+			$cite['type'] = 'cite';
+			$cite         = jf2_to_mf2( $cite );
+			$property     = Kind_Taxonomy::get_kind_info( $this->get_kind(), 'property' );
+			$this->set( $property, $cite );
+		}
+
 		if ( ! $key ) {
 			return $cite;
 		}
@@ -551,6 +569,7 @@ class Kind_Post {
 		if ( wp_is_numeric_array( $cite ) && 1 === count( $cite ) ) {
 			$cite = $cite[0];
 		}
+
 		// If this is a Microformat, then try to return the property.
 		if ( is_array( $cite ) && array_key_exists( 'type', $cite ) && array_key_exists( 'properties', $cite ) ) {
 			if ( array_key_exists( $key, $cite['properties'] ) ) {
