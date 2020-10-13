@@ -651,8 +651,10 @@ class Kind_Post {
 			$cite['category'] = implode( ';', $cite['category'] );
 		}
 
-		if ( 1 === count( $cite['author'] ) && wp_is_numeric_array( $cite['author'] ) ) {
-			$cite['author'] = array_pop( $cite['author'] );
+		if ( wp_is_numeric_array( $cite['author'] ) ) {
+			if ( 1 === count( $cite['author'] ) ) {
+				$cite['author'] = array_pop( $cite['author'] );
+			}
 		}
 
 		if ( is_string( $cite['author'] ) ) {

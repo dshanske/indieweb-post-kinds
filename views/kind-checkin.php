@@ -8,7 +8,6 @@ $photos = get_attached_media( 'image', get_the_ID() );
 if ( ! $cite ) {
 	return;
 }
-$name  = ifset( $cite['name'] );
 
 ?>
 
@@ -17,7 +16,7 @@ $name  = ifset( $cite['name'] );
 <?php
 echo Kind_Taxonomy::get_before_kind( 'checkin' );
 if ( ! $embed ) {
-	if ( ! array_key_exists( 'name', $cite ) ) {
+	if ( empty( $cite['name'] ) ) {
 		$cite['name'] = self::get_post_type_string( $url );
 	}
 	if ( isset( $url ) ) {

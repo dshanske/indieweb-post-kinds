@@ -15,9 +15,6 @@ if ( ! $cite ) {
 <?php
 echo Kind_Taxonomy::get_before_kind( 'favorite' );
 if ( ! $embed ) {
-	if ( ! array_key_exists( 'name', $cite ) ) {
-		$cite['name'] = self::get_post_type_string( $url );
-	}
 	if ( isset( $url ) ) {
 		echo sprintf( '<a href="%1s" class="p-name u-url">%2s</a>', $url, $cite['name'] );
 	} else {
@@ -26,7 +23,7 @@ if ( ! $embed ) {
 	if ( $author ) {
 		echo ' ' . __( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
 	}
-	if ( array_key_exists( 'publication', $cite ) ) {
+	if ( ! empty( $cite['publication'] ) ) {
 		echo sprintf( ' <em>(<span class="p-publication">%1s</span>)</em>', $cite['publication'] );
 	}
 }

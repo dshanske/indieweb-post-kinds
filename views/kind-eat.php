@@ -14,15 +14,12 @@ if ( ! $cite ) {
 <?php
 echo Kind_Taxonomy::get_before_kind( 'eat' );
 if ( ! $embed ) {
-	if ( ! array_key_exists( 'name', $cite ) ) {
-		$cite['name'] = self::get_post_type_string( $url );
-	}
 	if ( ! empty( $url ) ) {
 		echo sprintf( '<a href="%1s" class="p-name u-url">%2s</a>', $url, $cite['name'] );
 	} else {
 		echo sprintf( '<span class="p-name">%1s</span>', $cite['name'] );
 	}
-	if ( array_key_exists( 'publication', $cite ) ) {
+	if ( ! empty( $cite['publication'] ) ) {
 		echo sprintf( ' <em>(<span class="p-publication">%1s</span>)</em>', $cite['publication'] );
 	}
 }

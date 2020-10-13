@@ -15,30 +15,25 @@ if ( ! $cite ) {
 <?php
 echo Kind_Taxonomy::get_before_kind( 'bookmark' );
 if ( ! $embed ) {
-	if ( ! array_key_exists( 'name', $cite ) ) {
-		$cite['name'] = self::get_post_type_string( $url );
-	}
-	if ( isset( $url ) ) {
-		echo sprintf( '<a href="%1s" class="p-name u-url">%2s</a>', $url, $cite['name'] );
+	if ( ! empty( $cite['url'] ) ) {
+		echo sprintf( '<a href="%1s" class="p-name u-url">%2s</a>', $cite['url'], $cite['name'] );
 	} else {
-		echo sprintf( '<span class="p-name">%1s</span>', $cite['name'] );
+		echo sprintf( '<span class="p-name">%1s</span>', esc_html( $cite['name'] ) );
 	}
 	if ( $author ) {
 		echo ' ' . __( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
 	}
-	if ( array_key_exists( 'publication', $cite ) ) {
-		echo sprintf( ' <em>(<span class="p-publication">%1s</span>)</em>', $cite['publication'] );
+	if ( ! empty( $cite['publication'] ) ) {
+		echo sprintf( ' <em>(<span class="p-publication">%1s</span>)</em>', esc_html( $cite['publication'] ) );
 	}
 }
 ?>
 </header>
 <?php
-if ( $cite ) {
-	if ( $embed ) {
-		echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
-	} elseif ( array_key_exists( 'summary', $cite ) ) {
-		echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $cite['summary'] );
-	}
+if ( ! empty( $embed ) ) {
+	echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
+} elseif ( ! empty( $cite['summary'] ) ) {
+	echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $cite['summary'] );
 }
 
 // Close Response

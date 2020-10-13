@@ -14,9 +14,6 @@ if ( ! $cite ) {
 <?php
 echo Kind_Taxonomy::get_before_kind( 'drink' );
 if ( ! $embed ) {
-	if ( ! array_key_exists( 'name', $cite ) ) {
-		$cite['name'] = self::get_post_type_string( $url );
-	}
 	if ( ! empty( $url ) ) {
 		echo sprintf( '<a href="%1s" class="p-name u-url">%2s</a>', $url, $cite['name'] );
 	} else {

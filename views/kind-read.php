@@ -16,9 +16,6 @@ $read   = $kind_post->get( 'read-status', true );
 <?php
 echo Kind_Taxonomy::get_before_kind( 'read' );
 if ( ! $embed ) {
-	if ( ! array_key_exists( 'name', $cite ) ) {
-		$cite['name'] = self::get_post_type_string( $url );
-	}
 	if ( $read ) {
 		echo sprintf( ' - <span class="p-read-status">%1s</span>', Kind_View::read_text( $read ) );
 	}
@@ -30,7 +27,7 @@ if ( ! $embed ) {
 	if ( $author ) {
 		echo ' ' . __( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
 	}
-	if ( array_key_exists( 'publication', $cite ) ) {
+	if ( empty( $cite['publication'] ) ) {
 		echo sprintf( ' <em>(<span class="p-publication">%1s</span>)</em>', $cite['publication'] );
 	}
 }

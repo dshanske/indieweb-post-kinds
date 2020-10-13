@@ -106,27 +106,16 @@ class Kind_View {
 		$kind      = $kind_post->get_kind();
 		$type      = Kind_Taxonomy::get_kind_info( $kind, 'property' );
 		$cite      = $kind_post->get_cite();
-		if ( ! is_array( $cite ) ) {
-			$cite = array( $cite );
-		}
-		if ( array_key_exists( 'author', $cite ) ) {
-			$author = self::get_hcard( $cite['author'] );
-		} else {
-			$author = null;
-		}
-		if ( ! wp_is_numeric_array( $cite ) ) {
-			$cite = mf2_to_jf2( $cite );
-		}
+		$cite      = $kind_post->normalize_cite( $cite );
 
-		if ( array_key_exists( 'url', $cite ) ) {
-			$url = $cite['url'];
-		} elseif ( wp_is_numeric_array( $cite ) && ! empty( $cite ) ) {
-			$url = $cite[0];
-		} else {
-			$url = null;
+		if ( empty( $cite['name'] ) ) {
+			$cite['name'] = self::get_post_type_string( $cite['url'] );
 		}
+	
+		$author = self::get_hcard( $cite['author'] );
 
-		$embed = self::get_embed( $url );
+		$url = $cite['url'];
+		$embed = self::get_embed( $cite['url'] );
 		$kind  = $kind_post->get_kind();
 
 		ob_start();
@@ -443,6 +432,7 @@ class Kind_View {
 			'display' => 'both',
 		);
 		$args    = wp_parse_args( $args, $default );
+
 		/**
 		 * Filter for alternate retrieval types
 		 *
@@ -457,6 +447,13 @@ class Kind_View {
 		if ( ! is_array( $author ) ) {
 			return false;
 		}
+
+		unset( $author['type'] );
+
+		if ( empty( array_filter( $author ) ) ) {
+			return '';
+		}
+
 		/**
 		 * Filter for alternate presentation
 		 *
@@ -469,23 +466,25 @@ class Kind_View {
 			return $card;
 		}
 		// Temporarily drop multi-data on display
-		if ( array_key_exists( 'url', $author ) && is_array( $author['url'] ) ) {
+		if ( ! empty( $author['url'] ) && is_array( $author['url'] ) ) {
 			$author['url'] = $author['url'][0];
 		}
-		if ( ! array_key_exists( 'name', $author ) ) {
-			$author['name'] = __( 'an author', 'indieweb-post-kinds' );
-		}
+
 		if ( is_array( $author['name'] ) ) {
 				$author['name'] = $author['name'][0];
+		}
+
+		if ( ! empty( $author['name'] ) && ! empty( $author['url'] ) ) {
+			$author['name'] = __( 'an author', 'indieweb-post-kinds' );
 		}
 
 		// If no filter generated the card, generate the card.
 		switch ( $args['display'] ) {
 			case 'photo':
-				if ( ! array_key_exists( 'photo', $author ) ) {
+				if ( empty( $author['photo'] ) ) {
 					return false;
 				}
-				if ( ! array_key_exists( 'url', $author ) ) {
+				if ( empty( $author['url'] ) ) {
 					return sprintf( '<img src="%1s" class="h-card u-photo p-author" alt="%2s" width=%3s height=%4s />', $author['photo'], $author['name'], $args['width'], $args['height'] );
 				} else {
 					return sprintf( '<a class="h-card p-author" href="%1s"><img class="u-photo" src="%2s" alt="%3s" width=%4s height=%5s /></a>', $author['url'], $author['photo'], $author['name'], $args['width'], $args['height'] );
@@ -494,8 +493,8 @@ class Kind_View {
 			case 'name':
 				return sprintf( '<span class="h-card p-author">%1s</span>', $author['name'] );
 			case 'both':
-				if ( array_key_exists( 'photo', $author ) ) {
-					if ( ! array_key_exists( 'url', $author ) ) {
+				if ( ! empty( $author['photo'] ) ) {
+					if ( empty( $author['url'] ) ) {
 						return sprintf( '<span class="h-card p-author"><img src="%1s" class="u-photo" alt="%2s" width=%3s height=%4s />%5s</span>', $author['photo'], $author['name'], $args['width'], $args['height'], $author['name'] );
 					} else {
 						return sprintf( '<a href="%1s" class="h-card p-author"><img class="u-photo" src="%2s" alt="%3s" width=%4s height=%5s />%6s</a>', $author['url'], $author['photo'], $author['name'], $args['width'], $args['height'], $author['name'] );
@@ -551,7 +550,7 @@ class Kind_View {
 		if ( ! $cite || ! is_array( $cite ) ) {
 			return false;
 		}
-		if ( ! array_key_exists( 'publication', $cite ) ) {
+		if ( ! array_key_exists( 'publication', $cite ) && ! empty( $cite['publication'] ) ) {
 			return false;
 		}
 		return sprintf( '<span class="p-publication">%1s</span>', $cite['publication'] );
