@@ -4,76 +4,26 @@ $kind_post = new Kind_Post( get_the_ID() );
 $kind = $kind_post->get_kind();
 $type     = Kind_Taxonomy::get_kind_info( $kind, 'property' );
 $cite     = $kind_post->get_cite();
+
+
+if ( empty( $cite['url'] ) && array_key_exists( 'kindurl', $_GET) ) {
+	$cite['url'] = esc_url_raw( $_GET['kindurl'] );
+}
+
 $attachment = 0;
-$summary = '';
 
-if ( ! is_array( $cite ) ) {
-	$cite = empty( $cite ) ? array() : array( $cite );
-}
-if ( empty( $cite ) ) {
-	if ( array_key_exists( 'kindurl', $_GET ) && wp_http_validate_url( $_GET['kindurl'] ) ) {
-		$cite = array( 'url' => $_GET['kindurl'] );
-	}
-}
 
-$duration = divide_iso8601_duration( $kind_post->get_duration() );
 if ( in_array( $kind, array( 'audio', 'video', 'photo' ) ) ) {
-	if ( isset( $cite['url'] ) ) {
-		$attachment = attachment_url_to_postid( $cite['url'] );
-	} else if ( wp_is_numeric_array( $cite ) ) {
-		$attachment = attachment_url_to_postid( $cite[0]  );
-	}
+	$attachment = attachment_url_to_postid( $cite['url'] );
 } 
+
 if ( $attachment ) {
 	$attachment_post = new Kind_Post( $attachment );
 	$cite = $attachment_post->get_cite();
 }
 
-if ( ! wp_is_numeric_array( $cite ) ) {
-	$cite = mf2_to_jf2( $cite );
-	$author = ifset( $cite['author'], array() );
-	if ( 1 === count( $author ) && wp_is_numeric_array( $author ) ) {
-		$author = array_pop( $author );
-	}
-	if ( is_string( $author ) ) {
-		$author = array( 'name' => $author );
-	}
+$cite = $kind_post->normalize_cite( $cite );
 
-	if ( isset( $author['name'] ) && is_array( $author['name'] ) ) {
-		$author['name'] = implode( ';', $author['name'] );
-	}
-	if ( isset( $author['url'] ) && is_array( $author['url'] ) ) {
-		$author['url'] = implode( ';', $author['url'] );
-	}
-	if ( isset( $cite['summary'] ) ) {
-		if ( is_array( $cite['summary'] ) && array_key_exists( 'html', $cite['summary'] ) ) {
-			$summary = $cite['summary']['html'];
-		} else if ( is_string( $cite['summary'] ) ) {
-			$summary = $cite['summary'];
-		}
-	}
-
-	if ( isset( $cite['category'] ) ) {
-			$tags = $cite['category'];
-		if ( is_array( $tags ) ) {
-			$tags = implode( ';', $tags );
-		}
-	} else {
-		$tags = '';
-	}
-} else if ( is_string( $cite ) ) {
-	$cite['url'] = $cite;
-} else {
-	reset( $cite );
-	$cite['url'] = current( $cite );
-}
-
-
-
-// FIXME: Discards extra URLs as currently unsupported
-if ( isset( $cite['url'] ) && is_array( $cite['url'] ) ) {
-			$cite['url'] = array_shift( $cite['url'] );
-}
 ?>
 <a href="#kind-details" class="show-kind-details button hide-if-no-js"><?php _e( 'Details', 'indieweb-post-kinds' ); ?></a>
 <a href="#kind-author" class="show-kind-author-details button hide-if-no-js"><?php _e( 'Author', 'indieweb-post-kinds' ); ?></a>
@@ -82,13 +32,13 @@ if ( isset( $cite['url'] ) && is_array( $cite['url'] ) ) {
 <p class="field-row">
 	<label for="cite_url" class="three-quarters">
 		<?php _e( 'URL', 'indieweb-post-kinds' ); ?>
-			<input type="text" name="cite_url" id="cite_url" class="widefat" value="<?php echo ifset( $cite['url'] ); ?>" />
+			<input type="text" name="cite_url" id="cite_url" class="widefat" value="<?php echo $cite['url']; ?>" />
 	</label>
 </p>
 <p class="field-row">
 	<label for="cite_name" class="three-quarters">
 		<?php _e( 'Name', 'indieweb-post-kinds' ); ?>
-			<input type="text" name="cite_name" id="cite_name" class="widefat" value="<?php echo ifset( $cite['name'] ); ?>" />
+			<input type="text" name="cite_name" id="cite_name" class="widefat" value="<?php echo $cite['name']; ?>" />
 	</label>
 </p>
 <p class="field-row hide-if-js" id="rsvp-option">

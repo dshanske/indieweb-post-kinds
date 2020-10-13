@@ -126,33 +126,6 @@ if ( ! function_exists( 'build_iso8601_duration' ) ) {
 	}
 }
 
-if ( ! function_exists( 'divide_iso8601_duration' ) ) {
-	// Given an ISO8601 duration return an array with the pieces {
-	function divide_iso8601_duration( $interval ) {
-		if ( ! $interval ) {
-			return array();
-		}
-		if ( is_string( $interval ) && ! empty( $interval ) ) {
-			try {
-				$interval = new DateInterval( $interval );
-			} catch ( \Exception $e ) {
-				return array();
-			}
-		}
-		// Reading all non-zero date parts.
-		return array_filter(
-			array(
-				'Y' => $interval->y,
-				'M' => $interval->m,
-				'D' => $interval->d,
-				'H' => $interval->h,
-				'I' => $interval->i,
-				'S' => $interval->s,
-			)
-		);
-	}
-}
-
 if ( ! function_exists( 'calculate_duration' ) ) {
 	// Given two ISO8601 time strings return a DateInterval Object
 	function calculate_duration( $start_string, $end_string ) {
@@ -319,29 +292,36 @@ function get_datetime_offset( $datetime = null ) {
 }
 
 
-// Given an ISO8601 duration return an array with the pieces {
+// Given an ISO8601 duration return an array with the piece otherwise 0 duration.
 function divide_interval( $interval ) {
+	$default = array(
+		'Y' => 0,
+		'M' => 0,
+		'D' => 0,
+		'H' => 0,
+		'I' => 0,
+		'S' => 0,
+	);
 	if ( ! $interval ) {
-		return array();
+		return $default;
 	}
 	if ( is_string( $interval ) && ! empty( $interval ) ) {
 		try {
 			$interval = new DateInterval( $interval );
 		} catch ( \Exception $e ) {
-			return array();
+			return $default;
 		}
 	}
 	// Reading all non-zero date parts.
-	return array_filter(
-		array(
-			'Y' => $interval->y,
-			'M' => $interval->m,
-			'D' => $interval->d,
-			'H' => $interval->h,
-			'I' => $interval->i,
-			'S' => $interval->s,
-		)
+	$return = array(
+		'Y' => $interval->y,
+		'M' => $interval->m,
+		'D' => $interval->d,
+		'H' => $interval->h,
+		'I' => $interval->i,
+		'S' => $interval->s,
 	);
+	return wp_parse_args( $return, $default );
 }
 
 

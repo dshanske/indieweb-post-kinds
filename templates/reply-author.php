@@ -4,19 +4,19 @@
 	<p class="field-row">
 	<label for="cite_author_name" class="three-quarters">
 		<?php _e( 'Author', 'indieweb-post-kinds' ); ?>
-			<input type="text" name="cite_author_name" id="cite_author_name" class="widefat" value="<?php echo ifset( $author['name'] ); ?>" />
+			<input type="text" name="cite_author_name" id="cite_author_name" class="widefat" value="<?php echo $cite['author']['name']; ?>" />
 	</label>
 	</p>
 	<p class="field-row">
 	<label for="cite_author_url" class="three-quarters">
 		<?php _e( 'Author URL', 'indieweb-post-kinds' ); ?>
-			<input type="text" name="cite_author_url" id="cite_author_url" class="widefat" value="<?php echo ifset( $author['url'] ); ?>" />
+			<input type="text" name="cite_author_url" id="cite_author_url" class="widefat" value="<?php echo $cite['author']['url']; ?>" />
 	</label>
 	</p>
 	<p class="field-row">
 	<label for="cite_author_photo" class="three-quarters">
 		<?php _e( 'Author Photo URL', 'indieweb-post-kinds' ); ?>
-			<input type="text" name="cite_author_photo" id="cite_author_photo" class="widefat" value="<?php echo ifset( $author['photo'] ); ?>" />
+			<input type="text" name="cite_author_photo" id="cite_author_photo" class="widefat" value="<?php echo $cite['author']['photo']; ?>" />
 	</label>
 	</p>
 	</div>

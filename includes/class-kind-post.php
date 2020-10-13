@@ -602,6 +602,81 @@ class Kind_Post {
 		return false;
 	}
 
+	/* Returns a normalized cite with all possible parameters present to reduce isset checks and to ensure everything is formatted correctly
+	 * For Display and Metabox purposes only.
+	 */
+	public function normalize_cite( $cite ) {
+		// Ensures that an empty string is always present in the cite
+		$author_defaults = array(
+			'type'  => 'card',
+			'url'   => '',
+			'name'  => '',
+			'photo' => '',
+		);
+		$defaults        = array(
+			'type'        => 'cite',
+			'url'         => '',
+			'name'        => '',
+			'featured'    => '',
+			'publication' => '',
+			'published'   => '',
+			'updated'     => '',
+			'summary'     => '',
+			'author'      => $author_defaults,
+			'category'    => '',
+		);
+
+		if ( ! $cite ) {
+			return $defaults;
+		}
+
+		if ( wp_is_numeric_array( $cite ) && 1 === count( $cite ) ) {
+			$cite = $cite[0];
+		}
+		if ( Parse_This_MF2_Utils::is_microformat( $cite ) ) {
+			$cite = mf2_to_jf2( $cite );
+		}
+
+		if ( is_string( $cite ) ) {
+			$cite = wp_http_validate_url( $cite ) ? array( 'url' => $cite ) : array( 'name' => $cite );
+		}
+
+		$cite = wp_parse_args( $cite, $defaults );
+
+		if ( is_array( $cite['summary'] ) && array_key_exists( 'html', $cite['summary'] ) ) {
+			$cite['summary'] = $cite['summary']['html'];
+		}
+
+		if ( is_array( $cite['category'] ) ) {
+			$cite['category'] = implode( ';', $cite['category'] );
+		}
+
+		if ( 1 === count( $cite['author'] ) && wp_is_numeric_array( $cite['author'] ) ) {
+			$cite['author'] = array_pop( $cite['author'] );
+		}
+
+		if ( is_string( $cite['author'] ) ) {
+			$cite['author'] = wp_http_validate_url( $cite['author'] ) ? array( 'url' => $cite['author'] ) : array( 'name' => $cite['author'] );
+		}
+
+		$cite['author'] = wp_parse_args( $cite['author'], $author_defaults );
+
+		if ( is_array( $cite['author']['name'] ) ) {
+			$cite['author']['name'] = implode( ';', $cite['author']['name'] );
+		}
+		if ( is_array( $cite['author']['url'] ) ) {
+			$cite['author']['url'] = implode( ';', $cite['author']['url'] );
+		}
+
+		// FIXME: Discards extra URLs as currently unsupported. This would be for multi-replies in theory.
+		if ( isset( $cite['url'] ) && is_array( $cite['url'] ) ) {
+			$cite['url'] = array_shift( $cite['url'] );
+		}
+
+		return $cite;
+
+	}
+
 	public function set_datetime_property( $key, $value ) {
 		// In an attachment the post date properties reflect when the item was uploaded not when the piece was created.
 		if ( ! $value instanceof DateTime ) {
