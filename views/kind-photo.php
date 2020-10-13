@@ -12,7 +12,7 @@ if ( $photos ) {
 if ( is_array( $photos ) ) {
 	if ( 1 === count( $photos ) ) {
 		$photos_attachment = new Kind_Post( $photos[0] );
-		$cite = $photos_attachment->get_cite() );
+		$cite = $photos_attachment->get_cite();
 		$cite = $photos_attachment->normalize_cite( $cite );
 		$author = Kind_View::get_hcard( $cite['author'] );
 	}
