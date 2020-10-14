@@ -269,7 +269,11 @@ class Parse_This_MF2 extends Parse_This_MF2_Utils {
 		);
 		$data['name']   = self::get_plaintext( $entry, 'name' );
 		$author         = self::find_author( $entry, $args['follow'] );
-		$data['author'] = self::parse_hcard( $author, $mf, $args );
+		if ( self::is_microformat( $author ) ) {
+			$data['author'] = self::parse_hcard( $author, $mf, $args );
+		} else {
+			$data['author'] = $author;
+		}
 		$data['uid']    = self::get_plaintext( $entry, 'uid' );
 		if ( isset( $entry['id'] ) && isset( $args['url'] ) && ! $data['uid'] ) {
 			$data['uid'] = $args['url'] . '#' . $entry['id'];
@@ -372,7 +376,11 @@ class Parse_This_MF2 extends Parse_This_MF2_Utils {
 		$data['updated']   = self::get_updated( $entry, true, null );
 		$data['url']       = normalize_url( self::get_plaintext( $entry, 'url' ) );
 		$author            = self::find_author( $entry, $mf, $args['follow'] );
-		$data['author']    = self::parse_hcard( $author, $mf, $args, $data['url'] );
+		if ( self::is_microformat( $author ) ) {
+			$data['author'] = self::parse_hcard( $author, $mf, $args, $data['url'] );
+		} else {
+			$data['author'] = $author;
+		}
 		$data['content']   = self::parse_html_value( $entry, 'content' );
 		$data['summary']   = self::get_summary( $entry, $data['content'] );
 

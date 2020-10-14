@@ -232,7 +232,7 @@ class Parse_This {
 		$response = wp_safe_remote_get( $url, $args );
 
 		$raw = wp_remote_retrieve_header( $response, 'link' );
-		if ( is_array( $raw ) && 1 <= count( raw ) ) {
+		if ( is_array( $raw ) && 1 <= count( $raw ) ) {
 			foreach ( $raw as $link ) {
 				$pieces              = explode( '; ', $link );
 				$uri                 = trim( array_shift( $pieces ), '<>' );
@@ -346,8 +346,12 @@ class Parse_This {
 			$this->jf2['url'] = $this->url;
 		}
 		// If No MF2 or if the parsed jf2 is missing any sort of content then try to find it in the HTML
-		$more = array();
-		// $more = array_intersect( array_keys( $this->jf2 ), array( 'summary', 'content', 'refs', 'items' ) );
+		if ( isset( $this->jf2['type'] ) && 'card' === $this->jf2['type'] ) {
+			$more = array_intersect( array_keys( $this->jf2 ), array( 'name', 'url', 'photo' ) );
+		}
+		else {
+			$more = array_intersect( array_keys( $this->jf2 ), array( 'summary', 'content', 'refs', 'items' ) );
+		}
 		if ( empty( $more ) ) {
 			$alt = null;
 
