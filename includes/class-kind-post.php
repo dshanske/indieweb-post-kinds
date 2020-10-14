@@ -663,6 +663,10 @@ class Kind_Post {
 
 		$cite['author'] = wp_parse_args( $cite['author'], $author_defaults );
 
+		if ( is_array( $cite['publication'] ) ) {
+			$cite['publication'] = $cite['publication']['name'];
+		}
+
 		if ( is_array( $cite['author']['name'] ) ) {
 			$cite['author']['name'] = implode( ';', $cite['author']['name'] );
 		}

@@ -142,9 +142,6 @@ function getLinkPreview() {
 			if ( 'name' in response ) {
 				$( '#cite_name' ).val( response.name );
 			}
-			if ( 'publication' in response ) {
-				$( '#cite_publication' ).val( response.publication ) ;
-			}
 			if ( 'published' in response ) {
 				published = moment.parseZone( response.published );
 				$( '#cite_published_date' ).val( published.format( 'YYYY-MM-DD' ) ) ;
@@ -195,6 +192,14 @@ function getLinkPreview() {
 					}
 				}
 			}
+			if ( 'publication' in response && ( 'string' != typeof response.publication ) ) {
+				if ( 'name' in response.publication ) {
+					$( '#cite_publication' ).val( response.publication.name );
+				}
+			} else {
+				$( '#cite_publication' ).val( response.publication ) ;
+			}
+
 			if ( 'category' in response ) {
 				if ( 'object' === typeof response.category ) {
 					$( '#cite_tags' ).val( response.category.join( ';' ) );
