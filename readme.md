@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.4.8  
+**Stable tag:** 3.4.9  
 **Requires at least:** 4.9.9  
 **Requires PHP:** 5.6  
 **Tested up to:** 5.5  
@@ -264,6 +264,10 @@ through future plugin updates.
 
 
 ## Changelog ##
+
+### 3.4.9 ( 2020-10-14 ) ###
+* Normalize citations for use in display and metaboxes.
+* JSON-LD returns an h-card as a publication parameter, but that isn't currently supported, so fix this in the import.
 
 ### 3.4.8 ( 2020-10-12 ) ###
 * Add migration for pre 2018 data to new format.
