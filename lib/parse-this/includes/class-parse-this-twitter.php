@@ -61,6 +61,7 @@ class Parse_This_Twitter extends Parse_This_Base {
 				'html'  => Parse_This::clean_content( $html ),
 				'value' => $text,
 			);
+			$jf2['summary'] = $jf2['content']['html'];
 		}
 		$jf2['author']      = array_filter(
 			array(
