@@ -24,18 +24,15 @@ if ( is_array( $photos ) ) {
 <?php
 echo Kind_Taxonomy::get_before_kind( 'photo' );
 if ( ! empty( $cite['name'] ) ) {
-	echo sprintf( '<span class="p-name">%1s</a>', $cite['name'] );
-}
-if ( $author ) {
-	echo ' ' . __( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
+	echo sprintf( '<span>%1s</span>', $cite['name'] );
 }
 ?>
 </header>
-</section>
 <?php
 if ( $embed ) {
 	printf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
 } elseif ( $photos ) {
 	$view = new Kind_Media_View( $photos, 'photo' );
 	echo $view->get();
-}
+} ?>
+</section>

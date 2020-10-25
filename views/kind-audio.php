@@ -31,10 +31,7 @@ if ( is_array( $audios ) ) {
 <header>
 <?php echo Kind_Taxonomy::get_before_kind( 'audio' );
 if ( isset( $cite['name'] ) ) {
-	echo sprintf( '<span class="p-name">%1s</a>', $cite['name'] );
-}
-if ( $author ) {
-	echo ' ' . __( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
+	echo sprintf( '<span>%1s</a>', $cite['name'] );
 }
 if ( $duration ) {
 	printf( '(%1$s)', $duration );

@@ -33,6 +33,17 @@ class Kind_Post {
 	}
 
 	/*
+	 * Check is post is attachment.
+	 *
+	 * @param WP_Post $post Post Object.
+	 * @return boolean True if attachment.
+	 */
+	private function is_attachment( $post ) {
+		return ( 'attachment' === get_post_type( $post ) );
+	}
+
+
+	/*
 	 * Returns WP_Post Object
 	 *
 	 * @return WP_Post Post Object.
@@ -49,7 +60,7 @@ class Kind_Post {
 	 *
 	 */
 	public function get_kind() {
-		if ( is_attachment( $this->id ) ) {
+		if ( $this->is_attachment( $this->id ) ) {
 			if ( wp_attachment_is( 'image', $this->id ) ) {
 				return 'photo';
 			}
@@ -70,11 +81,27 @@ class Kind_Post {
 	 * @return string Return name.
 	 */
 	public function get_name() {
-		$post = get_post( $this->id );
+		$post   = get_post( $this->id );
+		$return = false;
 		if ( ! empty( $post->post_title ) && ( $this->id !== (int) $post->post_title ) ) {
-			return $post->post_title;
+			$return = $post->post_title;
 		}
-		return false;
+		if ( $this->is_attachment( $this->id ) ) {
+			$image_meta = wp_get_attachment_metadata( $this->id );
+			if ( ! empty( $image_meta['original_image'] ) ) {
+				$file = $image_meta['original_image'];
+			} else {
+				$file = get_post_meta( $this->id, '_wp_attached_file', true );
+				$file = explode( '/', $file );
+				$file = array_pop( $file );
+			}
+			$file = explode( '.', $file );
+			$file = $file[0];
+			if ( $return === $file ) {
+				return false;
+			}
+		}
+		return $return;
 	}
 
 	/*

@@ -39,7 +39,7 @@ if ( is_array( $cite ) && ! $videos ) {
 <?php
 echo Kind_Taxonomy::get_before_kind( 'video' );
 if ( isset( $cite['name'] ) ) {
-	echo sprintf( '<span class="p-name">%1s</a>', $cite['name'] );
+	echo sprintf( '<span>%1s</a>', $cite['name'] );
 }
 
 if ( $author ) {
