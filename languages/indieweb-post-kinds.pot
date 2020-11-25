@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the Post Kinds plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Kinds 3.4.6\n"
+"Project-Id-Version: Post Kinds 3.4.11\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/indieweb-post-kinds\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2020-10-09T16:18:48+00:00\n"
+"POT-Creation-Date: 2020-11-25T04:01:40+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: indieweb-post-kinds\n"
@@ -1174,7 +1174,7 @@ msgid "All Posts"
 msgstr ""
 
 #: includes/class-kind-menu-widget.php:115
-#: includes/class-kind-post-widget.php:140
+#: includes/class-kind-post-widget.php:134
 msgid "Title: "
 msgstr ""
 
@@ -1241,7 +1241,7 @@ msgstr ""
 msgid "A widget that allows you to display a list of posts by type"
 msgstr ""
 
-#: includes/class-kind-post-widget.php:160
+#: includes/class-kind-post-widget.php:154
 msgid "Number of Posts:"
 msgstr ""
 
@@ -1394,32 +1394,32 @@ msgstr ""
 msgid "Invalid Kind"
 msgstr ""
 
-#: includes/class-kind-view.php:413
+#: includes/class-kind-view.php:402
 msgctxt "singular Twitter"
 msgid "a tweet"
 msgstr ""
 
-#: includes/class-kind-view.php:414
+#: includes/class-kind-view.php:403
 msgctxt "singular Vimeo"
 msgid "a video"
 msgstr ""
 
-#: includes/class-kind-view.php:415
+#: includes/class-kind-view.php:404
 msgctxt "singular Youtube"
 msgid "a video"
 msgstr ""
 
-#: includes/class-kind-view.php:416
+#: includes/class-kind-view.php:405
 msgctxt "singular Intagram"
 msgid "an image"
 msgstr ""
 
-#: includes/class-kind-view.php:422
+#: includes/class-kind-view.php:411
 msgctxt "singular post"
 msgid "a post"
 msgstr ""
 
-#: includes/class-kind-view.php:476
+#: includes/class-kind-view.php:478
 msgid "an author"
 msgstr ""
 
@@ -1547,7 +1547,7 @@ msgstr ""
 #: includes/register-kinds.php:535
 #: includes/register-kinds.php:600
 #: includes/register-kinds.php:665
-#: templates/reply-metabox.php:90
+#: templates/reply-metabox.php:40
 msgid "Name"
 msgstr ""
 
@@ -1561,7 +1561,7 @@ msgstr ""
 #: includes/register-kinds.php:604
 #: includes/register-kinds.php:669
 #: lib/parse-this/includes/class-rest-parse-this.php:49
-#: templates/reply-metabox.php:84
+#: templates/reply-metabox.php:34
 msgid "URL"
 msgstr ""
 
@@ -1571,7 +1571,7 @@ msgstr ""
 #: includes/register-kinds.php:269
 #: includes/register-kinds.php:338
 #: templates/reply-author.php:6
-#: templates/reply-metabox.php:79
+#: templates/reply-metabox.php:29
 msgid "Author"
 msgstr ""
 
@@ -2274,64 +2274,62 @@ msgstr ""
 msgid "Featured Image"
 msgstr ""
 
-#: templates/reply-metabox.php:78
+#: templates/reply-metabox.php:28
 msgid "Details"
 msgstr ""
 
-#: templates/reply-metabox.php:81
+#: templates/reply-metabox.php:31
 msgid "Clear"
 msgstr ""
 
-#: templates/reply-time.php:2
+#: templates/reply-time.php:4
 msgid "Duration"
 msgstr ""
 
-#: templates/reply-time.php:5
+#: templates/reply-time.php:7
 msgid "Years"
 msgstr ""
 
-#: templates/reply-time.php:9
+#: templates/reply-time.php:11
 msgid "Months"
 msgstr ""
 
-#: templates/reply-time.php:13
+#: templates/reply-time.php:15
 msgid "Days"
 msgstr ""
 
-#: templates/reply-time.php:19
+#: templates/reply-time.php:21
 msgid "Hours"
 msgstr ""
 
-#: templates/reply-time.php:23
+#: templates/reply-time.php:25
 msgid "Minutes"
 msgstr ""
 
-#: templates/reply-time.php:27
+#: templates/reply-time.php:29
 msgid "Seconds"
 msgstr ""
 
-#: templates/reply-time.php:31
+#: templates/reply-time.php:33
 msgid "Start Time and End Time will be Used to Calculate Duration if Duration Not Set."
 msgstr ""
 
-#: templates/reply-time.php:33
+#: templates/reply-time.php:35
 msgid "Start Time"
 msgstr ""
 
-#: templates/reply-time.php:34
+#: templates/reply-time.php:36
 msgid "End Time"
 msgstr ""
 
-#: views/kind-audio.php:37
-#: views/kind-bookmark.php:27
-#: views/kind-favorite.php:27
-#: views/kind-issue.php:27
+#: views/kind-bookmark.php:24
+#: views/kind-favorite.php:24
+#: views/kind-issue.php:24
 #: views/kind-jam.php:28
-#: views/kind-like.php:27
+#: views/kind-like.php:24
 #: views/kind-listen.php:29
-#: views/kind-photo.php:33
-#: views/kind-read.php:31
-#: views/kind-video.php:51
+#: views/kind-read.php:28
+#: views/kind-video.php:46
 #: views/kind-watch.php:29
 #: views/kind.php:34
 msgid "by"

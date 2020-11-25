@@ -1,10 +1,10 @@
 # Post Kinds #
 **Contributors:** dshanske  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.4.10  
+**Stable tag:** 3.4.11  
 **Requires at least:** 4.9.9  
 **Requires PHP:** 5.6  
-**Tested up to:** 5.5.1  
+**Tested up to:** 5.6  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -265,6 +265,11 @@ through future plugin updates.
 
 ## Changelog ##
 
+### 3.4.11 ( 2020-11-24 )
+* Fix markup issues for checkins.
+* Add domain name as the default for publication property on display.
+* Misc markup issues.
+###
 ### 3.4.10 ( 2020-10-24 ) ###
 * Fix issue with Twitter summary not showing up.
 * Remove p-name markup for now from displayed name of media so it does not mess up microformats parsing.
