@@ -109,7 +109,7 @@ class Kind_View {
 		$cite      = $kind_post->normalize_cite( $cite );
 
 		if ( empty( $cite['name'] ) ) {
-			$cite['name'] = self::get_post_type_string( $cite['url'] );
+			$cite['name'] = $cite['url'];
 		}
 	
 		$author = self::get_hcard( $cite['author'] );
@@ -474,7 +474,7 @@ class Kind_View {
 				$author['name'] = $author['name'][0];
 		}
 
-		if ( ! empty( $author['name'] ) && ! empty( $author['url'] ) ) {
+		if ( empty( $author['name'] ) && ! empty( $author['url'] ) ) {
 			$author['name'] = __( 'an author', 'indieweb-post-kinds' );
 		}
 
@@ -532,7 +532,8 @@ class Kind_View {
 			$cite['url'] = $cite['url'][0];
 		}
 		if ( ! array_key_exists( 'name', $cite ) ) {
-			$cite['name'] = self::get_post_type_string( $cite['url'] );
+			// $cite['name'] = self::get_post_type_string( $cite['url'] );
+			$cite['name'] = $cite['url'];
 		}
 		return sprintf( '<a href="%1s" class="p-name u-url">%2s</a>', $cite['url'], $cite['name'] );
 

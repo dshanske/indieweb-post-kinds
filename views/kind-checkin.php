@@ -17,7 +17,7 @@ if ( ! $cite ) {
 echo Kind_Taxonomy::get_before_kind( 'checkin' );
 if ( ! $embed ) {
 	if ( empty( $cite['name'] ) ) {
-		$cite['name'] = self::get_post_type_string( $url );
+		$cite['name'] = $url;
 	}
 	if ( isset( $url ) ) {
 		echo sprintf( '<a href="%1s" class="u-checkin h-card">%2s</a>', $url, $cite['name'] );
