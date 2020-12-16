@@ -4,7 +4,7 @@ Tags: indieweb
 Stable tag: trunk
 Requires at least: 4.9
 Requires PHP: 5.6
-Tested up to: 5.5
+Tested up to: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -28,5 +28,5 @@ It can be installed as a standalone plugin which will provide the necessary libr
 
 == Changelog ==
 
-= 1.0.0 ( 2019-xx-xx ) =
-* Initial Release
+= 1.0.0 ( 2020-12-15 ) =
+* First Official Release. Prior to this point it was in a point release.

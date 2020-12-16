@@ -12,19 +12,14 @@ class Parse_This_YouTube extends Parse_This_Base {
 			return array();
 		}
 
-		preg_match( '#ytplayer\.config = (\{.+\});#U', $content, $match );
+		preg_match( '#ytInitialPlayerResponse = (\{.+\});#U', $content, $match );
 		$decode = json_decode( $match[1], true );
 		if ( empty( $decode ) ) {
 			return array();
 		}
-		if ( ! isset( $decode['args'] ) ) {
+		if ( ! isset( $decode['videoDetails'] ) ) {
 			return array();
 		}
-		$args = $decode['args'];
-		if ( ! isset( $args['player_response'] ) ) {
-			return array();
-		}
-		$decode        = json_decode( $args['player_response'], true );
 		$details       = $decode['videoDetails'];
 		$microformat   = $decode['microformat']['playerMicroformatRenderer'];
 		$jf2           = array(

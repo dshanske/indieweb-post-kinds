@@ -20,7 +20,7 @@ It can be installed as a standalone plugin which will provide the necessary libr
 
 ## Changelog
 
-### 1.0.0 ( 2019-xx-xx )
+### 1.0.0 ( 2020-12-15 )
 
-* Initial Release
+* First Official Release. Prior to this point it was in a point release.
 
