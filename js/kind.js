@@ -1,43 +1,4 @@
 jQuery( document ).ready( function( $ ) {
-        var elem = document.createElement( 'input' );
-
-         elem.setAttribute( 'type', 'date' );
-         if ( 'text' === elem.type ) {
-                        $( '#mf2_start_date' ).datepicker({
-                                dateFormat: 'yy-mm-dd'
-                        });
-                        $( '#mf2_end_date' ).datepicker({
-                                dateFormat: 'yy-mm-dd'
-                        });
-                        $( '#cite_published_date' ).datepicker({
-                                dateFormat: 'yy-mm-dd'
-                        });
-                        $( '#cite_updated_date' ).datepicker({
-                                dateFormat: 'yy-mm-dd'
-                        });
-
-                }
-                elem.setAttribute( 'type', 'time' );
-                if ( 'text' === elem.type ) {
-                                $( '#mf2_start_time' ).timepicker({
-                                        timeFormat: 'H:i:s',
-                                        step: 15
-                                });
-                                $( '#mf2_end_time' ).timepicker({
-                                        timeFormat: 'H:i:s',
-                                        step: 15
-                                });
-                                $( '#cite_published_time' ).timepicker({
-                                        timeFormat: 'H:i:s',
-                                        step: 15
-                                });
-                                $( '#cite_updated_time' ).timepicker({
-                                        timeFormat: 'H:i:s',
-                                        step: 15
-                                });
-
-                }
-	$( '#duration' ).datepair();
 	changeSettings();
 
 
@@ -143,13 +104,13 @@ function getLinkPreview() {
 				$( '#cite_name' ).val( response.name );
 			}
 			if ( 'published' in response ) {
-				published = moment.parseZone( response.published );
+				var published = moment.parseZone( response.published );
 				$( '#cite_published_date' ).val( published.format( 'YYYY-MM-DD' ) ) ;
 				$( '#cite_published_time' ).val( published.format( 'HH:mm:ss' ) ) ;
 				$( '#cite_published_offset' ).val( published.format( 'Z' ) );
 			}
 			if ( 'updated' in response ) {
-				updated = moment.parseZone( response.updated );
+				var updated = moment.parseZone( response.updated );
 				$( '#cite_updated_date' ).val( updated.format( 'YYYY-MM-DD' ) ) ;
 				$( '#cite_updated_time' ).val( updated.format( 'HH:mm:ss' ) ) ;
 				$( '#cite_updated_offset' ).val( updated.format( 'Z' ) );

@@ -223,6 +223,9 @@ function display_formatted_datetime( $date ) {
  * }
  */
 function divide_datetime( $datetime ) {
+	if ( ! $datetime ) {
+		return false;
+	}
 
 	if ( is_string( $datetime ) ) {
 		$datetime = new DateTime( $datetime );
@@ -240,7 +243,7 @@ function divide_datetime( $datetime ) {
 	$time['time']   = $datetime->format( 'H:i:s' );
 	$time['offset'] = get_datetime_offset( $datetime );
 	$time['class']  = get_class( $datetime );
-	return $time;
+	return array_filter( $time );
 }
 
 /**

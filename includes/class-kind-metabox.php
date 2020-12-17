@@ -138,14 +138,6 @@ class Kind_Metabox {
 			);
 
 			wp_enqueue_script(
-				'jquery-datepair',
-				plugins_url( 'js/jquery.datepair.min.js', dirname( __FILE__ ) ),
-				array( 'jquery' ),
-				self::$version,
-				true
-			);
-
-			wp_enqueue_script(
 				'kindmeta',
 				plugins_url( 'js/kind.js', dirname( __FILE__ ) ),
 				array( 'jquery' ),

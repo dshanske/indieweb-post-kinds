@@ -3,7 +3,6 @@
     "node": ">= 0.10.0"
   },
   "devDependencies": {
-    "datepair.js": "^0.4.16",
     "eslint": "^4.17.0",
     "eslint-config-grunt": "^2.0.1",
     "eslint-config-wordpress": "^2.0.0",
@@ -13,7 +12,6 @@
     "grunt-contrib-copy": "~1.0.0",
     "grunt-contrib-sass": "~0.8.1",
     "grunt-eslint": "^20.1.0",
-    "grunt-wp-readme-to-markdown": "~2.0.0",
-    "timepicker": "^1.13.16"
+    "grunt-wp-readme-to-markdown": "~2.0.0"
   }
 }
