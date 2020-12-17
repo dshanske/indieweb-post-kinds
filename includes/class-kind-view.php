@@ -111,10 +111,10 @@ class Kind_View {
 		if ( empty( $cite['name'] ) ) {
 			$cite['name'] = $cite['url'];
 		}
-	
+
 		$author = self::get_hcard( $cite['author'] );
 
-		$url = $cite['url'];
+		$url   = $cite['url'];
 		$embed = self::get_embed( $cite['url'] );
 		$kind  = $kind_post->get_kind();
 
@@ -622,7 +622,7 @@ class Kind_View {
 		if ( ! $interval ) {
 			return '';
 		}
-		$bits   = array(
+		$bits     = array(
 			'year'   => $interval->y,
 			'month'  => $interval->m,
 			'day'    => $interval->d,
@@ -630,32 +630,33 @@ class Kind_View {
 			'minute' => $interval->i,
 			'second' => $interval->s,
 		);
-		$return = '';
+		$duration = array();
 		if ( $bits['year'] > 0 ) {
 			/* translators: singular and plural */
-			$return .= sprintf( _n( '%d year', '%d years', $bits['year'], 'indieweb-post-kinds' ), $bits['year'] );
+			$duration[] = sprintf( _n( '%d year', '%d years', $bits['year'], 'indieweb-post-kinds' ), $bits['year'] );
 		}
 		if ( $bits['month'] > 0 ) {
 			/* translators: singular and plural */
-			$return .= sprintf( _n( ' %d month', ' %d months', $bits['month'], 'indieweb-post-kinds' ), $bits['month'] );
+			$duration[] = sprintf( _n( '%d month', '%d months', $bits['month'], 'indieweb-post-kinds' ), $bits['month'] );
 		}
 		if ( $bits['day'] > 0 ) {
 			/* translators: singular and plural */
-			$return .= sprintf( _n( ' %d day', ' %d days', $bits['day'], 'indieweb-post-kinds' ), $bits['day'] );
+			$duration[] = sprintf( _n( '%d day', '%d days', $bits['day'], 'indieweb-post-kinds' ), $bits['day'] );
 		}
 		if ( $bits['hour'] > 0 ) {
 			/* translators: singular and plural */
-			$return .= sprintf( _n( ' %d hour', ' %d hours', $bits['hour'], 'indieweb-post-kinds' ), $bits['hour'] );
+			$duration[] = sprintf( _n( '%d hour', '%d hours', $bits['hour'], 'indieweb-post-kinds' ), $bits['hour'] );
 		}
 		if ( $bits['minute'] > 0 ) {
 			/* translators: singular and plural */
-			$return .= sprintf( _n( ' %d minute', ' %d minutes', $bits['minute'], 'indieweb-post-kinds' ), $bits['minute'] );
+			$duration[] = sprintf( _n( '%d minute', '%d minutes', $bits['minute'], 'indieweb-post-kinds' ), $bits['minute'] );
 		}
 		if ( $bits['second'] > 0 ) {
 			/* translators: singular and plural */
-			$return .= sprintf( _n( ' %d second', ' %d seconds', $bits['second'], 'indieweb-post-kinds' ), $bits['second'] );
+			$duration[] = sprintf( _n( '%d second', '%d seconds', $bits['second'], 'indieweb-post-kinds' ), $bits['second'] );
 		}
-		return sprintf( '<time class="dt-duration" datetime="%1$s">%2$s</time>', date_interval_to_iso8601( $interval ), $return );
+
+		return sprintf( '<time class="dt-duration" datetime="%1$s">%2$s</time>', date_interval_to_iso8601( $interval ), implode( ' ', $duration ) );
 	}
 
 }  // End Class
