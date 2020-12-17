@@ -155,12 +155,13 @@ function getLinkPreview() {
 				$( '#cite_updated_offset' ).val( updated.format( 'Z' ) );
 			}
 			if ( 'duration' in response ) {
-				$( '#duration_years' ).val( moment.duration( response.duration ) ).years();
-				$( '#duration_months' ).val( moment.duration( response.duration ) ).months();
-				$( '#duration_days' ).val( moment.duration( response.duration ) ).days();
-				$( '#duration_hours' ).val( moment.duration( response.duration ) ).hours();
-				$( '#duration_minutes' ).val( moment.duration( response.duration ) ).minutes();
-				$( '#duration_seconds' ).val( moment.duration( response.duration ) ).seconds();
+				var duration = moment.duration( response.duration);
+				$( '#duration_years' ).val( duration.years() );
+				$( '#duration_months' ).val( duration.months() );
+				$( '#duration_days' ).val( duration.days() );
+				$( '#duration_hours' ).val( duration.hours() );
+				$( '#duration_minutes' ).val( duration.minutes() );
+				$( '#duration_seconds' ).val( duration.seconds() );
 			}
 
 			if ( 'summary' in response ) {
