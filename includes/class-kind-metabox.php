@@ -166,13 +166,7 @@ class Kind_Metabox {
 				)
 			);
 
-			wp_enqueue_script(
-				'moment',
-				plugins_url( 'js/moment.min.js', dirname( __FILE__ ) ),
-				array( 'jquery' ),
-				'2.20.1',
-				true
-			);
+			wp_enqueue_script( 'moment' );
 		}
 	}
 

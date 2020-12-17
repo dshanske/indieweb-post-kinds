@@ -13,7 +13,6 @@ module.exports = function(grunt) {
 	    main: {
 		    files: [
 		    	{expand: true, cwd: 'node_modules/datepair.js/dist', src: ['jquery.datepair.min.js'], dest: 'js/'}, 
-		    	{expand: true, cwd: 'node_modules/moment/min', src: ['moment.min.js'], dest: 'js/'},
 		    	{expand: true, cwd: 'node_modules/timepicker', src: ['jquery.timepicker.min.js'], dest: 'js/'},
   			],
 		},
