@@ -58,10 +58,10 @@ class Parse_This_Twitter extends Parse_This_Base {
 			$jf2['links']    = $names;
 			$jf2['category'] = $category;
 			$jf2['content']  = array(
-				'html'  => Parse_This::clean_content( $html ),
+				'html'  => Parse_This::clean_content( $html, array( 'blockquote' => array() ) ),
 				'value' => $text,
 			);
-			$jf2['summary'] = $jf2['content']['html'];
+			$jf2['summary']  = $jf2['content']['html'];
 		}
 		$jf2['author']      = array_filter(
 			array(

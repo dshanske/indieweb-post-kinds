@@ -263,18 +263,18 @@ class Parse_This_MF2 extends Parse_This_MF2_Utils {
 	}
 
 	public static function parse_hfeed( $entry, $mf, $args ) {
-		$data           = array(
+		$data         = array(
 			'type'  => 'feed',
 			'items' => array(),
 		);
-		$data['name']   = self::get_plaintext( $entry, 'name' );
-		$author         = self::find_author( $entry, $args['follow'] );
+		$data['name'] = self::get_plaintext( $entry, 'name' );
+		$author       = self::find_author( $entry, $args['follow'] );
 		if ( self::is_microformat( $author ) ) {
 			$data['author'] = self::parse_hcard( $author, $mf, $args );
 		} else {
 			$data['author'] = $author;
 		}
-		$data['uid']    = self::get_plaintext( $entry, 'uid' );
+		$data['uid'] = self::get_plaintext( $entry, 'uid' );
 		if ( isset( $entry['id'] ) && isset( $args['url'] ) && ! $data['uid'] ) {
 			$data['uid'] = $args['url'] . '#' . $entry['id'];
 		}
@@ -381,8 +381,8 @@ class Parse_This_MF2 extends Parse_This_MF2_Utils {
 		} else {
 			$data['author'] = $author;
 		}
-		$data['content']   = self::parse_html_value( $entry, 'content' );
-		$data['summary']   = self::get_summary( $entry, $data['content'] );
+		$data['content'] = self::parse_html_value( $entry, 'content' );
+		$data['summary'] = self::get_summary( $entry, $data['content'] );
 
 		// If name and content are equal remove name
 		if ( is_array( $data['content'] ) && array_key_exists( 'text', $data['content'] ) ) {

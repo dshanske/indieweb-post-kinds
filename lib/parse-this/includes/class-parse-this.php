@@ -36,8 +36,15 @@ class Parse_This {
 		return $this->$key;
 	}
 
-
-	public static function clean_content( $content ) {
+	/*
+	 Cleans HTML content.
+	 *
+	 * @param string $content HTML content to be cleaned.
+	 * @param array $strip Any keys in this array will be removed from the allowed tags that are retained when cleaned.
+	 *
+	 * @return string Clean Content.
+	 */
+	public static function clean_content( $content, $strip = array() ) {
 		if ( ! is_string( $content ) ) {
 			return $content;
 		}
@@ -92,6 +99,9 @@ class Parse_This {
 			'track'      => array(),
 			'source'     => array(),
 		);
+		if ( ! empty( $strip ) ) {
+			$allowed = array_diff_key( $allowed, $strip );
+		}
 		return trim( wp_kses( $content, $allowed ) );
 	}
 
@@ -348,8 +358,7 @@ class Parse_This {
 		// If No MF2 or if the parsed jf2 is missing any sort of content then try to find it in the HTML
 		if ( isset( $this->jf2['type'] ) && 'card' === $this->jf2['type'] ) {
 			$more = array_intersect( array_keys( $this->jf2 ), array( 'name', 'url', 'photo' ) );
-		}
-		else {
+		} else {
 			$more = array_intersect( array_keys( $this->jf2 ), array( 'summary', 'content', 'refs', 'items' ) );
 		}
 		if ( empty( $more ) ) {
