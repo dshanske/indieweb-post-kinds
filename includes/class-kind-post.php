@@ -408,7 +408,7 @@ class Kind_Post {
 		}
 
 		$att_ids   = $this->get_attached_media( 'audio', $this->id );
-		$audios    = get_post_meta( $this->id, 'mf2_audio' );
+		$audios    = get_post_meta( $this->id, 'mf2_audio', true );
 		$audio_ids = is_array( $audios ) ? $this->get_attachments_from_urls( $audios ) : array();
 
 		// If there are ids found return them
@@ -458,7 +458,7 @@ class Kind_Post {
 		}
 
 		$att_ids = $this->get_attached_media( 'video', $this->id );
-		$videos  = get_post_meta( $this->id, 'mf2_video' );
+		$videos  = get_post_meta( $this->id, 'mf2_video', true );
 		if ( is_array( $videos ) ) {
 			$att_ids = array_merge( $att_ids, $this->get_attachments_from_urls( $videos ), $content_ids );
 		}
