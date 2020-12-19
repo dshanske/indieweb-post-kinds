@@ -146,7 +146,7 @@ class Kind_Post {
 	 */
 	public function get_featured() {
 		if ( has_post_thumbnail( $this->id ) ) {
-			return wp_get_attachment_url( get_post_thumbnail_id( $this->ID ) );
+			return wp_get_attachment_url( get_post_thumbnail_id( $this->id ) );
 		}
 		return false;
 	}
