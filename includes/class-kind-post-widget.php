@@ -83,7 +83,7 @@ class Kind_Post_Widget extends WP_Widget {
 		if ( ! in_array( $kind, array( 'note', 'article' ), true ) ) {
 			$kind_post = new Kind_Post( $post );
 			$cite      = $kind_post->get_cite( 'name' );
-			if ( false == $cite ) {
+			if ( false === $cite ) {
 				$content = Kind_View::get_post_type_string( $kind_post->get_cite( 'url' ) );
 			} else {
 				$content = $cite;

@@ -195,7 +195,7 @@ final class Kind_Taxonomy {
 			return $permalink;
 		}
 		// Only kick in if the permalink would be the post_id otherwise.
-		if ( is_numeric( $permalink[1] ) && $post_id === intval( $permalink[1] ) ) {
+		if ( is_numeric( $permalink[1] ) && $post_id === (int) $permalink[1] ) {
 			$excerpt = self::get_excerpt( $post );
 			$excerpt = sanitize_title( mb_strimwidth( wp_strip_all_tags( $excerpt ), 0, 40 ) ); // phpcs:ignore
 			if ( ! empty( $excerpt ) ) {
