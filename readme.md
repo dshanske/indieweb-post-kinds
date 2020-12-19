@@ -1,7 +1,7 @@
 # Post Kinds #
-**Contributors:** dshanske  
+**Contributors:** [dshanske](https://profiles.wordpress.org/dshanske)  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.4.11  
+**Stable tag:** 3.4.12  
 **Requires at least:** 4.9.9  
 **Requires PHP:** 5.6  
 **Tested up to:** 5.6  
@@ -265,6 +265,12 @@ through future plugin updates.
 
 ## Changelog ##
 
+### 3.4.12 ( 2020-12-18 )
+* Update dependencies
+* Remove JS scripts for time handling due issues in use
+* Fix issue with video handling
+* Minor bug fixes
+###
 ### 3.4.11 ( 2020-11-24 )
 * Fix markup issues for checkins.
 * Add domain name as the default for publication property on display.

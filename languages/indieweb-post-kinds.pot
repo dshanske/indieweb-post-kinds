@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the Post Kinds plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Kinds 3.4.11\n"
+"Project-Id-Version: Post Kinds 3.4.12\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/indieweb-post-kinds\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2020-11-25T04:01:40+00:00\n"
+"POT-Creation-Date: 2020-12-19T05:20:49+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: indieweb-post-kinds\n"
@@ -1186,45 +1186,45 @@ msgstr ""
 msgid "Show Count:"
 msgstr ""
 
-#: includes/class-kind-metabox.php:164
+#: includes/class-kind-metabox.php:156
 msgid "Your URL has been successfully retrieved and parsed"
 msgstr ""
 
-#: includes/class-kind-metabox.php:165
+#: includes/class-kind-metabox.php:157
 msgid "Are you sure you want to clear post properties?"
 msgstr ""
 
-#: includes/class-kind-metabox.php:284
+#: includes/class-kind-metabox.php:270
 #: includes/register-kinds.php:460
 msgid "Yes"
 msgstr ""
 
-#: includes/class-kind-metabox.php:285
+#: includes/class-kind-metabox.php:271
 #: includes/register-kinds.php:461
 msgid "No"
 msgstr ""
 
-#: includes/class-kind-metabox.php:286
+#: includes/class-kind-metabox.php:272
 #: includes/register-kinds.php:462
 msgid "Maybe"
 msgstr ""
 
-#: includes/class-kind-metabox.php:287
+#: includes/class-kind-metabox.php:273
 #: includes/register-kinds.php:463
 msgid "Interested"
 msgstr ""
 
-#: includes/class-kind-metabox.php:288
+#: includes/class-kind-metabox.php:274
 #: includes/register-kinds.php:464
 msgid "Remote"
 msgstr ""
 
-#: includes/class-kind-metabox.php:310
+#: includes/class-kind-metabox.php:296
 #: includes/register-kinds.php:452
 msgid "RSVP"
 msgstr ""
 
-#: includes/class-kind-metabox.php:325
+#: includes/class-kind-metabox.php:311
 msgid "Response Properties"
 msgstr ""
 
@@ -1469,36 +1469,36 @@ msgstr[1] ""
 
 #. translators: singular and plural
 #: includes/class-kind-view.php:640
-msgid " %d month"
-msgid_plural " %d months"
+msgid "%d month"
+msgid_plural "%d months"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
 #: includes/class-kind-view.php:644
-msgid " %d day"
-msgid_plural " %d days"
+msgid "%d day"
+msgid_plural "%d days"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
 #: includes/class-kind-view.php:648
-msgid " %d hour"
-msgid_plural " %d hours"
+msgid "%d hour"
+msgid_plural "%d hours"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
 #: includes/class-kind-view.php:652
-msgid " %d minute"
-msgid_plural " %d minutes"
+msgid "%d minute"
+msgid_plural "%d minutes"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
 #: includes/class-kind-view.php:656
-msgid " %d second"
-msgid_plural " %d seconds"
+msgid "%d second"
+msgid_plural "%d seconds"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -2188,8 +2188,8 @@ msgstr ""
 
 #: lib/parse-this/includes/class-parse-this-discovery.php:56
 #: lib/parse-this/includes/class-parse-this-opml.php:17
-#: lib/parse-this/includes/class-parse-this.php:189
-#: lib/parse-this/includes/class-parse-this.php:222
+#: lib/parse-this/includes/class-parse-this.php:199
+#: lib/parse-this/includes/class-parse-this.php:232
 msgid "A valid URL was not provided."
 msgstr ""
 
