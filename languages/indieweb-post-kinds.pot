@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the Post Kinds plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Kinds 3.4.12\n"
+"Project-Id-Version: Post Kinds 3.4.13\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/indieweb-post-kinds\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2020-12-19T05:20:49+00:00\n"
+"POT-Creation-Date: 2020-12-25T20:16:52+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: indieweb-post-kinds\n"
@@ -1174,7 +1174,8 @@ msgid "All Posts"
 msgstr ""
 
 #: includes/class-kind-menu-widget.php:115
-#: includes/class-kind-post-widget.php:134
+#: includes/class-kind-onthisday-widget.php:138
+#: includes/class-kind-post-widget.php:143
 msgid "Title: "
 msgstr ""
 
@@ -1228,6 +1229,23 @@ msgstr ""
 msgid "Response Properties"
 msgstr ""
 
+#: includes/class-kind-onthisday-widget.php:10
+msgid "Kind On This Day Widget"
+msgstr ""
+
+#: includes/class-kind-onthisday-widget.php:13
+msgid "A widget that allows you to display a list of posts from this day in history"
+msgstr ""
+
+#: includes/class-kind-onthisday-widget.php:56
+msgid "You did not post on this day previously"
+msgstr ""
+
+#: includes/class-kind-onthisday-widget.php:142
+#: includes/class-kind-post-widget.php:163
+msgid "Number of Posts:"
+msgstr ""
+
 #: includes/class-kind-plugins.php:80
 msgctxt "direct article"
 msgid "this"
@@ -1241,8 +1259,8 @@ msgstr ""
 msgid "A widget that allows you to display a list of posts by type"
 msgstr ""
 
-#: includes/class-kind-post-widget.php:154
-msgid "Number of Posts:"
+#: includes/class-kind-post-widget.php:61
+msgid "No Posts Found"
 msgstr ""
 
 #: includes/class-kind-taxonomy.php:155
@@ -1342,55 +1360,55 @@ msgstr ""
 #. translators: 1: Kinds. Yearly archive title. 2: Year
 #. translators: Monthly archive title. 1: Month name and year
 #. translators: Daily archive title. 1: Date
-#: includes/class-kind-taxonomy.php:591
-#: includes/class-kind-taxonomy.php:594
-#: includes/class-kind-taxonomy.php:597
-#: includes/class-kind-taxonomy.php:605
-#: includes/class-kind-taxonomy.php:658
+#: includes/class-kind-taxonomy.php:633
+#: includes/class-kind-taxonomy.php:636
+#: includes/class-kind-taxonomy.php:639
+#: includes/class-kind-taxonomy.php:647
+#: includes/class-kind-taxonomy.php:700
 msgid "%1$1s: %2$2s"
 msgstr ""
 
 #. translators: 1: Kinds. Yearly archive title. 2: Year
-#: includes/class-kind-taxonomy.php:591
+#: includes/class-kind-taxonomy.php:633
 msgctxt "yearly archives date format"
 msgid "Y"
 msgstr ""
 
 #. translators: Monthly archive title. 1: Month name and year
-#: includes/class-kind-taxonomy.php:594
+#: includes/class-kind-taxonomy.php:636
 msgctxt "monthly archives date format"
 msgid "F Y"
 msgstr ""
 
 #. translators: Daily archive title. 1: Date
-#: includes/class-kind-taxonomy.php:597
+#: includes/class-kind-taxonomy.php:639
 msgctxt "daily archives date format"
 msgid "F j, Y"
 msgstr ""
 
 #. translators: Daily archive title. 1: Date
-#: includes/class-kind-taxonomy.php:605
-#: includes/class-kind-taxonomy.php:658
+#: includes/class-kind-taxonomy.php:647
+#: includes/class-kind-taxonomy.php:700
 msgid "On This Day"
 msgstr ""
 
 #. translators: Daily archive title. 1: Date
-#: includes/class-kind-taxonomy.php:605
-#: includes/class-kind-taxonomy.php:658
+#: includes/class-kind-taxonomy.php:647
+#: includes/class-kind-taxonomy.php:700
 msgctxt "daily archives date format"
 msgid "F j"
 msgstr ""
 
 #. translators: All
-#: includes/class-kind-taxonomy.php:881
+#: includes/class-kind-taxonomy.php:923
 msgid "All %1s"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:1051
+#: includes/class-kind-taxonomy.php:1093
 msgid "Invalid post"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:1054
+#: includes/class-kind-taxonomy.php:1096
 msgid "Invalid Kind"
 msgstr ""
 
@@ -2178,11 +2196,11 @@ msgstr ""
 msgid "Classic Editor Plugin is not active. The Post Kinds plugin will not function correctly at this time without using the Classic Editor."
 msgstr ""
 
-#: indieweb-post-kinds.php:188
+#: indieweb-post-kinds.php:189
 msgid "Settings"
 msgstr ""
 
-#: indieweb-post-kinds.php:210
+#: indieweb-post-kinds.php:211
 msgid "For responses to URLs, such as responding to a post or article, this site allows the storage of data around the post/article in order to generate a rich citation. Items such as author name and image, summary of the text, embed provided by third-party site, etc may be stored and are solely to provide this context. We will remove any of this on request."
 msgstr ""
 

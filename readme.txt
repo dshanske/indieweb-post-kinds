@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like, scrobble
-Stable tag: 3.4.12
+Stable tag: 3.4.13
 Requires at least: 4.9.9
 Requires PHP: 5.6
 Tested up to: 5.6
@@ -260,6 +260,10 @@ through future plugin updates.
 
 
 == Changelog ==
+
+= 3.4.13 ( 2020-12-25 )
+* Add On This Day Widget
+* Add /onthisday for the current day
 
 = 3.4.12 ( 2020-12-18 )
 * Update dependencies
