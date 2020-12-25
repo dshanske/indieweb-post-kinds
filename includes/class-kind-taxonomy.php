@@ -384,15 +384,28 @@ final class Kind_Taxonomy {
 		);
 		// Tag Archive for Kinds
 		add_rewrite_rule(
-			'kind/([a-z]+)/tag/([a-zA-Z0-9]+)/page/([0-9]{1,})/?$',
+			'kind/([a-z]+)/tag/([^&]+)/page/([0-9]{1,})/?$',
 			'index.php?tag=$matches[2]&kind=$matches[1]&paged=matches[3]',
 			'top'
 		);
 		add_rewrite_rule(
-			'kind/([a-z]+)/tag/([a-zA-Z0-9]+)/?$',
+			'kind/([a-z]+)/tag/([^&]+)/?$',
 			'index.php?tag=$matches[2]&kind=$matches[1]',
 			'top'
 		);
+
+		// Series Archive for Kinds
+		add_rewrite_rule(
+			'kind/([a-z]+)/series/([^&]+)/page/([0-9]{1,})/?$',
+			'index.php?series=$matches[2]&kind=$matches[1]&paged=matches[3]',
+			'top'
+		);
+		add_rewrite_rule(
+			'kind/([a-z]+)/series/([^&]+)/?$',
+			'index.php?series=$matches[2]&kind=$matches[1]',
+			'top'
+		);
+
 		// Year and Month Archive for Kind
 		add_rewrite_rule(
 			'kind/([a-z]+)/([0-9]{4})/([0-9]{2})/page/([0-9]{1,})/?$',
