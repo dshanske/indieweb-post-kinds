@@ -459,9 +459,46 @@ final class Kind_Taxonomy {
 			'index.php?monthnum=$matches[1]&day=$matches[2]',
 			'top'
 		);
+
+		add_rewrite_rule(
+			'onthisday/([0-9]{2})/([0-9]{2})/kind/([a-z]+)/?$',
+			'index.php?monthnum=$matches[1]&day=$matches[2]&kind=$matches[3]',
+			'top'
+		);
+
+		add_rewrite_rule(
+			'onthisday/([0-9]{2})/([0-9]{2})/kind/([a-z]+)/page/([0-9]{1,})/?$',
+			'index.php?monthnum=$matches[1]&day=$matches[2]&kind=$matches[3]&paged=$matches[4]',
+			'top'
+		);
+
+		$now = new DateTime();
+
+		// On This Day Today.
 		add_rewrite_rule(
 			'onthisday/?$',
-			sprintf( 'index.php?monthnum=%1$s&day=%2$s', date( "m" ), date( "d" ) ),
+			sprintf( 'index.php?monthnum=%1$s&day=%2$s', $now->format( 'm' ), $now->format( 'd' ) ),
+			'top'
+		);
+
+		// On This Day Today Pagination
+		add_rewrite_rule(
+			'onthisday/page/([0-9]{1,})/?',
+			sprintf( 'index.php?monthnum=%1$s&day=%2$s&paged=$matches[1]', $now->format( 'm' ), $now->format( 'd' ) ),
+			'top'
+		);
+
+		// On This Day Todays Date Kind Filter.
+		add_rewrite_rule(
+			'onthisday/kind/([a-z]+)/?$',
+			sprintf( 'index.php?monthnum=%1$s&day=%2$s&kind=$matches[1]', $now->format( 'm' ), $now->format( 'd' ) ),
+			'top'
+		);
+
+		// On This Day Todays Date Kind Filter and Pagination
+		add_rewrite_rule(
+			'onthisday/kind/([a-z]+)/page/([0-9]{1,})/?',
+			sprintf( 'index.php?monthnum=%1$s&day=%2$s&kind=$matches[1]&paged=$matches[2]', $now->format( 'm' ), $now->format( 'd' ) ),
 			'top'
 		);
 	}
