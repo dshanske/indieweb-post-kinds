@@ -1,16 +1,16 @@
 <?php
 
-class Kind_Post_Widget extends WP_Widget {
+class Kind_OnThisDay_Widget extends WP_Widget {
 	/**
 	 * Register widget with WordPress.
 	 */
 	public function __construct() {
 		parent::__construct(
-			'Kind_Post_Widget',                // Base ID
-			__( 'Kind Post Widget', 'indieweb-post-kinds' ),        // Name
+			'Kind_OnThisDay_Widget',                // Base ID
+			__( 'Kind On This Day Widget', 'indieweb-post-kinds' ),        // Name
 			array(
 				'classname'   => 'kind_post_widget',
-				'description' => __( 'A widget that allows you to display a list of posts by type', 'indieweb-post-kinds' ),
+				'description' => __( 'A widget that allows you to display a list of posts from this day in history', 'indieweb-post-kinds' ),
 			)
 		);
 
@@ -26,39 +26,34 @@ class Kind_Post_Widget extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		$kind = ifset( $instance['kind'], 'note' );
+		$date = new DateTime();
 		// phpcs:ignore
 		echo $args['before_widget'];
 		if ( ! empty( $instance['title'] ) ) {
 			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ) . $args['after_title']; // phpcs:ignore
 		}
-		$transient = get_transient( 'kind_post_widget' );
-		if ( false === $transient ) {
-				$query = array(
-					'tax_query'   => array(
-						array(
-							'taxonomy' => 'kind',
-							'field'    => 'slug',
-							'terms'    => $kind,
-						),
-					),
-					'numberposts' => ifset( $instance['number'], 5 ),
-					'fields'      => 'ids',
-				);
-				$posts = get_posts( $query );
+		$transient = 'kind_onthisday_widget' . $date->format( 'm-d' );
+		$posts     = get_transient( $transient );
+		if ( false === $posts ) {
+			$query = array(
+				'day'         => $date->format( 'd' ),
+				'monthnum'    => $date->format( 'm' ),
+				'numberposts' => ifset( $instance['number'], 5 ),
+				'fields'      => 'ids',
+			);
+			$posts = get_posts( $query );
 		}
+		set_transient( $transient, $posts, HOUR_IN_SECONDS );
 
-		if ( 0 === count( $posts ) ) {
-			return;
-		}
-		echo '<div id="kind-posts">';
-		if ( 0 !== count( $posts ) ) {
+		echo '<div id="kind-onthisday">';
+		if ( ! empty( $posts ) ) {
 			echo '<ul>';
 			foreach ( $posts as $post ) {
 				printf( '<li>%1$s</li>', self::get_the_link( $post, $kind ) ); // phpcs:ignore
 			}
 			echo '</ul>';
 		} else {
-			esc_html_e( 'No Posts Found', 'indieweb-post-kinds' );
+			esc_html_e( 'You did not post on this day previously', 'indieweb-post-kinds' );
 		}
 		echo '</div>';
 		echo $args['after_widget']; // phpcs:ignore
@@ -143,22 +138,6 @@ class Kind_Post_Widget extends WP_Widget {
 				<p><label for="title"><?php esc_html_e( 'Title: ', 'indieweb-post-kinds' ); ?></label>
 				<input type="text" size="30" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?> id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"
 				value="<?php echo esc_html( ifset( $instance['title'] ) ); ?>" /></p>
-		<select name="<?php echo esc_attr( $this->get_field_name( 'kind' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'kind' ) ); ?>">
-		<?php
-		$list   = get_option( 'kind_termslist', Kind_Taxonomy::get_kind_list() );
-		$list[] = 'note';
-		foreach ( $list as $term ) {
-			$value = Kind_Taxonomy::get_post_kind_info( $term );
-			printf(
-				'<option value="%1$s" %3$s>%2$s</option>',
-				esc_attr( $term ),
-				Kind_Taxonomy::get_kind_info( $term, 'singular_name' ), // phpcs:ignore
-				selected( $instance['kind'], $term )
-			);
-				printf( '%1$s %2$s<br />', Kind_Taxonomy::get_icon( $term ), esc_html( $value->singular_name ) ); //phpcs:ignore
-		}
-		?>
-		</select>
 		<p>
 		<label for="<?php echo esc_attr( $this->get_field_id( 'number' ) ); ?>"><?php esc_html_e( 'Number of Posts:', 'indieweb-post-kinds' ); ?></label>
 		<input type="number" min="1" step="1" name="<?php echo esc_attr( $this->get_field_name( 'number' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'number' ) ); ?>" value="<?php echo esc_attr( ifset( $instance['number'], 5 ) ); ?>" />
