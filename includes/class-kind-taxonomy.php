@@ -459,6 +459,11 @@ final class Kind_Taxonomy {
 			'index.php?monthnum=$matches[1]&day=$matches[2]',
 			'top'
 		);
+		add_rewrite_rule(
+			'onthisday/?$',
+			sprintf( 'index.php?monthnum=%1$s&day=%2$s', date( "m" ), date( "d" ) ),
+			'top'
+		);
 	}
 
 	/**
