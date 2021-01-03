@@ -67,6 +67,7 @@ class Kind_OnThisDay_Widget extends WP_Widget {
 	 * @return string
 	 */
 	public function get_the_link( $post, $kind ) {
+		$post = get_post( $post );
 		return sprintf( '<a href="%2$s">%1$s</a> - %3$s', self::get_the_title( $post, $kind ), get_the_permalink( $post ), get_the_date( '', $post ) );
 	}
 
@@ -80,6 +81,7 @@ class Kind_OnThisDay_Widget extends WP_Widget {
 	 * @return string
 	 */
 	public function get_the_title( $post, $kind ) {
+		$post = get_post( $post );
 		$title = get_the_title( $post );
 		if ( ! empty( $title ) ) {
 			return $title;
