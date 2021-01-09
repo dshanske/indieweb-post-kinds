@@ -346,8 +346,12 @@ class Kind_Post {
 		}
 
 		// If there are photos in the content then end here if this is true.
-		if ( ! empty( $content_ids ) && $content ) {
-			return array();
+		if ( ! empty( $content_ids ) ) {
+			if ( $content ) {
+				return array();
+			} else {
+				return $content_ids;
+			}
 		}
 
 		// If there is a featured image return nothing on the assumption that photo and featured should not appear on the same post.
