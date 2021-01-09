@@ -701,13 +701,13 @@ class Kind_Post {
 			$cite['author']['url'] = implode( ';', $cite['author']['url'] );
 		}
 
-		if ( empty( $cite['publication'] ) && ! empty( $cite['url'] ) ) {
-			$cite['publication'] = preg_replace( '/^www\./', '', wp_parse_url( $cite['url'], PHP_URL_HOST ) );
-		}
-
 		// FIXME: Discards extra URLs as currently unsupported. This would be for multi-replies in theory.
 		if ( isset( $cite['url'] ) && is_array( $cite['url'] ) ) {
 			$cite['url'] = array_shift( $cite['url'] );
+		}
+
+		if ( empty( $cite['publication'] ) && ! empty( $cite['url'] ) ) {
+			$cite['publication'] = preg_replace( '/^www\./', '', wp_parse_url( $cite['url'], PHP_URL_HOST ) );
 		}
 
 		return $cite;
