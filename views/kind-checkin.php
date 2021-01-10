@@ -4,7 +4,8 @@
  *
  */
 
-$photos = get_attached_media( 'image', get_the_ID() );
+$photos = $kind_post->get_photo();
+
 if ( ! $cite ) {
 	return;
 }
