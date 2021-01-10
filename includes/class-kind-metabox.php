@@ -126,16 +126,7 @@ class Kind_Metabox {
 	 */
 	public static function enqueue_admin_scripts() {
 		if ( 'post' === get_current_screen()->id ) {
-			wp_enqueue_script( 'jquery-ui-datepicker' );
 			wp_enqueue_style( 'jquery-ui' );
-
-			wp_enqueue_script(
-				'jquery-ui-timepicker',
-				plugins_url( 'js/jquery.timepicker.min.js', dirname( __FILE__ ) ),
-				array( 'jquery' ),
-				self::$version,
-				true
-			);
 
 			wp_enqueue_script(
 				'kindmeta',
