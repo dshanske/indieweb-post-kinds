@@ -338,9 +338,15 @@ class Kind_Post {
 		$content_ids = get_post_meta( $this->id, '_content_img_ids', true );
 
 		if ( false === $content_ids ) {
-			$post = $this->get_post();
+			// Check for a gallery first.
+			$gallery = get_post_gallery( $this->id, false );
+			if ( $gallery & array_key_exists( 'ids', $gallery ) ) {
+				$content_ids = explode( ',', $gallery['ids'] );
+			}
+			$content_ids = array();
+			$post        = $this->get_post();
 			if ( $post->post_content ) {
-				$content_ids = Kind_Media_Metadata::get_img_from_content( $post->post_content );
+				$content_ids = array_merge( $content_ids, Kind_Media_Metadata::get_img_from_content( $post->post_content ) );
 				update_post_meta( $this->id, '_content_img_ids', $content_ids );
 			}
 		}

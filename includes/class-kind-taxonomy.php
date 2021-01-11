@@ -26,6 +26,7 @@ final class Kind_Taxonomy {
 		// Query Variable to Exclude Kinds from Feed
 		add_filter( 'query_vars', array( static::class, 'query_vars' ) );
 		add_action( 'pre_get_posts', array( static::class, 'kind_filter_query' ) );
+		add_action( 'pre_get_posts', array( static::class, 'kind_photo_filter' ) );
 
 		// Add Dropdown
 		add_action( 'restrict_manage_posts', array( static::class, 'kind_dropdown' ), 10, 2 );
@@ -54,11 +55,32 @@ final class Kind_Taxonomy {
 		add_action( 'rest_api_init', array( static::class, 'rest_kind' ) );
 
 		add_filter( 'embed_template_hierarchy', array( static::class, 'embed_template_hierarchy' ) );
+		add_filter( 'template_include', array( static::class, 'template_include' ) );
 
 		add_action( 'rest_api_init', array( static::class, 'register_routes' ) );
 
 	}
 
+	/** Template Redirect
+	 *
+	 */
+	public static function template_include( $template ) {
+		global $wp_query;
+
+		// Only use this template for archive pages
+		if ( is_singular() ) {
+			return $template;
+		}
+		// if this is not a request for 'kind_photos'.
+		if ( ! isset( $wp_query->query_vars['kind_photos'] ) ) {
+				  return $template;
+		}
+		$photo_template = locate_template( 'kind-photos.php' );
+		if ( '' != $photo_template ) {
+			return $photo_template;
+		}
+		return $template;
+	}
 
 	/**
 	 * Register the Route.
@@ -91,7 +113,6 @@ final class Kind_Taxonomy {
 	}
 
 
-
 	/**
 	 * Add our exclude_kind query variable to query_vars list.
 	 *
@@ -102,7 +123,41 @@ final class Kind_Taxonomy {
 	 */
 	public static function query_vars( $qvars ) {
 		$qvars[] = 'exclude_kind';
+		$qvars[] = 'kind_photos';
 		return $qvars;
+	}
+
+	/**
+	 * Filter the query for our post kinds.
+	 *
+	 * @access public
+	 *
+	 * @param $query
+	 */
+	public static function kind_photo_filter( $query ) {
+		// check if the user is requesting an admin page
+		if ( is_admin() ) {
+			return;
+		}
+		$photos = get_query_var( 'kind_photos' );
+		// Return if  not set
+		if ( $photos ) {
+			$query->set(
+				'meta_query',
+				array(
+					'relation' => 'OR',
+					array(
+						'key'     => '_content_img_ids',
+						'compare' => 'EXISTS',
+					),
+					array(
+						'key'     => 'mf2_photo',
+						'compare' => 'EXISTS',
+					),
+				)
+			);
+		}
+		return $query;
 	}
 
 	/**
@@ -512,6 +567,42 @@ final class Kind_Taxonomy {
 		add_rewrite_rule(
 			'onthisday/kind/([a-z]+)/page/([0-9]{1,})/?',
 			sprintf( 'index.php?monthnum=%1$s&day=%2$s&kind=$matches[1]&paged=$matches[2]', $now->format( 'm' ), $now->format( 'd' ) ),
+			'top'
+		);
+
+		// Kind Archives for Photos
+		add_rewrite_rule(
+			'photos/kind/([a-z]+)/page/([0-9]{1,})/?$',
+			'index.php?kind=$matches[1]&kind_photos=1&paged=$matches[2]',
+			'top'
+		);
+		add_rewrite_rule(
+			'photos/kind/([a-z]+)/?$',
+			'index.php?kind=$matches[1]&kind_photos=1',
+			'top'
+		);
+
+		// Year Archives for Photos
+		add_rewrite_rule(
+			'photos/([0-9]{4})/page/([0-9]{1,})/?$',
+			'index.php?year=$matches[1]&kind_photos=1&paged=$matches[2]',
+			'top'
+		);
+		add_rewrite_rule(
+			'photos/([0-9]{4})/?$',
+			'index.php?year=$matches[1]&kind_photos=1',
+			'top'
+		);
+
+		// Year and Month Archive for Photos
+		add_rewrite_rule(
+			'photos/([0-9]{4})/([0-9]{2})/page/([0-9]{1,})/?$',
+			'index.php?year=$matches[1]&monthnum=$matches[2]&kind_photos=1&paged=$matches[3]',
+			'top'
+		);
+		add_rewrite_rule(
+			'photos/([0-9]{4})/([0-9]{2})/?$',
+			'index.php?year=$matches[1]&monthnum=$matches[2]&kind_photos=1',
 			'top'
 		);
 	}
