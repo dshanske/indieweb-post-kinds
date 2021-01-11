@@ -81,7 +81,7 @@ class Kind_OnThisDay_Widget extends WP_Widget {
 	 * @return string
 	 */
 	public function get_the_title( $post, $kind ) {
-		$post = get_post( $post );
+		$post  = get_post( $post );
 		$title = get_the_title( $post );
 		if ( ! empty( $title ) ) {
 			return $title;
