@@ -50,7 +50,7 @@ add_action( 'plugins_loaded', array( 'Post_Kinds_Plugin', 'plugins_loaded' ), 11
 add_action( 'init', array( 'Post_Kinds_Plugin', 'init' ) );
 
 class Post_Kinds_Plugin {
-	public static $version = '3.4.13';
+	public static $version = '3.4.14';
 	public static function init() {
 		// Add Kind Taxonomy.
 		Kind_Taxonomy::init();
