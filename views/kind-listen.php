@@ -8,7 +8,7 @@ if ( ! $cite ) {
 	return;
 }
 $site_name = Kind_View::get_site_name( $cite, $url );
-$title     = Kind_View::get_cite_title( $cite, $url );
+$title     = Kind_View::get_cite_title( $cite );
 $duration  = $kind_post->get( 'duration', true );
 if ( ! $duration ) {
 		$duration = calculate_duration( $kind_post->get( 'start' ), $kind_post->get( 'end' ) );
@@ -17,7 +17,7 @@ if ( ! $duration ) {
 
 ?>
 
-<section class="response u-listen-of h-cite">
+<section class="response <?php empty( $url ) ? 'p-listen-of' : 'u-listen-of'; ?> h-cite">
 <header>
 <?php
 echo Kind_Taxonomy::get_before_kind( 'listen' );

@@ -10,7 +10,8 @@ if ( ! $cite ) {
 
 ?>
 
-<section class="response u-bookmark-of h-cite">
+
+<section class="response <?php empty( $url ) ? 'p-bookmark-of' : 'u-bookmark-of'; ?> h-cite">
 <header>
 <?php
 echo Kind_Taxonomy::get_before_kind( 'bookmark' );

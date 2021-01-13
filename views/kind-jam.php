@@ -16,7 +16,7 @@ if ( ! $duration ) {
 
 ?>
 
-<section class="response u-jam-of h-cite">
+<section class="response <?php empty( $url ) ? 'p-jam-of' : 'u-jam-of'; ?> h-cite">
 <header>
 <?php
 echo Kind_Taxonomy::get_before_kind( 'jam' );

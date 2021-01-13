@@ -11,6 +11,7 @@ if ( ! $cite ) {
 ?>
 
 <section class="response h-cite u-in-reply-to">
+<section class="response <?php empty( $url ) ? 'p-in-reply-to' : 'u-in-reply-to'; ?> h-cite">
 <header>
 <?php
 echo Kind_Taxonomy::get_before_kind( 'issue' );
