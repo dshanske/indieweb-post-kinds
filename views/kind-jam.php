@@ -31,7 +31,7 @@ if ( ! $embed ) {
 		echo __( ' from ', 'indieweb-post-kinds' ) . '<em>' . $site_name . '</em>';
 	}
 	if ( $duration ) {
-		echo '(<data class="p-duration" value="' . $duration . '">' . Kind_View::display_duration( $duration ) . '</data>)';
+		echo Kind_View::display_duration( $duration );
 	}
 }
 ?>

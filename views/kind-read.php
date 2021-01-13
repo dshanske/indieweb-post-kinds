@@ -19,7 +19,7 @@ if ( ! $embed ) {
 	if ( $read ) {
 		echo sprintf( ' - <span class="p-read-status">%1s</span>', Kind_View::read_text( $read ) );
 	}
-	if ( isset( $url ) ) {
+	if ( ! empty( $url ) ) {
 		echo sprintf( '<a href="%1s" class="p-name u-url">%2s</a>', $url, $cite['name'] );
 	} else {
 		echo sprintf( '<span class="p-name">%1s</span>', $cite['name'] );

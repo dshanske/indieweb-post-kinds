@@ -20,7 +20,7 @@ if ( ! $embed ) {
 	if ( empty( $cite['name'] ) ) {
 		$cite['name'] = $url;
 	}
-	if ( isset( $url ) ) {
+	if ( ! empty( $url ) ) {
 		echo sprintf( '<a href="%1s" class="u-checkin h-card">%2s</a>', $url, $cite['name'] );
 	} else {
 		echo sprintf( '<span class="h-card p-checkin">%1s</span>', $cite['name'] );
