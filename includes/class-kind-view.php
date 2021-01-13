@@ -551,7 +551,7 @@ class Kind_View {
 		if ( ! $cite || ! is_array( $cite ) ) {
 			return false;
 		}
-		if ( ! array_key_exists( 'publication', $cite ) && ! empty( $cite['publication'] ) ) {
+		if ( ! array_key_exists( 'publication', $cite ) || empty( $cite['publication'] ) ) {
 			return false;
 		}
 		return sprintf( '<span class="p-publication">%1s</span>', $cite['publication'] );

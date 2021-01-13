@@ -716,7 +716,7 @@ class Kind_Post {
 			$cite['url'] = array_shift( $cite['url'] );
 		}
 
-		if ( empty( $cite['publication'] ) && ! empty( $cite['url'] ) ) {
+		if ( empty( $cite['publication'] ) && ! empty( $cite['url'] ) && wp_parse_url( $cite['url'], PHP_URL_HOST ) !== wp_parse_url( home_url(), PHP_URL_HOST ) ) {
 			$cite['publication'] = preg_replace( '/^www\./', '', wp_parse_url( $cite['url'], PHP_URL_HOST ) );
 		}
 
