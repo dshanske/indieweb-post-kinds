@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like, scrobble
-Stable tag: 3.4.13
+Stable tag: 3.4.14
 Requires at least: 4.9.9
 Requires PHP: 5.6
 Tested up to: 5.6
@@ -216,6 +216,9 @@ You can also add the date /kind/note/2018/12/24 to see date-based archives. Or /
 
 For archives if you add exclude_kind as a query variable it will exclude specific kinds from the query `?exclude_kind=note`. You can also do this as /exclude/kind/note,checkin as it accepts multiple values
 
+There is also a special photo photo included, using ?kind_photos=1 or /photos/yyyy or /photos/yyyy/mm or /photos/kind/note. This will use the photo enhancements introduced in 3.4.0 to only show photos from
+all types of posts.
+
 = Do you have RSS feeds for each kind? = 
 
 Post Kinds also automatically handles RSS feeds which can be made available or subscribed to for any of the particular kinds. The RSS feed for all the posts marked as "note", for example could be found at either the URL `http://www.example.com/kind/note/feed` or  `http://www.example.com/feed/?kind=note` (if one doesn't have pretty permalinks enabled). Others can be obtained by replacing "note" with the other kinds.
@@ -261,17 +264,26 @@ through future plugin updates.
 
 == Changelog ==
 
-= 3.4.13 ( 2020-12-25 )
+= 3.4.14 ( 2021-01-13 ) =
+* Fix CSS issue for On This Day widget
+* Update checkin view to use Kind_Post function to retrieve photos
+* Look for galleries as part of photo posts
+* Add /photos rewrite to show all posts that have photos in them. 
+* Fix issues with empty urls displaying.
+* Fix issue with start and end date saving caused by previous changes.
+* Do not show domain for publication when it is the same as the website.
+ 
+= 3.4.13 ( 2020-12-25 ) =
 * Add On This Day Widget
 * Add /onthisday for the current day
 
-= 3.4.12 ( 2020-12-18 )
+= 3.4.12 ( 2020-12-18 ) =
 * Update dependencies
 * Remove JS scripts for time handling due issues in use
 * Fix issue with video handling
 * Minor bug fixes
 
-= 3.4.11 ( 2020-11-24 )
+= 3.4.11 ( 2020-11-24 ) =
 * Fix markup issues for checkins.
 * Add domain name as the default for publication property on display.
 * Misc markup issues.
