@@ -370,18 +370,18 @@ class Kind_Metabox {
 		if ( isset( $_POST['mf2_start_date'] ) || isset( $_POST['mf2_start_time'] ) ) {
 			$start = build_iso8601_time( $_POST['mf2_start_date'], $_POST['mf2_start_time'], $_POST['mf2_start_offset'] );
 			if ( ! $start ) {
-				$kind_post->delete( 'dt-start' );
+				$kind_post->delete( 'start' );
 			}
 		} else {
-			$kind_post->delete( 'dt-start' );
+			$kind_post->delete( 'start' );
 		}
 		if ( isset( $_POST['mf2_end_date'] ) || isset( $_POST['mf2_end_time'] ) ) {
 			$end = build_iso8601_time( $_POST['mf2_end_date'], $_POST['mf2_end_time'], $_POST['mf2_end_offset'] );
 			if ( ! $end ) {
-				$kind_post->delete( 'dt-end' );
+				$kind_post->delete( 'end' );
 			}
 		} else {
-			$kind_post->delete( 'dt-end' );
+			$kind_post->delete( 'end' );
 		}
 		if ( $start !== $end ) {
 			$kind_post->set_datetime_property( 'start', $start );

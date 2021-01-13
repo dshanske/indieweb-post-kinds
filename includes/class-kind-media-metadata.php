@@ -201,9 +201,14 @@ class Kind_Media_Metadata {
 	public static function save_post( $post_id ) {
 		$post    = get_post( $post_id );
 		$content = do_shortcode( $post->post_content );
+
+		$gallery_ids = array();
 		$gallery = get_post_gallery( $post_id, false );
-		if ( $gallery & array_key_exists( 'ids', $gallery ) ) {
-			$gallery_ids = explode( ',', $gallery['ids'] );
+
+		if ( is_array( $gallery ) ) {
+			if ( array_key_exists( 'ids', $gallery ) ) {
+				$gallery_ids = explode( ',', $gallery['ids'] );
+			}
 		}
 		$ids = self::get_img_from_content( $content );
 		if ( is_array( $ids ) && is_array( $gallery_ids ) ) {
