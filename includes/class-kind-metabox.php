@@ -402,6 +402,7 @@ class Kind_Metabox {
 			$duration = calculate_duration( $start, $end );
 			if ( $duration instanceof DateInterval ) {
 				$duration = date_interval_to_iso8601( $duration );
+				error_log( wp_json_encode( $duration ) );
 			}
 		}
 		if ( ! empty( $duration ) ) {
