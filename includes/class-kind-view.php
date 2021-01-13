@@ -521,7 +521,7 @@ class Kind_View {
 		if ( ! $cite ) {
 			return false;
 		}
-		if ( ! isset( $cite['url'] ) ) {
+		if ( empty( $cite['url'] ) ) {
 			if ( ! isset( $cite['name'] ) ) {
 				return '';
 			}
