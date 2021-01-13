@@ -209,6 +209,7 @@ function changeSettings() {
 		case 'listen':
 		case 'jam':
 		case 'watch':
+		case 'play':
 			hideTitle();
 			showReply();
 			hideRSVP();
