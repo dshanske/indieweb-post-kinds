@@ -605,6 +605,18 @@ final class Kind_Taxonomy {
 			'index.php?year=$matches[1]&monthnum=$matches[2]&kind_photos=1',
 			'top'
 		);
+
+		// Year and Month And Day Archive for Photos
+		add_rewrite_rule(
+			'photos/([0-9]{4})/([0-9]{2})/([0-9]{2})/page/([0-9]{1,})/?$',
+			'index.php?year=$matches[1]&monthnum=$matches[2]&day=$matches[3]&kind_photos=1&paged=$matches[4]',
+			'top'
+		);
+		add_rewrite_rule(
+			'photos/([0-9]{4})/([0-9]{2})/([0-9]{2})/?$',
+			'index.php?year=$matches[1]&monthnum=$matches[2]&day=$matches[3]&kind_photos=1',
+			'top'
+		);
 	}
 
 	/**
