@@ -76,7 +76,7 @@ final class Kind_Taxonomy {
 				  return $template;
 		}
 		$photo_template = locate_template( 'kind-photos.php' );
-		if ( '' != $photo_template ) {
+		if ( '' !== $photo_template ) {
 			return $photo_template;
 		}
 		return $template;
@@ -114,7 +114,7 @@ final class Kind_Taxonomy {
 
 
 	/**
-	 * Add our exclude_kind query variable to query_vars list.
+	 * Add our query variables to query_vars list.
 	 *
 	 * @access public
 	 *
@@ -122,7 +122,8 @@ final class Kind_Taxonomy {
 	 * @return array
 	 */
 	public static function query_vars( $qvars ) {
-		$qvars[] = 'exclude_kind';
+		$qvars[] = 'exclude';
+		$qvars[] = 'exclude_terms';
 		$qvars[] = 'kind_photos';
 		return $qvars;
 	}
@@ -172,26 +173,29 @@ final class Kind_Taxonomy {
 		if ( is_admin() ) {
 			return;
 		}
-		$exclude = get_query_var( 'exclude_kind' );
+		$exclude = get_query_var( 'exclude' );
 		// Return if both are not set
-		if ( ! $exclude ) {
-			return;
+		if ( ! taxonomy_exists( $exclude ) ) {
+			return $query;
 		}
-		$operator = 'NOT IN';
-		$filter   = $exclude;
+		$filter = get_query_var( 'exclude_terms' );
+		if ( empty( $filter ) ) {
+			return $query;
+		}
 		$filter   = explode( ',', $filter );
+		$operator = 'NOT IN';
 		$query->set(
 			'tax_query',
 			array(
 				array(
-					'taxonomy' => 'kind',
+					'taxonomy' => $exclude,
 					'field'    => 'slug',
 					'terms'    => $filter,
 					'operator' => $operator,
 				),
 			)
 		);
-
+		return $query;
 	}
 
 	/**
@@ -384,6 +388,7 @@ final class Kind_Taxonomy {
 	 * Register the custom taxonomy for kinds.
 	 */
 	public static function register() {
+		global $wp_rewrite;
 		$labels = array(
 			'name'                       => _x( 'Kinds', 'taxonomy general name', 'indieweb-post-kinds' ),
 			'singular_name'              => _x( 'Kind', 'taxonomy singular name', 'indieweb-post-kinds' ),
@@ -426,197 +431,192 @@ final class Kind_Taxonomy {
 
 		);
 		register_taxonomy( 'kind', array( 'post' ), $args );
-		// Year archive for kinds
+
+		$kind_rewrites = array(
+			'kind/([a-z]+)/([0-9]{4})/page/([0-9]{1,})/?' => 'index.php?year=$matches[2]&kind=$matches[1]&paged=$matches[3]', // Year Archive for Kinds with Pagination.
+			'kind/([a-z]+)/([0-9]{4})/?$'                 => 'index.php?year=$matches[2]&kind=$matches[1]', // Year Archive for Kinds
+			'kind/([a-z]+)/([0-9]{4})/([0-9]{2})/page/([0-9]{1,})/?$' => 'index.php?year=$matches[2]&monthnum=$matches[3]&kind=$matches[1]&paged=$matches[4]', // Month Archive for Kinds with Pagination.
+			'kind/([a-z]+)/([0-9]{4})/([0-9]{2})/?$'      => 'index.php?year=$matches[2]&monthnum=$matches[3]&kind=$matches[1]', // Month Archive for Kinds.
+			'kind/([a-z]+)/([0-9]{4})/([0-9]{2})/([0-9]{2})/page/([0-9]{1,})/?$' => 'index.php?year=$matches[2]&monthnum=$matches[3]&day=$matches[4]&kind=$matches[1]&paged=$matches[5]', // Day Archive for Kinds with Pagination.
+			'kind/([a-z]+)/([0-9]{4})/([0-9]{2})/([0-9]{2})/?$' => 'index.php?year=$matches[2]&monthnum=$matches[3]&day=$matches[4]&kind=$matches[1]', // Day Archive for Kinds.
+		);
+
+		foreach ( $kind_rewrites as $regex => $query ) {
+			add_rewrite_rule( $regex, $query, 'top' );
+		}
+
+		$kind_rewrite_taxonomies = apply_filters( 'kind_rewrite_taxonomies', array( 'tag', 'category', 'series' ) );
+
+		// For each kind, support filtering by other taxonomies.
+		foreach ( $kind_rewrite_taxonomies as $taxonomy ) {
+				add_rewrite_rule(
+					sprintf( 'kind/([a-z]+)/%1$s/([^/]*)/feed/([^/]*)/?$', $taxonomy ),
+					sprintf( 'index.php?kind=$matches[1]&%1$s=$matches[2]&feed=$matches[3]', $taxonomy ),
+					'top'
+				);
+				add_rewrite_rule(
+					sprintf( 'kind/([a-z]+)/%1$s/([^/]*)/feed/?$', $taxonomy ),
+					sprintf( 'index.php?kind=$matches[1]&%1$s=$matches[2]&feed=%2$s', $taxonomy, get_default_feed() ),
+					'top'
+				);
+				add_rewrite_rule(
+					sprintf( 'kind/([a-z]+)/%1$s/([^&]+)/%2$s/([0-9]{1,})/?$', $taxonomy, $wp_rewrite->pagination_base ),
+					sprintF( 'index.php?kind=$matches[1]&%1$s=$matches[2]&paged=$matches[3]', $taxonomy ),
+					'top'
+				);
+				add_rewrite_rule(
+					sprintf( 'kind/([a-z]+)/%1$s/([^&]+)/?$', $taxonomy ),
+					sprintf( 'index.php?kind=$matches[1]&%1$s=$matches[2]', $taxonomy ),
+					'top'
+				);
+
+		}
+
+		$kind_exclude_slug = apply_filters( 'kind_exclude_slug', 'exclude' );
+
+		// Exclude/Include Terms with feed and page options. Example usage /exclude/kind/eat,drink would provide an archive excluding these terms.
 		add_rewrite_rule(
-			'kind/([a-z]+)/([0-9]{4})/page/([0-9]{1,})/?',
-			'index.php?year=$matches[2]&kind=$matches[1]&paged=$matches[3]',
+			$kind_exclude_slug . '/([^/]*)/([a-z,]+)/feed/([^/]*)/?$',
+			'index.php?exclude=$matches[1]&exclude_terms=$matches[2]&feed=$matches[3]',
 			'top'
 		);
 		add_rewrite_rule(
-			'kind/([a-z]+)/([0-9]{4})/?$',
-			'index.php?year=$matches[2]&kind=$matches[1]',
-			'top'
-		);
-		// Tag Archive for Kinds
-		add_rewrite_rule(
-			'kind/([a-z]+)/tag/([^&]+)/page/([0-9]{1,})/?$',
-			'index.php?tag=$matches[2]&kind=$matches[1]&paged=matches[3]',
+			$kind_exclude_slug . '/([^/]*)/([^/]*)/feed',
+			'index.php?exclude=$matches[1]&exclude_terms=$matches[2]&feed=' . get_default_feed(),
 			'top'
 		);
 		add_rewrite_rule(
-			'kind/([a-z]+)/tag/([^&]+)/?$',
-			'index.php?tag=$matches[2]&kind=$matches[1]',
+			$kind_exclude_slug . sprintf( '/([^/]*)/([^/]*)/%1$s/([0-9]{1,})/?', $wp_rewrite->pagination_base ),
+			'index.php?exclude=$matches[1]&exclude_terms=$matches[2]&paged=$matches[3]',
+			'top'
+		);
+		add_rewrite_rule(
+			$kind_exclude_slug . '/([^/]*)/([^/]*)/?$',
+			'index.php?exclude=$matches[1]&exclude_terms=$matches[2]',
 			'top'
 		);
 
-		// Series Archive for Kinds
-		add_rewrite_rule(
-			'kind/([a-z]+)/series/([^&]+)/page/([0-9]{1,})/?$',
-			'index.php?series=$matches[2]&kind=$matches[1]&paged=matches[3]',
-			'top'
-		);
-		add_rewrite_rule(
-			'kind/([a-z]+)/series/([^&]+)/?$',
-			'index.php?series=$matches[2]&kind=$matches[1]',
-			'top'
-		);
+		$onthisday_slug = apply_filters( 'kind_onthisday_slug', 'onthisday' );
+		$now            = new DateTime();
 
-		// Year and Month Archive for Kind
-		add_rewrite_rule(
-			'kind/([a-z]+)/([0-9]{4})/([0-9]{2})/page/([0-9]{1,})/?$',
-			'index.php?year=$matches[2]&monthnum=$matches[3]&kind=$matches[1]&paged=$matches[4]',
-			'top'
-		);
-		add_rewrite_rule(
-			'kind/([a-z]+)/([0-9]{4})/([0-9]{2})/?$',
-			'index.php?year=$matches[2]&monthnum=$matches[3]&kind=$matches[1]',
-			'top'
-		);
-		// Year Month and Day Archive for Kind
-		add_rewrite_rule(
-			'kind/([a-z]+)/([0-9]{4})/([0-9]{2})/([0-9]{2})/page/([0-9]{1,})/?$',
-			'index.php?year=$matches[2]&monthnum=$matches[3]&day=$matches[4]&kind=$matches[1]&paged=$matches[5]',
-			'top'
-		);
-		add_rewrite_rule(
-			'kind/([a-z]+)/([0-9]{4})/([0-9]{2})/([0-9]{2})/?$',
-			'index.php?year=$matches[2]&monthnum=$matches[3]&day=$matches[4]&kind=$matches[1]',
-			'top'
-		);
+		// On This Day Rewrites.
 
-		// Exclude/Include Kinds
-		add_rewrite_rule(
-			'exclude/kind/([a-zA-Z,]+)/page/([0-9]{1,})/?',
-			'index.php?exclude_kind=$matches[1]&paged=matches[2]',
-			'top'
-		);
-		add_rewrite_rule(
-			'exclude/kind/([a-zA-Z,]+)/?$',
-			'index.php?exclude_kind=$matches[1]',
-			'top'
-		);
-		add_rewrite_rule(
-			'exclude/kind/([a-zA-Z,]+)/feed/([a-z]+)?$',
-			'index.php?exclude_kind=$matches[1]&feed=$matches[2]',
-			'top'
-		);
-		add_rewrite_rule(
-			'exclude/kind/([a-zA-Z,]+)/feed',
-			'index.php?exclude_kind=$matches[1]&feed=' . get_default_feed(),
-			'top'
-		);
+		// If the Simple Location plugin is installed, add the On This Day rewrite options for the map view.
+		if ( class_exists( 'Simple_Location_Plugin' ) ) {
+			add_rewrite_rule(
+				sprintf( '%1$s/([0-9]{2})/([0-9]{2})/map/%2$s/([0-9]{1,})/?', $onthisday_slug, $wp_rewrite->pagination_base ),
+				'index.php?monthnum=$matches[1]&day=$matches[2]&paged=$matches[3]&map=1',
+				'top'
+			);
+			add_rewrite_rule(
+				$onthisday_slug . '/([0-9]{2})/([0-9]{2})/map/?$',
+				'index.php?monthnum=$matches[1]&day=$matches[2]&map=1',
+				'top'
+			);
+			// On This Day Today Map with Pagination
+			add_rewrite_rule(
+				sprintf( '%1$s/map/%2$s/([0-9]{1,})/?', $onthisday_slug, $wp_rewrite->pagination_base ),
+				sprintf( 'index.php?monthnum=%1$s&day=%2$s&paged=$matches[1]&map=1', $now->format( 'm' ), $now->format( 'd' ) ),
+				'top'
+			);
+			// On This Day Today Map.
+			add_rewrite_rule(
+				$onthisday_slug . '/map/?$',
+				sprintf( 'index.php?monthnum=%1$s&day=%2$s&map=1', $now->format( 'm' ), $now->format( 'd' ) ),
+				'top'
+			);
+		}
 
-		// On This Day Archive
+		// On This Specific Day.
 		add_rewrite_rule(
-			'onthisday/([0-9]{2})/([0-9]{2})/map/page/([0-9]{1,})/?',
-			'index.php?monthnum=$matches[1]&day=$matches[2]&paged=$matches[3]&map=1',
-			'top'
-		);
-		add_rewrite_rule(
-			'onthisday/([0-9]{2})/([0-9]{2})/page/([0-9]{1,})/?',
+			sprintf( '%1$s/([0-9]{2})/([0-9]{2})/%2$s/([0-9]{1,})/?', $onthisday_slug, $wp_rewrite->pagination_base ),
 			'index.php?monthnum=$matches[1]&day=$matches[2]&paged=$matches[3]',
 			'top'
 		);
 		add_rewrite_rule(
-			'onthisday/([0-9]{2})/([0-9]{2})/map/?$',
-			'index.php?monthnum=$matches[1]&day=$matches[2]&map=1',
-			'top'
-		);
-		add_rewrite_rule(
-			'onthisday/([0-9]{2})/([0-9]{2})/?$',
+			$onthisday_slug . '/([0-9]{2})/([0-9]{2})/?$',
 			'index.php?monthnum=$matches[1]&day=$matches[2]',
 			'top'
 		);
 
-		add_rewrite_rule(
-			'onthisday/([0-9]{2})/([0-9]{2})/kind/([a-z]+)/?$',
-			'index.php?monthnum=$matches[1]&day=$matches[2]&kind=$matches[3]',
-			'top'
-		);
-
-		add_rewrite_rule(
-			'onthisday/([0-9]{2})/([0-9]{2})/kind/([a-z]+)/page/([0-9]{1,})/?$',
-			'index.php?monthnum=$matches[1]&day=$matches[2]&kind=$matches[3]&paged=$matches[4]',
-			'top'
-		);
-
-		$now = new DateTime();
-
 		// On This Day Today.
 		add_rewrite_rule(
-			'onthisday/?$',
+			$onthisday_slug . '/?$',
 			sprintf( 'index.php?monthnum=%1$s&day=%2$s', $now->format( 'm' ), $now->format( 'd' ) ),
 			'top'
 		);
 
 		// On This Day Today Pagination
 		add_rewrite_rule(
-			'onthisday/page/([0-9]{1,})/?',
+			sprintf( '%1$s/%2$s/([0-9]{1,})/?', $onthisday_slug, $wp_rewrite->pagination_base ),
 			sprintf( 'index.php?monthnum=%1$s&day=%2$s&paged=$matches[1]', $now->format( 'm' ), $now->format( 'd' ) ),
 			'top'
 		);
 
-		// On This Day Todays Date Kind Filter.
-		add_rewrite_rule(
-			'onthisday/kind/([a-z]+)/?$',
-			sprintf( 'index.php?monthnum=%1$s&day=%2$s&kind=$matches[1]', $now->format( 'm' ), $now->format( 'd' ) ),
-			'top'
-		);
-
-		// On This Day Todays Date Kind Filter and Pagination
-		add_rewrite_rule(
-			'onthisday/kind/([a-z]+)/page/([0-9]{1,})/?',
-			sprintf( 'index.php?monthnum=%1$s&day=%2$s&kind=$matches[1]&paged=$matches[2]', $now->format( 'm' ), $now->format( 'd' ) ),
-			'top'
-		);
-
-		// Kind Archives for Photos
-		add_rewrite_rule(
-			'photos/kind/([a-z]+)/page/([0-9]{1,})/?$',
-			'index.php?kind=$matches[1]&kind_photos=1&paged=$matches[2]',
-			'top'
-		);
-		add_rewrite_rule(
-			'photos/kind/([a-z]+)/?$',
-			'index.php?kind=$matches[1]&kind_photos=1',
-			'top'
-		);
+		$kind_photos_slug = apply_filters( 'kind_photos_slug', 'photos' );
 
 		// Year Archives for Photos
 		add_rewrite_rule(
-			'photos/([0-9]{4})/page/([0-9]{1,})/?$',
+			sprintf( '%1$s/([0-9]{4})/%2$s/([0-9]{1,})/?$', $kind_photos_slug, $wp_rewrite->pagination_base ),
 			'index.php?year=$matches[1]&kind_photos=1&paged=$matches[2]',
 			'top'
 		);
 		add_rewrite_rule(
-			'photos/([0-9]{4})/?$',
+			$kind_photos_slug . '/([0-9]{4})/?$',
 			'index.php?year=$matches[1]&kind_photos=1',
 			'top'
 		);
 
 		// Year and Month Archive for Photos
 		add_rewrite_rule(
-			'photos/([0-9]{4})/([0-9]{2})/page/([0-9]{1,})/?$',
+			sprintf( '%1$s/([0-9]{4})/([0-9]{2})/%2$s/([0-9]{1,})/?$', $kind_photos_slug, $wp_rewrite->pagination_base ),
 			'index.php?year=$matches[1]&monthnum=$matches[2]&kind_photos=1&paged=$matches[3]',
 			'top'
 		);
 		add_rewrite_rule(
-			'photos/([0-9]{4})/([0-9]{2})/?$',
+			$kind_photos_slug . '/([0-9]{4})/([0-9]{2})/?$',
 			'index.php?year=$matches[1]&monthnum=$matches[2]&kind_photos=1',
 			'top'
 		);
 
 		// Year and Month And Day Archive for Photos
 		add_rewrite_rule(
-			'photos/([0-9]{4})/([0-9]{2})/([0-9]{2})/page/([0-9]{1,})/?$',
+			sprintf( '%1$s/([0-9]{4})/([0-9]{2})/([0-9]{2})/%2$s/([0-9]{1,})/?$', $kind_photos_slug, $wp_rewrite->pagination_base ),
 			'index.php?year=$matches[1]&monthnum=$matches[2]&day=$matches[3]&kind_photos=1&paged=$matches[4]',
 			'top'
 		);
 		add_rewrite_rule(
-			'photos/([0-9]{4})/([0-9]{2})/([0-9]{2})/?$',
+			$kind_photos_slug . '/([0-9]{4})/([0-9]{2})/([0-9]{2})/?$',
 			'index.php?year=$matches[1]&monthnum=$matches[2]&day=$matches[3]&kind_photos=1',
 			'top'
 		);
+
+		// Root Photos Pagination.
+		add_rewrite_rule(
+			sprintf( '%1$s/%2$s/([0-9]{1,})/?$', $kind_photos_slug, $wp_rewrite->pagination_base ),
+			'index.php?kind_photos=1&paged=$matches[1]',
+			'top'
+		);
+
+		// Taxonomy Archives for Photos.
+		add_rewrite_rule(
+			sprintf( '%1$s/([^/]*)/([^/]*)/%2$s/([0-9]{1,})/?$', $kind_photos_slug, $wp_rewrite->pagination_base ),
+			'index.php?$matches[1]=$matches[2]&kind_photos=1&paged=$matches[3]',
+			'top'
+		);
+		add_rewrite_rule(
+			$kind_photos_slug . '/([^/]*)/([^/]*)/?$',
+			'index.php?$matches[1]=$matches[2]&kind_photos=1',
+			'top'
+		);
+
+		// Root Photos.
+		add_rewrite_rule(
+			$kind_photos_slug . '/?$',
+			'index.php?kind_photos=1',
+			'top'
+		);
+
 	}
 
 	/**
