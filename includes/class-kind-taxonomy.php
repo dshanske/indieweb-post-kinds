@@ -598,6 +598,20 @@ final class Kind_Taxonomy {
 			'top'
 		);
 
+		// Root Photos Feed.
+		add_rewrite_rule(
+			$kind_photos_slug . '%1$s/feed/([^/]*)/?$',
+			'index.php?kind_photos=1&feed=$matches[1]',
+			'top'
+		);
+
+		// Root Photos Feed.
+		add_rewrite_rule(
+			$kind_photos_slug . '%1$s/feed/?$',
+			'index.php?kind_photos=1&feed=' . get_default_feed(),
+			'top'
+		);
+
 		// Taxonomy Archives for Photos.
 		add_rewrite_rule(
 			sprintf( '%1$s/([^/]*)/([^/]*)/%2$s/([0-9]{1,})/?$', $kind_photos_slug, $wp_rewrite->pagination_base ),
