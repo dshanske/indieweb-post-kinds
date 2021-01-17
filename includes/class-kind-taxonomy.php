@@ -157,6 +157,8 @@ final class Kind_Taxonomy {
 					),
 				)
 			);
+			$query->set( 'posts_per_page', 30 );
+
 		}
 		return $query;
 	}
