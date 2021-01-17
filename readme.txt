@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like, scrobble
-Stable tag: 3.4.14
+Stable tag: 3.4.15
 Requires at least: 4.9.9
 Requires PHP: 5.6
 Tested up to: 5.6
@@ -212,11 +212,11 @@ Add a function with your kind in the above format, hooking it in the init hook a
 Post Kinds automatically handles the display of archives of individual types. So to view all the posts marked as "note", for example, one could visit the URL http://www.YOURSITE.COM/kind/note/. 
 Simply replace YOURSITE.COM with your particular site name and the particular post kind name to access the others.
 
-You can also add the date /kind/note/2018/12/24 to see date-based archives. Or /kind/note/tag/tagname using the slug of a tag to see an archive of tagged posts of a specific kind
+You can also add the date /kind/note/2018/12/24 to see date-based archives. 
 
-For archives if you add exclude_kind as a query variable it will exclude specific kinds from the query `?exclude_kind=note`. You can also do this as /exclude/kind/note,checkin as it accepts multiple values
+For archives if you add exclude_kind as a query variable it will exclude specific kinds from the query `?exclude=kind&exclude_terms=note`. You can also do this as /exclude/kind/note,checkin as it accepts multiple values
 
-There is also a special photo photo included, using ?kind_photos=1 or /photos/yyyy or /photos/yyyy/mm or /photos/kind/note. This will use the photo enhancements introduced in 3.4.0 to only show photos from
+There is also a special photo photo included, using ?kind_photos=1 or /photos/yyyy or /photos/yyyy/mm or /photos/kind/note or any other taxonomy. This will use the photo enhancements introduced in 3.4.0 to only show photos from
 all types of posts.
 
 = Do you have RSS feeds for each kind? = 
@@ -263,6 +263,10 @@ through future plugin updates.
 
 
 == Changelog ==
+
+= 3.4.15 ( 2021-01-16 ) =
+* Rewrite existing rewrites. 
+* Allow the `onthisday` and `photos` slug to be customized
 
 = 3.4.14 ( 2021-01-13 ) =
 * Fix CSS issue for On This Day widget
