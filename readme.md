@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** [dshanske](https://profiles.wordpress.org/dshanske)  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.4.15  
+**Stable tag:** 3.4.16  
 **Requires at least:** 4.9.9  
 **Requires PHP:** 5.6  
 **Tested up to:** 5.6  
@@ -267,6 +267,11 @@ through future plugin updates.
 
 
 ## Changelog ##
+
+### 3.4.16 ( 2021-01-19 ) ###
+* Fix issue with photos overrunning boundary
+* Fix issue where photos were not picked up on certain kinds of posts
+* Minor structural issues. 
 
 ### 3.4.15 ( 2021-01-16 ) ###
 * Rewrite existing rewrites. 

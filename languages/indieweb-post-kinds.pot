@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the Post Kinds plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Kinds 3.4.15\n"
+"Project-Id-Version: Post Kinds 3.4.16\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/indieweb-post-kinds\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2021-01-17T02:56:42+00:00\n"
+"POT-Creation-Date: 2021-01-20T04:53:02+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.4.0\n"
 "X-Domain: indieweb-post-kinds\n"
@@ -1360,161 +1360,161 @@ msgstr ""
 #. translators: 1: Kinds. Yearly archive title. 2: Year
 #. translators: Monthly archive title. 1: Month name and year
 #. translators: Daily archive title. 1: Date
-#: includes/class-kind-taxonomy.php:765
-#: includes/class-kind-taxonomy.php:768
-#: includes/class-kind-taxonomy.php:771
-#: includes/class-kind-taxonomy.php:779
-#: includes/class-kind-taxonomy.php:832
+#: includes/class-kind-taxonomy.php:792
+#: includes/class-kind-taxonomy.php:795
+#: includes/class-kind-taxonomy.php:798
+#: includes/class-kind-taxonomy.php:806
+#: includes/class-kind-taxonomy.php:859
 msgid "%1$1s: %2$2s"
 msgstr ""
 
 #. translators: 1: Kinds. Yearly archive title. 2: Year
-#: includes/class-kind-taxonomy.php:765
+#: includes/class-kind-taxonomy.php:792
 msgctxt "yearly archives date format"
 msgid "Y"
 msgstr ""
 
 #. translators: Monthly archive title. 1: Month name and year
-#: includes/class-kind-taxonomy.php:768
+#: includes/class-kind-taxonomy.php:795
 msgctxt "monthly archives date format"
 msgid "F Y"
 msgstr ""
 
 #. translators: Daily archive title. 1: Date
-#: includes/class-kind-taxonomy.php:771
+#: includes/class-kind-taxonomy.php:798
 msgctxt "daily archives date format"
 msgid "F j, Y"
 msgstr ""
 
 #. translators: Daily archive title. 1: Date
-#: includes/class-kind-taxonomy.php:779
-#: includes/class-kind-taxonomy.php:832
+#: includes/class-kind-taxonomy.php:806
+#: includes/class-kind-taxonomy.php:859
 msgid "On This Day"
 msgstr ""
 
 #. translators: Daily archive title. 1: Date
-#: includes/class-kind-taxonomy.php:779
-#: includes/class-kind-taxonomy.php:832
+#: includes/class-kind-taxonomy.php:806
+#: includes/class-kind-taxonomy.php:859
 msgctxt "daily archives date format"
 msgid "F j"
 msgstr ""
 
 #. translators: All
-#: includes/class-kind-taxonomy.php:1055
+#: includes/class-kind-taxonomy.php:1082
 msgid "All %1s"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:1225
+#: includes/class-kind-taxonomy.php:1252
 msgid "Invalid post"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:1228
+#: includes/class-kind-taxonomy.php:1255
 msgid "Invalid Kind"
 msgstr ""
 
-#: includes/class-kind-view.php:402
+#: includes/class-kind-view.php:403
 msgctxt "singular Twitter"
 msgid "a tweet"
 msgstr ""
 
-#: includes/class-kind-view.php:403
+#: includes/class-kind-view.php:404
 msgctxt "singular Vimeo"
 msgid "a video"
 msgstr ""
 
-#: includes/class-kind-view.php:404
+#: includes/class-kind-view.php:405
 msgctxt "singular Youtube"
 msgid "a video"
 msgstr ""
 
-#: includes/class-kind-view.php:405
+#: includes/class-kind-view.php:406
 msgctxt "singular Intagram"
 msgid "an image"
 msgstr ""
 
-#: includes/class-kind-view.php:411
+#: includes/class-kind-view.php:412
 msgctxt "singular post"
 msgid "a post"
 msgstr ""
 
-#: includes/class-kind-view.php:478
+#: includes/class-kind-view.php:479
 msgid "an author"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:576
+#: includes/class-kind-view.php:577
 msgid "Attending <a href=\"%1$s\" class=\"u-in-reply-to\">%2$s</a>"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:578
+#: includes/class-kind-view.php:579
 msgid "Might be attending <a href=\"%1$s\" class=\"u-in-reply-to\">%2$s</a>"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:580
+#: includes/class-kind-view.php:581
 msgid "Unable to Attend <a href=\"%1$s\" class=\"u-in-reply-to\">%2$s</a>"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:582
+#: includes/class-kind-view.php:583
 msgid "Interested in Attending <a href=\"%1$s\" class=u-in-reply-to\">%2$s</a>"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:584
+#: includes/class-kind-view.php:585
 msgid "Attending <a href=\"%1$s\" class=\"u-in-reply-to\">%2$s</a> remotely"
 msgstr ""
 
-#: includes/class-kind-view.php:602
+#: includes/class-kind-view.php:603
 msgid "Want to Read: "
 msgstr ""
 
-#: includes/class-kind-view.php:603
+#: includes/class-kind-view.php:604
 msgid "Reading: "
 msgstr ""
 
-#: includes/class-kind-view.php:604
+#: includes/class-kind-view.php:605
 msgid "Finished Reading: "
 msgstr ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:636
+#: includes/class-kind-view.php:637
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:640
+#: includes/class-kind-view.php:641
 msgid "%d month"
 msgid_plural "%d months"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:644
+#: includes/class-kind-view.php:645
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:648
+#: includes/class-kind-view.php:649
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:652
+#: includes/class-kind-view.php:653
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:656
+#: includes/class-kind-view.php:657
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] ""
@@ -2347,7 +2347,7 @@ msgstr ""
 #: views/kind-like.php:25
 #: views/kind-listen.php:29
 #: views/kind-read.php:27
-#: views/kind-video.php:46
+#: views/kind-video.php:45
 #: views/kind-watch.php:28
 #: views/kind.php:34
 msgid "by"
