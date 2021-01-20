@@ -26,7 +26,6 @@ if ( ! empty( $cite['name'] ) ) {
 }
 ?>
 </header>
-</section>
 <?php
 if ( $embed ) {
 	printf( '<blockquote class="e-summary">%1s</blockquote>', $embed );

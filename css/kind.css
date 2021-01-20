@@ -27,6 +27,9 @@
   height: 2rem;
   color: black;
 }
+.response figure {
+  margin: auto;
+}
 
 .response {
   margin-bottom: 10px;

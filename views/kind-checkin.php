@@ -33,13 +33,11 @@ if ( $cite ) {
 	}
 }
 
-// Close Response
-?>
-</section>
-
-<?php
 if ( $photos && ! has_post_thumbnail( get_the_ID() ) ) {
 	$view = new Kind_Media_View( $photos, 'photo' );
 	echo $view->get();
 }
+// Close Response
 ?>
+</section>
+

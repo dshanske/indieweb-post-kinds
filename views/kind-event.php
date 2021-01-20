@@ -24,12 +24,10 @@ if ( $start ) {
 if ( $end ) {
 	printf( $timestring, __( 'End', 'indieweb-post-kinds' ), 'dt-end', $end->format( DATE_W3C ), display_formatted_datetime( $end ) );
 }	
-// Close Response
-?>
-</section>
-<?php
 if ( $photos && ! has_post_thumbnail( get_the_ID() ) ) {
 	$view = new Kind_Media_View( $photos, 'photo' );
 	echo $view->get();
 }
+// Close Response
 ?>
+</section>
