@@ -345,8 +345,19 @@ class Kind_Post {
 			}
 			$content_ids = array();
 			$post        = $this->get_post();
+			$shortcode   = false;
+			$shortcodes  = apply_filter( 'kind_photo_shortcode_exclude', array( 'vr', '360' ) );
 			if ( $post->post_content ) {
-				$content_ids = array_merge( $content_ids, Kind_Media_Metadata::get_img_from_content( $post->post_content ) );
+				foreach ( $shortcodes as $code ) {
+					if ( has_shortcode( $post->post_content, $code ) ) {
+						$shortcode = true;
+					}
+				}
+				if ( $shortcode ) {
+					$content_ids = array();
+				} else {
+					$content_ids = array_merge( $content_ids, Kind_Media_Metadata::get_img_from_content( $post->post_content ) );
+				}
 				update_post_meta( $this->id, '_content_img_ids', $content_ids );
 			}
 		}
