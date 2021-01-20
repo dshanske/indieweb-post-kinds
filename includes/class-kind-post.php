@@ -366,7 +366,7 @@ class Kind_Post {
 			return array();
 		}
 
-		$att_ids = $this->get_attached_media( 'image', $this->id );
+		$att_ids = $this->get_attached_media( 'photo', $this->id );
 		if ( ! $att_ids ) {
 			$att_ids = array();
 		}
