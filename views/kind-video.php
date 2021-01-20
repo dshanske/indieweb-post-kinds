@@ -20,7 +20,6 @@ if ( is_array( $videos ) ) {
 		}
 	}
 }
-$photos      = $kind_post->get_photo();
 $first_photo = null;
 if ( is_countable( $photos ) ) {
 	$first_photo = $photos[0];

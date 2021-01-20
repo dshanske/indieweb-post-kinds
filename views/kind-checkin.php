@@ -4,8 +4,6 @@
  *
  */
 
-$photos = $kind_post->get_photo();
-
 if ( ! $cite ) {
 	return;
 }
@@ -41,13 +39,7 @@ if ( $cite ) {
 
 <?php
 if ( $photos && ! has_post_thumbnail( get_the_ID() ) ) {
-		echo gallery_shortcode(
-			array(
-				'id'      => get_the_ID(),
-				'size'    => 'large',
-				'columns' => 1,
-				'link'    => 'file',
-			)
-		);
+	$view = new Kind_Media_View( $photos, 'photo' );
+	echo $view->get();
 }
-
+?>

@@ -3,8 +3,6 @@
  * Photo Template
  *
  */
-
-$photos = $kind_post->get_photo();
 if ( $photos ) {
 	$embed = null;
 }
@@ -28,6 +26,7 @@ if ( ! empty( $cite['name'] ) ) {
 }
 ?>
 </header>
+</section>
 <?php
 if ( $embed ) {
 	printf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
