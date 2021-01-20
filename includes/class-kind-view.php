@@ -107,6 +107,7 @@ class Kind_View {
 		$type      = Kind_Taxonomy::get_kind_info( $kind, 'property' );
 		$cite      = $kind_post->get_cite();
 		$cite      = $kind_post->normalize_cite( $cite );
+		$photos    = $kind_post->get_photo();
 
 		if ( empty( $cite['name'] ) ) {
 			$cite['name'] = $cite['url'];
