@@ -381,6 +381,7 @@ class Kind_Post {
 		if ( ! $att_ids ) {
 			$att_ids = array();
 		}
+
 		$photos = get_post_meta( $this->id, 'mf2_photo', true );
 
 		if ( ! is_array( $content_ids ) ) {
@@ -389,7 +390,7 @@ class Kind_Post {
 
 		$att_ids = array_merge( $att_ids, $this->get_attachments_from_urls( $photos ), $content_ids );
 		if ( ! empty( $att_ids ) ) {
-			return array_filter( $att_ids );
+			return array_unique( $att_ids );
 		}
 		return false;
 	}
