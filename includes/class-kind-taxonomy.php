@@ -593,6 +593,18 @@ final class Kind_Taxonomy {
 			'top'
 		);
 
+		// Month And Day Archive for Photos
+		add_rewrite_rule(
+			sprintf( '%1$s/([0-9]{2})/([0-9]{2})/%2$s/([0-9]{1,})/?$', $kind_photos_slug, $wp_rewrite->pagination_base ),
+			'index.php?monthnum=$matches[1]&day=$matches[2]&kind_photos=1&paged=$matches[3]',
+			'top'
+		);
+		add_rewrite_rule(
+			$kind_photos_slug . '/([0-9]{2})/([0-9]{2})/?$',
+			'index.php?monthnum=$matches[1]&day=$matches[2]&kind_photos=1',
+			'top'
+		);
+
 		// Root Photos Pagination.
 		add_rewrite_rule(
 			sprintf( '%1$s/%2$s/([0-9]{1,})/?$', $kind_photos_slug, $wp_rewrite->pagination_base ),
