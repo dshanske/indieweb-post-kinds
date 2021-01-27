@@ -27,6 +27,7 @@ final class Kind_Taxonomy {
 		add_filter( 'query_vars', array( static::class, 'query_vars' ) );
 		add_action( 'pre_get_posts', array( static::class, 'kind_filter_query' ) );
 		add_action( 'pre_get_posts', array( static::class, 'kind_photo_filter' ) );
+		add_action( 'pre_get_posts', array( static::class, 'kind_onthisday_filter' ) );
 
 		// Add Dropdown
 		add_action( 'restrict_manage_posts', array( static::class, 'kind_dropdown' ), 10, 2 );
@@ -125,6 +126,7 @@ final class Kind_Taxonomy {
 		$qvars[] = 'exclude';
 		$qvars[] = 'exclude_terms';
 		$qvars[] = 'kind_photos';
+		$qvars[] = 'onthisday';
 		return $qvars;
 	}
 
@@ -159,6 +161,33 @@ final class Kind_Taxonomy {
 			);
 			$query->set( 'posts_per_page', 30 );
 
+		}
+		return $query;
+	}
+
+	/**
+	 * Filter the query for onthisday.
+	 *
+	 * @access public
+	 *
+	 * @param $query
+	 */
+	public static function kind_onthisday_filter( $query ) {
+		// check if the user is requesting an admin page
+		if ( is_admin() ) {
+			return;
+		}
+		$onthisday = get_query_var( 'onthisday' );
+		// Return if  not set
+		if ( $onthisday ) {
+			$now = new DateTime();
+			$query->set(
+				'date_query',
+				array(
+					'month' => $now->format( 'm' ),
+					'day'   => $now->format( 'd' ),
+				)
+			);
 		}
 		return $query;
 	}
@@ -499,7 +528,6 @@ final class Kind_Taxonomy {
 		);
 
 		$onthisday_slug = apply_filters( 'kind_onthisday_slug', 'onthisday' );
-		$now            = new DateTime();
 
 		// On This Day Rewrites.
 
@@ -518,13 +546,13 @@ final class Kind_Taxonomy {
 			// On This Day Today Map with Pagination
 			add_rewrite_rule(
 				sprintf( '%1$s/map/%2$s/([0-9]{1,})/?', $onthisday_slug, $wp_rewrite->pagination_base ),
-				sprintf( 'index.php?monthnum=%1$s&day=%2$s&paged=$matches[1]&map=1', $now->format( 'm' ), $now->format( 'd' ) ),
+				'index.php?onthisday=1&paged=$matches[1]&map=1',
 				'top'
 			);
 			// On This Day Today Map.
 			add_rewrite_rule(
 				$onthisday_slug . '/map/?$',
-				sprintf( 'index.php?monthnum=%1$s&day=%2$s&map=1', $now->format( 'm' ), $now->format( 'd' ) ),
+				'index.php?onthisday=1&map=1',
 				'top'
 			);
 		}
@@ -544,14 +572,14 @@ final class Kind_Taxonomy {
 		// On This Day Today.
 		add_rewrite_rule(
 			$onthisday_slug . '/?$',
-			sprintf( 'index.php?monthnum=%1$s&day=%2$s', $now->format( 'm' ), $now->format( 'd' ) ),
+			'index.php?onthisday=1',
 			'top'
 		);
 
 		// On This Day Today Pagination
 		add_rewrite_rule(
 			sprintf( '%1$s/%2$s/([0-9]{1,})/?', $onthisday_slug, $wp_rewrite->pagination_base ),
-			sprintf( 'index.php?monthnum=%1$s&day=%2$s&paged=$matches[1]', $now->format( 'm' ), $now->format( 'd' ) ),
+			'index.php?onthisday=1&paged=$matches[1]',
 			'top'
 		);
 
