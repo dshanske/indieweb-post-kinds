@@ -1068,6 +1068,7 @@ final class Kind_Taxonomy {
 	public static function webmention_links( $links, $post_id ) {
 		$kind_post = new Kind_Post( $post_id );
 		$cite      = $kind_post->get_cite();
+		$cite      = ifset( $cite['properties'] );
 		$cites     = ifset( $cite['url'] );
 		if ( is_string( $cites ) ) {
 			$links[] = $cites;
