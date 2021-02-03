@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like, scrobble
-Stable tag: 3.4.17
+Stable tag: 3.4.18
 Requires at least: 4.9.9
 Requires PHP: 5.6
 Tested up to: 5.6
@@ -263,6 +263,10 @@ through future plugin updates.
 
 
 == Changelog ==
+
+= 3.4.18 ( 2021-02-03 ) =
+* Fix bug with sending of webmentions ( props @pfefferle for discovering it)
+* Fix issue with echoing proper microformats class after recent addition of p- option for non-urls
 
 = 3.4.17 ( 2021-01-22 ) =
 * Fix reversion issue with photos not being picked up.
