@@ -16,7 +16,7 @@ if ( ! $duration ) {
 
 
 ?>
-<section class="response <?php empty( $url ) ? 'p-watch-of' : 'u-watch-of'; ?> h-cite">
+<section class="response <?php echo empty( $url ) ? 'p-watch-of' : 'u-watch-of'; ?> h-cite">
 <header>
 <?php
 echo Kind_Taxonomy::get_before_kind( 'watch' );

@@ -17,7 +17,7 @@ if ( ! $duration ) {
 
 ?>
 
-<section class="response <?php empty( $url ) ? 'p-listen-of' : 'u-listen-of'; ?> h-cite">
+<section class="response <?php echo empty( $url ) ? 'p-listen-of' : 'u-listen-of'; ?> h-cite">
 <header>
 <?php
 echo Kind_Taxonomy::get_before_kind( 'listen' );
