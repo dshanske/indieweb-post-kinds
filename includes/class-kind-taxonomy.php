@@ -1067,8 +1067,7 @@ final class Kind_Taxonomy {
 	 */
 	public static function webmention_links( $links, $post_id ) {
 		$kind_post = new Kind_Post( $post_id );
-		$cite      = $kind_post->get_cite();
-		$cites     = ifset( $cite['url'] );
+		$cites     = $kind_post->get_cite( 'url' );
 		if ( is_string( $cites ) ) {
 			$links[] = $cites;
 		}
@@ -1091,8 +1090,7 @@ final class Kind_Taxonomy {
 	public static function enclosure_links( $links, $post_id ) {
 		$kind_post = new Kind_Post( $post_id );
 		if ( in_array( $kind_post->get_kind(), array( 'photo', 'video', 'audio' ), true ) ) {
-			$cite  = $kind_post->get_cite();
-			$cites = ifset( $cite['url'] );
+			$cites  = $kind_post->get_cite( 'url' );
 			if ( is_string( $cites ) ) {
 				$links[] = $cites;
 			}
