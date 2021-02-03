@@ -11,7 +11,7 @@ if ( ! $cite ) {
 ?>
 
 
-<section class="response <?php empty( $url ) ? 'p-like-of' : 'u-like-of'; ?> h-cite">
+<section class="response <?php echo empty( $url ) ? 'p-like-of' : 'u-like-of'; ?> h-cite">
 <header>
 <?php
 echo Kind_Taxonomy::get_before_kind( 'like' );

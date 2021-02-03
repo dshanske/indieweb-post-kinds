@@ -10,7 +10,7 @@ if ( ! $cite ) {
 
 ?>
 
-<section class="response <?php empty( $url ) ? 'p-in-reply-to' : 'u-in-reply-to'; ?> h-cite">
+<section class="response <?php echo empty( $url ) ? 'p-in-reply-to' : 'u-in-reply-to'; ?> h-cite">
 <header>
 <?php
 echo Kind_Taxonomy::get_before_kind( 'issue' );

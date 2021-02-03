@@ -10,7 +10,7 @@ if ( ! $cite ) {
 $read   = $kind_post->get( 'read-status', true );
 
 ?>
-<section class="response <?php empty( $url ) ? 'p-read-of' : 'u-read-of'; ?> h-cite">
+<section class="response <?php echo empty( $url ) ? 'p-read-of' : 'u-read-of'; ?> h-cite">
 <header>
 <?php
 echo Kind_Taxonomy::get_before_kind( 'read' );
