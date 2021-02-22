@@ -17,6 +17,21 @@ class Kind_OnThisDay_Widget extends WP_Widget {
 	} // end constructor
 
 	/**
+	 * Set Defaults.
+	 *
+	 * @param array $instance Instance variable.
+	 * @return array Instance after defaults added.
+	 *
+	 */
+	public function defaults( $instance ) {
+		$defaults = array(
+			'number'    => 5,
+			'nonefound' => __( 'There were no posts on this day in previous years', 'indieweb-post-kinds' ),
+		);
+		return wp_parse_args( $defaults, $instance );
+	}
+
+	/**
 	 * Front-end display of widget.
 	 *
 	 * @see WP_Widget::widget()
@@ -25,8 +40,8 @@ class Kind_OnThisDay_Widget extends WP_Widget {
 	 * @param array $instance Saved values from database.
 	 */
 	public function widget( $args, $instance ) {
-		$kind = ifset( $instance['kind'], 'note' );
-		$date = new DateTime();
+		$instance = $this->defaults( $instance );
+		$date     = new DateTime();
 		// phpcs:ignore
 		echo $args['before_widget'];
 		if ( ! empty( $instance['title'] ) ) {
@@ -38,22 +53,35 @@ class Kind_OnThisDay_Widget extends WP_Widget {
 			$query = array(
 				'day'         => $date->format( 'd' ),
 				'monthnum'    => $date->format( 'm' ),
-				'numberposts' => ifset( $instance['number'], 5 ),
+				'numberposts' => instance['number'],
 				'fields'      => 'ids',
 			);
 			$posts = get_posts( $query );
 		}
 		set_transient( $transient, $posts, HOUR_IN_SECONDS );
+		$organize = array();
+		foreach ( $posts as $post ) {
+			$diff = human_time_diff( get_post_timestamp( $post ) );
+			if ( ! array_key_exists( $diff, $organize ) ) {
+				$organize[ $diff ] = array();
+			}
+			$organize[ $diff ][] = $this->list_item( $post );
+		}
 
 		echo '<div id="kind-onthisday">';
-		if ( ! empty( $posts ) ) {
+		if ( ! empty( $organize ) ) {
 			echo '<ul>';
-			foreach ( $posts as $post ) {
-				printf( '<li>%1$s</li>', self::get_the_link( $post, $kind ) ); // phpcs:ignore
+			foreach ( $organize as $title => $year ) {
+				echo '<li>';
+				/* translators: %s: Human-readable time difference. */
+				printf( __( '%s ago...', 'indieweb-post-kinds' ), $title );
+				echo '<ul>';
+				echo implode( '', $year );
+				echo '</li></ul>';
 			}
 			echo '</ul>';
 		} else {
-			esc_html_e( 'You did not post on this day previously', 'indieweb-post-kinds' );
+			echo esc_html( $instance['nonefound'] );
 		}
 		echo '</div>';
 		echo $args['after_widget']; // phpcs:ignore
@@ -63,12 +91,11 @@ class Kind_OnThisDay_Widget extends WP_Widget {
 	 * @access public
 	 *
 	 * @param WP_Post $post Post object
-	 * @param string  $kind Post kind to link.
 	 * @return string
 	 */
-	public function get_the_link( $post, $kind ) {
+	public function list_item( $post ) {
 		$post = get_post( $post );
-		return sprintf( '<a href="%2$s">%1$s</a> - %3$s', self::get_the_title( $post, $kind ), get_the_permalink( $post ), get_the_date( '', $post ) );
+		return sprintf( '<li><a href="%2$s">%1$s</a></li>', $this->get_the_title( $post ), get_the_permalink( $post ) );
 	}
 
 	/**
@@ -80,15 +107,18 @@ class Kind_OnThisDay_Widget extends WP_Widget {
 	 * @param string  $kind Post kind.
 	 * @return string
 	 */
-	public function get_the_title( $post, $kind ) {
-		$post  = get_post( $post );
-		$title = get_the_title( $post );
-		if ( ! empty( $title ) ) {
-			return $title;
+	public function get_the_title( $post ) {
+		$post      = get_post( $post );
+		$kind_post = new Kind_Post( $post );
+
+		$content = $kind_post->get_name();
+		if ( ! empty( $content ) ) {
+			return $content;
 		}
+
+		$kind = $kind_post->get_kind();
 		if ( ! in_array( $kind, array( 'note', 'article' ), true ) ) {
-			$kind_post = new Kind_Post( $post );
-			$cite      = $kind_post->get_cite( 'name' );
+			$cite = $kind_post->get_cite( 'name' );
 			if ( false === $cite ) {
 				$content = Kind_View::get_post_type_string( $kind_post->get_cite( 'url' ) );
 			} else {
@@ -105,10 +135,7 @@ class Kind_OnThisDay_Widget extends WP_Widget {
 				$content = mb_strimwidth( wp_strip_all_tags( $content ), 0, 40, '...' );
 			}
 		}
-		if ( is_array( $content ) ) {
-			$content = wp_json_encode( $content );
-		}
-		return trim( sprintf( '%1$s %2$s', Kind_Taxonomy::get_before_kind( $kind ), $content ) );
+		return trim( sprintf( '<a href="%1$s">%2$s</a>', get_the_permalink( $post ), Kind_Taxonomy::get_before_kind( $kind ) . $content ) );
 	}
 
 	/**
@@ -135,7 +162,11 @@ class Kind_OnThisDay_Widget extends WP_Widget {
 	 * @param array $instance Previously saved values from database.
 	 */
 	public function form( $instance ) {
+		$instance         = $this->defaults( $instance );
 		$instance['kind'] = ifset( $instance['kind'], 'note' );
+		if ( ! array_key_exists( 'nonefound', $instance ) ) {
+			$instance['nonefound'] = __( 'There were no posts on this day in previous years', 'indieweb-post-kinds' );
+		}
 		?>
 				<p><label for="title"><?php esc_html_e( 'Title: ', 'indieweb-post-kinds' ); ?></label>
 				<input type="text" size="30" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?> id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"
@@ -143,6 +174,8 @@ class Kind_OnThisDay_Widget extends WP_Widget {
 		<p>
 		<label for="<?php echo esc_attr( $this->get_field_id( 'number' ) ); ?>"><?php esc_html_e( 'Number of Posts:', 'indieweb-post-kinds' ); ?></label>
 		<input type="number" min="1" step="1" name="<?php echo esc_attr( $this->get_field_name( 'number' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'number' ) ); ?>" value="<?php echo esc_attr( ifset( $instance['number'], 5 ) ); ?>" />
+		<label for="<?php echo esc_attr( $this->get_field_id( 'nonefound' ) ); ?>"><?php esc_html_e( 'Text if No Posts Found:', 'indieweb-post-kinds' ); ?></label>
+		<textarea class="widefat" name="<?php echo esc_attr( $this->get_field_name( 'nonefound' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'nonefound' ) ); ?>"><?php echo esc_html( $instance['nonefound'] ); ?></textarea>
 		<?php
 	}
 }
