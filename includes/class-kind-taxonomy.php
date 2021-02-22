@@ -28,6 +28,7 @@ final class Kind_Taxonomy {
 		add_action( 'pre_get_posts', array( static::class, 'kind_filter_query' ) );
 		add_action( 'pre_get_posts', array( static::class, 'kind_photo_filter' ) );
 		add_action( 'pre_get_posts', array( static::class, 'kind_onthisday_filter' ) );
+		add_action( 'pre_get_posts', array( static::class, 'kind_alias_filter' ) );
 
 		// Add Dropdown
 		add_action( 'restrict_manage_posts', array( static::class, 'kind_dropdown' ), 10, 2 );
@@ -226,6 +227,25 @@ final class Kind_Taxonomy {
 				),
 			)
 		);
+		return $query;
+	}
+
+	/**
+	 * Allows for some pre-defined aliases
+	 *
+	 * @access public
+	 *
+	 * @param $query
+	 */
+	public static function kind_alias_filter( $query ) {
+		if ( empty( get_query_var( 'kind' ) ) ) {
+			return $query;
+		}
+
+		$kind = get_query_var( 'kind' );
+		if ( 'food' === $kind ) {
+			$query->set( 'kind', 'eat,drink' );
+		}
 		return $query;
 	}
 
@@ -1090,7 +1110,7 @@ final class Kind_Taxonomy {
 	public static function enclosure_links( $links, $post_id ) {
 		$kind_post = new Kind_Post( $post_id );
 		if ( in_array( $kind_post->get_kind(), array( 'photo', 'video', 'audio' ), true ) ) {
-			$cites  = $kind_post->get_cite( 'url' );
+			$cites = $kind_post->get_cite( 'url' );
 			if ( is_string( $cites ) ) {
 				$links[] = $cites;
 			}
