@@ -35,8 +35,9 @@ spl_autoload_register(
 	}
 );
 
-register_activation_hook( __FILE__, array( 'Kind_Taxonomy', 'activate_kinds' ) );
+register_activation_hook( __FILE__, array( 'Post_Kinds_Plugin', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'Post_Kinds_Plugin', 'deactivate' ) );
+add_action( 'upgrader_process_complete', array( 'Post_Kinds_Plugin', 'upgrader_process_complete' ), 10, 2 );
 
 if ( ! file_exists( plugin_dir_path( __FILE__ ) . 'lib/parse-this/parse-this.php' ) ) {
 	add_action( 'admin_notices', array( 'Post_Kinds_Plugin', 'parse_this_error' ) );
@@ -86,6 +87,18 @@ class Post_Kinds_Plugin {
 		$class   = 'notice notice-error';
 		$message = __( 'Classic Editor Plugin is not active. The Post Kinds plugin will not function correctly at this time without using the Classic Editor.', 'indieweb-post-kinds' );
 		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
+	}
+
+
+	public static function upgrader_process_complete( $upgrade_object, $options ) {
+		$current_plugin_path_name = plugin_basename( __FILE__ );
+		if ( ( 'update' === $options['action'] ) && ( 'plugin' === $options['type'] ) ) {
+			foreach ( $options['plugins'] as $each_plugin ) {
+				if ( $each_plugin === $current_plugin_path_name ) {
+					flush_rewrite_rules();
+				}
+			}
+		}
 	}
 
 	public static function activate() {
