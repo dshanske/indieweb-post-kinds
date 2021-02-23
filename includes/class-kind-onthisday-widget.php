@@ -74,9 +74,9 @@ class Kind_OnThisDay_Widget extends WP_Widget {
 			foreach ( $organize as $title => $year ) {
 				echo '<li>';
 				/* translators: %s: Human-readable time difference. */
-				printf( __( '%s ago...', 'indieweb-post-kinds' ), $title );
+				printf( __( '%s ago...', 'indieweb-post-kinds' ), $title ); // phpcs:ignore
 				echo '<ul>';
-				echo implode( '', $year );
+				echo implode( '', $year ); // phpcs:ignore
 				echo '</li></ul>';
 			}
 			echo '</ul>';
