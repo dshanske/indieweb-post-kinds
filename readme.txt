@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like, scrobble
-Stable tag: 3.4.18
+Stable tag: 3.4.19
 Requires at least: 4.9.9
 Requires PHP: 5.6
 Tested up to: 5.6
@@ -263,6 +263,13 @@ through future plugin updates.
 
 
 == Changelog ==
+
+= 3.4.19 ( 2021-02-22 ) =
+* Improve output of On This Day Widget.
+* Flush Rewrite rules on Plugin Upgrade.
+* Add 'food' as alias for eat,drink. Example /kind/food 
+* Add 'reaction' as alias for bookmark,repost,like,favorite
+* Add 'media' as alias for watch,listen,play,read posts.
 
 = 3.4.18 ( 2021-02-03 ) =
 * Fix bug with sending of webmentions ( props @pfefferle for discovering it)
