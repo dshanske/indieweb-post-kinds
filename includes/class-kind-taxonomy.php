@@ -246,6 +246,12 @@ final class Kind_Taxonomy {
 		if ( 'food' === $kind ) {
 			$query->set( 'kind', 'eat,drink' );
 		}
+		if ( 'reaction' === $kind ) {
+			$query->set( 'kind', 'bookmark,repost,like,favorite' );
+		}
+		if ( 'media' === $kind ) {
+			$query->set( 'kind', 'watch,read,listen,play' );
+		}
 		return $query;
 	}
 
