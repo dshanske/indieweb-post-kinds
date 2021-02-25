@@ -41,7 +41,7 @@ class Kind_OnThisDay_Widget extends WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		$instance = $this->defaults( $instance );
-		$date     = new DateTime();
+		$date     = new DateTime( "now", wp_timezone() );
 		// phpcs:ignore
 		echo $args['before_widget'];
 		if ( ! empty( $instance['title'] ) ) {
@@ -53,7 +53,7 @@ class Kind_OnThisDay_Widget extends WP_Widget {
 			$query = array(
 				'day'         => $date->format( 'd' ),
 				'monthnum'    => $date->format( 'm' ),
-				'numberposts' => instance['number'],
+				'numberposts' => $instance['number'],
 				'fields'      => 'ids',
 			);
 			$posts = get_posts( $query );

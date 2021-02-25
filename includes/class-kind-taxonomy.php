@@ -181,7 +181,7 @@ final class Kind_Taxonomy {
 		$onthisday = get_query_var( 'onthisday' );
 		// Return if  not set
 		if ( $onthisday ) {
-			$now = new DateTime();
+			$now = new DateTime( "now", wp_timezone() );
 			$query->set(
 				'date_query',
 				array(
