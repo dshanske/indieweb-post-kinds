@@ -164,7 +164,6 @@ class Post_Kinds_Plugin {
 			function() {
 				register_widget( 'Kind_Menu_Widget' );
 				register_widget( 'Kind_Post_Widget' );
-				register_widget( 'Kind_OnThisDay_Widget' );
 			}
 		);
 	}
