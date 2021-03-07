@@ -629,34 +629,6 @@ final class Kind_Taxonomy {
 			'index.php?kind_photos=1',
 			'top'
 		);
-
-		/* Updated Rule
-		$kind_updated_slug = apply_filters( 'kind_updated_slug', 'updated' );
-
-		add_rewrite_rule(
-			$kind_updated_slug . '/feed/([^/]*)/?$',
-			'index.php?orderby=modified&feed=$matches[1]',
-			'top'
-		);
-
-		add_rewrite_rule(
-			$kind_updated_slug . '%1$s/feed/?$',
-			'index.php?orderby=modified&feed=' . get_default_feed(),
-			'top'
-		);
-
-		add_rewrite_rule(
-			sprintf( '%1$s/%2$s/([0-9]{1,})/?$', $kind_updated_slug, $wp_rewrite->pagination_base ),
-			'index.php?orderby=modified&paged=$matches[1]',
-			'top'
-		);
-
-		add_rewrite_rule(
-			$kind_updated_slug . '/?$',
-			'index.php?orderby=modified',
-			'top'
-		); */
-
 	}
 
 	/**
