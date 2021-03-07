@@ -19,6 +19,7 @@ class Kind_Plugins {
 		add_action( 'after_micropub', array( static::class, 'micropub_set_kind' ), 9, 2 );
 		add_action( 'after_micropub', array( static::class, 'post_formats' ), 11, 2 );
 		add_filter( 'before_micropub', array( static::class, 'micropub_parse' ), 11 );
+		add_filter( 'onthisday_widget_post_title', array( static::class, 'onthisday_widget_post_title' ) );
 		// Override Post Type in Semantic Linkbacks.
 		add_filter( 'semantic_linkbacks_post_type', array( static::class, 'semantic_post_type' ), 11, 2 );
 
@@ -37,6 +38,47 @@ class Kind_Plugins {
 		add_action( 'hum_local_types', array( static::class, 'hum_local_types' ), 11 );
 		add_action( 'hum_type_prefix', array( static::class, 'hum_type_prefix' ), 11, 2 );
 
+	}
+
+
+	/**
+	 * Construct a title for the post kind link.
+	 *
+	 * @access public
+	 *
+	 * @param string $title The Original Title.
+	 * @param WP_Post $post Post object.
+	 * @return string
+	 */
+	public function onthisday_widget_post_title( $title, $post ) {
+		$post      = get_post( $post );
+		$kind_post = new Kind_Post( $post );
+
+		$content = $kind_post->get_name();
+		if ( ! empty( $content ) ) {
+			return $content;
+		}
+
+		$kind = $kind_post->get_kind();
+		if ( ! in_array( $kind, array( 'note', 'article' ), true ) ) {
+			$cite = $kind_post->get_cite( 'name' );
+			if ( false === $cite ) {
+				$content = Kind_View::get_post_type_string( $kind_post->get_cite( 'url' ) );
+			} else {
+				$content = $cite;
+			}
+		} else {
+			$content = $post->post_excerpt;
+			// If no excerpt use content
+			if ( ! $content ) {
+				$content = $post->post_content;
+			}
+			// If no content use date
+			if ( $content ) {
+				$content = mb_strimwidth( wp_strip_all_tags( $content ), 0, 40, '...' );
+			}
+		}
+		return trim( sprintf( '<a href="%1$s">%2$s</a>', get_the_permalink( $post ), Kind_Taxonomy::get_before_kind( $kind ) . $content ) );
 	}
 
 	public static function hum_local_types( $types ) {
