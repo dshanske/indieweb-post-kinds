@@ -78,7 +78,7 @@ class Kind_Plugins {
 				$content = mb_strimwidth( wp_strip_all_tags( $content ), 0, 40, '...' );
 			}
 		}
-		return trim( sprintf( '<a href="%1$s">%2$s</a>', get_the_permalink( $post ), Kind_Taxonomy::get_before_kind( $kind ) . $content ) );
+		return trim( Kind_Taxonomy::get_before_kind( $kind ) . $content );
 	}
 
 	public static function hum_local_types( $types ) {
