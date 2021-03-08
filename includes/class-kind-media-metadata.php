@@ -25,7 +25,7 @@ class Kind_Media_Metadata {
 	}
 
 	public static function enqueue() {
-		if ( ! is_front_page() && is_singular() ) {
+		if ( ! is_front_page() && is_singular() && ( ! function_exists( 'is_amp_endpoint' ) || function_exists( 'is_amp_endpoint' ) && ! is_amp_endpoint() ) ) {
 			wp_enqueue_script(
 				'media-fragment',
 				plugins_url( 'js/clone-media-fragment.js', dirname( __FILE__ ) ),
