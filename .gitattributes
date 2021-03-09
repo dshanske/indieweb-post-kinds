@@ -1,7 +1,21 @@
 # Directories
 /.wordpress-org export-ignore
 /.github export-ignore
+/vendor export-ignore
+/tests export-ignore
+/bin export-ignore
+/node-modules export-ignore
+/sass export-ignore
 
 # Files
 /.gitattributes export-ignore
 /.gitignore export-ignore
+/composer.json export-ignore
+/composer.lock export-ignore
+/package.json export-ignore
+/package-lock.json export-ignore
+/readme.md export-ignore
+/phpcs.xml export-ignore
+/phpunit.xml export-ignore
+/Gruntfile.js export-ignore
+/gruntlint.js export-ignore
