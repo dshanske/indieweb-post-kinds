@@ -753,9 +753,10 @@ final class Kind_Taxonomy {
 	 */
 	public static function kind_archive_prefix( $prefix ) {
 		if ( is_tax() || is_category() || is_tag() ) {
-			$terms = self::get_terms_from_query();
-			$tax   = get_taxonomy( reset( $terms )->taxonomy );
-			return _n( $tax->labels->singular_name, $tax->labels->name, count( $terms ), 'indieweb-post-kinds' ) . ':';
+			$terms  = self::get_terms_from_query();
+			$tax    = get_taxonomy( reset( $terms )->taxonomy );
+			$plural = ( count( $terms ) === 1 );
+			return ( $plural ? $tax->labels->singular_name : $tax->labels->name ) . ':';
 		}
 		return $prefix;
 	}
@@ -772,14 +773,10 @@ final class Kind_Taxonomy {
 	 * @return string|void
 	 */
 	public static function kind_archive_title( $title, $original_title = null, $prefix = null ) {
-		$return = array();
+		$return     = array();
 		$wp_version = get_bloginfo( 'version' );
 
 		$prefix = apply_filters( 'get_the_archive_title_prefix', $prefix );
-
-		if ( 1 !== get_query_var( 'kind_photo' ) ) {
-
-		}
 
 		if ( is_tax() || is_category() || is_tag() ) {
 			$terms = self::get_terms_from_query();

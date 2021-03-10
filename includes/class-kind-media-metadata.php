@@ -203,7 +203,7 @@ class Kind_Media_Metadata {
 		$content = do_shortcode( $post->post_content );
 
 		$gallery_ids = array();
-		$gallery = get_post_gallery( $post_id, false );
+		$gallery     = get_post_gallery( $post_id, false );
 
 		if ( is_array( $gallery ) ) {
 			if ( array_key_exists( 'ids', $gallery ) ) {
