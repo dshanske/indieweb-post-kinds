@@ -1,10 +1,10 @@
 # Post Kinds #
 **Contributors:** [dshanske](https://profiles.wordpress.org/dshanske)  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.4.19  
+**Stable tag:** 3.5.0  
 **Requires at least:** 4.9.9  
 **Requires PHP:** 5.6  
-**Tested up to:** 5.6  
+**Tested up to:** 5.7  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -45,6 +45,11 @@ responsibilities to responsibly use this data, and to remove information on requ
 2. [Chris Aldrich](http://boffosocko.com) always receives a credit on my plugins due his regular feedback, input, and usage.
 
 ## Upgrade Notice ##
+
+### 3.5.0 ###
+
+On This Day and Updated Functionality has been moved into its own plugin, Tempus Fugit, along with various other time based functionality from my plugins. You will have to install that plugin
+to get these features.
 
 ### 3.3.0 ###
 Media metadata storage has been moved into the attachment as opposed to being stored in the post itself. This may have some unexpected effects. Please report if needed. The next version will
@@ -267,6 +272,12 @@ through future plugin updates.
 
 
 ## Changelog ##
+
+### 3.5.0 (2021-03-xx ) ###
+* Removal of On This Day functionality to separate plugin
+* Removal of Updated functionality to separate plugin
+* Rewrite of all rewrites to simplify generation
+* Improve archive title, document title, and archive description generation.
 
 ### 3.4.19 ( 2021-02-22 ) ###
 * Improve output of On This Day Widget.
