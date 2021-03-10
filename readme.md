@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** [dshanske](https://profiles.wordpress.org/dshanske)  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.5.0  
+**Stable tag:** 3.5.1  
 **Requires at least:** 4.9.9  
 **Requires PHP:** 5.6  
 **Tested up to:** 5.7  
@@ -273,7 +273,10 @@ through future plugin updates.
 
 ## Changelog ##
 
-### 3.5.0 (2021-03-xx ) ###
+### 3.5.1 (2021-03-09 ) ###
+* Do not Enqueue Media Fragment JS if AMP Endpoint
+
+### 3.5.0 (2021-03-09 ) ###
 * Removal of On This Day functionality to separate plugin
 * Removal of Updated functionality to separate plugin
 * Rewrite of all rewrites to simplify generation
