@@ -24,8 +24,15 @@ class Kind_Media_Metadata {
 		add_filter( 'attachment_fields_to_save', array( static::class, 'attachment_fields_to_save' ), 10, 2 );
 	}
 
+	public static function is_amp_endpoint() {
+		if ( function_exists( 'is_amp_endpoint' ) ) {
+			return is_amp_endpoint();
+		}
+		return false;
+	}
+
 	public static function enqueue() {
-		if ( ! is_front_page() && is_singular() ) {
+		if ( ! is_front_page() && is_singular() && ! self::is_amp_endpoint() ) {
 			wp_enqueue_script(
 				'media-fragment',
 				plugins_url( 'js/clone-media-fragment.js', dirname( __FILE__ ) ),
