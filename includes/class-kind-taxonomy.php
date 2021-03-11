@@ -484,9 +484,7 @@ final class Kind_Taxonomy {
 			'show_in_quick_edit' => false,
 			'show_admin_column'  => true,
 			'meta_box_cb'        => array( static::class, 'select_metabox' ),
-			'rewrite'            => array(
-				'slug' => 'kind/%kind%/%year%/%monthnum%',
-			),
+			'rewrite'            => true,
 			'query_var'          => true,
 			'default_term'       => array(
 				'name' => __( 'Article', 'indieweb-post-kinds' ),
@@ -495,7 +493,8 @@ final class Kind_Taxonomy {
 
 		);
 		register_taxonomy( 'kind', array( 'post' ), $args );
-
+		add_permastruct( 'kind_date', 'kind/%kind%/%year%/%monthnum%/'  );
+:
 		$kind_rewrite_taxonomies = apply_filters( 'kind_rewrite_taxonomies', array( 'post_tag', 'category', 'series' ) );
 
 		// For each kind, support filtering by other taxonomies.
@@ -509,34 +508,6 @@ final class Kind_Taxonomy {
 		add_rewrite_tag( '%kind_exclude_terms%', '([a-z,]+)', 'exclude_terms=' );
 		add_permastruct( 'kind_excludes', $kind_exclude_slug . '/%kind_exclude%/%kind_exclude_terms%' );
 
-		/* On This Day Rewrites.
-
-		// If the Simple Location plugin is installed, add the On This Day rewrite options for the map view.
-		if ( class_exists( 'Simple_Location_Plugin' ) ) {
-			add_rewrite_rule(
-				sprintf( '%1$s/([0-9]{2})/([0-9]{2})/map/%2$s/([0-9]{1,})/?', $onthisday_slug, self::get_pagination_regex() ),
-				'index.php?monthnum=$matches[1]&day=$matches[2]&paged=$matches[3]&map=1',
-				'top'
-			);
-			add_rewrite_rule(
-				$onthisday_slug . '/([0-9]{2})/([0-9]{2})/map/?$',
-				'index.php?monthnum=$matches[1]&day=$matches[2]&map=1',
-				'top'
-			);
-			// On This Day Today Map with Pagination
-			add_rewrite_rule(
-				sprintf( '%1$s/map/%2$s/([0-9]{1,})/?', $onthisday_slug, self::get_feed_regex() ),
-				'index.php?onthisday=1&paged=$matches[1]&map=1',
-				'top'
-			);
-			// On This Day Today Map.
-			add_rewrite_rule(
-				$onthisday_slug . '/map/?$',
-				'index.php?onthisday=1&map=1',
-				'top'
-			);
-		}
-		*/
 
 		$kind_photos_slug = apply_filters( 'kind_photos_slug', 'photos' );
 
