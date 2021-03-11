@@ -50,7 +50,7 @@ class Kind_Plugins {
 	 * @param WP_Post $post Post object.
 	 * @return string
 	 */
-	public function onthisday_widget_post_title( $title, $post ) {
+	public static function onthisday_widget_post_title( $title, $post ) {
 		$post      = get_post( $post );
 		$kind_post = new Kind_Post( $post );
 
