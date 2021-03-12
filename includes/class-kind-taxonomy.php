@@ -494,7 +494,7 @@ final class Kind_Taxonomy {
 		);
 		register_taxonomy( 'kind', array( 'post' ), $args );
 		add_permastruct( 'kind_date', 'kind/%kind%/%year%/%monthnum%/'  );
-:
+
 		$kind_rewrite_taxonomies = apply_filters( 'kind_rewrite_taxonomies', array( 'post_tag', 'category', 'series' ) );
 
 		// For each kind, support filtering by other taxonomies.
