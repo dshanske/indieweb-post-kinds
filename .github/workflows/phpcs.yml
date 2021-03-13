@@ -26,5 +26,5 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
       - name: Detect coding standard violations
-        run: composer lint:wpcs
+        run: composer lint
 

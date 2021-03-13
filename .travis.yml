@@ -28,17 +28,11 @@ php:
   - 7.2
   - 7.3
   - 7.4
-  - 8.0
 
 jobs:
   include:
-  - stage: lint
-    php: 8.0
-    script:
-      - composer install
-      - composer lint
   - stage: previousversion
-    php: 8.0
+    php: 7.4
     env: WP_VERSION=5.3 WP_MULTISITE=0
   - stage: oldestsupport
     php: 5.6
