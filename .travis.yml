@@ -28,16 +28,17 @@ php:
   - 7.2
   - 7.3
   - 7.4
+  - 8.0
 
 jobs:
   include:
   - stage: lint
-    php: 7.4
+    php: 8.0
     script:
       - composer install
       - composer lint
   - stage: previousversion
-    php: 7.4
+    php: 8.0
     env: WP_VERSION=5.3 WP_MULTISITE=0
   - stage: oldestsupport
     php: 5.6
@@ -63,7 +64,10 @@ before_script:
   # Install the specified version of PHPUnit depending on the PHP version:
   if [[ "$WP_TRAVISCI" == "travis:phpunit" ]]; then
     case "$TRAVIS_PHP_VERSION" in
-      7.4|7.3|7.2|7.1|nightly)
+      8.0|7.4|nightly)
+        echo "Using PHPUnit 8.x"
+        composer global require "phpunit/phpunit:^8"
+      7.3|7.2|7.1)
         echo "Using PHPUnit 7.x"
         composer global require "phpunit/phpunit:^7"
         ;;

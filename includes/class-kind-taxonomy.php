@@ -493,7 +493,7 @@ final class Kind_Taxonomy {
 
 		);
 		register_taxonomy( 'kind', array( 'post' ), $args );
-		add_permastruct( 'kind_date', 'kind/%kind%/%year%/%monthnum%/'  );
+		add_permastruct( 'kind_date', 'kind/%kind%/%year%/%monthnum%/' );
 
 		$kind_rewrite_taxonomies = apply_filters( 'kind_rewrite_taxonomies', array( 'post_tag', 'category', 'series' ) );
 
@@ -507,7 +507,6 @@ final class Kind_Taxonomy {
 		add_rewrite_tag( '%kind_exclude%', '([^/]*)', 'exclude=' );
 		add_rewrite_tag( '%kind_exclude_terms%', '([a-z,]+)', 'exclude_terms=' );
 		add_permastruct( 'kind_excludes', $kind_exclude_slug . '/%kind_exclude%/%kind_exclude_terms%' );
-
 
 		$kind_photos_slug = apply_filters( 'kind_photos_slug', 'photos' );
 

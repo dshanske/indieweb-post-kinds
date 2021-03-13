@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like, scrobble
-Stable tag: 3.5.1
+Stable tag: 3.5.2
 Requires at least: 4.9.9
 Requires PHP: 5.6
 Tested up to: 5.7
@@ -268,6 +268,10 @@ through future plugin updates.
 
 
 == Changelog ==
+
+= 3.5.2 ( 2021-03-12 ) =
+* Fix reported minor bugs.
+* Begin testing on PHP8.0
 
 = 3.5.1 (2021-03-09 ) =
 * Do not Enqueue Media Fragment JS if AMP Endpoint
