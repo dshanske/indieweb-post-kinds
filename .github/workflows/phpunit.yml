@@ -39,8 +39,6 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress
-        with:
-          php_version: ${{ matrix.php-versions }}
       - name: Setup Test Environment
         run: composer setup-local-tests
       - name: Unit Testing
