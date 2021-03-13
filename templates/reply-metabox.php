@@ -1,12 +1,15 @@
 <?php
 wp_nonce_field( 'replykind_metabox', 'replykind_metabox_nonce' );
 $kind_post = new Kind_Post( get_the_ID() );
-$kind = $kind_post->get_kind();
-$type     = Kind_Taxonomy::get_kind_info( $kind, 'property' );
-$cite     = $kind_post->get_cite();
+$kind      = $kind_post->get_kind();
+$type      = Kind_Taxonomy::get_kind_info( $kind, 'property' ); // phpcs:ignore
+$cite      = $kind_post->get_cite();
 
+if ( is_string( $cite ) ) {
+	$cite = wp_http_validate_url( $cite ) ? array( 'url' => $cite ) : array( 'name' => $cite );
+}
 
-if ( empty( $cite['url'] ) && array_key_exists( 'kindurl', $_GET) ) {
+if ( empty( $cite['url'] ) && array_key_exists( 'kindurl', $_GET ) ) {
 	$cite['url'] = esc_url_raw( $_GET['kindurl'] );
 }
 
@@ -15,11 +18,10 @@ $attachment = 0;
 
 if ( in_array( $kind, array( 'audio', 'video', 'photo' ) ) ) {
 	$attachment = attachment_url_to_postid( $cite['url'] );
-} 
-
-if ( $attachment ) {
-	$attachment_post = new Kind_Post( $attachment );
-	$cite = $attachment_post->get_cite();
+	if ( $attachment ) {
+		$attachment_post = new Kind_Post( $attachment );
+		$cite            = $attachment_post->get_cite();
+	}
 }
 
 $cite = $kind_post->normalize_cite( $cite );
@@ -47,19 +49,19 @@ $cite = $kind_post->normalize_cite( $cite );
 <p id="kind-media hide-if-no-js">
 <?php $show_media = ( isset( $cite['url'] ) && in_array( $kind, array( 'photo', 'audio', 'video' ) ) ); ?>
 <div id="kind-media-container" <?php echo ( $show_media ) ? '' : 'class="hidden"'; ?> >
-<?php if ( $attachment ) {
+<?php
+if ( $attachment ) {
 	if ( wp_attachment_is( 'image', $attachment ) ) {
 		echo wp_get_attachment_image( $attachment );
-	}
-	elseif ( wp_attachment_is( 'audio', $attachment ) ) {
+	} elseif ( wp_attachment_is( 'audio', $attachment ) ) {
 		$view = new Kind_Media_View( $attachment, 'audio' );
 		echo $view->get();
-	}
-	elseif ( wp_attachment_is( 'video', $attachment ) ) {
+	} elseif ( wp_attachment_is( 'video', $attachment ) ) {
 		$view = new Kind_Media_View( $attachment, 'video' );
 		echo $view->get();
 	}
-} ?>
+}
+?>
 	</div>
 	<input type="hidden" id="cite_media" name="cite_media" value="<?php echo $attachment; ?>" >
 </p>
