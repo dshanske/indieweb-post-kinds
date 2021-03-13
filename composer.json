@@ -37,6 +37,7 @@
         "lint:wpcs-fix": "./vendor/bin/phpcbf",
 	"lint": "./vendor/bin/phpcs -n -q",
 	"phpunit": "./vendor/bin/phpunit",
+	"setup-local-tests": "bash bin/install-wp-tests.sh wordpress_test root root 127.0.0.1 latest",
         "make-pot": "./vendor/bin/wp i18n make-pot . languages/indieweb-post-kinds.pot",
 	"lint:php": "@php ./vendor/bin/parallel-lint --exclude .git --exclude vendor --exclude node_modules .",
 	"install-codestandards": [
