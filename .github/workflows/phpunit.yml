@@ -34,11 +34,11 @@ jobs:
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           # Use the hash of composer.json as the key for your cache if you do not commit composer.lock. 
-          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          key: ${{ runner.os }}-php-${{ matrix.php-versions }}-composer-${{ hashFiles('**/composer.json') }}
           #key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
       - name: Install dependencies
-        uses: php-actions/composer@v5
+        run: composer install --prefer-dist --no-progress
         with:
           php_version: ${{ matrix.php-versions }}
       - name: Setup Test Environment
