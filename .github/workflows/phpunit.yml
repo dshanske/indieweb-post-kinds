@@ -41,7 +41,6 @@ jobs:
         uses: php-actions/composer@v5
         with:
           php_version: ${{ matrix.php-versions }}
-        run: composer install --prefer-dist --no-progress
       - name: Setup Test Environment
         run: composer setup-local-tests
       - name: Unit Testing
