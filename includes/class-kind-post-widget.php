@@ -42,7 +42,6 @@ class Kind_Post_Widget extends WP_Widget {
 						),
 					),
 					'numberposts' => ifset( $instance['number'], 5 ),
-					'fields'      => 'ids',
 				);
 				$posts = get_posts( $query );
 		}
@@ -72,6 +71,9 @@ class Kind_Post_Widget extends WP_Widget {
 	 * @return string
 	 */
 	public function get_the_link( $post, $kind ) {
+		if ( ! $post instanceof WP_Post ) {
+			return '';
+		}
 		return sprintf( '<a href="%2$s">%1$s</a> - %3$s', self::get_the_title( $post, $kind ), get_the_permalink( $post ), get_the_date( '', $post ) );
 	}
 
@@ -85,6 +87,9 @@ class Kind_Post_Widget extends WP_Widget {
 	 * @return string
 	 */
 	public function get_the_title( $post, $kind ) {
+		if ( ! $post instanceof WP_Post ) {
+			return '';
+		}
 		$title = get_the_title( $post );
 		if ( ! empty( $title ) ) {
 			return $title;
