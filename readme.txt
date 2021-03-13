@@ -271,7 +271,7 @@ through future plugin updates.
 
 = 3.5.2 ( 2021-03-12 ) =
 * Fix reported minor bugs.
-* Begin testing on PHP8.0
+* Move to GitHub Actions for Automated Testing
 
 = 3.5.1 (2021-03-09 ) =
 * Do not Enqueue Media Fragment JS if AMP Endpoint
