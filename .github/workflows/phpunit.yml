@@ -38,6 +38,9 @@ jobs:
           #key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: ${{ runner.os }}-composer-
       - name: Install dependencies
+        uses: php-actions/composer@v5
+        with:
+          php_version: ${{ matrix.php-versions }}
         run: composer install --prefer-dist --no-progress
       - name: Setup Test Environment
         run: composer setup-local-tests
