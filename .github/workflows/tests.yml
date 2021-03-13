@@ -17,5 +17,5 @@ jobs:
         tools: phpunit, composer
     - name: Run tests
       run: |
-        composer update
+        composer install
         ./vendor/bin/phpunit -c ./phpunit.xml.dist
