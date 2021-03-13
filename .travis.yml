@@ -67,6 +67,7 @@ before_script:
       8.0|7.4|nightly)
         echo "Using PHPUnit 8.x"
         composer global require "phpunit/phpunit:^8"
+        ;;
       7.3|7.2|7.1)
         echo "Using PHPUnit 7.x"
         composer global require "phpunit/phpunit:^7"
