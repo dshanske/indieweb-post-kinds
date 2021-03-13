@@ -19,18 +19,3 @@ jobs:
       run: |
         composer update
         ./vendor/bin/phpunit -c ./phpunit.xml.dist
-  quality:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@master
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '7.4'
-        extensions: mbstring, intl
-        ini-values: post_max_size=256M, short_open_tag=On
-        tools: phpunit, composer
-    - name: Run PHPCS
-      run: |
-        composer update
-        composer lint:wpcs
