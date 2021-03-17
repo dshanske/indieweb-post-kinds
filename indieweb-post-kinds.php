@@ -7,7 +7,7 @@
  * Plugin Name: Post Kinds
  * Plugin URI: https://wordpress.org/plugins/indieweb-post-kinds/
  * Description: Ever want to reply to someone else's post with a post on your own site? Or to "like" someone else's post, but with your own site?
- * Version: 3.5.2
+ * Version: 3.5.3
  * Author: David Shanske
  * Author URI: https://david.shanske.com
  * Text Domain: indieweb-post-kinds
@@ -51,7 +51,7 @@ add_action( 'plugins_loaded', array( 'Post_Kinds_Plugin', 'plugins_loaded' ), 11
 add_action( 'init', array( 'Post_Kinds_Plugin', 'init' ) );
 
 class Post_Kinds_Plugin {
-	public static $version = '3.5.2';
+	public static $version = '3.5.3';
 	public static function init() {
 		// Add Kind Taxonomy.
 		Kind_Taxonomy::init();
@@ -92,7 +92,7 @@ class Post_Kinds_Plugin {
 
 	public static function upgrader_process_complete( $upgrade_object, $options ) {
 		$current_plugin_path_name = plugin_basename( __FILE__ );
-		if ( ( 'update' === $options['action'] ) && ( 'plugin' === $options['type'] ) ) {
+		if ( ( 'update' === $options['action'] ) && ( 'plugin' === $options['type'] ) && array_key_exists( 'plugins', $options ) ) {
 			foreach ( $options['plugins'] as $each_plugin ) {
 				if ( $each_plugin === $current_plugin_path_name ) {
 					flush_rewrite_rules();

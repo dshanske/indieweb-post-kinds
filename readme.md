@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** [dshanske](https://profiles.wordpress.org/dshanske)  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.5.2  
+**Stable tag:** 3.5.3  
 **Requires at least:** 4.9.9  
 **Requires PHP:** 5.6  
 **Tested up to:** 5.7  
@@ -272,6 +272,9 @@ through future plugin updates.
 
 
 ## Changelog ##
+
+### 3.5.3 ( 2021-03-16 ) ###
+* Fix issue with spurious filter.
 
 ### 3.5.2 ( 2021-03-12 ) ###
 * Fix reported minor bugs.
