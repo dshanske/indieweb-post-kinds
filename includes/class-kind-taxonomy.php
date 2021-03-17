@@ -15,8 +15,6 @@ final class Kind_Taxonomy {
 		require_once plugin_dir_path( __FILE__ ) . '/register-kinds.php';
 
 		// Add the Correct Archive Title to Kind Archives.
-		add_filter( 'wp_generate_attachment_metadata', array( static::class, 'wp_generate_attachment_metadata' ), 33, 2 );
-
 		if ( version_compare( $wp_version, '5.5', '>' ) ) {
 			add_filter( 'get_the_archive_title', array( static::class, 'kind_archive_title' ), 10 );
 		} else {
