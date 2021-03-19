@@ -13,12 +13,12 @@
   color: grey;
 }
 
-#kind-menu svg, #kind-posts svg, #tempus-onthisday svg {
+#kind-menu svg, #kind-posts svg, #tempus-onthisday svg, #tempus-thisweek svg {
   width: 1.5rem;
   height: 1.5rem;
   color: black;
 }
-#kind-menu ul, #kind-posts ul, #tempus-onthisday ul {
+#kind-menu ul, #kind-posts ul, #tempus-onthisday ul, #tempus-thisweek ul {
   list-style-type: none;
 }
 

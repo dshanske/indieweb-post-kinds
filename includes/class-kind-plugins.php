@@ -19,7 +19,7 @@ class Kind_Plugins {
 		add_action( 'after_micropub', array( static::class, 'micropub_set_kind' ), 9, 2 );
 		add_action( 'after_micropub', array( static::class, 'post_formats' ), 11, 2 );
 		add_filter( 'before_micropub', array( static::class, 'micropub_parse' ), 11 );
-		add_filter( 'onthisday_widget_post_title', array( static::class, 'onthisday_widget_post_title' ), 10, 2 );
+		add_filter( 'tempus_widget_post_title', array( static::class, 'tempus_widget_post_title' ), 10, 2 );
 		// Override Post Type in Semantic Linkbacks.
 		add_filter( 'semantic_linkbacks_post_type', array( static::class, 'semantic_post_type' ), 11, 2 );
 
@@ -42,7 +42,7 @@ class Kind_Plugins {
 
 
 	/**
-	 * Construct a title for the post kind link.
+	 * Construct a title for the Tempus Widget link.
 	 *
 	 * @access public
 	 *
@@ -50,7 +50,7 @@ class Kind_Plugins {
 	 * @param WP_Post $post Post object.
 	 * @return string
 	 */
-	public static function onthisday_widget_post_title( $title, $post ) {
+	public static function tempus_widget_post_title( $title, $post ) {
 		$post      = get_post( $post );
 		$kind_post = new Kind_Post( $post );
 
