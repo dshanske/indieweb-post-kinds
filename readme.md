@@ -273,6 +273,9 @@ through future plugin updates.
 
 ## Changelog ##
 
+### 3.5.4 ( 2021-03-19 ) ###
+* Update filter and CSS for This Week functionality.
+
 ### 3.5.3 ( 2021-03-16 ) ###
 * Fix issue with spurious filter.
 
