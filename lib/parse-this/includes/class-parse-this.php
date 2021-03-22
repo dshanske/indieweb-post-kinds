@@ -54,7 +54,7 @@ class Parse_This {
 		$domdocument = pt_load_domdocument( $content );
 		$scripts     = $domdocument->getElementsByTagName( 'script' );
 		foreach ( $scripts as $item ) {
-			$item->parentNode->removeChild( $item );
+			$item->parentNode->removeChild( $item ); // phpcs:ignore
 		}
 
 		$content = $domdocument->saveHTML();

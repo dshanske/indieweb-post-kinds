@@ -39,7 +39,7 @@ class Parse_This_Twitter extends Parse_This_Base {
 			$names    = array();
 			$category = array();
 			foreach ( $links as $link ) {
-					$key   = wp_strip_all_tags( $link->nodeValue );
+					$key   = wp_strip_all_tags( $link->nodeValue ); // phpcs:ignore
 					$value = $link->getAttribute( 'href' );
 					$parse = wp_parse_url( $value );
 					unset( $parse['query'] );
