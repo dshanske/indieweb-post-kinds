@@ -404,3 +404,39 @@ if ( ! function_exists( 'pt_load_domdocument' ) ) {
 		return $doc;
 	}
 }
+if ( ! function_exists( 'pt_secure_rewrite' ) ) {
+	function pt_secure_rewrite( $url ) {
+		$host   = wp_parse_url( $url, PHP_URL_HOST );
+		$host   = preg_replace( '/^([a-zA-Z0-9].*\.)?([a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9]\.[a-zA-Z.]{2,})$/', '$2', $host );
+		$secure = array(
+			'blogger.com',
+			'creativecommons.org',
+			'dailymotion.com',
+			'debian.org',
+			'facebook.com',
+			'foursquare.com',
+			'feedburner.com',
+			'fsf.org',
+			'fsfe.org',
+			'github.com',
+			'gitlab.com',
+			'gnu.org',
+			'google.com',
+			'gravatar.com',
+			'gstatic.com',
+			'kernel.org',
+			'lwn.net',
+			'tumblr.com',
+			'twitter.com',
+			'vimeo.com',
+			'wikipedia.org',
+			'wordpress.com',
+			'youtube.com',
+		);
+		$secure = apply_filters( 'pt_rewrite_secure', $secure );
+		if ( in_array( $host, $secure, true ) ) {
+			$url = preg_replace( '/^http:/i', 'https:', $url );
+		}
+		return $url;
+	}
+}
