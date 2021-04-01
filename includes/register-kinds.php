@@ -1034,15 +1034,15 @@ register_post_kind(
 );
 
 register_post_kind(
-	'make',
+	'craft',
 	array(
-		'singular_name'   => __( 'Make', 'indieweb-post-kinds' ), // Name for one instance of the kind
-		'name'            => __( 'Makes', 'indieweb-post-kinds' ), // General name for the kind plural
-		'verb'            => __( 'Made', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
-		'property'        => 'make-of', // microformats 2 property
+		'singular_name'   => __( 'Craft', 'indieweb-post-kinds' ), // Name for one instance of the kind
+		'name'            => __( 'Crafts', 'indieweb-post-kinds' ), // General name for the kind plural
+		'verb'            => __( 'Crafted', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+		'property'        => 'craft-of', // microformats 2 property
 		'format'          => 'status', // Post Format that maps to this
-		'description'     => __( 'Indicates making/construction of an object', 'indieweb-post-kinds' ),
-		'description-url' => '',
+		'description'     => __( 'Activities like knitting, crocheting, cross stitch, wood working, restoration, 3d printing...the activity of building something.', 'indieweb-post-kinds' ),
+		'description-url' => 'https://indieweb.org/crafts',
 		'shortlink'       => 'x',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => true, // Show in Settings
