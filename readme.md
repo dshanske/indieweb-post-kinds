@@ -166,6 +166,7 @@ posts.
  * **Jam** - Indicating a particularly personally meaningful song
  * **Watch** - video - watching a video
  * **Play** - playing a game
+ * **Craft** - making something...such as 3D printing, crafting, etc.
  * **Read** - reading a book, compared to online material
  * **Eat** - Representing recording what you eat, perhaps for a food diary
  * **Drink** - Similar to Eat
