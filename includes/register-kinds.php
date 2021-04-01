@@ -1033,3 +1033,18 @@ register_post_kind(
 	)
 );
 
+register_post_kind(
+	'make',
+	array(
+		'singular_name'   => __( 'Make', 'indieweb-post-kinds' ), // Name for one instance of the kind
+		'name'            => __( 'Makes', 'indieweb-post-kinds' ), // General name for the kind plural
+		'verb'            => __( 'Made', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+		'property'        => 'make-of', // microformats 2 property
+		'format'          => 'status', // Post Format that maps to this
+		'description'     => __( 'Indicates making/construction of an object', 'indieweb-post-kinds' ),
+		'description-url' => '',
+		'shortlink'       => 'x',
+		'title'           => false, // Should this kind have an explicit title
+		'show'            => true, // Show in Settings
+	)
+);
