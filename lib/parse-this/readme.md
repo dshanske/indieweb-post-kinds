@@ -20,6 +20,11 @@ It can be installed as a standalone plugin which will provide the necessary libr
 
 ## Changelog
 
+### 1.0.1 ( 2021-04-02 )
+
+* Remove SimplePie as a dependency as the latest version 1.5.6 is now bundled with WordPress as of 5.6.
+* Remove MB polyfill due issues with PHP8.0 compatibility in favor of simpler solution.
+
 ### 1.0.0 ( 2020-12-15 )
 
 * First Official Release. Prior to this point it was in a point release.

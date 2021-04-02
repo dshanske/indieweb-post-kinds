@@ -162,14 +162,7 @@ class Parse_This {
 	public static function fetch_feed( $url ) {
 		$url = pt_secure_rewrite( $url );
 		if ( ! class_exists( 'SimplePie', false ) ) {
-			// Try to use bundled SimplePie if not WordPress older SimplePie
-			$file = plugin_dir_path( __DIR__ ) . 'lib/simplepie/autoloader.php';
-			// SimplePie was updated to the latest version in WordPress 5.5. Use the bundled version for older installs only.
-			if ( version_compare( get_bloginfo( 'version' ), '5.5', '<' ) && file_exists( $file ) ) {
-				require_once $file;
-			} else {
-				require_once ABSPATH . WPINC . '/class-simplepie.php';
-			}
+			require_once ABSPATH . WPINC . '/class-simplepie.php';
 		}
 		require_once ABSPATH . WPINC . '/class-wp-feed-cache.php';
 		require_once ABSPATH . WPINC . '/class-wp-feed-cache-transient.php';
@@ -353,6 +346,7 @@ class Parse_This {
 			'jsonld'     => true,  // Try JSON-LD parsing
 			'html'       => true, // If mf2 parsing does not work look for html parsing which includes OGP, meta tags, and title tags
 			'references' => true, // Store nested citations as references per the JF2 spec
+			'location' => false, // Collapse location parameters in jf2. Specifically, location will be a string and latitude, longitude, and altitude will be set as h-entry properties.
 		);
 		$args     = wp_parse_args( $args, $defaults );
 		// If not an option then revert to single
@@ -434,6 +428,8 @@ class Parse_This {
 				}
 			}
 		}
-
+		if ( isset( $this->jf2['location'] ) && $args['location'] ) {
+			$this->jf2 = jf2_location( $this->jf2 );
+		}
 	}
 }

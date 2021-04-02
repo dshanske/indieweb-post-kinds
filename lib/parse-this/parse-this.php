@@ -3,7 +3,7 @@
  * Plugin Name: Parse This
  * Plugin URI: https://github.com/dshanske/parse-this
  * Description:
- * Version: 1.0
+ * Version: 1.0.1
  * Author: David Shanske
  * Author URI: https://david.shanske.com
  * Text Domain: parse-this
@@ -17,7 +17,6 @@
 
 if ( ! function_exists( 'parse_this_loader' ) ) {
 	function parse_this_loader() {
-		require_once plugin_dir_path( __FILE__ ) . 'lib/polyfill-mbstring/bootstrap.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/autoload.php';
 
 		// Functions Not Available in Earlier Versions of WordPress

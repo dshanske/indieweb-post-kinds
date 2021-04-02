@@ -76,6 +76,14 @@ class REST_Parse_This {
 					</tr>
 					<tr>
 						<th scope="row">
+							<label for="location"><?php esc_html_e( 'Clean up Location', 'indieweb-post-kinds' ); ?></label>
+						</th>
+						<td>
+							<input type="checkbox" name="location" id="location" />
+						</td>
+					</tr>
+					<tr>
+						<th scope="row">
 							<label for"return"><?php esc_html_e( 'Return Type', 'indieweb-post-kinds' ); ?></label>
 						</th>
 						<td>
@@ -136,6 +144,7 @@ class REST_Parse_This {
 		$return    = $request->get_param( 'return' );
 		$refs      = $request->get_param( 'references' );
 		$discovery = $request->get_param( 'discovery' );
+		$location  = $request->get_param( 'location' );
 		$follow    = $request->get_param( 'follow' );
 		if ( $discovery ) {
 			$parse = new Parse_This_Discovery();
@@ -152,6 +161,7 @@ class REST_Parse_This {
 				'return'     => $return,
 				'follow'     => $follow,
 				'references' => $refs,
+				'location'   => $location,
 			)
 		);
 		if ( $mf2 ) {
