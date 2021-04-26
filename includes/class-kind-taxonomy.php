@@ -341,7 +341,8 @@ final class Kind_Taxonomy {
 	 */
 	public static function the_title( $title, $post_id ) {
 		if ( ! $title && is_admin() ) {
-			return self::generate_title( $post_id, 60 ) . '&diams;';
+			$title = self::generate_title( $post_id, 60 );
+			if($title == "") { $title = '&diams;'; }
 		}
 		return $title;
 	}
