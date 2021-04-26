@@ -342,11 +342,14 @@ final class Kind_Taxonomy {
 	public static function the_title( $title, $post_id ) {
 		if ( ! $title && is_admin() ) {
 			$title = self::generate_title( $post_id, 60 );
-			if($title == "") { $title = '&diams;'; }
+			if ( '' === $title ) {
+				$title = '&diams;'; }
 		}
-		$post_kind = get_post_kind($post_id);
-		if(get_option('kind_title') && $post_kind != "" ) {
-			$title = "[".$post_kind."] ".$title;
+		$post_kind = get_post_kind( $post_id );
+		if ( get_option( 'kind_title' ) && '' !== $post_kind ) {
+			if ( is_feed() && empty( $title ) ) {
+				$title = sprintf( '[%1$s] %2$s', $post_kind, self::generate_title( $post_id, 60 ) );
+			}
 		}
 		return $title;
 	}
@@ -361,10 +364,14 @@ final class Kind_Taxonomy {
 	 * @return string
 	 */
 	public static function single_post_title( $title, $post ) {
-		if ( ! empty( $title ) ) {
-			return $title;
+		if ( empty( $title ) ) {
+			$title = self::generate_title( $post );
 		}
-		return self::generate_title( $post );
+		$post_kind = get_post_kind( $post );
+		if ( get_option( 'kind_title' ) && '' !== $post_kind ) {
+			$title = '[' . $post_kind . '] ' . $title;
+		}
+		return $title;
 	}
 
 
