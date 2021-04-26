@@ -66,6 +66,13 @@ class Kind_Config {
 			'default'      => str_replace( '},"', "},\r\n\"", wp_json_encode( wp_kses_allowed_html( 'post' ), 128 ) ),
 		);
 		register_setting( 'iwt_options', 'kind_kses', $args );
+		$args = array(
+			'type'         => 'boolean',
+			'description'  => 'Automatically add the Kind to the Title',
+			'show_in_rest' => false,
+			'default'      => 0,
+		);
+		register_setting( 'iwt_options', 'kind_title', $args );
 	}
 
 	/**
@@ -152,6 +159,16 @@ class Kind_Config {
 				)
 			);
 		}
+		add_settings_field(
+			'title',
+			__( 'Automatically add the Kind to the Title', 'indieweb-post-kinds' ),
+			array( static::class, 'checkbox_callback' ),
+			'iwt_options',
+			'iwt-content',
+			array(
+				'name' => 'kind_title',
+			)
+		);
 		// Add Query Var to Admin
 		add_filter( 'query_vars', array( static::class, 'query_var' ) );
 	}
@@ -375,8 +392,8 @@ class Kind_Config {
  							<ul><strong>Other</strong>
  			              				<li><strong>Start Time</strong></li>
  			              				<li><strong>End Time</strong></li>
- 								<li><strong>Duration</strong> - Duration is calculated based on the difference between start and end time. You may just use the time field, 
- 								omitting date and timezone and setting start time to 0:00:00 to set a simple duration.</li> 
+ 								<li><strong>Duration</strong> - Duration is calculated based on the difference between start and end time. You may just use the time field,
+ 								omitting date and timezone and setting start time to 0:00:00 to set a simple duration.</li>
  								<li><strong>RSVP</strong> - For RSVP posts, you can specify whether you are attending, not attending, unsure, or simply interested.</li>
  			            			</ul>
  						',
@@ -387,5 +404,3 @@ class Kind_Config {
 	}
 
 } // End Class
-
-

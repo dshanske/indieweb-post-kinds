@@ -344,6 +344,10 @@ final class Kind_Taxonomy {
 			$title = self::generate_title( $post_id, 60 );
 			if($title == "") { $title = '&diams;'; }
 		}
+		$post_kind = get_post_kind($post_id);
+		if(get_option('kind_title') && $post_kind != "" ) {
+			$title = "[".$post_kind."] ".$title;
+		}
 		return $title;
 	}
 
@@ -1320,5 +1324,3 @@ final class Kind_Taxonomy {
 		return $return;
 	}
 } // End Class Kind_Taxonomy
-
-
