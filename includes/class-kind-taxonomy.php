@@ -364,7 +364,7 @@ final class Kind_Taxonomy {
 	 * @return string
 	 */
 	public static function single_post_title( $title, $post ) {
-		if ( ! is_singular() ) {
+		if ( ! is_single() ) {
 			return $title;
 		}
 		if ( empty( $title ) ) {
