@@ -25,7 +25,8 @@
 .response svg {
   width: 2rem;
   height: 2rem;
-  color: black;
+  color: white;
+  mix-blend-mode: difference;
 }
 .response figure {
   margin: auto;
