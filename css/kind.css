@@ -16,7 +16,8 @@
 #kind-menu svg, #kind-posts svg, #tempus-onthisday svg, #tempus-thisweek svg {
   width: 1.5rem;
   height: 1.5rem;
-  color: black;
+  color: white;
+  mix-blend-mode: difference;
 }
 #kind-menu ul, #kind-posts ul, #tempus-onthisday ul, #tempus-thisweek ul {
   list-style-type: none;

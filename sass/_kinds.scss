@@ -17,7 +17,8 @@
 	svg {
 		width: 1.5rem;
 		height: 1.5rem;
-		color: black
+		color: white;
+		mix-blend-mode: difference;
 	}
 	ul {
 		list-style-type: none;
