@@ -13,13 +13,13 @@
   color: grey;
 }
 
-#kind-menu svg, #kind-posts svg, #tempus-onthisday svg, #tempus-thisweek svg {
+#kind-menu svg, #kind-posts svg, #tempus-onthisday svg, #tempus-thisweek svg, .kind-titles svg {
   width: 1.5rem;
   height: 1.5rem;
   color: white;
   mix-blend-mode: difference;
 }
-#kind-menu ul, #kind-posts ul, #tempus-onthisday ul, #tempus-thisweek ul {
+#kind-menu ul, #kind-posts ul, #tempus-onthisday ul, #tempus-thisweek ul, .kind-titles ul {
   list-style-type: none;
 }
 

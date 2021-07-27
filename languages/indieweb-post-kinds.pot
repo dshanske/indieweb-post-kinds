@@ -2,22 +2,22 @@
 # This file is distributed under the same license as the Post Kinds plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Kinds 3.5.4\n"
+"Project-Id-Version: Post Kinds 3.5.7\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/indieweb-post-kinds\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2021-03-19T05:09:53+00:00\n"
+"POT-Creation-Date: 2021-07-27T04:15:35+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.4.0\n"
+"X-Generator: WP-CLI 2.5.0\n"
 "X-Domain: indieweb-post-kinds\n"
 
 #. Plugin Name of the plugin
-#: includes/class-kind-config.php:215
-#: includes/class-kind-config.php:216
-#: includes/class-kind-config.php:222
+#: includes/class-kind-config.php:232
+#: includes/class-kind-config.php:233
+#: includes/class-kind-config.php:239
 msgid "Post Kinds"
 msgstr ""
 
@@ -37,63 +37,67 @@ msgstr ""
 msgid "https://david.shanske.com"
 msgstr ""
 
-#: includes/class-kind-config.php:81
+#: includes/class-kind-config.php:88
 msgid "Content Options"
 msgstr ""
 
-#: includes/class-kind-config.php:90
+#: includes/class-kind-config.php:97
 msgid "Select All Kinds You Wish to Use"
 msgstr ""
 
-#: includes/class-kind-config.php:97
+#: includes/class-kind-config.php:104
 msgid "Default Kind for New Posts"
 msgstr ""
 
-#: includes/class-kind-config.php:105
+#: includes/class-kind-config.php:112
 msgid "Embed Sites into your Response"
 msgstr ""
 
-#: includes/class-kind-config.php:116
+#: includes/class-kind-config.php:123
 msgid "Move Response to Bottom of Content"
 msgstr ""
 
-#: includes/class-kind-config.php:127
+#: includes/class-kind-config.php:134
 msgid "Display Before Kind"
 msgstr ""
 
-#: includes/class-kind-config.php:135
+#: includes/class-kind-config.php:142
 msgid "Show Icon"
 msgstr ""
 
-#: includes/class-kind-config.php:136
+#: includes/class-kind-config.php:143
 msgid "Show Text"
 msgstr ""
 
-#: includes/class-kind-config.php:137
+#: includes/class-kind-config.php:144
 msgid "Show Icon and Text"
 msgstr ""
 
-#: includes/class-kind-config.php:138
+#: includes/class-kind-config.php:145
 msgid "Display Nothing"
 msgstr ""
 
-#: includes/class-kind-config.php:146
+#: includes/class-kind-config.php:153
 msgid "Response Content Allowed Html Elements"
 msgstr ""
 
-#: includes/class-kind-config.php:329
+#: includes/class-kind-config.php:164
+msgid "Automatically add the Kind to the Title"
+msgstr ""
+
+#: includes/class-kind-config.php:346
 msgid "Indieweb Post Kinds"
 msgstr ""
 
-#: includes/class-kind-config.php:330
+#: includes/class-kind-config.php:347
 msgid "Adds support for responding and interacting with other sites."
 msgstr ""
 
-#: includes/class-kind-config.php:353
+#: includes/class-kind-config.php:370
 msgid "Post Properties"
 msgstr ""
 
-#: includes/class-kind-config.php:354
+#: includes/class-kind-config.php:371
 msgid ""
 "\n"
 " \t\t\t\t\t\t\t<p> The Post Properties tab represents the Microformats properties of a Post. For different kinds of posts, the different\n"
@@ -118,8 +122,8 @@ msgid ""
 " \t\t\t\t\t\t\t<ul><strong>Other</strong>\n"
 " \t\t\t              \t\t\t\t<li><strong>Start Time</strong></li>\n"
 " \t\t\t              \t\t\t\t<li><strong>End Time</strong></li>\n"
-" \t\t\t\t\t\t\t\t<li><strong>Duration</strong> - Duration is calculated based on the difference between start and end time. You may just use the time field, \n"
-" \t\t\t\t\t\t\t\tomitting date and timezone and setting start time to 0:00:00 to set a simple duration.</li> \n"
+" \t\t\t\t\t\t\t\t<li><strong>Duration</strong> - Duration is calculated based on the difference between start and end time. You may just use the time field,\n"
+" \t\t\t\t\t\t\t\tomitting date and timezone and setting start time to 0:00:00 to set a simple duration.</li>\n"
 " \t\t\t\t\t\t\t\t<li><strong>RSVP</strong> - For RSVP posts, you can specify whether you are attending, not attending, unsure, or simply interested.</li>\n"
 " \t\t\t            \t\t\t</ul>\n"
 " \t\t\t\t\t\t"
@@ -1253,92 +1257,92 @@ msgstr ""
 msgid "Post Kind"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:453
+#: includes/class-kind-taxonomy.php:468
 msgctxt "taxonomy general name"
 msgid "Kinds"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:454
+#: includes/class-kind-taxonomy.php:469
 msgctxt "taxonomy singular name"
 msgid "Kind"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:455
+#: includes/class-kind-taxonomy.php:470
 msgctxt "search locations"
 msgid "Search Kinds"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:456
+#: includes/class-kind-taxonomy.php:471
 msgctxt "popular kinds"
 msgid "Popular Kinds"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:457
+#: includes/class-kind-taxonomy.php:472
 msgctxt "all taxonomy items"
 msgid "All Kinds"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:458
+#: includes/class-kind-taxonomy.php:473
 msgctxt "taxonomy parent item"
 msgid "Parent Kind"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:459
+#: includes/class-kind-taxonomy.php:474
 msgctxt "taxonomy parent item with colon"
 msgid "Parent Kind:"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:460
+#: includes/class-kind-taxonomy.php:475
 msgctxt "edit taxonomy item"
 msgid "Edit Kind"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:461
+#: includes/class-kind-taxonomy.php:476
 msgctxt "view taxonomy item"
 msgid "View Kind"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:462
+#: includes/class-kind-taxonomy.php:477
 msgctxt "update taxonomy item"
 msgid "Update Kind"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:463
+#: includes/class-kind-taxonomy.php:478
 msgctxt "add taxonomy item"
 msgid "Add New Kind"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:464
+#: includes/class-kind-taxonomy.php:479
 msgctxt "new taxonomy item"
 msgid "New Kind"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:465
+#: includes/class-kind-taxonomy.php:480
 msgctxt "separate kinds with commas"
 msgid "Separate kinds with commas"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:466
+#: includes/class-kind-taxonomy.php:481
 msgctxt "add or remove items"
 msgid "Add or remove kinds"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:467
+#: includes/class-kind-taxonomy.php:482
 msgctxt "choose most used"
 msgid "Choose from the most used kinds"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:468
+#: includes/class-kind-taxonomy.php:483
 msgctxt "no kinds found"
 msgid "No kinds found"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:469
+#: includes/class-kind-taxonomy.php:484
 msgctxt "no kinds"
 msgid "No kinds"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:488
+#: includes/class-kind-taxonomy.php:503
 #: includes/register-kinds.php:8
 msgid "Article"
 msgstr ""
@@ -1346,46 +1350,46 @@ msgstr ""
 #. translators: 1: Taxonomy. Yearly archive title. 2: Year
 #. translators: 1: Taxonomy. 2: Month name and year
 #. translators: 1. Taxonomy . 1: Date
-#: includes/class-kind-taxonomy.php:763
-#: includes/class-kind-taxonomy.php:766
-#: includes/class-kind-taxonomy.php:769
+#: includes/class-kind-taxonomy.php:778
+#: includes/class-kind-taxonomy.php:781
+#: includes/class-kind-taxonomy.php:784
 msgid "%1$1s - %2$2s"
 msgstr ""
 
 #. translators: 1: Taxonomy. Yearly archive title. 2: Year
-#: includes/class-kind-taxonomy.php:763
+#: includes/class-kind-taxonomy.php:778
 msgctxt "yearly archives date format"
 msgid "Y"
 msgstr ""
 
 #. translators: 1: Taxonomy. 2: Month name and year
-#: includes/class-kind-taxonomy.php:766
+#: includes/class-kind-taxonomy.php:781
 msgctxt "monthly archives date format"
 msgid "F Y"
 msgstr ""
 
 #. translators: 1. Taxonomy . 1: Date
-#: includes/class-kind-taxonomy.php:769
+#: includes/class-kind-taxonomy.php:784
 msgctxt "daily archives date format"
 msgid "F j, Y"
 msgstr ""
 
 #. translators: 1: Title prefix. 2: Title.
-#: includes/class-kind-taxonomy.php:776
+#: includes/class-kind-taxonomy.php:791
 msgctxt "archive title"
 msgid "%1$s %2$s"
 msgstr ""
 
 #. translators: All
-#: includes/class-kind-taxonomy.php:1065
+#: includes/class-kind-taxonomy.php:1080
 msgid "All %1s"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:1235
+#: includes/class-kind-taxonomy.php:1250
 msgid "Invalid post"
 msgstr ""
 
-#: includes/class-kind-taxonomy.php:1238
+#: includes/class-kind-taxonomy.php:1253
 msgid "Invalid Kind"
 msgstr ""
 
@@ -2165,6 +2169,22 @@ msgstr ""
 msgid "Purchases, gifts, found things, or objects donated"
 msgstr ""
 
+#: includes/register-kinds.php:1039
+msgid "Craft"
+msgstr ""
+
+#: includes/register-kinds.php:1040
+msgid "Crafts"
+msgstr ""
+
+#: includes/register-kinds.php:1041
+msgid "Crafted"
+msgstr ""
+
+#: includes/register-kinds.php:1044
+msgid "Activities like knitting, crocheting, cross stitch, wood working, restoration, 3d printing...the activity of building something."
+msgstr ""
+
 #: indieweb-post-kinds.php:63
 msgid "Parse This is not installed. Please advise the developer"
 msgstr ""
@@ -2183,8 +2203,8 @@ msgstr ""
 
 #: lib/parse-this/includes/class-parse-this-discovery.php:56
 #: lib/parse-this/includes/class-parse-this-opml.php:17
-#: lib/parse-this/includes/class-parse-this.php:199
-#: lib/parse-this/includes/class-parse-this.php:232
+#: lib/parse-this/includes/class-parse-this.php:221
+#: lib/parse-this/includes/class-parse-this.php:255
 msgid "A valid URL was not provided."
 msgstr ""
 
@@ -2210,22 +2230,26 @@ msgid "References"
 msgstr ""
 
 #: lib/parse-this/includes/class-rest-parse-this.php:79
+msgid "Clean up Location"
+msgstr ""
+
+#: lib/parse-this/includes/class-rest-parse-this.php:87
 msgid "Return Type"
 msgstr ""
 
-#: lib/parse-this/includes/class-rest-parse-this.php:83
+#: lib/parse-this/includes/class-rest-parse-this.php:91
 msgid "Single"
 msgstr ""
 
-#: lib/parse-this/includes/class-rest-parse-this.php:84
+#: lib/parse-this/includes/class-rest-parse-this.php:92
 msgid "Feed"
 msgstr ""
 
-#: lib/parse-this/includes/class-rest-parse-this.php:90
+#: lib/parse-this/includes/class-rest-parse-this.php:98
 msgid "Follow Author Links"
 msgstr ""
 
-#: lib/parse-this/includes/class-rest-parse-this.php:99
+#: lib/parse-this/includes/class-rest-parse-this.php:107
 msgid "Parse"
 msgstr ""
 

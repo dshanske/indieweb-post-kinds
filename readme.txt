@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like, scrobble
-Stable tag: 3.5.6
+Stable tag: 3.5.7
 Requires at least: 4.9.9
 Requires PHP: 5.6
 Tested up to: 5.8
@@ -269,6 +269,9 @@ through future plugin updates.
 
 
 == Changelog ==
+
+= 3.5.7 ( 2021-07-27 ) =
+* CSS Style Changes
 
 = 3.5.6 ( 2021-04-01 ) =
 * Introduce Craft Post Kind.
