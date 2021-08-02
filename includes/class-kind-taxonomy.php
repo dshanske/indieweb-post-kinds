@@ -1323,8 +1323,9 @@ final class Kind_Taxonomy {
 	public static function get_icon( $kind, $echo = false ) {
 		$name = self::get_kind_info( $kind, 'singular_name' );
 		$svg  = sprintf( '%1$ssvgs/%2$s.svg', plugin_dir_path( __DIR__ ), $kind );
+		$attributes = apply_filters( 'post_kinds_icon_attributes', 'style="display: inline-block; max-height: 1rem; margin-right: 0.5rem' );
 		if ( file_exists( $svg ) ) {
-			$return = sprintf( '<span class="svg-icon svg-%1$s" style="display: inline-block; max-height: 1rem; margin-right: 0.5rem;" aria-label="%2$s" title="%2$s" ><span aria-hidden="true">%3$s</span></span>', esc_attr( $kind ), esc_attr( $name ), file_get_contents( $svg ) );
+			$return = sprintf( '<span class="svg-icon svg-%1$s" aria-label="%2$s" title="%2$s" %3$s><span aria-hidden="true">%4$s</span></span>', esc_attr( $kind ), esc_attr( $name ), esc_attr( $attributes ), file_get_contents( $svg ) );
 		} else {
 			return '';
 		}
