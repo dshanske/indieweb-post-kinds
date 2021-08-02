@@ -25,6 +25,9 @@ class Kind_Menu_Widget extends WP_Widget {
 	 * @param array $instance Saved values from database.
 	 */
 	public function widget( $args, $instance ) {
+		/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
+		$title = apply_filters( 'widget_title', $instance['title'], $instance, $this->id_base );
+
 		$include = $instance['termslist'];
 		$include = array_merge( $include, array( 'note', 'reply', 'article' ) );
 		// Filter Kinds
@@ -36,8 +39,8 @@ class Kind_Menu_Widget extends WP_Widget {
 
 		// phpcs:ignore
 		echo $args['before_widget'];
-		if ( ! empty( $instance['title'] ) ) {
-			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ) . $args['after_title']; // phpcs:ignore
+		if ( $title  ) {
+			echo $args['before_title'] . $title . $args['after_title']; // phpcs:ignore
 		}
 		?>
 

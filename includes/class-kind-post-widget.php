@@ -25,11 +25,14 @@ class Kind_Post_Widget extends WP_Widget {
 	 * @param array $instance Saved values from database.
 	 */
 	public function widget( $args, $instance ) {
+		/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
+		$title = apply_filters( 'widget_title', $instance['title'], $instance, $this->id_base );
+
 		$kind = ifset( $instance['kind'], 'note' );
 		// phpcs:ignore
 		echo $args['before_widget'];
 		if ( ! empty( $instance['title'] ) ) {
-			echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ) . $args['after_title']; // phpcs:ignore
+			echo $args['before_title'] . $title . $args['after_title']; // phpcs:ignore
 		}
 		$transient = get_transient( 'kind_post_widget' );
 		if ( false === $transient ) {
