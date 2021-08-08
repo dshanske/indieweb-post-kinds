@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** [dshanske](https://profiles.wordpress.org/dshanske)  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.5.7  
+**Stable tag:** 3.5.8  
 **Requires at least:** 4.9.9  
 **Requires PHP:** 5.6  
 **Tested up to:** 5.8  
@@ -273,6 +273,10 @@ through future plugin updates.
 
 
 ## Changelog ##
+
+### 3.5.8 ( 2021-08-08 ) ###
+* Improved support for widget_title filter
+* Allow for removal of icon attributes using filter.
 
 ### 3.5.7 ( 2021-07-27 ) ###
 * CSS Style Changes

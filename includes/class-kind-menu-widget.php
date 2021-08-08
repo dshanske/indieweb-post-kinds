@@ -39,7 +39,7 @@ class Kind_Menu_Widget extends WP_Widget {
 
 		// phpcs:ignore
 		echo $args['before_widget'];
-		if ( $title  ) {
+		if ( $title ) {
 			echo $args['before_title'] . $title . $args['after_title']; // phpcs:ignore
 		}
 		?>
