@@ -131,3 +131,69 @@ function kind_src_url_in_content( $content ) {
 	}
 	return 0;
 }
+
+/**
+ * Get a Marketed Up Link to the Post.
+ *
+ * @param WP_Post|null Post to Display.
+ * @return string Marked up link to a post.
+ **/
+
+function kind_get_the_link( $post = null ) {
+	$post = get_post( $post );
+	$kind = get_post_kind_slug( $post );
+	return sprintf( '<a href="%2$s">%1$s</a> - %3$s', kind_get_the_title( $post, $kind ), get_the_permalink( $post ), get_the_date( '', $post ) );
+}
+
+
+/**
+ * Get a Generated Title for a Post as Most Post Kinds do Not Have an Explicit Title.
+ *
+ * @param WP_Post|null Post to Display.
+ * @return string Marked up link to a post.
+ **/
+function kind_get_the_title( $post = null ) {
+	$post   = get_post( $post );
+	$kind   = get_post_kind_slug( $post );
+	$title  = get_the_title( $post );
+	$before = Kind_Taxonomy::get_before_kind( $kind );
+
+	if ( ! empty( $title ) ) {
+		return $title;
+	}
+
+	if ( in_array( $kind, array( 'audio', 'video', 'photo' ) ) ) {
+		$kind_post = new Kind_Post( $post );
+		switch ( $kind ) {
+			case 'photo':
+				$photos = $kind_post->get_photo();
+				$before = wp_get_attachment_image(
+					$photos[0],
+					array( 32, 32 )
+				);
+		}
+	} elseif ( ! in_array( $kind, array( 'note', 'article' ), true ) ) {
+		$kind_post = new Kind_Post( $post );
+		$cite      = $kind_post->get_cite( 'name' );
+		if ( false === $cite ) {
+			$content = Kind_View::get_post_type_string( $kind_post->get_cite( 'url' ) );
+		} else {
+			$content = $cite;
+		}
+	} else {
+		$content = $post->post_excerpt;
+		// If no excerpt use content
+		if ( ! $content ) {
+			$content = $post->post_content;
+		}
+		// If no content use date
+		if ( $content ) {
+			$content = mb_strimwidth( wp_strip_all_tags( $content ), 0, 40, '...' );
+		}
+	}
+	if ( is_array( $content ) ) {
+		$content = wp_json_encode( $content );
+	}
+
+	return trim( sprintf( '%1$s %2$s', $before, $content ) );
+}

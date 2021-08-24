@@ -56,7 +56,7 @@ class Kind_Post_Widget extends WP_Widget {
 		if ( 0 !== count( $posts ) ) {
 			echo '<ul>';
 			foreach ( $posts as $post ) {
-				printf( '<li>%1$s</li>', self::get_the_link( $post, $kind ) ); // phpcs:ignore
+				printf( '<li>%1$s</li>', kind_get_the_link( $post ) ); // phpcs:ignore
 			}
 			echo '</ul>';
 		} else {
@@ -64,62 +64,6 @@ class Kind_Post_Widget extends WP_Widget {
 		}
 		echo '</div>';
 		echo $args['after_widget']; // phpcs:ignore
-	}
-
-	/**
-	 * @access public
-	 *
-	 * @param WP_Post $post Post object
-	 * @param string  $kind Post kind to link.
-	 * @return string
-	 */
-	public function get_the_link( $post, $kind ) {
-		if ( ! $post instanceof WP_Post ) {
-			return '';
-		}
-		return sprintf( '<a href="%2$s">%1$s</a> - %3$s', self::get_the_title( $post, $kind ), get_the_permalink( $post ), get_the_date( '', $post ) );
-	}
-
-	/**
-	 * Construct a title for the post kind link.
-	 *
-	 * @access public
-	 *
-	 * @param WP_Post $post Post object.
-	 * @param string  $kind Post kind.
-	 * @return string
-	 */
-	public function get_the_title( $post, $kind ) {
-		if ( ! $post instanceof WP_Post ) {
-			return '';
-		}
-		$title = get_the_title( $post );
-		if ( ! empty( $title ) ) {
-			return $title;
-		}
-		if ( ! in_array( $kind, array( 'note', 'article' ), true ) ) {
-			$kind_post = new Kind_Post( $post );
-			$cite      = $kind_post->get_cite( 'name' );
-			if ( false === $cite ) {
-				$content = Kind_View::get_post_type_string( $kind_post->get_cite( 'url' ) );
-			} else {
-				$content = $cite;
-			}
-		} else {
-			$content = $post->post_excerpt;
-			// If no excerpt use content
-			if ( ! $content ) {
-				$content = $post->post_content;
-			}
-			// If no content use date
-			if ( $content ) {
-				$content = mb_strimwidth( wp_strip_all_tags( $content ), 0, 40, '...' );
-			}
-		}
-		if ( is_array( $content ) ) {
-			$content = wp_json_encode( $content );
-		}
-		return trim( sprintf( '%1$s %2$s', Kind_Taxonomy::get_before_kind( $kind ), $content ) );
 	}
 
 	/**
