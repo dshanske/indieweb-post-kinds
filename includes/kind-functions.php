@@ -155,24 +155,23 @@ function kind_get_the_link( $post = null ) {
  **/
 function kind_get_the_title( $post = null, $args = array() ) {
 	$defaults = array(
-		'photo_size' => 32
+		'photo_size' => 32,
 	);
 
 	$args = wp_parse_args( $args, $defaults );
 
-	$post   = get_post( $post );
-	$kind   = get_post_kind_slug( $post );
-	$title  = get_the_title( $post );
-	$before = Kind_Taxonomy::get_before_kind( $kind );
-	$content = '';
+	$post      = get_post( $post );
+	$kind      = get_post_kind_slug( $post );
+	$title     = get_the_title( $post );
+	$before    = Kind_Taxonomy::get_before_kind( $kind );
+	$content   = '';
 	$kind_post = new Kind_Post( $post );
 
 	if ( ! empty( $title ) ) {
 		return $title;
 	}
 
-
-	if ( in_array( $kind, array( 'audio', 'video', 'photo' ) ) ) {
+	if ( in_array( $kind, array( 'audio', 'video', 'photo' ), true ) ) {
 		switch ( $kind ) {
 			case 'photo':
 				$photos = $kind_post->get_photo();
@@ -181,12 +180,12 @@ function kind_get_the_title( $post = null, $args = array() ) {
 					array( $args['photo_size'], $args['photo_size'] ),
 					false,
 					array(
-						'class' => 'kind-photo-thumbnail'
+						'class' => 'kind-photo-thumbnail',
 					)
 				);
 		}
 	} elseif ( ! in_array( $kind, array( 'note', 'article' ), true ) ) {
-		$cite      = $kind_post->get_cite( 'name' );
+		$cite = $kind_post->get_cite( 'name' );
 		if ( false === $cite ) {
 			$content = Kind_View::get_post_type_string( $kind_post->get_cite( 'url' ) );
 		} else {
@@ -206,6 +205,9 @@ function kind_get_the_title( $post = null, $args = array() ) {
 	if ( is_array( $content ) ) {
 		$content = wp_json_encode( $content );
 	}
+
+	$content = apply_filters( 'kind_get_the_title_content', $content, $post );
+	$before  = apply_filters( 'kind_get_the_title_before', $before, $post );
 
 	return trim( sprintf( '%1$s %2$s', $before, $content ) );
 }
