@@ -51,34 +51,7 @@ class Kind_Plugins {
 	 * @return string
 	 */
 	public static function tempus_widget_post_title( $title, $post ) {
-		$post      = get_post( $post );
-		$kind_post = new Kind_Post( $post );
-
-		$content = $kind_post->get_name();
-		if ( ! empty( $content ) ) {
-			return $content;
-		}
-
-		$kind = $kind_post->get_kind();
-		if ( ! in_array( $kind, array( 'note', 'article' ), true ) ) {
-			$cite = $kind_post->get_cite( 'name' );
-			if ( false === $cite ) {
-				$content = Kind_View::get_post_type_string( $kind_post->get_cite( 'url' ) );
-			} else {
-				$content = $cite;
-			}
-		} else {
-			$content = $post->post_excerpt;
-			// If no excerpt use content
-			if ( ! $content ) {
-				$content = $post->post_content;
-			}
-			// If no content use date
-			if ( $content ) {
-				$content = mb_strimwidth( wp_strip_all_tags( $content ), 0, 40, '...' );
-			}
-		}
-		return trim( Kind_Taxonomy::get_before_kind( $kind ) . $content );
+		return kind_get_the_title( $post );
 	}
 
 	public static function hum_local_types( $types ) {

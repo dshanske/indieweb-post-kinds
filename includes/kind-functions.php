@@ -164,13 +164,15 @@ function kind_get_the_title( $post = null, $args = array() ) {
 	$kind   = get_post_kind_slug( $post );
 	$title  = get_the_title( $post );
 	$before = Kind_Taxonomy::get_before_kind( $kind );
+	$content = '';
+	$kind_post = new Kind_Post( $post );
 
 	if ( ! empty( $title ) ) {
 		return $title;
 	}
 
+
 	if ( in_array( $kind, array( 'audio', 'video', 'photo' ) ) ) {
-		$kind_post = new Kind_Post( $post );
 		switch ( $kind ) {
 			case 'photo':
 				$photos = $kind_post->get_photo();
@@ -182,10 +184,8 @@ function kind_get_the_title( $post = null, $args = array() ) {
 						'class' => 'kind-photo-thumbnail'
 					)
 				);
-				$content = '';
 		}
 	} elseif ( ! in_array( $kind, array( 'note', 'article' ), true ) ) {
-		$kind_post = new Kind_Post( $post );
 		$cite      = $kind_post->get_cite( 'name' );
 		if ( false === $cite ) {
 			$content = Kind_View::get_post_type_string( $kind_post->get_cite( 'url' ) );
