@@ -150,9 +150,16 @@ function kind_get_the_link( $post = null ) {
  * Get a Generated Title for a Post as Most Post Kinds do Not Have an Explicit Title.
  *
  * @param WP_Post|null Post to Display.
+ * @param array $args Arguments.
  * @return string Marked up link to a post.
  **/
-function kind_get_the_title( $post = null ) {
+function kind_get_the_title( $post = null, $args = array() ) {
+	$defaults = array(
+		'photo_size' => 32
+	);
+
+	$args = wp_parse_args( $args, $defaults );
+
 	$post   = get_post( $post );
 	$kind   = get_post_kind_slug( $post );
 	$title  = get_the_title( $post );
@@ -169,8 +176,13 @@ function kind_get_the_title( $post = null ) {
 				$photos = $kind_post->get_photo();
 				$before = wp_get_attachment_image(
 					$photos[0],
-					array( 32, 32 )
+					array( $args['photo_size'], $args['photo_size'] ),
+					false,
+					array(
+						'class' => 'kind-photo-thumbnail'
+					)
 				);
+				$content = '';
 		}
 	} elseif ( ! in_array( $kind, array( 'note', 'article' ), true ) ) {
 		$kind_post = new Kind_Post( $post );

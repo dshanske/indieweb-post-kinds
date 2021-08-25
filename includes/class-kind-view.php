@@ -34,8 +34,14 @@ class Kind_View {
 		if ( 'photo' !== get_post_kind_slug( $id ) ) {
 			return $attr;
 		}
+
 		if ( isset( $attr['class'] ) ) {
 			$class         = explode( ' ', $attr['class'] );
+
+			// This class is added by the list display.
+			if ( in_array( 'kind-photo-thumbnail', $class ) ) {
+				return $attr;
+			}
 			$class[]       = 'u-photo';
 			$attr['class'] = implode( ' ', array_unique( $class ) );
 		} else {
