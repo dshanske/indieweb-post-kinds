@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the Post Kinds plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Kinds 3.5.7\n"
+"Project-Id-Version: Post Kinds 3.5.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/indieweb-post-kinds\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2021-07-27T04:15:35+00:00\n"
+"POT-Creation-Date: 2021-08-25T04:58:59+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.5.0\n"
 "X-Domain: indieweb-post-kinds\n"
@@ -1169,24 +1169,24 @@ msgid "A widget that allows you to display a menu of kind archives"
 msgstr ""
 
 #. translators: 1. Blog Title 2. Kind Singular Name
-#: includes/class-kind-menu-widget.php:55
+#: includes/class-kind-menu-widget.php:58
 msgid "title=\"%1$s %2$s Feed\""
 msgstr ""
 
-#: includes/class-kind-menu-widget.php:71
+#: includes/class-kind-menu-widget.php:74
 msgid "All Posts"
 msgstr ""
 
-#: includes/class-kind-menu-widget.php:115
-#: includes/class-kind-post-widget.php:148
+#: includes/class-kind-menu-widget.php:118
+#: includes/class-kind-post-widget.php:95
 msgid "Title: "
 msgstr ""
 
-#: includes/class-kind-menu-widget.php:136
+#: includes/class-kind-menu-widget.php:139
 msgid "Show Link to All:"
 msgstr ""
 
-#: includes/class-kind-menu-widget.php:141
+#: includes/class-kind-menu-widget.php:144
 msgid "Show Count:"
 msgstr ""
 
@@ -1232,7 +1232,7 @@ msgstr ""
 msgid "Response Properties"
 msgstr ""
 
-#: includes/class-kind-plugins.php:122
+#: includes/class-kind-plugins.php:95
 msgctxt "direct article"
 msgid "this"
 msgstr ""
@@ -1245,11 +1245,11 @@ msgstr ""
 msgid "A widget that allows you to display a list of posts by type"
 msgstr ""
 
-#: includes/class-kind-post-widget.php:60
+#: includes/class-kind-post-widget.php:63
 msgid "No Posts Found"
 msgstr ""
 
-#: includes/class-kind-post-widget.php:168
+#: includes/class-kind-post-widget.php:115
 msgid "Number of Posts:"
 msgstr ""
 
@@ -1393,109 +1393,109 @@ msgstr ""
 msgid "Invalid Kind"
 msgstr ""
 
-#: includes/class-kind-view.php:403
+#: includes/class-kind-view.php:409
 msgctxt "singular Twitter"
 msgid "a tweet"
 msgstr ""
 
-#: includes/class-kind-view.php:404
+#: includes/class-kind-view.php:410
 msgctxt "singular Vimeo"
 msgid "a video"
 msgstr ""
 
-#: includes/class-kind-view.php:405
+#: includes/class-kind-view.php:411
 msgctxt "singular Youtube"
 msgid "a video"
 msgstr ""
 
-#: includes/class-kind-view.php:406
+#: includes/class-kind-view.php:412
 msgctxt "singular Intagram"
 msgid "an image"
 msgstr ""
 
-#: includes/class-kind-view.php:412
+#: includes/class-kind-view.php:418
 msgctxt "singular post"
 msgid "a post"
 msgstr ""
 
-#: includes/class-kind-view.php:479
+#: includes/class-kind-view.php:485
 msgid "an author"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:577
+#: includes/class-kind-view.php:583
 msgid "Attending <a href=\"%1$s\" class=\"u-in-reply-to\">%2$s</a>"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:579
+#: includes/class-kind-view.php:585
 msgid "Might be attending <a href=\"%1$s\" class=\"u-in-reply-to\">%2$s</a>"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:581
+#: includes/class-kind-view.php:587
 msgid "Unable to Attend <a href=\"%1$s\" class=\"u-in-reply-to\">%2$s</a>"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:583
+#: includes/class-kind-view.php:589
 msgid "Interested in Attending <a href=\"%1$s\" class=u-in-reply-to\">%2$s</a>"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:585
+#: includes/class-kind-view.php:591
 msgid "Attending <a href=\"%1$s\" class=\"u-in-reply-to\">%2$s</a> remotely"
 msgstr ""
 
-#: includes/class-kind-view.php:603
+#: includes/class-kind-view.php:609
 msgid "Want to Read: "
 msgstr ""
 
-#: includes/class-kind-view.php:604
+#: includes/class-kind-view.php:610
 msgid "Reading: "
 msgstr ""
 
-#: includes/class-kind-view.php:605
+#: includes/class-kind-view.php:611
 msgid "Finished Reading: "
 msgstr ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:637
+#: includes/class-kind-view.php:643
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:641
+#: includes/class-kind-view.php:647
 msgid "%d month"
 msgid_plural "%d months"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:645
+#: includes/class-kind-view.php:651
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:649
+#: includes/class-kind-view.php:655
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:653
+#: includes/class-kind-view.php:659
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:657
+#: includes/class-kind-view.php:663
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] ""
