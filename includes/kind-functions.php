@@ -155,7 +155,7 @@ function kind_get_the_link( $post = null ) {
  **/
 function kind_get_the_title( $post = null, $args = array() ) {
 	$defaults = array(
-		'photo_size' => 32,
+		'photo_size' => array( 32, 32 ),
 	);
 
 	$args = wp_parse_args( $args, $defaults );
@@ -177,7 +177,7 @@ function kind_get_the_title( $post = null, $args = array() ) {
 				$photos = $kind_post->get_photo();
 				$before = wp_get_attachment_image(
 					$photos[0],
-					array( $args['photo_size'], $args['photo_size'] ),
+					$args['photo_size'],
 					false,
 					array(
 						'class' => 'kind-photo-thumbnail',
