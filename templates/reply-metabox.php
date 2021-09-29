@@ -17,10 +17,12 @@ $attachment = 0;
 
 
 if ( in_array( $kind, array( 'audio', 'video', 'photo' ) ) ) {
-	$attachment = attachment_url_to_postid( $cite['url'] );
-	if ( $attachment ) {
-		$attachment_post = new Kind_Post( $attachment );
-		$cite            = $attachment_post->get_cite();
+	if(array_key_exists('url',$cite)) {
+		$attachment = attachment_url_to_postid( $cite['url'] );
+		if ( $attachment ) {
+			$attachment_post = new Kind_Post( $attachment );
+			$cite            = $attachment_post->get_cite();
+		}
 	}
 }
 
