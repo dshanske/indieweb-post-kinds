@@ -3,7 +3,7 @@
  * Helpers for Turning RSS/Atom into JF2
  **/
 
-class Parse_This_RSS {
+class Parse_This_RSS extends Parse_This_Base {
 
 	/*
 	 * Parse RSS/Atom into JF2
@@ -20,16 +20,37 @@ class Parse_This_RSS {
 		}
 		return array_filter(
 			array(
-				'type'       => 'feed',
-				'_feed_type' => self::get_type( $feed ),
-				'summary'    => $feed->get_description(),
-				'author'     => self::get_authors( $feed->get_author() ),
-				'name'       => htmlspecialchars_decode( $title, ENT_QUOTES ),
-				'url'        => $feed->get_permalink(),
-				'photo'      => $feed->get_image_url(),
-				'items'      => $items,
+				'type'            => 'feed',
+				'_feed_type'      => self::get_type( $feed ),
+				'_last_updated'   => self::last_updated( $feed ),
+				'_last_published' => self::find_last_published( $items ),
+				'_last_updated'   => self::find_last_updated( $items ),
+				'summary'         => $feed->get_description(),
+				'author'          => self::get_authors( $feed->get_author() ),
+				'name'            => htmlspecialchars_decode( $title, ENT_QUOTES ),
+				'url'             => $feed->get_permalink(),
+				'photo'           => $feed->get_image_url(),
+				'items'           => $items,
 			)
 		);
+	}
+
+	public static function last_updated( $feed ) {
+		$type    = self::get_type( $feed );
+		$updated = null;
+		if ( 'RSS' === $type ) {
+			$updated = $feed->get_channel_tags( SIMPLEPIE_NAMESPACE_RSS_20, 'lastBuildDate' );
+		} elseif ( 'atom' === $type ) {
+			$updated = $feed->get_channel_tags( SIMPLEPIE_NAMESPACE_ATOM_10, 'updated' );
+		}
+		if ( $updated && isset( $updated[0]['data'] ) ) {
+			$datetime = new DateTime( $updated[0]['data'] );
+			if ( $datetime ) {
+				return $datetime->format( DATE_W3C );
+			}
+		}
+
+		return null;
 	}
 
 	public static function get_type( $feed ) {
@@ -40,12 +61,6 @@ class Parse_This_RSS {
 		} elseif ( $feed->get_type() & SIMPLEPIE_TYPE_ATOM_ALL ) {
 			return 'atom';
 		}
-	}
-
-	public static function validate_email( $email ) {
-		$regexp = '/([a-z0-9_\.\-])+(\@|\[at\])+(([a-z0-9\-])+\.)+([a-z0-9]{2,4})+/i';
-		preg_match( $regexp, $email, $match );
-		return is_array( $match ) ? array_shift( $match ) : '';
 	}
 
 	/*

@@ -301,6 +301,8 @@ class Parse_This_MF2 extends Parse_This_MF2_Utils {
 				$data['items'][ $key ] = $item;
 			}
 		}
+		$data['_last_published'] = self::find_last_published( $data['items'] );
+		$data['_last_updated']   = self::find_last_updated( $data['items'] );
 		return $data;
 	}
 

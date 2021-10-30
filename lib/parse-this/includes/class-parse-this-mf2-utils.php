@@ -6,7 +6,7 @@
  * and https://github.com/pfefferle/wordpress-semantic-linkbacks/blob/master/includes/class-linkbacks-mf2-handler.php
  **/
 
-class Parse_This_MF2_Utils {
+class Parse_This_MF2_Utils extends Parse_This_Base {
 
 	/**
 	 * Verifies if $mf is an array without numeric keys, and has a 'properties' key.
@@ -264,7 +264,7 @@ class Parse_This_MF2_Utils {
 	 */
 	public static function get_published( array $mf, $ensurevalid = false, $fallback = null ) {
 		$date = self::get_datetime_property( 'published', $mf, $ensurevalid, $fallback );
-		if ( $date instanceof DateTime ) {
+		if ( $date instanceof DateTimeImmutable ) {
 			return $date->format( DATE_W3C );
 		}
 		return null;
@@ -280,7 +280,7 @@ class Parse_This_MF2_Utils {
 	 */
 	public static function get_updated( array $mf, $ensurevalid = false, $fallback = null ) {
 		$date = self::get_datetime_property( 'updated', $mf, $ensurevalid, $fallback );
-		if ( $date instanceof DateTime ) {
+		if ( $date instanceof DateTimeImmutable ) {
 			return $date->format( DATE_W3C );
 		}
 		return null;

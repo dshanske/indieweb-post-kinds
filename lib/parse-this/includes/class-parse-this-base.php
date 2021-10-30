@@ -4,6 +4,54 @@
  * Originally Derived from the Press This Class with Enhancements.
  */
 class Parse_This_Base {
+
+
+
+	/**
+	 *
+	 */
+	protected static function order_by_date( $items, $field = 'published' ) {
+		// If the first entry does not have this field return.
+		if ( ! array_key_exists( $field, $items[0] ) ) {
+			return null;
+		}
+		if ( ! is_string( $items[0][ $field ] ) ) {
+			return null;
+		}
+		usort(
+			$items,
+			function( $a, $b ) use ( $field ) {
+				return ( strtotime( $b[ $field ] ) - strtotime( $a[ $field ] ) );
+			}
+		);
+		return $items;
+	}
+
+	/**
+	 *
+	 */
+	protected static function find_last_published( $items ) {
+		$items = self::order_by_date( $items, 'published' );
+		if ( ! $items ) {
+			return null;
+		}
+		$return = new DateTime( $items[0]['published'], wp_timezone() );
+		return $return->format( DATE_W3C );
+	}
+
+	public static function validate_email( $email ) {
+		return filter_var( $email, FILTER_VALIDATE_EMAIL );
+	}
+
+	/**
+	 *
+	 */
+	protected static function find_last_updated( $items ) {
+		$items  = self::order_by_date( $items, 'updated' );
+		$return = new DateTime( $items[0]['updated'], wp_timezone() );
+		return $return->format( DATE_W3C );
+	}
+
 	/**
 	 * Utility method to limit an array to 100 values.
 	 * Originally set to 50 but some sites are very detailed in their meta.

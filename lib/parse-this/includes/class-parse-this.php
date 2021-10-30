@@ -164,13 +164,21 @@ class Parse_This {
 		if ( ! class_exists( 'SimplePie', false ) ) {
 			require_once ABSPATH . WPINC . '/class-simplepie.php';
 		}
-		require_once ABSPATH . WPINC . '/class-wp-feed-cache.php';
 		require_once ABSPATH . WPINC . '/class-wp-feed-cache-transient.php';
 		require_once ABSPATH . WPINC . '/class-wp-simplepie-file.php';
 		require_once ABSPATH . WPINC . '/class-wp-simplepie-sanitize-kses.php';
 		$feed = new SimplePie();
 
-		$feed->set_cache_class( 'WP_Feed_Cache' );
+		// Register the cache handler using the recommended method for SimplePie 1.3 or later.
+		if ( method_exists( 'SimplePie_Cache', 'register' ) ) {
+			SimplePie_Cache::register( 'wp_transient', 'WP_Feed_Cache_Transient' );
+			$feed->set_cache_location( 'wp_transient' );
+		} else {
+			// Back-compat for SimplePie 1.2.x.
+			require_once ABSPATH . WPINC . '/class-wp-feed-cache.php';
+			$feed->set_cache_class( 'WP_Feed_Cache' );
+		}
+
 		$feed->set_file_class( 'WP_SimplePie_File' );
 		$feed->enable_cache( false );
 		$feed->set_feed_url( $url );
@@ -333,8 +341,9 @@ class Parse_This {
 			// We do not yet know how to cope with this
 			return true;
 		}
-						$this->set( $content, $url, ( 'application/jf2+json' === $content_type ) );
-						return true;
+
+		$this->set( $content, $url, ( 'application/jf2+json' === $content_type ) );
+		return true;
 	}
 
 	public function parse( $args = array() ) {
@@ -346,7 +355,7 @@ class Parse_This {
 			'jsonld'     => true,  // Try JSON-LD parsing
 			'html'       => true, // If mf2 parsing does not work look for html parsing which includes OGP, meta tags, and title tags
 			'references' => true, // Store nested citations as references per the JF2 spec
-			'location' => false, // Collapse location parameters in jf2. Specifically, location will be a string and latitude, longitude, and altitude will be set as h-entry properties.
+			'location'   => false, // Collapse location parameters in jf2. Specifically, location will be a string and latitude, longitude, and altitude will be set as h-entry properties.
 		);
 		$args     = wp_parse_args( $args, $defaults );
 		// If not an option then revert to single
@@ -355,6 +364,7 @@ class Parse_This {
 		}
 		if ( class_exists( 'Parse_This_RSS' ) && $this->content instanceof SimplePie ) {
 			$this->jf2 = Parse_This_RSS::parse( $this->content, $this->url );
+
 			return;
 		} elseif ( $this->doc instanceof DOMDocument ) {
 			$content = $this->doc;

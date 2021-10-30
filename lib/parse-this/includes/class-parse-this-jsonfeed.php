@@ -1,6 +1,6 @@
 <?php
 
-class Parse_This_JSONFeed {
+class Parse_This_JSONFeed extends Parse_This_Base {
 	private static function ifset( $key, $array ) {
 		return isset( $array[ $key ] ) ? $array[ $key ] : null;
 	}
@@ -93,6 +93,8 @@ class Parse_This_JSONFeed {
 			}
 			$return['items'][] = $newitem;
 		}
+		$return['_last_published'] = self::find_last_published( $return['items'] );
+		$return['_last_updated']   = self::find_last_updated( $return['items'] );
 		return $return;
 	}
 }
