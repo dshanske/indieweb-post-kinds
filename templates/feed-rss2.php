@@ -42,7 +42,7 @@ do_action( 'rss_tag_pre', 'rss2' );
 	<atom:link href="<?php self_link(); ?>" rel="self" type="application/rss+xml" />
 	<link><?php bloginfo_rss( 'url' ); ?></link>
 	<description><?php bloginfo_rss( 'description' ); ?></description>
-	<lastBuildDate><?php echo get_feed_build_date( DATE_RSS ); ?></lastBuildDate>
+	<lastBuildDate><?php echo get_feed_build_date( "D, d M Y H:i:s O" ); ?></lastBuildDate>
 	<language><?php bloginfo_rss( 'language' ); ?></language>
 	<sy:updatePeriod>
 	<?php
@@ -94,7 +94,7 @@ do_action( 'rss_tag_pre', 'rss2' );
 		<?php if ( get_comments_number() || comments_open() ) : ?>
 		<comments><?php comments_link_feed(); ?></comments>
 		<?php endif; ?>
-		<pubDate><?php echo get_the_date( DATE_RSS ); ?></pubDate>
+		<pubDate><?php echo get_the_date( "D, d M Y H:i:s O" ); ?></pubDate>
 		<dc:creator><![CDATA[<?php the_author(); ?>]]></dc:creator>
 		<?php the_category_rss( 'rss2' ); ?>
 

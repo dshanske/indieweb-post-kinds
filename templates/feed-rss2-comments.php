@@ -49,7 +49,7 @@ do_action( 'rss_tag_pre', 'rss2-comments' );
 	<atom:link href="<?php self_link(); ?>" rel="self" type="application/rss+xml" />
 	<link><?php ( is_single() ) ? the_permalink_rss() : bloginfo_rss( 'url' ); ?></link>
 	<description><?php bloginfo_rss( 'description' ); ?></description>
-	<lastBuildDate><?php echo get_feed_build_date( DATE_RSS ); ?></lastBuildDate>
+	<lastBuildDate><?php echo get_feed_build_date( "D, d M Y H:i:s O"  ); ?></lastBuildDate>
 	<sy:updatePeriod>
 	<?php
 		/** This filter is documented in wp-includes/feed-rss2.php */
@@ -96,7 +96,7 @@ do_action( 'rss_tag_pre', 'rss2-comments' );
 				</title>
 				<link><?php comment_link(); ?></link>
 		<dc:creator><![CDATA[<?php echo get_comment_author_rss(); ?>]]></dc:creator>
-		<pubDate><?php echo get_comment_date( DATE_RSS ); ?></pubDate>
+		<pubDate><?php echo get_comment_date( "D, d M Y H:i:s O"  ); ?></pubDate>
 		<guid isPermaLink="false"><?php comment_guid(); ?></guid>
 			<?php if ( post_password_required( $comment_post ) ) : ?>
 		<description><?php echo ent2ncr( __( 'Protected Comments: Please enter your password to view comments.' ) ); ?></description>

@@ -30,7 +30,7 @@ do_action( 'rss_tag_pre', 'atom' );
 	<title type="text"><?php wp_title_rss(); ?></title>
 	<subtitle type="text"><?php bloginfo_rss( 'description' ); ?></subtitle>
 
-	<updated><?php echo get_feed_build_date( DATE_RSS ); ?></updated>
+	<updated><?php echo get_feed_build_date( DATE_ATOM ); ?></updated>
 
 	<link rel="alternate" type="<?php bloginfo_rss( 'html_type' ); ?>" href="<?php bloginfo_rss( 'url' ); ?>" />
 	<id><?php bloginfo( 'atom_url' ); ?></id>
@@ -69,8 +69,8 @@ do_action( 'rss_tag_pre', 'atom' );
 		<?php } ?>
 		<link rel="alternate" type="<?php bloginfo_rss( 'html_type' ); ?>" href="<?php the_permalink_rss(); ?>" />
 		<id><?php the_guid(); ?></id>
-		<updated><?php echo get_the_modified_date( DATE_W3C ); ?></updated>
-		<published><?php echo get_the_date( DATE_W3C ); ?></published>
+		<updated><?php echo get_the_modified_date( DATE_ATOM ); ?></updated>
+		<published><?php echo get_the_date( DATE_ATOM ); ?></published>
 		<?php the_category_rss( 'atom' ); ?>
 		<summary type="<?php html_type_rss(); ?>"><![CDATA[<?php the_excerpt_rss(); ?>]]></summary>
 		<?php if ( ! get_option( 'rss_use_excerpt' ) ) : ?>
