@@ -430,8 +430,23 @@ class Kind_Metabox {
 
 		$author          = array();
 		$author['name']  = self::explode( sanitize_text_field( ifset( $_POST['cite_author_name'] ) ) );
-		$author['url']   = array_map( 'esc_url', self::explode( ifset( $_POST['cite_author_url'] ) ) );
-		$author['photo'] = array_map( 'esc_url', self::explode( ifset( $_POST['cite_author_photo'] ) ) );
+		$author['url']   = self::explode( ifset( $_POST['cite_author_url'] ) );
+		if ( is_array( $author['url'] ) ) {
+			$author['url'] = array_map( 'esc_url', $author['url'] );
+		} else {
+			$author['url'] = esc_url( $author['url'] );
+		}
+		
+		$author['photo'] = self::explode( ifset( $_POST['cite_author_photo'] ) );
+
+		if ( is_array( $author['photo'] ) ) {
+			$author['photo'] = array_map( 'esc_url', $author['photo'] );
+		} else {
+			$author['photo'] = esc_url( $author['photo'] );
+		}
+
+
+
 		$author          = array_filter( $author );
 		if ( ! empty( $author ) ) {
 
