@@ -2,14 +2,14 @@
 # This file is distributed under the same license as the Post Kinds plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Kinds 3.5.9\n"
+"Project-Id-Version: Post Kinds 3.5.10\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/indieweb-post-kinds\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2021-08-25T04:58:59+00:00\n"
+"POT-Creation-Date: 2021-11-03T02:42:32+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.5.0\n"
 "X-Domain: indieweb-post-kinds\n"
@@ -2189,22 +2189,22 @@ msgstr ""
 msgid "Parse This is not installed. Please advise the developer"
 msgstr ""
 
-#: indieweb-post-kinds.php:88
-msgid "Classic Editor Plugin is not active. The Post Kinds plugin will not function correctly at this time without using the Classic Editor."
+#: indieweb-post-kinds.php:92
+msgid "Classic Editor or Disable Gutenberg Plugin is not active. The Post Kinds plugin will not function correctly at this time without using the Classic Editor."
 msgstr ""
 
-#: indieweb-post-kinds.php:201
+#: indieweb-post-kinds.php:205
 msgid "Settings"
 msgstr ""
 
-#: indieweb-post-kinds.php:223
+#: indieweb-post-kinds.php:227
 msgid "For responses to URLs, such as responding to a post or article, this site allows the storage of data around the post/article in order to generate a rich citation. Items such as author name and image, summary of the text, embed provided by third-party site, etc may be stored and are solely to provide this context. We will remove any of this on request."
 msgstr ""
 
 #: lib/parse-this/includes/class-parse-this-discovery.php:56
 #: lib/parse-this/includes/class-parse-this-opml.php:17
-#: lib/parse-this/includes/class-parse-this.php:221
-#: lib/parse-this/includes/class-parse-this.php:255
+#: lib/parse-this/includes/class-parse-this.php:229
+#: lib/parse-this/includes/class-parse-this.php:263
 msgid "A valid URL was not provided."
 msgstr ""
 
