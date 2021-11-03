@@ -368,7 +368,7 @@ class Kind_Metabox {
 		$end       = '';
 
 		if ( isset( $_POST['mf2_start_date'] ) || isset( $_POST['mf2_start_time'] ) ) {
-			$start = build_iso8601_time( $_POST['mf2_start_date'], $_POST['mf2_start_time'], $_POST['mf2_start_offset'] );
+			$start = build_iso8601_time( sanitize_text_field( $_POST['mf2_start_date'] ), sanitize_text_field( $_POST['mf2_start_time'] ), sanitize_text_field( $_POST['mf2_start_offset'] ) );
 			if ( ! $start ) {
 				$kind_post->delete( 'start' );
 			}
@@ -376,7 +376,7 @@ class Kind_Metabox {
 			$kind_post->delete( 'start' );
 		}
 		if ( isset( $_POST['mf2_end_date'] ) || isset( $_POST['mf2_end_time'] ) ) {
-			$end = build_iso8601_time( $_POST['mf2_end_date'], $_POST['mf2_end_time'], $_POST['mf2_end_offset'] );
+			$end = build_iso8601_time( sanitize_text_field( $_POST['mf2_end_date'] ), sanitize_text_field( $_POST['mf2_end_time'] ), sanitize_text_field( $_POST['mf2_end_offset'] ) );
 			if ( ! $end ) {
 				$kind_post->delete( 'end' );
 			}
@@ -389,12 +389,12 @@ class Kind_Metabox {
 		}
 
 		$durations = array(
-			'Y' => ifset( $_POST['duration_years'] ),
-			'M' => ifset( $_POST['duration_months'] ),
-			'D' => ifset( $_POST['duration_days'] ),
-			'H' => ifset( $_POST['duration_hours'] ),
-			'I' => ifset( $_POST['duration_minutes'] ),
-			'S' => ifset( $_POST['duration_seconds'] ),
+			'Y' => intval( ifset( ( $_POST['duration_years'] ) ) ),
+			'M' => intval( ifset( $_POST['duration_months'] ) ),
+			'D' => intval( ifset( $_POST['duration_days'] ) ),
+			'H' => intval( ifset( $_POST['duration_hours'] ) ),
+			'I' => intval( ifset( $_POST['duration_minutes'] ) ),
+			'S' => intval( ifset( $_POST['duration_seconds'] ) ),
 		);
 		$duration  = build_iso8601_duration( $durations );
 
@@ -414,24 +414,24 @@ class Kind_Metabox {
 		$kind_post->set( 'rsvp', $_POST['mf2_rsvp'] );
 
 		if ( isset( $_POST['cite_published_date'] ) || isset( $_POST['published_time'] ) ) {
-			$cite['published'] = build_iso8601_time( $_POST['cite_published_date'], $_POST['cite_published_time'], $_POST['cite_published_offset'] );
+			$cite['published'] = build_iso8601_time( sanitize_text_field( $_POST['cite_published_date'] ), sanitize_text_field( $_POST['cite_published_time'] ), sanitize_text_field( $_POST['cite_published_offset'] ) );
 		}
 		if ( isset( $_POST['cite_updated_date'] ) || isset( $_POST['cite_updated_time'] ) ) {
-			$cite['updated'] = build_iso8601_time( $_POST['cite_updated_date'], $_POST['cite_updated_time'], $_POST['cite_updated_offset'] );
+			$cite['updated'] = build_iso8601_time( sanitize_text_field( $_POST['cite_updated_date'] ), sanitize_text_field( $_POST['cite_updated_time'] ), sanitize_text_field( $_POST['cite_updated_offset'] ) );
 		}
-		$cite['summary'] = ifset( $_POST['cite_summary'] );
-		$cite['name']    = ifset( $_POST['cite_name'] );
-		$cite['url']     = ifset( $_POST['cite_url'] );
+		$cite['summary'] = wp_kses_post( ifset( $_POST['cite_summary'] ) );
+		$cite['name']    = sanitize_text_field( ifset( $_POST['cite_name'] ) );
+		$cite['url']     = esc_url( ifset( $_POST['cite_url'] ) );
 		if ( isset( $_POST['cite_tags'] ) ) {
-			$cite['category'] = array_filter( explode( ';', $_POST['cite_tags'] ) );
+			$cite['category'] = array_filter( explode( ';', sanitize_text_field( $_POST['cite_tags'] ) ) );
 		}
-		$cite['publication'] = ifset( $_POST['cite_publication'] );
-		$cite['featured']    = ifset( $_POST['cite_featured'] );
+		$cite['publication'] = sanitize_text_field( ifset( $_POST['cite_publication'] ) );
+		$cite['featured']    = esc_url( ifset( $_POST['cite_featured'] ) );
 
 		$author          = array();
-		$author['name']  = self::explode( ifset( $_POST['cite_author_name'] ) );
-		$author['url']   = self::explode( ifset( $_POST['cite_author_url'] ) );
-		$author['photo'] = self::explode( ifset( $_POST['cite_author_photo'] ) );
+		$author['name']  = self::explode( sanitize_text_field( ifset( $_POST['cite_author_name'] ) ) );
+		$author['url']   = array_map( 'esc_url', self::explode( ifset( $_POST['cite_author_url'] ) ) );
+		$author['photo'] = array_map( 'esc_url', self::explode( ifset( $_POST['cite_author_photo'] ) ) );
 		$author          = array_filter( $author );
 		if ( ! empty( $author ) ) {
 
