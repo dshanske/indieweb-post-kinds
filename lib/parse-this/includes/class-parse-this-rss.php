@@ -186,8 +186,8 @@ class Parse_This_RSS extends Parse_This_Base {
 				)
 			),
 			'_source'      => self::get_source( $item ),
-			'published'    => $item->get_date( DATE_W3C ),
-			'updated'      => $item->get_updated_date( DATE_W3C ),
+			'published'    => self::get_date( $item ),
+			'updated'      => self::get_updated_date( $item ),
 			'url'          => $item->get_permalink(),
 			'uid'          => $item->get_id(),
 			'location'     => self::get_location( $item ),
@@ -324,6 +324,22 @@ class Parse_This_RSS extends Parse_This_Base {
 				'name'      => self::get_location_name( $item ),
 			)
 		);
+	}
+
+	public static function get_date( $item ) {
+		$datetime = new DateTime( $item->get_date( null ) );
+		if ( $datetime ) {
+			return $datetime->format( DATE_W3C );
+		}
+		return null;
+	}
+
+	public static function get_updated_date( $item ) {
+		$datetime = new DateTime( $item->get_updated_date( null ) );
+		if ( $datetime ) {
+			return $datetime->format( DATE_W3C );
+		}
+		return null;
 	}
 
 
