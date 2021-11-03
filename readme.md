@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** [dshanske](https://profiles.wordpress.org/dshanske)  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.5.10  
+**Stable tag:** 3.5.11  
 **Requires at least:** 4.9.9  
 **Requires PHP:** 5.6  
 **Tested up to:** 5.8  
@@ -273,6 +273,9 @@ through future plugin updates.
 
 
 ## Changelog ##
+
+### 3.5.11 ( 2021-11-03 ) ###
+* Fix bug introduced in error type checking in prior version
 
 ### 3.5.10 ( 2021-11-02 ) ###
 * Additional type checking
