@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like, scrobble
-Stable tag: 3.5.11
+Stable tag: 3.5.12
 Requires at least: 4.9.9
 Requires PHP: 5.6
 Tested up to: 5.8
