@@ -139,10 +139,22 @@ function kind_src_url_in_content( $content ) {
  * @return string Marked up link to a post.
  **/
 
-function kind_get_the_link( $post = null ) {
+function kind_get_the_link( $post = null, $class = null ) {
 	$post = get_post( $post );
 	$kind = get_post_kind_slug( $post );
-	return sprintf( '<a href="%2$s">%1$s</a> - %3$s', kind_get_the_title( $post, $kind ), get_the_permalink( $post ), get_the_date( '', $post ) );
+
+	if ( is_array( $class ) ) {
+		$class = implode( ' ', $class );
+	}
+	$class       = 'class=' . $class;
+	$time_string = '<time %1$s datetime="%2$s">%3$s</time>';
+	$time_string = sprintf(
+		$time_string,
+		esc_attr( $class ),
+		esc_attr( get_the_date( DATE_W3C, $post ) ),
+		get_the_date( '', $post )
+	);
+	return sprintf( '<a href="%2$s">%1$s</a> - %3$s', kind_get_the_title( $post, $kind ), get_the_permalink( $post ), $time_string );
 }
 
 
