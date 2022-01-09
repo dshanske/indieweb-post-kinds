@@ -274,6 +274,9 @@ through future plugin updates.
 
 ## Changelog ##
 
+### 3.5.12 ( 2022-01-09 ) ###
+* Markup time appropriately in kind_link function.
+
 ### 3.5.11 ( 2021-11-03 ) ###
 * Fix bug introduced in error type checking in prior version
 
