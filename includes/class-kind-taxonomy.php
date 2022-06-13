@@ -144,7 +144,7 @@ final class Kind_Taxonomy {
 	 */
 	public static function kind_photo_filter( $query ) {
 		// check if the user is requesting an admin page
-		if ( is_admin() ) {
+		if ( is_admin() || ! $query->is_main_query() ) {
 			return;
 		}
 		$photos = get_query_var( 'kind_photos' );
@@ -181,7 +181,7 @@ final class Kind_Taxonomy {
 	 */
 	public static function kind_filter_query( $query ) {
 		// check if the user is requesting an admin page
-		if ( is_admin() ) {
+		if ( is_admin() || ! $query->is_main_query() ) {
 			return;
 		}
 		$exclude = get_query_var( 'exclude' );
