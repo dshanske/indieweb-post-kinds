@@ -419,7 +419,7 @@ final class Kind_Taxonomy {
 			$new_term = $new_term instanceof WP_Term ? $new_term->slug : '';
 			if ( $old_term !== $new_term ) {
 				// Trigger a hook on a changed kind identifying old and new so actions can be performed
-				do_action( 'change_kind', $object_id, $old_term, $new_term );	
+				do_action( 'change_kind', $object_id, $old_term, $new_term );
 			}
 		}
 	}
@@ -474,6 +474,7 @@ final class Kind_Taxonomy {
 			'all_items'                  => _x( 'All Kinds', 'all taxonomy items', 'indieweb-post-kinds' ),
 			'parent_item'                => _x( 'Parent Kind', 'taxonomy parent item', 'indieweb-post-kinds' ),
 			'parent_item_colon'          => _x( 'Parent Kind:', 'taxonomy parent item with colon', 'indieweb-post-kinds' ),
+			'desc_field_description'     => __( 'This will appear on archives as the description if your theme supports', 'indieweb-post-kinds' ),
 			'edit_item'                  => _x( 'Edit Kind', 'edit taxonomy item', 'indieweb-post-kinds' ),
 			'view_item'                  => _x( 'View Kind', 'view taxonomy item', 'indieweb-post-kinds' ),
 			'update_item'                => _x( 'Update Kind', 'update taxonomy item', 'indieweb-post-kinds' ),
@@ -484,6 +485,9 @@ final class Kind_Taxonomy {
 			'choose_from_most_used'      => _x( 'Choose from the most used kinds', 'choose most used', 'indieweb-post-kinds' ),
 			'not found'                  => _x( 'No kinds found', 'no kinds found', 'indieweb-post-kinds' ),
 			'no_terms'                   => _x( 'No kinds', 'no kinds', 'indieweb-post-kinds' ),
+			'back_to_items'              => __( 'Back to Kinds', 'indieweb-post-kinds' ),
+			'item_link'                  => __( 'Kind Link', 'indieweb-post-kinds' ),
+			'item_link_description'      => __( 'A link to a kind', 'indieweb-post-kinds' ),
 		);
 
 		$args = array(
@@ -1323,8 +1327,8 @@ final class Kind_Taxonomy {
 	 * @return string
 	 */
 	public static function get_icon( $kind, $echo = false ) {
-		$name = self::get_kind_info( $kind, 'singular_name' );
-		$svg  = sprintf( '%1$ssvgs/%2$s.svg', plugin_dir_path( __DIR__ ), $kind );
+		$name       = self::get_kind_info( $kind, 'singular_name' );
+		$svg        = sprintf( '%1$ssvgs/%2$s.svg', plugin_dir_path( __DIR__ ), $kind );
 		$attributes = apply_filters( 'post_kinds_icon_attributes', 'style="display: inline-block; max-height: 1rem; margin-right: 0.5rem' );
 		if ( file_exists( $svg ) ) {
 			$return = sprintf( '<span class="svg-icon svg-%1$s" aria-label="%2$s" title="%2$s" %3$s><span aria-hidden="true">%4$s</span></span>', esc_attr( $kind ), esc_attr( $name ), esc_attr( $attributes ), file_get_contents( $svg ) );
