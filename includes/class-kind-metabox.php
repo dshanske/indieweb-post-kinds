@@ -42,12 +42,20 @@ class Kind_Metabox {
 		if ( empty( $old_kind ) || empty( $new_kind ) ) {
 			return;
 		}
+		if ( $old_kind === $new_kind ) {
+			return;
+		}
+
 		$kind_post = new Kind_Post( $post_id );
 		if ( ! $kind_post ) {
 			return;
 		}
 		$old_prop = Kind_Taxonomy::get_kind_info( $old_kind, 'property' );
 		$new_prop = Kind_Taxonomy::get_kind_info( $new_kind, 'property' );
+		if ( $old_prop === $new_prop ) {
+			return;
+		}
+
 		if ( empty( $new_prop ) ) {
 			return;
 		}
