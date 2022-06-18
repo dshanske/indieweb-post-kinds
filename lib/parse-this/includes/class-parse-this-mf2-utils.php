@@ -142,6 +142,20 @@ class Parse_This_MF2_Utils extends Parse_This_Base {
 	}
 
 	/**
+	 * Returns rel property $relname in array $mf.
+	 *
+	 * @param array   $mf
+	 * @param $relname
+	 * @return mixed
+	 */
+	public static function get_rel( array $mf, $relname ) {
+		if ( self::has_rel( $mf, $relname ) ) {
+			return $mf['rels'][ $relname ];
+		}
+		return false;
+	}
+
+	/**
 	 * shortcut for getPlaintext.
 	 *
 	 * @deprecated use getPlaintext from now on

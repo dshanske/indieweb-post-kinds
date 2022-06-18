@@ -35,10 +35,22 @@ class Parse_This_HTML extends Parse_This_Base {
 				continue;
 			}
 			// Decode known JSON encoded properties
-			if ( in_array( $meta_name, array( 'parsely-page', 'parsely-metadata' ), true ) ) {
+			if ( 'parsely-metadata' === $meta_name ) {
 				$json = json_decode( $meta_value, true );
 				if ( is_array( $json ) ) {
 					$meta_value = $json;
+				}
+			}
+
+			// Parsely-page is deprecated but convert it to the new parsely format.
+			if ( 'parsely-page' === $meta_name ) {
+				$json = json_decode( $meta_value, true );
+				if ( is_array( $json ) ) {
+					foreach ( $json as $key => $value ) {
+						$key  = str_replace( '_', '-', $key );
+						$meta = self::set( $meta, 'parsely-' . $key, $value );
+					}
+					continue;
 				}
 			}
 			$meta = self::set( $meta, $meta_name, $meta_value );
@@ -170,9 +182,9 @@ class Parse_This_HTML extends Parse_This_Base {
 			if ( isset( $meta['og']['image'] ) ) {
 				$image = $meta['og']['image'];
 				if ( is_string( $image ) ) {
-					$jf2['photo'] = $image;
+					$jf2['featured'] = $image;
 				} elseif ( is_array( $image ) ) {
-					$jf2['photo'] = ifset( $image[0], ifset( $image['secure_url'] ) );
+					$jf2['featured'] = ifset( $image[0], ifset( $image['secure_url'] ) );
 				}
 			}
 			if ( isset( $meta['og']['site_name'] ) ) {
@@ -285,31 +297,39 @@ class Parse_This_HTML extends Parse_This_Base {
 				$jf2['published'] = normalize_iso8601( $dc['Date'] );
 			}
 		}
-		if ( isset( $meta['parsely-page'] ) ) {
-			$parsely = $meta['parsely-page'];
-			if ( ! isset( $jf2['author'] ) && isset( $parsely['author'] ) ) {
-				$jf2['author'] = $parsely['author'];
-			}
-			if ( ! isset( $jf2['published'] ) && isset( $parsely['pub_date'] ) ) {
-				$jf2['published'] = normalize_iso8601( $parsely['pub_date'] );
-			}
-			if ( ! isset( $jf2['featured'] ) && isset( $parsely['pub_date'] ) ) {
-				$jf2['featured'] = esc_url_raw( $parsely['image_url'] );
-			}
-		}
-		if ( ! isset( $jf2['author'] ) && isset( $meta['citation_author'] ) ) {
-			if ( is_string( $meta['citation_author'] ) ) {
-				$jf2['author'] = $meta['citation_author'];
-			} else {
-				$jf2['author'] = array();
-				foreach ( $meta['citation_author'] as $a ) {
-					$jf2['author'][] = array(
-						'type' => 'card',
-						'name' => $a,
-					);
+
+		if ( ! isset( $jf2['author'] ) ) {
+			foreach ( array( 'citation_author', 'parsely-author', 'author' ) as $author ) {
+				if ( isset( $meta[ $author ] ) ) {
+					if ( is_string( $meta[ $author ] ) ) {
+						$jf2['author'] = $meta[ $author ];
+					} else {
+						$jf2['author'] = array();
+						foreach ( $meta[ $author ] as $a ) {
+							$jf2['author'][] = $a;
+						}
+					}
+					break;
 				}
 			}
 		}
+
+		if ( isset( $jf2['author'] ) && is_array( $jf2['author'] ) && 1 === count( $jf2['author'] ) ) {
+			$jf2['author'] = array_pop( $jf2['author'] );
+		}
+
+		if ( ! isset( $jf2['featured'] ) && isset( $meta['parsely-image-url'] ) ) {
+			$jf2['featured'] = esc_url_raw( $meta['parsely-image-url'] );
+		}
+
+		if ( empty( $jf2['category'] ) && isset( $meta['parsely-tags'] ) ) {
+			if ( is_array( $meta['parsely-tags'] ) ) {
+				$jf2['category'] = $meta['parsely-tags'];
+			} else {
+				$jf2['category'] = explode( ',', $meta['parsely-tags'] );
+			}
+		}
+
 		if ( ! isset( $jf2['latitude'] ) && isset( $meta['playfoursquare'] ) ) {
 			$jf2['latitude']  = ifset( $meta['playfoursquare']['location:latitude'] );
 			$jf2['longitude'] = ifset( $meta['playfoursquare']['location:longitude'] );
@@ -318,22 +338,28 @@ class Parse_This_HTML extends Parse_This_Base {
 		if ( ! isset( $jf2['duration'] ) && isset( $meta['duration'] ) ) {
 			$jf2['duration'] = $meta['duration'];
 		}
-		if ( ! isset( $jf2['published'] ) && isset( $meta['citation_date'] ) ) {
-			$jf2['published'] = normalize_iso8601( $meta['citation_date'] );
-		} elseif ( ! isset( $jf2['published'] ) && isset( $meta['datePublished'] ) ) {
-			$jf2['published'] = normalize_iso8601( $meta['datePublished'] );
+		if ( ! isset( $jf2['published'] ) ) {
+			foreach ( array( 'citation_date', 'datePublished', 'parsely-pub-date' ) as $date ) {
+				if ( isset( $meta[ $date ] ) ) {
+					$jf2['published'] = normalize_iso8601( $meta[ $date ] );
+					break;
+				}
+			}
 		}
 
-		if ( ! isset( $jf2['author'] ) && ! empty( $meta['author'] ) ) {
-			$jf2['author'] = $meta['author'];
-		}
 		// If Site Name is not set use domain name less www
 		if ( ! isset( $jf2['publication'] ) && isset( $jf2['url'] ) ) {
 			$jf2['publication'] = preg_replace( '/^www\./', '', wp_parse_url( $jf2['url'], PHP_URL_HOST ) );
 		}
 
-		if ( ! isset( $jf2['name'] ) ) {
-			$jf2['name'] = $meta['title'];
+		if ( ! isset( $jf2['name'] ) && isset( $meta['parsely-title'] ) ) {
+			$jf2['name'] = $meta['parsely-title'];
+		} elseif ( ! isset( $jf2['name'] ) && isset( $meta['name'] ) ) {
+			$jf2['name'] = $meta['name'];
+		}
+
+		if ( ! isset( $jf2['type'] ) && isset( $meta['parsely-type'] ) ) {
+			$jf2['type'] = ( 'post' === $meta['parsely-type'] ) ? 'entry' : 'feed';
 		}
 
 		return $jf2;

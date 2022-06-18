@@ -19,8 +19,42 @@ class Parse_This_RESTAPI {
 		return rtrim( strtr( base64_encode( $data ), '+/', '-_' ), '=' );
 	}
 
-	public static function fetch( $url, $endpoint, $cache = false ) {
-		$url = str_replace( 'wp/v2/posts', $endpoint, $url );
+	public static function get_rest_url( $rest_url, $path ) {
+		if ( ! wp_http_validate_url( $rest_url ) ) {
+			return false;
+		}
+		$path  = '/' . ltrim( $path, '/' );
+		$query = wp_parse_url( $rest_url, PHP_URL_QUERY );
+		if ( ! empty( $query ) ) {
+			$query = explode( '=', $query );
+			if ( array_key_exists( 'rest_route' ) ) {
+				return add_query_arg( 'rest_route', $path, trailingslashit( $rest_url ) );
+			}
+			return false;
+		}
+
+		$rest_url = untrailingslashit( $rest_url );
+		return $rest_url . $path;
+	}
+
+	public static function get_rest_path( $rest_url, $url ) {
+		if ( ! wp_http_validate_url( $rest_url ) ) {
+			return false;
+		}
+		$query = wp_parse_url( $rest_url, PHP_URL_QUERY );
+		if ( ! empty( $query ) ) {
+			$query = explode( '=', $query );
+			if ( array_key_exists( 'rest_route' ) ) {
+				return $query['rest_route'];
+			}
+		}
+		$path = str_replace( $rest_url, '', $url );
+		return '/' . ltrim( $path, '/' );
+	}
+
+
+	public static function fetch( $rest_url, $path, $cache = false ) {
+		$url = self::get_rest_url( $rest_url, $path );
 		$key = 'pt_rest_' . self::base64url_encode( $url );
 		if ( $cache ) {
 			$transient = get_transient( $key );
@@ -28,6 +62,7 @@ class Parse_This_RESTAPI {
 				return json_decode( $transient, true );
 			}
 		}
+
 		$user_agent = 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:57.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36 Parse This/WP';
 		$args       = array(
 			'timeout'             => 15,
@@ -37,13 +72,16 @@ class Parse_This_RESTAPI {
 		);
 
 		$response      = wp_safe_remote_get( $url, $args );
-		$response_code = wp_remote_retrieve_response_code( $response );
+		if ( is_wp_error( $response ) ) {
+			return $response;
+		}
+		$response_code = (int) wp_remote_retrieve_response_code( $response );
 		$content_type  = wp_remote_retrieve_header( $response, 'content-type' );
-		if ( in_array( $response_code, array( 403, 415 ), true ) ) {
+		if ( in_array( $response_code, array( 404, 403, 415 ), true ) ) {
 			$args['user-agent'] = $user_agent;
 			$response           = wp_safe_remote_get( $url, $args );
 			$response_code      = wp_remote_retrieve_response_code( $response );
-			if ( in_array( $response_code, array( 403, 415 ), true ) ) {
+			if ( in_array( $response_code, array( 404, 403, 415 ), true ) ) {
 				return new WP_Error( 'source_error', 'Unable to Retrieve' );
 			}
 		}
@@ -63,11 +101,64 @@ class Parse_This_RESTAPI {
 		if ( $cache ) {
 			set_transient( $key, $content, WEEK_IN_SECONDS );
 		}
-		return json_decode( $content, true );
+
+		$content = json_decode( $content, true );
+
+		if ( wp_remote_retrieve_header( $response, 'x-wp-total' ) ) {
+			$return           = array();
+			$return['_total'] = wp_remote_retrieve_header( $response, 'x-wp-total' );
+			$return['_pages'] = wp_remote_retrieve_header( $response, 'x-wp-totalpages' );
+			$return['items']  = $content;
+			return $return;
+		} else {
+			return $content;
+		}
+		return false;
+
 	}
 
-	public static function get_author( $id, $url ) {
-		$json = self::fetch( $url, sprintf( 'wp/v2/users/%s', $id ) );
+	public static function parse( $content, $rest_url, $args ) {
+		// This is the REST URL itself if it has this.
+		if ( array_key_exists( 'namespaces', $content ) ) {
+			// Return site data if single otherwise feed data.
+			if ( 'single' === $args['return'] ) {
+				$return       = array(
+					'type' => 'card',
+				);
+				$timezone     = self::timezone( $content );
+				$return['tz'] = $timezone->getName();
+				if ( array_key_exists( '_links', $content ) ) {
+					if ( array_key_exists( 'wp:featuredmedia', $content['_links'] ) ) {
+						$photo = array();
+						foreach ( $content['_links']['wp:featuredmedia'] as $media ) {
+							$photo[] = self::get_featured( $rest_url, self::get_rest_path( $rest_url, $media['href'] ) );
+						}
+						$photo = array_unique( $photo );
+						if ( 1 === count( $photo ) ) {
+							$return['photo'] = array_pop( $photo );
+						} else {
+							$return['photo'] = array_filter( $photo );
+						}
+					}
+				}
+				$return['url']  = $content['url'];
+				$return['name'] = $content['name'];
+				$return['note'] = $content['description'];
+				return $return;
+			} else {
+				$content = self::fetch( $rest_url, '/wp/v2/posts' );
+
+				$content = self::posts_to_feed( $content, $rest_url );
+				return $content;
+			}
+		} elseif ( array_key_exists( 'id', $content ) ) {
+			return self::get_post( $content, $rest_url );
+		}
+		return false;
+	}
+
+	public static function get_author( $rest_url, $path ) {
+		$json = self::fetch( $rest_url, $path );
 		if ( is_wp_error( $json ) ) {
 			return null;
 		}
@@ -80,15 +171,15 @@ class Parse_This_RESTAPI {
 			'note'  => self::ifset( 'description', $json ),
 			'photo' => $avatar_urls,
 		);
-		return $return;
+		return array_filter( $return );
 	}
 
 
-	public static function get_authors( $url, $ids ) {
+	public static function get_authors( $rest_url, $ids ) {
 		if ( empty( $ids ) ) {
 			return array();
 		}
-		$json = self::fetch( $url, sprintf( 'wp/v2/users/?include=%1$s', implode( ',', $ids ) ) );
+		$json = self::fetch( $rest_url, sprintf( 'wp/v2/users/?include=%1$s', implode( ',', $ids ) ) );
 		if ( is_wp_error( $json ) ) {
 			return null;
 		}
@@ -112,23 +203,34 @@ class Parse_This_RESTAPI {
 		return $return;
 	}
 
-	public static function get_featured( $id, $url ) {
-		$json = self::fetch( $url, sprintf( 'wp/v2/media/%s', $id ) );
+	public static function get_featured( $rest_url, $path ) {
+		$json = self::fetch( $rest_url, $path );
 		if ( is_wp_error( $json ) ) {
 			return null;
 		}
 		return self::ifset( 'source_url', $json );
 	}
 
-	public static function get_media( $url, $ids ) {
+	public static function get_media( $rest_url, $ids ) {
 		if ( empty( $ids ) ) {
 			return array();
 		}
-		$json = self::fetch( $url, sprintf( 'wp/v2/media/?include=%1$s', implode( ',', $ids ) ) );
+		$json = self::fetch( $rest_url, sprintf( 'wp/v2/media/?include=%1$s', implode( ',', $ids ) ) );
 		if ( is_wp_error( $json ) ) {
 			return null;
 		}
 		return wp_list_pluck( $json, 'guid', 'id' );
+	}
+
+	public static function get_tags( $rest_url, $ids ) {
+		if ( empty( $ids ) ) {
+			return array();
+		}
+		$json = self::fetch( $rest_url, sprintf( '/wp/v2/tags?include=%1$s', implode( ',', $ids ) ) );
+		if ( is_wp_error( $json ) ) {
+			return null;
+		}
+		return wp_list_pluck( $json, 'name', 'id' );
 	}
 
 	public static function get_datetime( $time, $timezone = null ) {
@@ -139,8 +241,8 @@ class Parse_This_RESTAPI {
 		return $datetime->format( DATE_W3C );
 	}
 
-	public static function feed_data( $url ) {
-		$fetch = self::fetch( $url, '', true );
+	public static function site_data( $rest_url ) {
+		$fetch = self::fetch( $rest_url, '', true );
 		return wp_array_slice_assoc( $fetch, array( 'name', 'url', 'timezone_string', 'gmt_offset', 'description' ) );
 	}
 
@@ -161,27 +263,66 @@ class Parse_This_RESTAPI {
 		return new DateTimeZone( $tz_offset );
 	}
 
-	public static function to_jf2( $content, $url ) {
+	public static function get_post( $item, $rest_url ) {
+		$site_data = self::site_data( $rest_url );
+		$author    = self::get_rest_path( $rest_url, $item['_links']['author'][0]['href'] );
+		$timezone  = self::timezone( $site_data );
+		$newitem   = array_filter(
+			array(
+				'uid'       => self::get_rendered( 'guid', $item ),
+				'url'       => self::ifset( 'link', $item ),
+				'name'      => self::get_rendered( 'title', $item ),
+				'content'   => array_filter(
+					array(
+						'html' => Parse_This::clean_content( self::get_rendered( 'content', $item ) ),
+						'text' => wp_strip_all_tags( self::get_rendered( 'content', $item ) ),
+					)
+				),
+				'summary'   => self::get_rendered( 'excerpt', $item ),
+				'published' => self::get_datetime( self::ifset( 'date', $item ), $timezone ),
+				'updated'   => self::get_datetime( self::ifset( 'modified', $item ), $timezone ),
+				'author'    => self::get_author( $rest_url, $author ),
+				'kind'      => self::ifset( 'kind', $item ),
+			)
+		);
+		if ( array_key_exists( 'featured_media', $item ) ) {
+			$featured            = self::get_rest_path( $rest_url, $item['_links']['wp:featuredmedia'][0]['href'] );
+			$newitem['featured'] = self::get_featured( $rest_url, $featured );
+		}
+		if ( array_key_exists( 'tags', $item ) && ! empty( $item['tags'] ) ) {
+			foreach ( $item['_links']['wp:term'] as $term ) {
+				if ( 'post_tag' === $term['taxonomy'] ) {
+					$tag_path            = self::get_rest_path( $rest_url, $term['href'] );
+					$tags                = self::fetch( $rest_url, $tag_path );
+					$newitem['category'] = wp_list_pluck( $tags['items'], 'name' );
+				}
+			}
+		}
+		return array_filter( $newitem );
+	}
+
+	public static function posts_to_feed( $input, $url ) {
 		$return            = array_filter(
 			array(
 				'type'       => 'feed',
 				'_feed_type' => 'wordpress',
 			)
 		);
-		$data              = self::feed_data( $url );
+		$items             = $input['items'];
+		$data              = self::site_data( $url );
 		$timezone          = self::timezone( $data );
-		$media_ids         = wp_list_pluck( $content, 'featured_media' );
-		$author_ids        = wp_list_pluck( $content, 'author' );
+		$media_ids         = wp_list_pluck( $items, 'featured_media' );
+		$author_ids        = wp_list_pluck( $items, 'author' );
+		$tag_ids           = wp_list_pluck( $items, 'tags' );
+		$tag_ids           = array_merge( ...$tag_ids );
 		$media             = self::get_media( $url, $media_ids );
 		$authors           = self::get_authors( $url, $author_ids );
+		$tags              = self::get_tags( $url, $tag_ids );
 		$return['items']   = array();
 		$return['name']    = self::ifset( 'name', $data );
 		$return['summary'] = self::ifset( 'description', $data );
 		$return['url']     = self::ifset( 'url', $data );
-		foreach ( $content as $item ) {
-			if ( ! array_key_exists( $item['author'], $authors ) ) {
-				$authors[ $item['author'] ] = self::get_author( $item['author'], $url );
-			}
+		foreach ( $items as $item ) {
 			$newitem = array_filter(
 				array(
 					'uid'       => self::get_rendered( 'guid', $item ),
@@ -200,14 +341,20 @@ class Parse_This_RESTAPI {
 					'kind'      => self::ifset( 'kind', $item ),
 				)
 			);
+			if ( array_key_exists( 'tags', $item ) ) {
+				$category            = array_values( array_intersect_key( $tags, array_flip( $item['tags'] ) ) );
+				$newitem['category'] = $category;
+			}
 			if ( array_key_exists( 'featured_media', $item ) ) {
 				if ( array_key_exists( (int) $item['featured_media'], $media ) ) {
 					$newitem['featured'] = $media[ intval( $item['featured_media'] ) ]['rendered'];
-				} else {
-					$newitem['featured'] = self::get_featured( $item['featured_media'], $url );
 				}
 			}
-			$return['items'][] = $newitem;
+			$return['items'][] = array_filter( $newitem );
+		}
+		if ( array_key_exists( '_pages', $input ) ) {
+			$return['_pages'] = $input['_pages'];
+			$return['_total'] = $input['_total'];
 		}
 		return $return;
 	}

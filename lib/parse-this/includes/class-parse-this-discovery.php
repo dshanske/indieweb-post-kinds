@@ -7,8 +7,9 @@ class Parse_This_Discovery {
 	private function get_feed_type( $type ) {
 		switch ( $type ) {
 			case 'application/feed+json':
-			case 'application/json':
 				return 'jsonfeed';
+			case 'application/json':
+				return 'json';
 			case 'text/xml':
 			case 'application/rss+xml':
 				return 'rss';
@@ -75,7 +76,7 @@ class Parse_This_Discovery {
 				foreach ( $linkheaders as $link ) {
 					if ( preg_match( '/<(.[^>]+)>;\s+rel\s?=\s?[\"\']?(https:\/\/)?api.w.org?\/?[\"\']?/i', $link, $result ) ) {
 						$links[] = array(
-							'url'        => sprintf( '%s/wp/v2/posts', untrailingslashit( WP_Http::make_absolute_url( $result[1], $url ) ) ),
+							'url'        => untrailingslashit( WP_Http::make_absolute_url( $result[1], $url ) ),
 							'type'       => 'feed',
 							'_feed_type' => 'wordpress',
 							'name'       => 'WordPress REST API',
@@ -86,7 +87,7 @@ class Parse_This_Discovery {
 			} else {
 				if ( preg_match( '/<(.[^>]+)>;\s+rel\s?=\s?[\"\']?(https:\/\/)?api.w.org?\/?[\"\']?/i', $linkheaders, $result ) ) {
 						$links[] = array(
-							'url'        => sprintf( '%s/wp/v2/posts', untrailingslashit( WP_Http::make_absolute_url( $result[1], $url ) ) ),
+							'url'        => untrailingslashit( WP_Http::make_absolute_url( $result[1], $url ) ),
 							'type'       => 'feed',
 							'_feed_type' => 'wordpress',
 							'name'       => 'WordPress REST API',
@@ -172,7 +173,7 @@ class Parse_This_Discovery {
 					if ( 'https://api.w.org/' === $rel && ! $wprest ) {
 						$links[] = array_filter(
 							array(
-								'url'        => sprintf( '%s/wp/v2/posts', untrailingslashit( WP_Http::make_absolute_url( $href, $url ) ) ),
+								'url'        => untrailingslashit( WP_Http::make_absolute_url( $href, $url ) ),
 								'type'       => 'feed',
 								'_feed_type' => 'wordpress',
 								'name'       => 'WordPress REST API',
