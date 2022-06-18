@@ -436,15 +436,15 @@ class Kind_Metabox {
 		$cite['publication'] = sanitize_text_field( ifset( $_POST['cite_publication'] ) );
 		$cite['featured']    = esc_url( ifset( $_POST['cite_featured'] ) );
 
-		$author          = array();
-		$author['name']  = self::explode( sanitize_text_field( ifset( $_POST['cite_author_name'] ) ) );
-		$author['url']   = self::explode( ifset( $_POST['cite_author_url'] ) );
+		$author         = array();
+		$author['name'] = self::explode( sanitize_text_field( ifset( $_POST['cite_author_name'] ) ) );
+		$author['url']  = self::explode( ifset( $_POST['cite_author_url'] ) );
 		if ( is_array( $author['url'] ) ) {
 			$author['url'] = array_map( 'esc_url', $author['url'] );
 		} else {
 			$author['url'] = esc_url( $author['url'] );
 		}
-		
+
 		$author['photo'] = self::explode( ifset( $_POST['cite_author_photo'] ) );
 
 		if ( is_array( $author['photo'] ) ) {
@@ -453,9 +453,7 @@ class Kind_Metabox {
 			$author['photo'] = esc_url( $author['photo'] );
 		}
 
-
-
-		$author          = array_filter( $author );
+		$author = array_filter( $author );
 		if ( ! empty( $author ) ) {
 
 			$author['type'] = 'card';

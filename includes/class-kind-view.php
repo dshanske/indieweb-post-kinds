@@ -36,7 +36,7 @@ class Kind_View {
 		}
 
 		if ( isset( $attr['class'] ) ) {
-			$class         = explode( ' ', $attr['class'] );
+			$class = explode( ' ', $attr['class'] );
 
 			// This class is added by the list display.
 			if ( in_array( 'kind-photo-thumbnail', $class ) ) {
