@@ -8,10 +8,14 @@
 // The Kind_View class sets up the kind display behavior for kinds
 class Kind_View {
 	public static function init() {
-		add_filter( 'the_content', array( static::class, 'content_response' ), 9 );
-		add_filter( 'the_content_feed', array( static::class, 'content_feed_response' ), 9, 2 );
+
+		if ( apply_filters( 'kind_content_display', true ) ) {
+			add_filter( 'the_content', array( static::class, 'content_response' ), 9 );
+			add_filter( 'the_content_feed', array( static::class, 'content_feed_response' ), 9, 2 );
+			add_filter( 'the_excerpt', array( static::class, 'excerpt_response' ), 9 );
+		}
+
 		add_filter( 'json_feed_item', array( static::class, 'json_feed_item' ), 10, 2 );
-		add_filter( 'the_excerpt', array( static::class, 'excerpt_response' ), 9 );
 		add_filter( 'wp_get_attachment_image_attributes', array( static::class, 'wp_get_attachment_image_attributes' ), 10, 2 );
 	}
 
