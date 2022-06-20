@@ -221,7 +221,7 @@ final class Kind_Taxonomy {
 	public static function kind_firehose_query( $query ) {
 
 		// check if the user is requesting an admin page
-		 if ( is_admin() || ! $query->is_main_query() ) {
+		if ( is_admin() || ! $query->is_main_query() ) {
 			return $query;
 		}
 
@@ -236,7 +236,6 @@ final class Kind_Taxonomy {
 
 			return $query;
 		}
-
 
 		if ( $query->is_archive() ) {
 			return $query;
@@ -579,7 +578,7 @@ final class Kind_Taxonomy {
 		add_rewrite_tag( '%kind_exclude_terms%', '([a-z,]+)', 'exclude_terms=' );
 		add_permastruct( 'kind_excludes', $kind_exclude_slug . '/%kind_exclude%/%kind_exclude_terms%' );
 
-		$kind_photos_slug = apply_filters( 'kind_photos_slug', 'photos' );
+		$kind_photos_slug   = apply_filters( 'kind_photos_slug', 'photos' );
 		$kind_firehose_slug = apply_filters( 'kind_firehose_slug', 'firehose' );
 
 		$year_regex       = '([0-9]{4})';
@@ -862,7 +861,7 @@ final class Kind_Taxonomy {
 				/* translators: 1. Taxonomy . 1: Date */
 				$title = sprintf( __( '%1$1s - %2$2s', 'indieweb-post-kinds' ), $title, get_the_date( _x( 'F j, Y', 'daily archives date format', 'indieweb-post-kinds' ) ) );
 			}
-		} else if ( get_query_var( 'kind_firehose' ) ) {
+		} elseif ( get_query_var( 'kind_firehose' ) ) {
 			$title = sprintf( __( '%1$s - %2$2s', 'indieweb-post-kinds' ), $title, __( 'Firehose', 'indieweb-post-kinds' ) );
 		}
 

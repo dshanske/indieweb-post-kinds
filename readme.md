@@ -1,10 +1,10 @@
 # Post Kinds #
 **Contributors:** [dshanske](https://profiles.wordpress.org/dshanske)  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.5.12  
+**Stable tag:** 3.6.0  
 **Requires at least:** 4.9.9  
 **Requires PHP:** 5.6  
-**Tested up to:** 5.9  
+**Tested up to:** 6.0  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -16,9 +16,9 @@ Post Kinds adds support to the Classic Editor for responding to and interacting 
 developed by the IndieWeb by implementing [kinds of posts](http://indieweb.org/post_kinds). It is not compatible with Gutenberg.
 
 It can also distinguish certain types of passive posts in a manner similar to [post formats](http://codex.wordpress.org/Post_Formats). While it can work alongside
-post formats, it is recommended as a replacement as it functions in a similar manner.
+post formats, it is recommended as a replacement as it is designed as a replacement using IndieWeb Post Types.
 
-Many sites will not need all of the kinds set up. What kinds of posts you wish to publish are specific to your needs. 
+Many sites will not need all of the kinds set up. What kinds of posts you wish to publish are specific to your needs.
 
 
 ## Screenshots ##
@@ -32,7 +32,7 @@ Many sites will not need all of the kinds set up. What kinds of posts you wish t
 
 ## Installation ##
 
-The plugin requires the [webmention](https://wordpress.org/plugins/webmention/) plugin to support sending/receiving notice of a reply/like to another site which will appear as a comment. The [Semantic Linkbacks](https://wordpress.org/plugins/semantic-linkbacks/) plugin is available to more richly display the comment.
+The plugin requires the [webmention](https://wordpress.org/plugins/webmention/) plugin to support sending/receiving notice of a reply/like to another site which will appear as a comment. The [Semantic Linkbacks](https://wordpress.org/plugins/semantic-linkbacks/) plugin is available to more richly display received comments.
 
 ## Privacy and Data Storage Notice ##
 
@@ -45,6 +45,11 @@ responsibilities to responsibly use this data, and to remove information on requ
 2. [Chris Aldrich](http://boffosocko.com) always receives a credit on my plugins due his regular feedback, input, and usage.
 
 ## Upgrade Notice ##
+
+### 3.6.0 ###
+
+This version introduces the ability to filter kinds from the main feed and introduces a second feed that has all kinds, called the 'firehose' feed, available by default at /firehose. 
+This feature could have unanticipated interactions with other plugins. Please report any issues so they can be addressed.
 
 ### 3.5.0 ###
 
@@ -152,7 +157,7 @@ The Response Kinds
  * **Bookmark** - This is basically sharing/storing a link/bookmark. 
  * **Quote** - Quoted Content
  * **RSVP** - A specific type of Reply regarding an event
- * **Check-In** - Identifying you are at a place. There is currently only limited support for this.
+ * **Check-In** - Identifying you are at a place. To show full location, the Simple Location plugin is recommended as it will display maps.
  * **Issue** - Issue is a special kind of article post that is a reply to typically some source code, though potentially anything at a source control repository.
 
 
@@ -193,7 +198,8 @@ interface at this time.
 
 ### Can I add my own kinds? ###
 
-I would prefer if something is popular enough to merge it into the plugin. However if you are interested in creating your own there is functionality around it.
+I would prefer if something is popular enough to merge it into the plugin. Feel free to ask for a term to be reserved by filing an issue.
+However if you are interested in creating your own there is functionality around it.
 
 register_post_kind(
 	'reply',
@@ -226,7 +232,7 @@ You can also add the date /kind/note/2018/12/24 to see date-based archives.
 
 For archives if you add exclude_kind as a query variable it will exclude specific kinds from the query `?exclude=kind&exclude_terms=note`. You can also do this as /exclude/kind/note,checkin as it accepts multiple values
 
-There is also a special photo photo included, using ?kind_photos=1 or /photos/yyyy or /photos/yyyy/mm or /photos/kind/note or any other taxonomy. This will use the photo enhancements introduced in 3.4.0 to only show photos from
+There is also a special photo photo included, using ?kind_photos=1 or /photos or /photos/yyyy or /photos/yyyy/mm or /photos/kind/note or any other taxonomy. This will use the photo enhancements introduced in 3.4.0 to only show photos from
 all types of posts.
 
 ### Do you have RSS feeds for each kind? ###
@@ -250,9 +256,10 @@ Using the [Micropub](https://wordpress.org/plugins/micropub) plugin for WordPres
 
 The JetPack sharing module conflicts with this plugin.
 
-### When will this plugin support Gutenberg? ###
+### When will this plugin support the Block Editor? ###
 
-I am not sure. It is not a strict priority. At this time, there is no definite time for this support.
+I am not sure. It is not a strict priority. At this time, there is no definite time for this support. I have been gradually moving toward abstracting more of the data into the REST API
+so it could more easily be added to the block editor.
 
 ### How do I get support? ###
 
@@ -262,9 +269,8 @@ The Development version of the plugin is hosted at [Github](https://github.com/d
 ## Theme Support ##
 
 Post Kinds automatically adds information to `the_content` and `the_excerpt` filter. Being as this is inside the content block, which may or may not be desirable, you may remove these filters as noted
-below and call `kind_display` directly. This will allow it to appear outside the content block.
-	* `remove_filter( 'the_content', array( 'Kind_View', 'content_response' ), 20 );`
-	* `remove_filter( 'the_excerpt', array( 'Kind_View', 'excerpt_response' ), 20 );`
+below and call `kind_display` directly. This will allow it to appear outside the content block. To remove the automatic display, add the following to your theme.
+	* `add_filter( 'kind_content_display', '__return_false' );`
 
 The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow you to manipulate the kind settings in a post. `get_post_kind_string` will return the display name of a kind.
 
@@ -273,6 +279,13 @@ through future plugin updates.
 
 
 ## Changelog ##
+
+### 3.6.0 ( 2022-06-19 ) ###
+* Fix issue with dynamic menus not appearing on custom archives
+* Fix issue with bulk edit removing data
+* Update to Parse This Version for better results
+* Add ability to filter main feed, and add secondary all kinds feed.
+* Introduce filter config option to display additions to content instead of having to remove it specifically.
 
 ### 3.5.12 ( 2022-01-09 ) ###
 * Markup time appropriately in kind_link function.

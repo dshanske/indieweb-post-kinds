@@ -49,10 +49,10 @@ class Kind_Config {
 			'type'         => 'array',
 			'description'  => 'Kinds Showing in Main Archive',
 			'show_in_rest' => false,
-			'default'      => array()
+			'default'      => array(),
 		);
 		register_setting( 'iwt_options', 'kind_firehose', $args );
-		
+
 		$args = array(
 			'type'         => 'boolean',
 			'description'  => 'Response Information Should Be After Content',
