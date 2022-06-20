@@ -46,6 +46,14 @@ class Kind_Config {
 		);
 		register_setting( 'iwt_options', 'kind_embeds', $args );
 		$args = array(
+			'type'         => 'array',
+			'description'  => 'Kinds Showing in Main Archive',
+			'show_in_rest' => false,
+			'default'      => array()
+		);
+		register_setting( 'iwt_options', 'kind_firehose', $args );
+		
+		$args = array(
 			'type'         => 'boolean',
 			'description'  => 'Response Information Should Be After Content',
 			'show_in_rest' => false,
@@ -115,6 +123,17 @@ class Kind_Config {
 			'iwt-content',
 			array(
 				'name' => 'kind_embeds',
+			)
+		);
+
+		add_settings_field(
+			'firehose',
+			__( 'Kinds to Show in Main Feed. Selecting None will Disable this Filter', 'indieweb-post-kinds' ),
+			array( static::class, 'kindmultiselect_callback' ),
+			'iwt_options',
+			'iwt-content',
+			array(
+				'name' => 'kind_firehose',
 			)
 		);
 
@@ -301,9 +320,33 @@ class Kind_Config {
 		echo '</div>';
 	}
 
-
 	/**
 	 * Generate a Term List.
+	 *
+	 * @access public
+	 */
+	public static function kindmultiselect_callback( array $args ) {
+		$terms   = get_option( 'kind_termslist' );
+		$terms[] = 'note';
+
+		$kindlist = get_option( $args['name'] );
+		if ( ! is_array( $kindlist ) ) {
+			$kindlist = array();
+		}
+
+		printf( '<select class="widefat" name="%1$s[]" id="%1$s" multiple>', $args['name'] );
+
+		foreach ( $terms as $term ) {
+			$value = Kind_Taxonomy::get_post_kind_info( $term );
+			printf( '<option value="%1$s" %2$s />%3$s</option>', esc_attr($term), selected( in_array( $term, $kindlist ), true, false ), sanitize_text_field( $value->singular_name ) );  // phpcs:ignore
+		}
+		echo '</select>';
+	}
+
+
+
+	/**
+	 * Generate a Kind Select List.
 	 *
 	 * @access public
 	 */
@@ -313,11 +356,13 @@ class Kind_Config {
 		sort( $terms, SORT_STRING );
 
 		$defaultkind = get_option( 'kind_default' );
+		echo '<select name="kind_default" id="kind_default">';
 
 		foreach ( $terms as $term ) {
 			$value = Kind_Taxonomy::get_post_kind_info( $term );
-			printf( '<input id="kind_default" name="kind_default" type="radio" value="%1$s" %2$s />%3$s<br />', esc_attr($term), checked( $term, $defaultkind, false ), sanitize_text_field( $value->singular_name ) );  // phpcs:ignore
+			printf( '<option value="%1$s" %2$s />%3$s</option>', esc_attr($term), selected( $term, $defaultkind, false ), sanitize_text_field( $value->singular_name ) );  // phpcs:ignore
 		}
+		echo '</select>';
 	}
 
 	/**

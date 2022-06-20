@@ -34,6 +34,7 @@ final class Kind_Taxonomy {
 		add_action( 'pre_get_posts', array( static::class, 'kind_filter_query' ) );
 		add_action( 'pre_get_posts', array( static::class, 'kind_photo_filter' ) );
 		add_action( 'pre_get_posts', array( static::class, 'kind_alias_filter' ) );
+		add_action( 'pre_get_posts', array( static::class, 'kind_firehose_query' ), 99 );
 
 		// Add Dropdown
 		add_action( 'restrict_manage_posts', array( static::class, 'kind_dropdown' ), 10, 2 );
@@ -132,6 +133,7 @@ final class Kind_Taxonomy {
 		$qvars[] = 'exclude';
 		$qvars[] = 'exclude_terms';
 		$qvars[] = 'kind_photos';
+		$qvars[] = 'kind_firehose';
 		return $qvars;
 	}
 
@@ -145,7 +147,7 @@ final class Kind_Taxonomy {
 	public static function kind_photo_filter( $query ) {
 		// check if the user is requesting an admin page
 		if ( is_admin() || ! $query->is_main_query() ) {
-			return;
+			return $query;
 		}
 		$photos = get_query_var( 'kind_photos' );
 		// Return if  not set
@@ -182,7 +184,7 @@ final class Kind_Taxonomy {
 	public static function kind_filter_query( $query ) {
 		// check if the user is requesting an admin page
 		if ( is_admin() || ! $query->is_main_query() ) {
-			return;
+			return $query;
 		}
 		$exclude = get_query_var( 'exclude' );
 		// Return if both are not set
@@ -203,6 +205,56 @@ final class Kind_Taxonomy {
 					'field'    => 'slug',
 					'terms'    => $filter,
 					'operator' => $operator,
+				),
+			)
+		);
+		return $query;
+	}
+
+	/**
+	 * Filter the main query for post kinds.
+	 *
+	 * @access public
+	 *
+	 * @param $query
+	 */
+	public static function kind_firehose_query( $query ) {
+
+		// check if the user is requesting an admin page
+		 if ( is_admin() || ! $query->is_main_query() ) {
+			return $query;
+		}
+
+		$filter = get_query_var( 'kind_firehose' );
+		if ( ! empty( $filter ) ) {
+			$query->is_archive      = true;
+			$query->is_comment_feed = false;
+			$query->is_home         = false;
+			$query->is_front_page   = false;
+			$query->is_single       = false;
+			$query->is_posts_page   = false;
+
+			return $query;
+		}
+
+
+		if ( $query->is_archive() ) {
+			return $query;
+		}
+
+		$firehose = get_option( 'kind_firehose' );
+		if ( empty( $firehose ) || ! is_array( $firehose ) ) {
+			return $query;
+		}
+
+		$query->set(
+			'tax_query',
+			array(
+				array(
+					'taxonomy' => 'kind',
+					'field'    => 'slug',
+					'terms'    => $firehose,
+					'operator' => 'IN',
 				),
 			)
 		);
@@ -442,7 +494,7 @@ final class Kind_Taxonomy {
 		return $wp_rewrite->pagination_base . '/?([0-9]{1,})';
 	}
 
-	public static function get_feed_regex() {
+	public static function get_feed_regex( $with_base = true ) {
 		global $wp_rewrite;
 		// Build a regex to match the feed section of URLs, something like (feed|atom|rss|rss2)/?
 		$feedregex2 = '';
@@ -451,7 +503,7 @@ final class Kind_Taxonomy {
 		}
 
 		$feedregex2 = '(' . trim( $feedregex2, '|' ) . ')';
-		return $wp_rewrite->feed_base . '/' . $feedregex2;
+		return ( $with_base ) ? $wp_rewrite->feed_base . '/' . $feedregex2 : $feedregex2;
 	}
 
 	public static function generate_permastruct( $elements ) {
@@ -528,12 +580,14 @@ final class Kind_Taxonomy {
 		add_permastruct( 'kind_excludes', $kind_exclude_slug . '/%kind_exclude%/%kind_exclude_terms%' );
 
 		$kind_photos_slug = apply_filters( 'kind_photos_slug', 'photos' );
+		$kind_firehose_slug = apply_filters( 'kind_firehose_slug', 'firehose' );
 
 		$year_regex       = '([0-9]{4})';
 		$month_regex      = '(0-9]{2})';
 		$day_regex        = '([0-9]{1,})';
 		$pagination_regex = self::get_pagination_regex();
 		$feed_regex       = self::get_feed_regex();
+		$feed_regex2      = self::get_feed_regex( false );
 		$tax_regex        = '([^/]*)';
 		$term_regex       = '([^/]*)';
 
@@ -587,6 +641,11 @@ final class Kind_Taxonomy {
 
 		// Root Photos Feed.
 		add_rewrite_rule(
+			self::generate_permastruct( array( $kind_photos_slug, $feed_regex2 ) ),
+			'index.php?feed=$matches[1]&kind_photos=1',
+			'top'
+		);
+		add_rewrite_rule(
 			self::generate_permastruct( array( $kind_photos_slug, $feed_regex ) ),
 			'index.php?feed=$matches[1]&kind_photos=1',
 			'top'
@@ -599,25 +658,39 @@ final class Kind_Taxonomy {
 			'top'
 		);
 
-		/* Taxonomy Archives for Photos.
-		add_rewrite_rule(
-			sprintf( '%1$s/([^/]*)/([^/]*)/%2$s/([0-9]{1,})/?$', $kind_photos_slug, $wp_rewrite->pagination_base ),
-			'index.php?$matches[1]=$matches[2]&kind_photos=1&paged=$matches[3]',
-			'top'
-		);
-		add_rewrite_rule(
-			$kind_photos_slug . '/([^/]*)/([^/]*)/?$',
-			'index.php?$matches[1]=$matches[2]&kind_photos=1',
-			'top'
-		);
-		*/
-
 		// Root Photos.
 		add_rewrite_rule(
 			self::generate_permastruct( array( $kind_photos_slug ) ),
 			'index.php?kind_photos=1',
 			'top'
 		);
+
+		// Root Firehose Pagination.
+		add_rewrite_rule(
+			self::generate_permastruct( array( $kind_firehose_slug, $pagination_regex ) ),
+			'index.php?kind_firehose=1&paged=$matches[1]',
+			'top'
+		);
+
+		// Root Firehose Feed.
+		add_rewrite_rule(
+			self::generate_permastruct( array( $kind_firehose_slug, $feed_regex ) ),
+			'index.php?kind_firehose=1&feed=$matches[1]',
+			'top'
+		);
+		add_rewrite_rule(
+			self::generate_permastruct( array( $kind_firehose_slug, $feed_regex2 ) ),
+			'index.php?kind_firehose=1&feed=$matches[1]',
+			'top'
+		);
+
+		// Root Firehose.
+		add_rewrite_rule(
+			self::generate_permastruct( array( $kind_firehose_slug ) ),
+			'index.php?kind_firehose=1',
+			'top'
+		);
+
 	}
 
 	/**
@@ -789,6 +862,8 @@ final class Kind_Taxonomy {
 				/* translators: 1. Taxonomy . 1: Date */
 				$title = sprintf( __( '%1$1s - %2$2s', 'indieweb-post-kinds' ), $title, get_the_date( _x( 'F j, Y', 'daily archives date format', 'indieweb-post-kinds' ) ) );
 			}
+		} else if ( get_query_var( 'kind_firehose' ) ) {
+			$title = sprintf( __( '%1$s - %2$2s', 'indieweb-post-kinds' ), $title, __( 'Firehose', 'indieweb-post-kinds' ) );
 		}
 
 		if ( $prefix ) {
