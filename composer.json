@@ -9,6 +9,12 @@
 	       "email": "david@shanske.com"
        }
      ],
+    "config": {
+    	"allow-plugins": {
+        	"composer/installers": true,
+	        "dealerdirect/phpcodesniffer-composer-installer": true
+    	}
+    },
      "extra": {
 		"installer-name": "indieweb-post-kinds",
 		"installer-paths": {
@@ -17,7 +23,7 @@
      },
     "require": {
 	"php": ">=5.6.0",
-	"composer/installers": "~1.0"
+	"composer/installers": "^1.0 || ^2.0"
     },
     "require-dev": {
         "dealerdirect/phpcodesniffer-composer-installer": "*",
@@ -27,9 +33,8 @@
 	"dshanske/parse-this": "dev-trunk",
         "phpcompatibility/phpcompatibility-wp": "*",
         "php-parallel-lint/php-parallel-lint": "^1.2",
-        "wp-cli/i18n-command": "^2.2",
+        "wp-cli/i18n-command": "^2.3",
         "sebastian/phpcpd": "^3.0 || ^5.0 || ^6.0",
-        "phpunit/phpunit": "^5.7.21 || ^6.5 || ^7.5",
         "yoast/phpunit-polyfills": "^1.0"
     },
     "scripts": {
