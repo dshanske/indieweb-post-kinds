@@ -862,6 +862,7 @@ final class Kind_Taxonomy {
 				$title = sprintf( __( '%1$1s - %2$2s', 'indieweb-post-kinds' ), $title, get_the_date( _x( 'F j, Y', 'daily archives date format', 'indieweb-post-kinds' ) ) );
 			}
 		} elseif ( get_query_var( 'kind_firehose' ) ) {
+			/* translators: 1. Title 2. Translated term for Firehose Feed  */
 			$title = sprintf( __( '%1$s - %2$2s', 'indieweb-post-kinds' ), $title, __( 'Firehose', 'indieweb-post-kinds' ) );
 		}
 

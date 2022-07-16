@@ -334,7 +334,7 @@ class Kind_Config {
 			$kindlist = array();
 		}
 
-		printf( '<select class="widefat" name="%1$s[]" id="%1$s" multiple>', $args['name'] );
+		printf( '<select class="widefat" name="%1$s[]" id="%1$s" multiple>', esc_attr( $args['name'] ) );
 
 		foreach ( $terms as $term ) {
 			$value = Kind_Taxonomy::get_post_kind_info( $term );
