@@ -395,12 +395,15 @@ class Parse_This {
 		if ( empty( $this->jf2 ) ) {
 			$this->jf2 = Parse_This_MF2::parse( $content, $this->url, $args );
 		}
+
+		$more = array();
+
 		// If No MF2 or if the parsed jf2 is missing any sort of content then try to find it in the HTML
 		if ( isset( $this->jf2['type'] ) && 'card' === $this->jf2['type'] ) {
 			$more = array_intersect( array_keys( $this->jf2 ), array( 'name', 'url', 'photo' ) );
 		} else {
 			$more = array_intersect( array_keys( $this->jf2 ), array( 'summary', 'content', 'refs', 'items' ) );
-			if ( ! empty( $this->jf2 ) ) {
+			if ( empty( $more ) ) {
 				$this->set( array( '_jf2' => $this->jf2 ), $this->url, true );
 			}
 		}
@@ -450,7 +453,7 @@ class Parse_This {
 					$alt = Parse_This_HTML::parse( $content, $this->url, $args );
 				}
 			}
-			$json = Parse_This_JSON::parse( $this->doc, $this->url, $args );
+			$json      = Parse_This_JSON::parse( $this->doc, $this->url, $args );
 			$this->jf2 = array_merge( $this->jf2, $json );
 			$this->jf2 = array_merge( $this->jf2, $alt );
 			if ( ! empty( $jf2 ) ) {

@@ -145,6 +145,15 @@ function mfNamesFromClass($class, $prefix='h-') {
 }
 
 /**
+ * Registered with the XPath object and used within XPaths for finding root elements.
+ * @param string $class
+ * @return bool
+ */
+function classHasMf2RootClassname($class) {
+	return count(mfNamesFromClass($class, 'h-')) > 0;
+}
+
+/**
  * Get Nested µf Property Name From Class
  *
  * Returns all the p-, u-, dt- or e- prefixed classnames it finds in a
@@ -371,7 +380,10 @@ class Parser {
 			@$doc->loadHTML('');
 		}
 
+		// Create an XPath object and allow some PHP functions to be used within XPath queries.
 		$this->xpath = new DOMXPath($doc);
+		$this->xpath->registerNamespace('php', 'http://php.net/xpath');
+		$this->xpath->registerPhpFunctions('\\Mf2\\classHasMf2RootClassname');
 
 		$baseurl = $url;
 		foreach ($this->xpath->query('//base[@href]') as $base) {
@@ -1164,7 +1176,7 @@ class Parser {
 			'type' => $mfTypes,
 			'properties' => $return
 		);
-		
+
 		if(trim($e->getAttribute('id')) !== '') {
 			$parsed['id'] = trim($e->getAttribute("id"));
 		}
@@ -1506,7 +1518,7 @@ class Parser {
 	public function getRootMF(DOMElement $context = null) {
 		// start with mf2 root class name xpath
 		$xpaths = array(
-			'contains(concat(" ",normalize-space(@class)), " h-")'
+			'(php:function("\\Mf2\\classHasMf2RootClassname", normalize-space(@class)))'
 		);
 
 		// add mf1 root class names
@@ -1561,6 +1573,38 @@ class Parser {
 					}
 				break;
 
+				case 'hfeed':
+					$this->upgradeRelTagToCategory($el);
+				break;
+
+				case 'hproduct':
+					$review_and_hreview_aggregate = $this->xpath->query('.//*[contains(concat(" ", normalize-space(@class), " "), " review ") and contains(concat(" ", normalize-space(@class), " "), " hreview-aggregate ")]', $el);
+
+					if ( $review_and_hreview_aggregate->length ) {
+						foreach ( $review_and_hreview_aggregate as $tempEl ) {
+							if ( !$this->hasRootMf2($tempEl) ) {
+								$this->backcompat($tempEl, 'hreview-aggregate');
+								$this->addMfClasses($tempEl, 'p-review h-review-aggregate');
+								$this->addUpgraded($tempEl, array('review hreview-aggregate'));
+							}
+						}
+					}
+
+					$review_and_hreview = $this->xpath->query('.//*[contains(concat(" ", normalize-space(@class), " "), " review ") and contains(concat(" ", normalize-space(@class), " "), " hreview ")]', $el);
+
+					if ( $review_and_hreview->length ) {
+						foreach ( $review_and_hreview as $tempEl ) {
+							if ( !$this->hasRootMf2($tempEl) ) {
+								$this->backcompat($tempEl, 'hreview');
+								$this->addMfClasses($tempEl, 'p-review h-review');
+								$this->addUpgraded($tempEl, array('review hreview'));
+							}
+						}
+					}
+
+				break;
+
+				case 'hreview-aggregate':
 				case 'hreview':
 					$item_and_vcard = $this->xpath->query('.//*[contains(concat(" ", normalize-space(@class), " "), " item ") and contains(concat(" ", normalize-space(@class), " "), " vcard ")]', $el);
 
@@ -1602,12 +1646,12 @@ class Parser {
 				break;
 
 				case 'vevent':
-					$location = $this->xpath->query('.//*[contains(concat(" ", normalize-space(@class), " "), " location ")]', $el);
+					$location_and_vcard = $this->xpath->query('.//*[contains(concat(" ", normalize-space(@class), " "), " location ") and contains(concat(" ", normalize-space(@class), " "), " vcard ")]', $el);
 
-					if ( $location->length ) {
-						foreach ( $location as $tempEl ) {
+					if ( $location_and_vcard->length ) {
+						foreach ( $location_and_vcard as $tempEl ) {
 							if ( !$this->hasRootMf2($tempEl) ) {
-								$this->addMfClasses($tempEl, 'h-card');
+								$this->addMfClasses($tempEl, 'p-location h-card');
 								$this->backcompat($tempEl, 'vcard');
 							}
 						}
@@ -1687,15 +1731,9 @@ class Parser {
 	 */
 	public function hasRootMf2(\DOMElement $el) {
 		$class = str_replace(array("\t", "\n"), ' ', $el->getAttribute('class'));
-		$classes = array_filter(explode(' ', $class));
 
-		foreach ( $classes as $classname ) {
-			if ( strpos($classname, 'h-') === 0 ) {
-				return true;
-			}
-		}
-
-		return false;
+		// Check for valid mf2 root classnames, not just any classname with a h- prefix.
+		return count(mfNamesFromClass($class, 'h-')) > 0;
 	}
 
 	/**
@@ -1755,8 +1793,10 @@ class Parser {
 		'hresume' => 'h-resume',
 		'vevent' => 'h-event',
 		'hreview' => 'h-review',
+		'hreview-aggregate' => 'h-review-aggregate',
 		'hproduct' => 'h-product',
 		'adr' => 'h-adr',
+		'geo' => 'h-geo'
 	);
 
 	/**
@@ -1873,7 +1913,19 @@ class Parser {
 			),
 		),
 		'hfeed' => array(
-			# nothing currently
+			'author' => array(
+				'replace' => 'p-author h-card',
+				'context' => 'vcard'
+			),
+			'url' => array(
+				'replace' => 'u-url'
+			),
+			'photo' => array(
+				'replace' => 'u-photo'
+			),
+			'category' => array(
+				'replace' => 'p-category'
+			),
 		),
 		'hentry' => array(
 			'entry-title' => array(
@@ -1983,12 +2035,15 @@ class Parser {
 				'replace' => 'p-category'
 			),
 			'location' => array(
-				'replace' => 'h-card',
-				'context' => 'vcard'
+				'replace' => 'p-location',
 			),
 			'geo' => array(
 				'replace' => 'p-location h-geo'
 			),
+			'attendee' => array(
+				'replace' => 'p-attendee h-card',
+				'context' => 'vcard'
+			)
 		),
 		'hreview' => array(
 			'summary' => array(
@@ -2024,6 +2079,36 @@ class Parser {
 				'replace' => 'p-category'
 			),
 		),
+		'hreview-aggregate' => array(
+			'summary' => array(
+				'replace' => 'p-name'
+			),
+			# fn: see item.fn below
+			# photo: see item.photo below
+			# url: see item.url below
+			'item' => array(
+				'replace' => 'p-item h-item',
+				'context' => 'item'
+			),
+			'rating' => array(
+				'replace' => 'p-rating'
+			),
+			'best' => array(
+				'replace' => 'p-best'
+			),
+			'worst' => array(
+				'replace' => 'p-worst'
+			),
+			'average' => array(
+				'replace' => 'p-average'
+			),
+			'count' => array(
+				'replace' => 'p-count'
+			),
+			'votes' => array(
+				'replace' => 'p-votes'
+			),
+		),
 		'hproduct' => array(
 			'fn' => array(
 				'replace' => 'p-name',
@@ -2046,9 +2131,7 @@ class Parser {
 			'url' => array(
 				'replace' => 'u-url',
 			),
-			'review' => array(
-				'replace' => 'p-review h-review',
-			),
+			// review is handled in the special processing section to allow for 'review hreview-aggregate'
 			'price' => array(
 				'replace' => 'p-price'
 			),

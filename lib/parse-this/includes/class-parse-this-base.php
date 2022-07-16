@@ -126,7 +126,7 @@ class Parse_This_Base {
 			return '';
 		}
 
-		$url = WP_Http::make_absolute_url( $url, $source_url );
+		$url = pt_make_absolute_url( $url, $source_url );
 
 		return esc_url_raw( $url, array( 'http', 'https' ) );
 	}

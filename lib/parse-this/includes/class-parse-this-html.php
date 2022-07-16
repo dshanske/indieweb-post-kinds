@@ -147,7 +147,7 @@ class Parse_This_HTML extends Parse_This_Base {
 		);
 		$urls             = array();
 		foreach ( $xpath->query( '//a' ) as $link ) {
-			$u         = WP_Http::make_absolute_url( $link->getAttribute( 'href' ), $url );
+			$u         = pt_make_absolute_url( $link->getAttribute( 'href' ), $url );
 			$urls[]    = wp_http_validate_url( $u );
 			$extension = pathinfo( wp_parse_url( $url, PHP_URL_PATH ), PATHINFO_EXTENSION );
 			if ( in_array( $extension, $audio_extensions, true ) ) {

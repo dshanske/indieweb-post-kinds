@@ -28,13 +28,19 @@ class Parse_This_RESTAPI {
 		if ( ! empty( $query ) ) {
 			$query = explode( '=', $query );
 			if ( array_key_exists( 'rest_route' ) ) {
-				return add_query_arg( 'rest_route', $path, trailingslashit( $rest_url ) );
+				return add_query_arg(
+					array(
+						'rest_route' => $path,
+						'_embed'     => 1,
+					),
+					trailingslashit( $rest_url )
+				);
 			}
 			return false;
 		}
 
 		$rest_url = untrailingslashit( $rest_url );
-		return $rest_url . $path;
+		return add_query_arg( '_embed', 1, $rest_url . $path );
 	}
 
 	public static function get_rest_path( $rest_url, $url ) {
@@ -71,7 +77,7 @@ class Parse_This_RESTAPI {
 			// Use an explicit user-agent for Parse This
 		);
 
-		$response      = wp_safe_remote_get( $url, $args );
+		$response = wp_safe_remote_get( $url, $args );
 		if ( is_wp_error( $response ) ) {
 			return $response;
 		}
@@ -127,11 +133,11 @@ class Parse_This_RESTAPI {
 				);
 				$timezone     = self::timezone( $content );
 				$return['tz'] = $timezone->getName();
-				if ( array_key_exists( '_links', $content ) ) {
-					if ( array_key_exists( 'wp:featuredmedia', $content['_links'] ) ) {
+				if ( array_key_exists( '_embedded', $content ) ) {
+					if ( array_key_exists( 'wp:featuredmedia', $content['_embedded'] ) ) {
 						$photo = array();
-						foreach ( $content['_links']['wp:featuredmedia'] as $media ) {
-							$photo[] = self::get_featured( $rest_url, self::get_rest_path( $rest_url, $media['href'] ) );
+						foreach ( $content['_embedded']['wp:featuredmedia'] as $media ) {
+							$photo[] = ifset( $media['source_url'] );
 						}
 						$photo = array_unique( $photo );
 						if ( 1 === count( $photo ) ) {
@@ -146,7 +152,7 @@ class Parse_This_RESTAPI {
 				$return['note'] = $content['description'];
 				return $return;
 			} else {
-				$content = self::fetch( $rest_url, '/wp/v2/posts' );
+				$content = self::fetch( $rest_url, '/wp/v2/posts?_embed=1' );
 
 				$content = self::posts_to_feed( $content, $rest_url );
 				return $content;
@@ -157,37 +163,22 @@ class Parse_This_RESTAPI {
 		return false;
 	}
 
-	public static function get_author( $rest_url, $path ) {
-		$json = self::fetch( $rest_url, $path );
-		if ( is_wp_error( $json ) ) {
+	public static function get_author( $item ) {
+		if ( ! array_key_exists( '_embedded', $item ) ) {
 			return null;
 		}
-		$avatar_urls = self::ifset( 'avatar_urls', $json );
+		$author      = $item['_embedded']['author'][0];
+		$avatar_urls = self::ifset( 'avatar_urls', $author );
 		$avatar_urls = is_array( $avatar_urls ) ? end( $avatar_urls ) : null;
 		$return      = array(
 			'type'  => 'card',
-			'name'  => self::ifset( 'name', $json ),
-			'url'   => self::ifset( 'url', $json ),
-			'note'  => self::ifset( 'description', $json ),
+			'name'  => self::ifset( 'name', $author ),
+			'url'   => self::ifset( 'url', $author ),
+			'note'  => self::ifset( 'description', $author ),
 			'photo' => $avatar_urls,
+			'me'    => self::ifset( 'me', $author ),
 		);
 		return array_filter( $return );
-	}
-
-
-	public static function get_authors( $rest_url, $ids ) {
-		if ( empty( $ids ) ) {
-			return array();
-		}
-		$json = self::fetch( $rest_url, sprintf( 'wp/v2/users/?include=%1$s', implode( ',', $ids ) ) );
-		if ( is_wp_error( $json ) ) {
-			return null;
-		}
-		$return = array();
-		foreach ( $json as $author ) {
-			$return[ $author['id'] ] = self::format_author( $author );
-		}
-		return $return;
 	}
 
 	public static function format_author( $json ) {
@@ -201,36 +192,6 @@ class Parse_This_RESTAPI {
 			'photo' => $avatar_urls,
 		);
 		return $return;
-	}
-
-	public static function get_featured( $rest_url, $path ) {
-		$json = self::fetch( $rest_url, $path );
-		if ( is_wp_error( $json ) ) {
-			return null;
-		}
-		return self::ifset( 'source_url', $json );
-	}
-
-	public static function get_media( $rest_url, $ids ) {
-		if ( empty( $ids ) ) {
-			return array();
-		}
-		$json = self::fetch( $rest_url, sprintf( 'wp/v2/media/?include=%1$s', implode( ',', $ids ) ) );
-		if ( is_wp_error( $json ) ) {
-			return null;
-		}
-		return wp_list_pluck( $json, 'guid', 'id' );
-	}
-
-	public static function get_tags( $rest_url, $ids ) {
-		if ( empty( $ids ) ) {
-			return array();
-		}
-		$json = self::fetch( $rest_url, sprintf( '/wp/v2/tags?include=%1$s', implode( ',', $ids ) ) );
-		if ( is_wp_error( $json ) ) {
-			return null;
-		}
-		return wp_list_pluck( $json, 'name', 'id' );
 	}
 
 	public static function get_datetime( $time, $timezone = null ) {
@@ -281,22 +242,24 @@ class Parse_This_RESTAPI {
 				'summary'   => self::get_rendered( 'excerpt', $item ),
 				'published' => self::get_datetime( self::ifset( 'date', $item ), $timezone ),
 				'updated'   => self::get_datetime( self::ifset( 'modified', $item ), $timezone ),
-				'author'    => self::get_author( $rest_url, $author ),
 				'kind'      => self::ifset( 'kind', $item ),
 			)
 		);
-		if ( array_key_exists( 'featured_media', $item ) ) {
-			$featured            = self::get_rest_path( $rest_url, $item['_links']['wp:featuredmedia'][0]['href'] );
-			$newitem['featured'] = self::get_featured( $rest_url, $featured );
-		}
-		if ( array_key_exists( 'tags', $item ) && ! empty( $item['tags'] ) ) {
-			foreach ( $item['_links']['wp:term'] as $term ) {
-				if ( 'post_tag' === $term['taxonomy'] ) {
-					$tag_path            = self::get_rest_path( $rest_url, $term['href'] );
-					$tags                = self::fetch( $rest_url, $tag_path );
-					$newitem['category'] = wp_list_pluck( $tags['items'], 'name' );
+
+		if ( array_key_exists( '_embedded', $item ) ) {
+			if ( array_key_exists( 'featured_media', $item ) && 0 !== $item['featured_media'] ) {
+				$newitem['featured'] = $item['_embedded']['wp:featuredmedia'][0]['source_url'];
+			}
+			if ( array_key_exists( 'tags', $item ) && ! empty( $item['tags'] ) ) {
+				foreach ( $item['_links']['wp:term'] as $term ) {
+					if ( 'post_tag' === $term['taxonomy'] ) {
+						$tag_path            = self::get_rest_path( $rest_url, $term['href'] );
+						$tags                = self::fetch( $rest_url, $tag_path );
+						$newitem['category'] = wp_list_pluck( $tags['items'], 'name' );
+					}
 				}
 			}
+			$newitem['author'] = self::get_author( $item );
 		}
 		return array_filter( $newitem );
 	}
@@ -311,13 +274,6 @@ class Parse_This_RESTAPI {
 		$items             = $input['items'];
 		$data              = self::site_data( $url );
 		$timezone          = self::timezone( $data );
-		$media_ids         = wp_list_pluck( $items, 'featured_media' );
-		$author_ids        = wp_list_pluck( $items, 'author' );
-		$tag_ids           = wp_list_pluck( $items, 'tags' );
-		$tag_ids           = array_merge( ...$tag_ids );
-		$media             = self::get_media( $url, $media_ids );
-		$authors           = self::get_authors( $url, $author_ids );
-		$tags              = self::get_tags( $url, $tag_ids );
 		$return['items']   = array();
 		$return['name']    = self::ifset( 'name', $data );
 		$return['summary'] = self::ifset( 'description', $data );
@@ -337,18 +293,28 @@ class Parse_This_RESTAPI {
 					'summary'   => self::get_rendered( 'excerpt', $item ),
 					'published' => self::get_datetime( self::ifset( 'date', $item ), $timezone ),
 					'updated'   => self::get_datetime( self::ifset( 'modified', $item ), $timezone ),
-					'author'    => $authors[ $item['author'] ],
+					'author'    => self::get_author( $item ),
 					'kind'      => self::ifset( 'kind', $item ),
 				)
 			);
-			if ( array_key_exists( 'tags', $item ) ) {
-				$category            = array_values( array_intersect_key( $tags, array_flip( $item['tags'] ) ) );
-				$newitem['category'] = $category;
-			}
-			if ( array_key_exists( 'featured_media', $item ) ) {
-				if ( array_key_exists( (int) $item['featured_media'], $media ) ) {
-					$newitem['featured'] = $media[ intval( $item['featured_media'] ) ]['rendered'];
+			if ( array_key_exists( '_embedded', $item ) ) {
+				if ( array_key_exists( 'wp:term', $item['_embedded'] ) ) {
+					$category = array();
+					foreach ( $item['_embedded']['wp:term'] as $terms ) {
+						foreach ( $terms as $term ) {
+							if ( in_array( $term['taxonomy'], array( 'category', 'post_tags' ), true ) && 'Uncategorized' !== $term['name'] ) {
+								$category[] = $term['name'];
+							}
+						}
+					}
+					$newitem['category'] = $category;
 				}
+				if ( array_key_exists( 'wp:featuredmedia', $item['_embedded'] ) ) {
+					$newitem['featured'] = $item['_embedded']['wp:featuredmedia'][0]['source_url'];
+				}
+			}
+			if ( WP_DEBUG ) {
+				$newitem['_rest'] = $item;
 			}
 			$return['items'][] = array_filter( $newitem );
 		}

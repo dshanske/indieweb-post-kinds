@@ -17,7 +17,7 @@ class Parse_This_Discovery {
 				return 'atom';
 			case 'application/jf2feed+json':
 				return 'jf2feed';
-			case 'text/html':
+			case 'text/mf2+html':
 				return 'microformats';
 			default:
 				return '';
@@ -69,30 +69,28 @@ class Parse_This_Discovery {
 		$response      = wp_safe_remote_get( $url, $args );
 		$response_code = wp_remote_retrieve_response_code( $response );
 		$content_type  = wp_remote_retrieve_header( $response, 'content-type' );
-		$wprest        = false;
+		$wprest        = array();
 		$linkheaders   = wp_remote_retrieve_header( $response, 'link' );
 		if ( $linkheaders ) {
 			if ( is_array( $linkheaders ) ) {
 				foreach ( $linkheaders as $link ) {
 					if ( preg_match( '/<(.[^>]+)>;\s+rel\s?=\s?[\"\']?(https:\/\/)?api.w.org?\/?[\"\']?/i', $link, $result ) ) {
-						$links[] = array(
-							'url'        => untrailingslashit( WP_Http::make_absolute_url( $result[1], $url ) ),
+						$wprest[] = array(
+							'url'        => untrailingslashit( pt_make_absolute_url( $result[1], $url ) ),
 							'type'       => 'feed',
 							'_feed_type' => 'wordpress',
 							'name'       => 'WordPress REST API',
 						);
 					}
-					$wprest = true;
 				}
 			} else {
 				if ( preg_match( '/<(.[^>]+)>;\s+rel\s?=\s?[\"\']?(https:\/\/)?api.w.org?\/?[\"\']?/i', $linkheaders, $result ) ) {
-						$links[] = array(
-							'url'        => untrailingslashit( WP_Http::make_absolute_url( $result[1], $url ) ),
+						$wprest[] = array(
+							'url'        => untrailingslashit( pt_make_absolute_url( $result[1], $url ) ),
 							'type'       => 'feed',
 							'_feed_type' => 'wordpress',
 							'name'       => 'WordPress REST API',
 						);
-						$wprest  = true;
 				}
 			}
 		}
@@ -155,71 +153,86 @@ class Parse_This_Discovery {
 			if ( $doc instanceof DOMDocument ) {
 				$xpath = new DOMXPath( $doc );
 				// Fetch and gather <link> data.
+				$mf2 = false;
 				foreach ( $xpath->query( '(//link|//a)[@rel and @href]' ) as $link ) {
 					$rel   = $link->getAttribute( 'rel' );
 					$href  = $link->getAttribute( 'href' );
 					$title = $link->getAttribute( 'title' );
 					$type  = self::get_feed_type( $link->getAttribute( 'type' ) );
+					if ( 'microformats' === $type ) {
+						$mf2 = true;
+					}
+
 					if ( in_array( $rel, array( 'alternate', 'feed' ), true ) && ! empty( $type ) ) {
 						$links[] = array_filter(
 							array(
-								'url'        => WP_Http::make_absolute_url( $href, $url ),
+								'url'        => pt_make_absolute_url( $href, $url ),
 								'type'       => 'feed',
 								'_feed_type' => $type,
 								'name'       => $title,
+								'_mime-type' => $link->getAttribute( 'type' ),
+								'_rel'       => $rel,
 							)
 						);
 					}
-					if ( 'https://api.w.org/' === $rel && ! $wprest ) {
-						$links[] = array_filter(
+					if ( 'https://api.w.org/' === $rel && empty( $wprest ) ) {
+						$wprest[] = array_filter(
 							array(
-								'url'        => untrailingslashit( WP_Http::make_absolute_url( $href, $url ) ),
+								'url'        => untrailingslashit( pt_make_absolute_url( $href, $url ) ),
 								'type'       => 'feed',
 								'_feed_type' => 'wordpress',
 								'name'       => 'WordPress REST API',
 							)
 						);
-						$wprest  = true;
 					}
 				}
-				// Check to see if the current page is an h-feed
-				$feeds = Parse_This_MF2::find_hfeed( $doc, $url );
-				foreach ( $feeds as $key => $feed ) {
-					if ( ! Parse_This_MF2::is_microformat( $feed ) ) {
-						continue;
-					}
-					if ( array_key_exists( 'children', $feed ) ) {
-						unset( $feed['children'] );
-					}
-					$jf2 = mf2_to_jf2( $feed );
-					if ( isset( $jf2['type'] ) && 'feed' === $jf2['type'] ) {
-						$author = array();
-						if ( array_key_exists( 'author', $jf2 ) ) {
-							if ( is_array( $jf2['author'] ) ) {
-								$author = $jf2['author'];
-							} elseif ( is_string( $jf2['author'] ) ) {
-								$author = array(
-									'type' => 'card',
-								);
-								if ( wp_http_validate_url( $jf2['author'] ) ) {
-									$author['url'] = $jf2['author'];
-								} else {
-									$author['name'] = $jf2['author'];
+
+				// If an mf2 feed was found, do not check to see if this page is also one.
+				if ( ! $mf2 ) {
+					// Check to see if the current page is an h-feed
+					$feeds = Parse_This_MF2::find_hfeed( $doc, $url );
+					foreach ( $feeds as $key => $feed ) {
+						if ( ! Parse_This_MF2::is_microformat( $feed ) ) {
+							continue;
+						}
+						if ( array_key_exists( 'children', $feed ) ) {
+							unset( $feed['children'] );
+						}
+						$jf2 = mf2_to_jf2( $feed );
+						if ( isset( $jf2['type'] ) && 'feed' === $jf2['type'] ) {
+							$author = array();
+							if ( array_key_exists( 'author', $jf2 ) ) {
+								if ( is_array( $jf2['author'] ) ) {
+									$author = $jf2['author'];
+								} elseif ( is_string( $jf2['author'] ) ) {
+									$author = array(
+										'type' => 'card',
+									);
+									if ( wp_http_validate_url( $jf2['author'] ) ) {
+										$author['url'] = $jf2['author'];
+									} else {
+										$author['name'] = $jf2['author'];
+									}
 								}
 							}
+							$links[] = array_filter(
+								array(
+									'url'        => $jf2['url'],
+									'type'       => 'feed',
+									'_feed_type' => 'microformats',
+									'name'       => isset( $jf2['name'] ) ? $jf2['name'] : null,
+									'author'     => $author,
+								)
+							);
 						}
-						$links[] = array_filter(
-							array(
-								'url'        => $jf2['url'],
-								'type'       => 'feed',
-								'_feed_type' => 'microformats',
-								'name'       => isset( $jf2['name'] ) ? $jf2['name'] : null,
-								'author'     => $author,
-							)
-						);
 					}
 				}
 			}
+
+			if ( ! empty( $wprest ) ) {
+				$links = array_merge( $wprest, $links );
+			}
+
 			// Sort feeds by priority
 			$rank = array(
 				'jf2feed'      => 0,
