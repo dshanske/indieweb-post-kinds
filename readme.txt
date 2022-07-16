@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like, scrobble
-Stable tag: 3.6.0
+Stable tag: 3.6.1
 Requires at least: 4.9.9
 Requires PHP: 5.6
 Tested up to: 6.0
@@ -275,6 +275,10 @@ through future plugin updates.
 
 
 == Changelog ==
+
+= 3.6.1 ( 2022-07-16 ) =
+* Minor bug fixes
+* Update to latest Parse This changes
 
 = 3.6.0 ( 2022-06-19 ) =
 * Fix issue with dynamic menus not appearing on custom archives
