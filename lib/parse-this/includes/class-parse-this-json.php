@@ -29,7 +29,7 @@ class Parse_This_JSON extends Parse_This_Base {
 			if ( array_key_exists( 'props', $json ) ) {
 				$props = $json['props'];
 				if ( array_key_exists( 'pageProps', $props ) ) {
-					$props = $json['pageProps'];
+					$props = $props['pageProps'];
 					if ( array_key_exists( 'article', $props ) ) {
 						$jf2['type'] = 'entry';
 						$jf2['name'] = ifset( $props['article']['title'] );
