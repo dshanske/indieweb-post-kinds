@@ -38,6 +38,8 @@ class Kind_Plugins {
 		add_action( 'hum_local_types', array( static::class, 'hum_local_types' ), 11 );
 		add_action( 'hum_type_prefix', array( static::class, 'hum_type_prefix' ), 11, 2 );
 
+		// ActivityPub Filters
+		add_filter( 'activitypub_post', array( static::class, 'activitypub_post' ), 12 );
 	}
 
 
@@ -52,6 +54,42 @@ class Kind_Plugins {
 	 */
 	public static function tempus_widget_post_title( $title, $post ) {
 		return kind_get_the_title( $post );
+	}
+
+	/**
+	 *
+	 * @param array $post_array
+	 *
+	 * @return array
+	 */
+	public static function activitypub_post( $post_array ) {
+		$post_id = url_to_postid( $post_array['id'] );
+		$post_type = get_post_type( $post_id );
+		if ( 'post' === $post_type ) {
+			$kind = new Kind_Post( $post_id );
+			switch ( $kind->get_kind() ) {
+				case 'note':
+					$post_array['type'] = 'Note';
+					break;
+				case 'photo':
+					$post_array['type'] = 'Image';
+					break;
+				case 'video':
+					$post_array['type'] = 'Video';
+					break;
+				case 'audio':
+					$post_array['type'] = 'Audio';
+					break;
+				case 'article':
+					$post_array['type'] = 'Article';
+					break;
+				case 'reply':
+					$post_array['type'] = 'Note';
+					$post_array['inReplyTo'] = $kind->get_cite( 'url' );
+					break;
+			}
+		}
+		return $post_array;
 	}
 
 	public static function hum_local_types( $types ) {

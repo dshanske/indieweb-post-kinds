@@ -4,7 +4,7 @@ Tags: indieweb, interaction, posts, webmention, share, like, scrobble
 Stable tag: 3.6.1
 Requires at least: 4.9.9
 Requires PHP: 5.6
-Tested up to: 6.0
+Tested up to: 6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -275,6 +275,10 @@ through future plugin updates.
 
 
 == Changelog ==
+
+= 3.6.2 ( 2022-11-21 ) =
+* Try to set ActivityPub type for the ActivityPub plugin based on Post Kind.
+* Update to latest Parse This Changes
 
 = 3.6.1 ( 2022-07-16 ) =
 * Minor bug fixes
