@@ -43,7 +43,7 @@ class Kind_View {
 			$class = explode( ' ', $attr['class'] );
 
 			// This class is added by the list display.
-			if ( in_array( 'kind-photo-thumbnail', $class ) ) {
+			if ( in_array( 'kind-photo-thumbnail', $class, true ) ) {
 				return $attr;
 			}
 			$class[]       = 'u-photo';
@@ -254,6 +254,9 @@ class Kind_View {
 	 */
 	public static function excerpt_response( $content ) {
 		global $post;
+		if ( ! $post ) {
+			return $content;
+		}
 		if ( has_excerpt( get_the_ID() ) ) {
 			return self::get_display() . get_the_excerpt();
 		} else {

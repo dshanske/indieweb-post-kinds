@@ -11,7 +11,6 @@
 	<config name="testVersion" value="5.6-"/>
 	<rule ref="PHPCompatibilityWP"/>
 	<config name="minimum_supported_wp_version" value="4.9"/>
-	<rule ref="WordPress.WP.DeprecatedFunctions" />
 
 	<rule ref="WordPress-Core">
 		<exclude name="WordPress.Security.ValidatedSanitizedInput" />
@@ -24,6 +23,17 @@
 	</rule>
 
 	<rule ref="WordPress-Extra" />
-        <rule ref="WordPress.WP.I18n"/>
-	<config name="text_domain" value="indieweb-post-kinds,default"/>
+
+        <rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="indieweb-post-kinds"/>
+				<element value="default"/>
+			</property>
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.WP.DeprecatedFunctions" />
+	<rule ref="WordPress.WP.DeprecatedParameters" />
+	<rule ref="WordPress.WP.AlternativeFunctions" />
 </ruleset>

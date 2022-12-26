@@ -63,7 +63,7 @@ class Kind_Plugins {
 	 * @return array
 	 */
 	public static function activitypub_post( $post_array ) {
-		$post_id = url_to_postid( $post_array['id'] );
+		$post_id   = url_to_postid( $post_array['id'] );
 		$post_type = get_post_type( $post_id );
 		if ( 'post' === $post_type ) {
 			$kind = new Kind_Post( $post_id );
@@ -84,7 +84,7 @@ class Kind_Plugins {
 					$post_array['type'] = 'Article';
 					break;
 				case 'reply':
-					$post_array['type'] = 'Note';
+					$post_array['type']      = 'Note';
 					$post_array['inReplyTo'] = $kind->get_cite( 'url' );
 					break;
 			}
