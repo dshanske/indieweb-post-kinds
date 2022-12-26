@@ -4,13 +4,13 @@ on:
     branches:
       - trunk
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 0 * * 1'
                   
 jobs:
   wordpress-version-checker:
     runs-on: ubuntu-latest
     steps:
       - name: WordPress version checker
-        uses: skaut/wordpress-version-checker@v1.0.0
+        uses: skaut/wordpress-version-checker@v1.2.0
         with:
           repo-token: ${{ secrets.ISSUE_TOKEN }}
