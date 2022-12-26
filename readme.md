@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** [dshanske](https://profiles.wordpress.org/dshanske)  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.6.2  
+**Stable tag:** 3.6.3  
 **Requires at least:** 4.9.9  
 **Requires PHP:** 5.6  
 **Tested up to:** 6.1  
@@ -279,6 +279,10 @@ through future plugin updates.
 
 
 ## Changelog ##
+
+### 3.6.3 ( 2022-12-26 ) ###
+* Minor bug fixes for error messages
+* New version of Parse This
 
 ### 3.6.2 ( 2022-11-21 ) ###
 * Try to set ActivityPub type for the ActivityPub plugin based on Post Kind.

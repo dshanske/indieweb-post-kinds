@@ -2,16 +2,16 @@
 # This file is distributed under the same license as the Post Kinds plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Kinds 3.6.1\n"
+"Project-Id-Version: Post Kinds 3.6.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/indieweb-post-kinds\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-07-16T04:53:35+00:00\n"
+"POT-Creation-Date: 2022-12-26T21:28:26+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.6.0\n"
+"X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: indieweb-post-kinds\n"
 
 #. Plugin Name of the plugin
@@ -1236,7 +1236,7 @@ msgstr ""
 msgid "Response Properties"
 msgstr ""
 
-#: includes/class-kind-plugins.php:95
+#: includes/class-kind-plugins.php:133
 msgctxt "direct article"
 msgid "this"
 msgstr ""
@@ -1423,109 +1423,109 @@ msgstr ""
 msgid "Invalid Kind"
 msgstr ""
 
-#: includes/class-kind-view.php:415
+#: includes/class-kind-view.php:418
 msgctxt "singular Twitter"
 msgid "a tweet"
 msgstr ""
 
-#: includes/class-kind-view.php:416
+#: includes/class-kind-view.php:419
 msgctxt "singular Vimeo"
 msgid "a video"
 msgstr ""
 
-#: includes/class-kind-view.php:417
+#: includes/class-kind-view.php:420
 msgctxt "singular Youtube"
 msgid "a video"
 msgstr ""
 
-#: includes/class-kind-view.php:418
+#: includes/class-kind-view.php:421
 msgctxt "singular Intagram"
 msgid "an image"
 msgstr ""
 
-#: includes/class-kind-view.php:424
+#: includes/class-kind-view.php:427
 msgctxt "singular post"
 msgid "a post"
 msgstr ""
 
-#: includes/class-kind-view.php:491
+#: includes/class-kind-view.php:494
 msgid "an author"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:589
+#: includes/class-kind-view.php:592
 msgid "Attending <a href=\"%1$s\" class=\"u-in-reply-to\">%2$s</a>"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:591
+#: includes/class-kind-view.php:594
 msgid "Might be attending <a href=\"%1$s\" class=\"u-in-reply-to\">%2$s</a>"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:593
+#: includes/class-kind-view.php:596
 msgid "Unable to Attend <a href=\"%1$s\" class=\"u-in-reply-to\">%2$s</a>"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:595
+#: includes/class-kind-view.php:598
 msgid "Interested in Attending <a href=\"%1$s\" class=u-in-reply-to\">%2$s</a>"
 msgstr ""
 
 #. translators: URL for link to event and name of event
-#: includes/class-kind-view.php:597
+#: includes/class-kind-view.php:600
 msgid "Attending <a href=\"%1$s\" class=\"u-in-reply-to\">%2$s</a> remotely"
 msgstr ""
 
-#: includes/class-kind-view.php:615
+#: includes/class-kind-view.php:618
 msgid "Want to Read: "
 msgstr ""
 
-#: includes/class-kind-view.php:616
+#: includes/class-kind-view.php:619
 msgid "Reading: "
 msgstr ""
 
-#: includes/class-kind-view.php:617
+#: includes/class-kind-view.php:620
 msgid "Finished Reading: "
 msgstr ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:649
+#: includes/class-kind-view.php:652
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:653
+#: includes/class-kind-view.php:656
 msgid "%d month"
 msgid_plural "%d months"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:657
+#: includes/class-kind-view.php:660
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:661
+#: includes/class-kind-view.php:664
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:665
+#: includes/class-kind-view.php:668
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:669
+#: includes/class-kind-view.php:672
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] ""
