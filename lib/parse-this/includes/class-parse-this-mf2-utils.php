@@ -156,6 +156,39 @@ class Parse_This_MF2_Utils extends Parse_This_Base {
 	}
 
 	/**
+	 * Verifies if rel-url named $url is in array $mf.
+	 *
+	 * @param array   $mf
+	 * @param $url
+	 * @return bool
+	 */
+	public static function has_rel_urls( array $mf, $url ) {
+		return ! empty( $mf['rel-urls'][ $url ] ) && is_array( $mf['rel-urls'][ $url ] );
+	}
+
+	/**
+	 * Returns rel-url property $url array $mf.
+	 *
+	 * @param array   $mf
+	 * @param $url
+	 * @return mixed
+	 */
+	public static function get_rel_urls( array $mf, $url ) {
+		if ( self::has_rel_urls( $mf, $url ) ) {
+			$return = array(
+				'url' => array( $url ),
+			);
+			if ( array_key_exists( 'text', $mf['rel-urls'][ $url ] ) ) {
+				$return['name'] = array( $mf['rel-urls'][ $url ]['text'] );
+			} else {
+				$return['name'] = array( $mf['rel-urls'][ $url ]['title'] );
+			}
+			return $return;
+		}
+		return false;
+	}
+
+	/**
 	 * shortcut for getPlaintext.
 	 *
 	 * @deprecated use getPlaintext from now on

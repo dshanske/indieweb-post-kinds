@@ -60,6 +60,10 @@ class Parse_This_RESTAPI {
 
 
 	public static function fetch( $rest_url, $path, $cache = false ) {
+		if ( empty( $rest_url ) || ! $rest_url ) {
+			return new WP_Error( 'no_url', __( 'No URL provided', 'parse-this' ) );
+		}
+
 		$url = self::get_rest_url( $rest_url, $path );
 		$key = 'pt_rest_' . self::base64url_encode( $url );
 		if ( $cache ) {
@@ -124,8 +128,13 @@ class Parse_This_RESTAPI {
 	}
 
 	public static function parse( $content, $rest_url, $args ) {
+		if ( is_wp_error( $content ) ) {
+			return $content;
+		} 
+		if ( array_key_exists( 'id', $content ) ) {
+			return self::get_post( $content, $rest_url );
 		// This is the REST URL itself if it has this.
-		if ( array_key_exists( 'namespaces', $content ) ) {
+		} elseif ( array_key_exists( 'namespaces', $content ) ) {
 			// Return site data if single otherwise feed data.
 			if ( 'single' === $args['return'] ) {
 				$return       = array(
@@ -157,8 +166,6 @@ class Parse_This_RESTAPI {
 				$content = self::posts_to_feed( $content, $rest_url );
 				return $content;
 			}
-		} elseif ( array_key_exists( 'id', $content ) ) {
-			return self::get_post( $content, $rest_url );
 		}
 		return false;
 	}
@@ -168,6 +175,9 @@ class Parse_This_RESTAPI {
 			return null;
 		}
 		$author      = $item['_embedded']['author'][0];
+		if ( array_key_exists( 'code', $author ) ) {
+			return null;
+		}
 		$avatar_urls = self::ifset( 'avatar_urls', $author );
 		$avatar_urls = is_array( $avatar_urls ) ? end( $avatar_urls ) : null;
 		$return      = array(

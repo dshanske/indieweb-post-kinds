@@ -106,12 +106,20 @@ class Parse_This_MF2 extends Parse_This_MF2_Utils {
 				$parse->parse();
 				return $parse->get();
 			} else {
-				return array(
-					'type'       => array( 'h-card' ),
-					'properties' => array(
+				$rel = self::get_rel_urls( $mf2, $authorpage );
+				if ( $rel ) {
+					return array( 
+						'type' => array( 'h-card' ),
+						'properties' => $rel
+					);
+				} else {
+					return array(
+						'type'       => array( 'h-card' ),
+						'properties' => array(
 						'url' => array( $authorpage ),
-					),
-				);
+						),
+					);
+				}
 			}
 		}
 	}
@@ -205,12 +213,16 @@ class Parse_This_MF2 extends Parse_This_MF2_Utils {
 				if ( is_array( $author ) ) {
 					$author = array_pop( $author );
 				}
-				return array(
-					'author' => array(
-						'type' => 'card',
-						'url'  => $author,
-					),
-				);
+				$author = self::get_rel_urls( $input, $author );
+				$author['type'] = 'card';
+				if ( $url !== $author['url'] ) {
+					return array(
+						'author' => $author
+					);
+				} else {
+					return $author;
+				}
+
 			}
 			return array();
 		}

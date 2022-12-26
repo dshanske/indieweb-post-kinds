@@ -413,14 +413,14 @@ class Parse_This {
 
 		if ( empty( $more ) ) {
 			$alt = null;
-			$jf2 = $this->jf2;
+			$jf2 = $this->jf2['_jf2'];
 
 			$empty = true;
 
 			if ( ! empty( $this->links ) ) {
 				$endpoint = pt_find_rest_endpoint( $this->links );
 				$rest     = pt_find_rest_alternate( $this->links );
-				if ( $rest ) {
+				if ( $endpoint && $rest ) {
 					$empty        = false;
 					$path         = Parse_This_RESTAPI::get_rest_path( $endpoint, $rest );
 					$fetch        = Parse_This_RESTAPI::fetch( $endpoint, $path );
@@ -460,14 +460,14 @@ class Parse_This {
 				if ( isset( $jf2['author'] ) ) {
 					if ( isset( $this->jf2['author'] ) && is_string( $this->jf2['author'] ) ) {
 						$jf2['author']['name'] = $this->jf2['author'];
-						$this->jf2['author']   = $jf2['author'];
 					}
+					$this->jf2['author']   = $jf2['author'];
 				}
 			}
 			if ( isset( $alt['author'] ) && is_array( $this->jf2['author'] ) && ! wp_is_numeric_array( $this->jf2['author'] ) && ! isset( $this->jf2['author']['name'] ) ) {
 				$this->jf2['author']['name'] = $alt['author'];
-			}
-		}
+			}  
+		} 
 		if ( ! isset( $this->jf2['url'] ) ) {
 			$this->jf2['url'] = $this->url;
 		}
