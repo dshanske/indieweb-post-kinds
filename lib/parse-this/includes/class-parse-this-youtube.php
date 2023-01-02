@@ -12,6 +12,10 @@ class Parse_This_YouTube extends Parse_This_Base {
 			return array();
 		}
 
+		if ( ! is_string( $content ) ) {
+			return array();
+		}
+
 		preg_match( '#ytInitialPlayerResponse = (\{.+\});#U', $content, $match );
 		$decode = json_decode( $match[1], true );
 		if ( empty( $decode ) ) {
