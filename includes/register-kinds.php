@@ -12,7 +12,7 @@ register_post_kind(
 		'properties'      => array(),
 		'format'          => '', // Post Format that maps to this
 		'description'     => __( 'traditional long form content: a post with an explicit title and body', 'indieweb-post-kinds' ),
-		'description-url' => 'http://indieweb.org/article',
+		'description_url' => 'http://indieweb.org/article',
 		'shortlink'       => 'b',
 		'title'           => true, // Should this kind have an explicit title
 		'show'            => true, // Show in Settings
@@ -29,7 +29,7 @@ register_post_kind(
 		'properties'      => array(),
 		'format'          => 'aside', // Post Format that maps to this
 		'description'     => __( 'short content: a post or status update with just plain content and typically without a title', 'indieweb-post-kinds' ),
-		'description-url' => 'http://indieweb.org/note',
+		'description_url' => 'http://indieweb.org/note',
 		'shortlink'       => 't',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => false, // Show in Settings
@@ -98,7 +98,7 @@ register_post_kind(
 		),
 		'format'            => 'link', // Post Format that maps to this
 		'description'       => __( 'a reply to content typically on another site', 'indieweb-post-kinds' ),
-		'description - url' => 'http://indieweb.org/reply',
+		'description_url' => 'http://indieweb.org/reply',
 		'shortlink'         => 't',
 		'title'             => false, // Should this kind have an explicit title
 		'show'              => true, // Show in Settings
@@ -167,7 +167,7 @@ register_post_kind(
 		),
 		'format'            => '', // Post Format that maps to this
 		'description'       => __( 'a complete reposting of content from another site', 'indieweb-post-kinds' ),
-		'description - url' => 'http://indieweb.org/repost',
+		'description_url' => 'http://indieweb.org/repost',
 		'shortlink'         => 'b',
 		'title'             => true, // Should this kind have an explicit title
 		'show'              => true, // Show in Settings
@@ -237,7 +237,7 @@ register_post_kind(
 		),
 		'format'          => 'link', // Post Format that maps to this
 		'description'     => __( 'a way to pay compliments to the original post/poster of external content', 'indieweb-post-kinds' ),
-		'description-url' => 'http://indieweb.org/like',
+		'description_url' => 'http://indieweb.org/like',
 		'shortlink'       => 'f',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => true, // Show in Settings
@@ -306,7 +306,7 @@ register_post_kind(
 		),
 		'format'          => 'link', // Post Format that maps to this
 		'description'     => __( 'special to the author', 'indieweb-post-kinds' ),
-		'description-url' => 'http://indieweb.org/favorite',
+		'description_url' => 'http://indieweb.org/favorite',
 		'shortlink'       => 'f',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => true, // Show in Settings
@@ -375,7 +375,7 @@ register_post_kind(
 		),
 		'format'          => 'link', // Post Format that maps to this
 		'description'     => __( 'storing a link/bookmark for personal use or sharing with others', 'indieweb-post-kinds' ),
-		'description-url' => 'http://indieweb.org/bookmark',
+		'description_url' => 'http://indieweb.org/bookmark',
 		'shortlink'       => 'h',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => true, // Show in Settings
@@ -391,7 +391,7 @@ register_post_kind(
 		'property'        => 'photo', // microformats 2 property
 		'format'          => 'image', // Post Format that maps to this
 		'description'     => __( 'a post with an embedded image/photo as its primary focus', 'indieweb-post-kinds' ),
-		'description-url' => 'http://indieweb.org/photo',
+		'description_url' => 'http://indieweb.org/photo',
 		'shortlink'       => 'p',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => true, // Show in Settings
@@ -407,7 +407,7 @@ register_post_kind(
 		'property'        => 'video', // microformats 2 property
 		'format'          => 'video', // Post Format that maps to this
 		'description'     => __( 'a post with an embedded video as its primary focus', 'indieweb-post-kinds' ),
-		'description-url' => 'http://indieweb.org/video',
+		'description_url' => 'http://indieweb.org/video',
 		'shortlink'       => 'a',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => true, // Show in Settings
@@ -423,7 +423,7 @@ register_post_kind(
 		'property'        => 'audio', // microformats 2 property
 		'format'          => 'audio', // Post Format that maps to this
 		'description'     => __( 'a post with an embedded audio file as its primary focus', 'indieweb-post-kinds' ),
-		'description-url' => 'http://indieweb.org/audio',
+		'description_url' => 'http://indieweb.org/audio',
 		'shortlink'       => 'a',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => true, // Show in Settings
@@ -439,7 +439,7 @@ register_post_kind(
 		'property'        => 'tag-of', // microformats 2 property
 		'format'          => 'link', // Post Format that maps to this
 		'description'     => __( 'allows you to tag a post as being of a specific category or tag, or for person tagging', 'indieweb-post-kinds' ),
-		'description-url' => 'http://indieweb.org/tag',
+		'description_url' => 'http://indieweb.org/tag',
 		'shortlink'       => 'd',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => false, // Show in Settings
@@ -511,7 +511,7 @@ register_post_kind(
 		),
 		'format'          => 'link', // Post Format that maps to this
 		'description'     => __( 'a specific type of reply regarding attendance of an event', 'indieweb-post-kinds' ),
-		'description-url' => 'http://indieweb.org/rsvp',
+		'description_url' => 'http://indieweb.org/rsvp',
 		'shortlink'       => 't',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => true, // Show in Settings
@@ -576,7 +576,7 @@ register_post_kind(
 		),
 		'format'          => 'audio', // Post Format that maps to this
 		'description'     => __( 'listening to audio; sometimes called a scrobble', 'indieweb-post-kinds' ),
-		'description-url' => 'http://indieweb.org/listen',
+		'description_url' => 'http://indieweb.org/listen',
 		'shortlink'       => 'x',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => true, // Show in Settings
@@ -641,7 +641,7 @@ register_post_kind(
 		),
 		'format'          => 'video', // Post Format that maps to this
 		'description'     => __( 'watching a movie, television show, online video, play or other visual-based event', 'indieweb-post-kinds' ),
-		'description-url' => 'http://indieweb.org/watch',
+		'description_url' => 'http://indieweb.org/watch',
 		'shortlink'       => 'x',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => true, // Show in Settings
@@ -709,7 +709,7 @@ register_post_kind(
 		),
 		'format'          => 'status', // Post Format that maps to this
 		'description'     => __( 'identifying you are at a particular geographic location', 'indieweb-post-kinds' ),
-		'description-url' => 'http://indieweb.org/checkin',
+		'description_url' => 'http://indieweb.org/checkin',
 		'shortlink'       => 'g',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => true, // Show in Settings
@@ -725,7 +725,7 @@ register_post_kind(
 		'property'        => 'wish-of', // microformats 2 property
 		'format'          => 'link', // Post Format that maps to this
 		'description'     => __( 'a post indicating a desire/wish. The archive of which would be a wishlist, such as a gift registry or similar', 'indieweb-post-kinds' ),
-		'description-url' => '',
+		'description_url' => '',
 		'shortlink'       => 'f',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => false, // Show in Settings
@@ -741,7 +741,7 @@ register_post_kind(
 		'property'        => 'play-of', // microformats 2 property
 		'format'          => 'status', // Post Format that maps to this
 		'description'     => __( 'playing a game', 'indieweb-post-kinds' ),
-		'description-url' => 'https://indieweb.org/game_play',
+		'description_url' => 'https://indieweb.org/game_play',
 		'shortlink'       => 'x',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => true, // Show in Settings
@@ -757,7 +757,7 @@ register_post_kind(
 		'property'        => 'weather', // microformats 2 property
 		'format'          => 'status', // Post Format that maps to this
 		'description'     => __( 'current weather conditions', 'indieweb-post-kinds' ),
-		'description-url' => 'https://indieweb.org/weather',
+		'description_url' => 'https://indieweb.org/weather',
 		'shortlink'       => 'u',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => false, // Show in Settings
@@ -773,7 +773,7 @@ register_post_kind(
 		'property'        => 'exercise', // microformats 2 property
 		'format'          => 'status', // Post Format that maps to this
 		'description'     => __( 'some form of physical activity or workout (examples: walk, run, cycle, hike, yoga, etc.)', 'indieweb-post-kinds' ),
-		'description-url' => 'https://indieweb.org/exercise',
+		'description_url' => 'https://indieweb.org/exercise',
 		'shortlink'       => 'm',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => false, // Show in Settings
@@ -789,7 +789,7 @@ register_post_kind(
 		'property'        => 'trip', // microformats 2 property
 		'format'          => '', // Post Format that maps to this
 		'description'     => __( 'represents a geographic journey', 'indieweb-post-kinds' ),
-		'description-url' => 'https://indieweb.org/trip',
+		'description_url' => 'https://indieweb.org/trip',
 		'shortlink'       => 'e',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => false, // Show in Settings
@@ -805,7 +805,7 @@ register_post_kind(
 		'property'        => 'itinerary', // microformats 2 property
 		'format'          => '', // Post Format that maps to this
 		'description'     => __( 'parts of a scheduled trip including transit by car, plane, train, etc.', 'indieweb-post-kinds' ),
-		'description-url' => 'https://indieweb.org/trip',
+		'description_url' => 'https://indieweb.org/trip',
 		'shortlink'       => 'e',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => false, // Show in Settings
@@ -822,7 +822,7 @@ register_post_kind(
 		'property'        => 'ate', // microformats 2 property
 		'format'          => 'status', // Post Format that maps to this
 		'description'     => __( 'what you are eating, perhaps for a food diary', 'indieweb-post-kinds' ),
-		'description-url' => 'https://indieweb.org/food',
+		'description_url' => 'https://indieweb.org/food',
 		'shortlink'       => 'u',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => true, // Show in Settings
@@ -839,7 +839,7 @@ register_post_kind(
 		'property'        => 'drank', // microformats 2 property
 		'format'          => 'status', // Post Format that maps to this
 		'description'     => __( 'what you are drinking, perhaps for a food dairy', 'indieweb-post-kinds' ),
-		'description-url' => 'https://indieweb.org/food',
+		'description_url' => 'https://indieweb.org/food',
 		'shortlink'       => 'u',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => true, // Show in Settings
@@ -856,7 +856,7 @@ register_post_kind(
 		'property'        => 'follow-of', // microformats 2 property
 		'format'          => '', // Post Format that maps to this
 		'description'     => __( 'indicating you are now following or subscribing to another person`s activities online', 'indieweb-post-kinds' ),
-		'description-url' => 'https://indieweb.org/follow',
+		'description_url' => 'https://indieweb.org/follow',
 		'shortlink'       => 'f',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => false, // Show in Settings
@@ -873,7 +873,7 @@ register_post_kind(
 		'property'        => 'jam-of', // microformats 2 property
 		'format'          => 'audio', // Post Format that maps to this
 		'description'     => __( 'a particularly personally meaningful song (a listen with added emphasis)', 'indieweb-post-kinds' ),
-		'description-url' => 'https://indieweb.org/jam',
+		'description_url' => 'https://indieweb.org/jam',
 		'shortlink'       => 'f',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => true, // Show in Settings
@@ -890,7 +890,7 @@ register_post_kind(
 		'property'        => 'read-of', // microformats 2 property
 		'format'          => 'status', // Post Format that maps to this
 		'description'     => __( 'reading a book, magazine, newspaper, other physical document, or online post', 'indieweb-post-kinds' ),
-		'description-url' => 'https://indieweb.org/read',
+		'description_url' => 'https://indieweb.org/read',
 		'shortlink'       => 'x',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => true, // Show in Settings
@@ -907,7 +907,7 @@ register_post_kind(
 		'property'        => 'quotation-of', // microformats 2 property
 		'format'          => 'quote', // Post Format that maps to this
 		'description'     => __( 'quoted content', 'indieweb-post-kinds' ),
-		'description-url' => 'https://indieweb.org/quote',
+		'description_url' => 'https://indieweb.org/quote',
 		'shortlink'       => 't',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => true, // Show in Settings
@@ -924,7 +924,7 @@ register_post_kind(
 		'property'        => 'mood', // microformats 2 property
 		'format'          => 'status', // Post Format that maps to this
 		'description'     => __( 'how you are feeling (example: happy, sad, indifferent, etc.)', 'indieweb-post-kinds' ),
-		'description-url' => 'https://indieweb.org/mood',
+		'description_url' => 'https://indieweb.org/mood',
 		'shortlink'       => 't',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => false, // Show in Settings
@@ -941,7 +941,7 @@ register_post_kind(
 		'property'        => 'recipe', // microformats 2 property
 		'format'          => '', // Post Format that maps to this
 		'description'     => __( 'list of ingredients and directions for making food or drink', 'indieweb-post-kinds' ),
-		'description-url' => 'https://indieweb.org/recipe',
+		'description_url' => 'https://indieweb.org/recipe',
 		'shortlink'       => 'b',
 		'title'           => true, // Should this kind have an explicit title
 		'show'            => false, // Show in Settings
@@ -958,7 +958,7 @@ register_post_kind(
 		'property'        => 'in-reply-to', // microformats 2 property
 		'format'          => '', // Post Format that maps to this
 		'description'     => __( 'Issue is a special kind of article post that is a reply to typically some source code, though potentially anything at a source control repository.', 'indieweb-post-kinds' ),
-		'description-url' => 'https://indieweb.org/issue',
+		'description_url' => 'https://indieweb.org/issue',
 		'shortlink'       => 't',
 		'title'           => true, // Should this kind have an explicit title
 		'show'            => true, // Show in Settings
@@ -975,7 +975,7 @@ register_post_kind(
 		'property'        => 'question', // microformats 2 property
 		'format'          => '', // Post Format that maps to this
 		'description'     => __( 'Question is a post type for soliciting answer replies, which are then typically up/down voted by others and then displayed underneath the question post ordered by highest positive vote count rather than time ordered.', 'indieweb-post-kinds' ),
-		'description-url' => 'https://indieweb.org/question',
+		'description_url' => 'https://indieweb.org/question',
 		'shortlink'       => 'q',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => false, // Show in Settings
@@ -992,7 +992,7 @@ register_post_kind(
 		'property'        => 'sleep', // microformats 2 property
 		'format'          => '', // Post Format that maps to this
 		'description'     => __( 'Sleep is a passive metrics post type that indicates how much time (and often a graph of how deeply) a person has slept.', 'indieweb-post-kinds' ),
-		'description-url' => 'https://indieweb.org/sleep',
+		'description_url' => 'https://indieweb.org/sleep',
 		'shortlink'       => 'm',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => false, // Show in Settings
@@ -1009,7 +1009,7 @@ register_post_kind(
 		'property'        => 'event', // microformats 2 property
 		'format'          => '', // Post Format that maps to this
 		'description'     => __( 'An event is a type of post that in addition to a post name (event title) has a start datetime (likely end datetime), and a location.', 'indieweb-post-kinds' ),
-		'description-url' => 'https://indieweb.org/event',
+		'description_url' => 'https://indieweb.org/event',
 		'shortlink'       => 'e',
 		'title'           => true, // Should this kind have an explicit title
 		'show'            => false, // Show in Settings
@@ -1026,7 +1026,7 @@ register_post_kind(
 		'property'        => 'acquired-of', // microformats 2 property
 		'format'          => 'status', // Post Format that maps to this
 		'description'     => __( 'Purchases, gifts, found things, or objects donated', 'indieweb-post-kinds' ),
-		'description-url' => 'http://indieweb.org/acquisition',
+		'description_url' => 'http://indieweb.org/acquisition',
 		'shortlink'       => 'f',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => false, // Show in Settings
@@ -1042,7 +1042,7 @@ register_post_kind(
 		'property'        => 'craft-of', // microformats 2 property
 		'format'          => 'status', // Post Format that maps to this
 		'description'     => __( 'Activities like knitting, crocheting, cross stitch, wood working, restoration, 3d printing...the activity of building something.', 'indieweb-post-kinds' ),
-		'description-url' => 'https://indieweb.org/crafts',
+		'description_url' => 'https://indieweb.org/crafts',
 		'shortlink'       => 'x',
 		'title'           => false, // Should this kind have an explicit title
 		'show'            => true, // Show in Settings
