@@ -271,6 +271,9 @@ class Kind_Media_Metadata {
 	}
 
 	public static function wp_generate_attachment_metadata( $data, $attachment_id ) {
+		if ( ! is_array( $data ) ) {
+			return $data;
+		}
 		$data       = array_filter( $data );
 		$attachment = get_post( $attachment_id, ARRAY_A );
 		if ( isset( $data['image_meta'] ) ) {
