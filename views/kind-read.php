@@ -36,7 +36,7 @@ if ( ! $embed ) {
 if ( $cite ) {
 	if ( $embed ) {
 		echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
-	} elseif ( array_key_exists( 'summary', $cite ) ) {
+	} elseif ( array_key_exists( 'summary', $cite ) && ! empty( $cite['summary'] ) ) {
 		echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $cite['summary'] );
 	}
 }
