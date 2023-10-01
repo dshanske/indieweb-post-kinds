@@ -171,7 +171,7 @@ class Post_Kinds_Plugin {
 		// Register Widgets
 		add_action(
 			'widgets_init',
-			function() {
+			function () {
 				register_widget( 'Kind_Menu_Widget' );
 				register_widget( 'Kind_Post_Widget' );
 			}

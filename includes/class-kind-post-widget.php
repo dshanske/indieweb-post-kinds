@@ -13,7 +13,6 @@ class Kind_Post_Widget extends WP_Widget {
 				'description' => __( 'A widget that allows you to display a list of posts by type', 'indieweb-post-kinds' ),
 			)
 		);
-
 	} // end constructor
 
 	/**

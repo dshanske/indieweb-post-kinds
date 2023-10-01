@@ -39,11 +39,11 @@ register_post_kind(
 register_post_kind(
 	'reply',
 	array(
-		'singular_name'     => __( 'Reply', 'indieweb-post-kinds' ), // Name for one instance of the kind
-		'name'              => __( 'Replies', 'indieweb-post-kinds' ), // General name for the kind plural
-		'verb'              => __( 'Replied to', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
-		'property'          => 'in-reply-to', // microformats 2 property
-		'properties'        => array(
+		'singular_name'   => __( 'Reply', 'indieweb-post-kinds' ), // Name for one instance of the kind
+		'name'            => __( 'Replies', 'indieweb-post-kinds' ), // General name for the kind plural
+		'verb'            => __( 'Replied to', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+		'property'        => 'in-reply-to', // microformats 2 property
+		'properties'      => array(
 			'in-reply-to' => array(
 				'type'       => 'cite',
 				'label'      => __( 'In Reply To', 'indieweb-post-kinds' ),
@@ -96,23 +96,23 @@ register_post_kind(
 				),
 			),
 		),
-		'format'            => 'link', // Post Format that maps to this
-		'description'       => __( 'a reply to content typically on another site', 'indieweb-post-kinds' ),
+		'format'          => 'link', // Post Format that maps to this
+		'description'     => __( 'a reply to content typically on another site', 'indieweb-post-kinds' ),
 		'description_url' => 'http://indieweb.org/reply',
-		'shortlink'         => 't',
-		'title'             => false, // Should this kind have an explicit title
-		'show'              => true, // Show in Settings
+		'shortlink'       => 't',
+		'title'           => false, // Should this kind have an explicit title
+		'show'            => true, // Show in Settings
 	)
 );
 
 register_post_kind(
 	'repost',
 	array(
-		'singular_name'     => __( 'Repost', 'indieweb-post-kinds' ), // Name for one instance of the kind
-		'name'              => __( 'Reposts', 'indieweb-post-kinds' ), // General name for the kind plural
-		'verb'              => __( 'Reposted', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
-		'property'          => 'repost-of', // microformats 2 property
-		'properties'        => array(
+		'singular_name'   => __( 'Repost', 'indieweb-post-kinds' ), // Name for one instance of the kind
+		'name'            => __( 'Reposts', 'indieweb-post-kinds' ), // General name for the kind plural
+		'verb'            => __( 'Reposted', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+		'property'        => 'repost-of', // microformats 2 property
+		'properties'      => array(
 			'repost-of' => array(
 				'type'       => 'cite',
 				'label'      => __( 'Repost', 'indieweb-post-kinds' ),
@@ -165,12 +165,12 @@ register_post_kind(
 				),
 			),
 		),
-		'format'            => '', // Post Format that maps to this
-		'description'       => __( 'a complete reposting of content from another site', 'indieweb-post-kinds' ),
+		'format'          => '', // Post Format that maps to this
+		'description'     => __( 'a complete reposting of content from another site', 'indieweb-post-kinds' ),
 		'description_url' => 'http://indieweb.org/repost',
-		'shortlink'         => 'b',
-		'title'             => true, // Should this kind have an explicit title
-		'show'              => true, // Show in Settings
+		'shortlink'       => 'b',
+		'title'           => true, // Should this kind have an explicit title
+		'show'            => true, // Show in Settings
 	)
 );
 

@@ -109,6 +109,4 @@ class Kind_Media_View {
 		}
 		return $return;
 	}
-
-
 }

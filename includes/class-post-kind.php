@@ -42,5 +42,4 @@ final class Post_Kind {
 			$this->$property_name = $property_value;
 		}
 	}
-
 }

@@ -733,7 +733,6 @@ class Kind_Post {
 		}
 
 		return $cite;
-
 	}
 
 	public function set_datetime_property( $key, $value ) {

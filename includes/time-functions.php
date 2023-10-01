@@ -352,4 +352,3 @@ function build_interval( $values ) {
 	}
 	return $spec;
 }
-

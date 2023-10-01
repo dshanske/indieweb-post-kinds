@@ -51,4 +51,3 @@ if ( ! function_exists( 'wp_filter_content_tags' ) ) {
 		return wp_make_content_images_responsive( $content );
 	}
 }
-

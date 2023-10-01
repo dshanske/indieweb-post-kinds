@@ -552,7 +552,6 @@ class Kind_View {
 			$cite['name'] = $cite['url'];
 		}
 		return sprintf( '<a href="%1s" class="p-name u-url">%2s</a>', $cite['url'], $cite['name'] );
-
 	}
 
 	/**
@@ -674,5 +673,4 @@ class Kind_View {
 
 		return sprintf( '<time class="dt-duration" datetime="%1$s">%2$s</time>', date_interval_to_iso8601( $interval ), implode( ' ', $duration ) );
 	}
-
 }  // End Class

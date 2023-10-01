@@ -35,7 +35,7 @@ class Kind_Media_Metadata {
 		if ( ! is_front_page() && is_singular() && ! self::is_amp_endpoint() ) {
 			wp_enqueue_script(
 				'media-fragment',
-				plugins_url( 'js/clone-media-fragment.js', dirname( __FILE__ ) ),
+				plugins_url( 'js/clone-media-fragment.js', __DIR__ ),
 				array(),
 				'1.0',
 				true
@@ -312,5 +312,3 @@ class Kind_Media_Metadata {
 		return $data;
 	}
 } // End Class
-
-

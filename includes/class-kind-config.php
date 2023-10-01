@@ -447,5 +447,4 @@ class Kind_Config {
 			)
 		);
 	}
-
 } // End Class

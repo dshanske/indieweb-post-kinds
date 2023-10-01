@@ -124,7 +124,6 @@ class Kind_Metabox {
 		/* Add meta boxes on the 'add_meta_boxes' hook. */
 		add_action( 'add_meta_boxes', array( $cls, 'add_meta_boxes' ) );
 		add_action( 'admin_enqueue_scripts', array( $cls, 'enqueue_admin_scripts' ) );
-
 	}
 
 	/**
@@ -138,7 +137,7 @@ class Kind_Metabox {
 
 			wp_enqueue_script(
 				'kindmeta',
-				plugins_url( 'js/kind.js', dirname( __FILE__ ) ),
+				plugins_url( 'js/kind.js', __DIR__ ),
 				array( 'jquery' ),
 				self::$version,
 				true
@@ -365,10 +364,8 @@ class Kind_Metabox {
 			if ( ! current_user_can( 'edit_page', $post_id ) ) {
 				return;
 			}
-		} else {
-			if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		} elseif ( ! current_user_can( 'edit_post', $post_id ) ) {
 				return;
-			}
 		}
 		$kind_post = new Kind_Post( $post );
 		$cite      = array();
@@ -509,6 +506,4 @@ class Kind_Metabox {
 			self::save_post( $post->ID, $post );
 		}
 	}
-
 }
-
