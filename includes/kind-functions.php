@@ -146,7 +146,7 @@ function kind_get_the_link( $post = null, $cls = null ) {
 	if ( is_array( $cls ) ) {
 		$cls = implode( ' ', $cls );
 	}
-	$cls         = 'class=' . $class;
+	$cls         = 'class=' . $cls;
 	$time_string = '<time %1$s datetime="%2$s">%3$s</time>';
 	$time_string = sprintf(
 		$time_string,
