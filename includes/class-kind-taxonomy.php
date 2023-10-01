@@ -248,12 +248,17 @@ final class Kind_Taxonomy {
 		$query->set(
 			'tax_query',
 			array(
+				'relation' => 'OR',
 				array(
 					'taxonomy' => 'kind',
 					'field'    => 'slug',
 					'terms'    => $firehose,
 					'operator' => 'IN',
 				),
+				array(
+					'taxonomy' => 'kind',
+					'operator' => 'NOT EXISTS'
+				)
 			)
 		);
 		return $query;
