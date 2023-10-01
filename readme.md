@@ -1,9 +1,9 @@
 # Post Kinds #
 **Contributors:** [dshanske](https://profiles.wordpress.org/dshanske)  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.6.4  
+**Stable tag:** 3.6.5  
 **Requires at least:** 4.9.9  
-**Requires PHP:** 5.6  
+**Requires PHP:** 7.0  
 **Tested up to:** 6.2  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
@@ -279,6 +279,12 @@ through future plugin updates.
 
 
 ## Changelog ##
+
+### 3.6.5 ( 2023-10-01 ) ###
+* Posts with no Kind will appear even when the firehose filter is enabled
+* Minimum PHP is now 7.0
+* Replace ifset with the null coalescing operator
+* Minor dependencies
 
 ### 3.6.4 ( 2023-01-02 ) ###
 * Fix issue with Parse This for PHP8 and above
