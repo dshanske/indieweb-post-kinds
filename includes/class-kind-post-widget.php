@@ -43,7 +43,7 @@ class Kind_Post_Widget extends WP_Widget {
 							'terms'    => $kind,
 						),
 					),
-					'numberposts' => $instance['number'] ?? 5 ,
+					'numberposts' => $instance['number'] ?? 5,
 				);
 				$posts = get_posts( $query );
 		}

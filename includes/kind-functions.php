@@ -108,16 +108,16 @@ function kind_display( $post_id = null ) {
 		echo Kind_View::get_display( $post_id ); // phpcs:ignore
 }
 
-function kind_flatten_array( $array ) {
-	if ( ! is_array( $array ) ) {
-		return $array;
+function kind_flatten_array( $a ) {
+	if ( ! is_array( $a ) ) {
+		return $a;
 	}
-	if ( wp_is_numeric_array( $array ) ) {
-		$array = array_map( 'kind_flatten_array', $array );
+	if ( wp_is_numeric_array( $a ) ) {
+		$array = array_map( 'kind_flatten_array', $a );
 	}
-	$array = array_filter( $array );
-	if ( 1 === count( $array ) ) {
-		return $array[0];
+	$array = array_filter( $a );
+	if ( 1 === count( $a ) ) {
+		return $a[0];
 	}
 }
 
@@ -139,18 +139,18 @@ function kind_src_url_in_content( $content ) {
  * @return string Marked up link to a post.
  **/
 
-function kind_get_the_link( $post = null, $class = null ) {
+function kind_get_the_link( $post = null, $cls = null ) {
 	$post = get_post( $post );
 	$kind = get_post_kind_slug( $post );
 
-	if ( is_array( $class ) ) {
-		$class = implode( ' ', $class );
+	if ( is_array( $cls ) ) {
+		$cls = implode( ' ', $cls );
 	}
-	$class       = 'class=' . $class;
+	$cls         = 'class=' . $class;
 	$time_string = '<time %1$s datetime="%2$s">%3$s</time>';
 	$time_string = sprintf(
 		$time_string,
-		esc_attr( $class ),
+		esc_attr( $cls ),
 		esc_attr( get_the_date( DATE_W3C, $post ) ),
 		get_the_date( '', $post )
 	);

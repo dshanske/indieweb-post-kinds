@@ -181,7 +181,6 @@ register_post_kind(
 		'name'            => __( 'Likes', 'indieweb-post-kinds' ), // General name for the kind plural
 		'verb'            => __( 'Liked', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
 		'property'        => 'like-of', // microformats 2 property
-		'properties'      => array(),
 		'properties'      => array(
 			'like-of' => array(
 				'type'       => 'cite',

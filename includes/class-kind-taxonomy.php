@@ -959,17 +959,16 @@ final class Kind_Taxonomy {
 		}
 		if ( isset( $_GET['kind'] ) ) {
 			$default = get_term_by( 'slug', $_GET['kind'], 'kind' );
-		} else {
+		} elseif ( 'publish' === get_post_status( $post ) ) {
 			// On existing published posts without a kind fall back on article which most closely mimics the behavior of an unclassified post
-			if ( 'publish' === get_post_status( $post ) ) {
-				$default = get_term_by( 'slug', 'article', 'kind' );
-			} else {
-				$default = get_term_by( 'slug', get_option( 'kind_default' ), 'kind' );
-			}
+			$default = get_term_by( 'slug', 'article', 'kind' );
+		} else {
+			$default = get_term_by( 'slug', get_option( 'kind_default' ), 'kind' );
 		}
+
 		$terms     = get_terms(
-			'kind',
 			array(
+				'taxonomy'   => 'kind',
 				'hide_empty' => 0,
 			)
 		);

@@ -41,7 +41,7 @@ class MF2_Post implements ArrayAccess {
 		}
 		$post = get_post( $post );
 		if ( ! $post ) {
-			return false;
+			return;
 		}
 		$this->mf2         = $this->get_mf2meta();
 		$this->post_author = $post->post_author;
@@ -758,11 +758,4 @@ class MF2_Post implements ArrayAccess {
 		}
 		return array_filter( array_unique( $att_ids ) );
 	}
-}
-
-function get_mf2_post( $post_id ) {
-	if ( $post_id instanceof MF2_Post ) {
-		return $post_id;
-	}
-	return new MF2_Post( $post_id );
 }

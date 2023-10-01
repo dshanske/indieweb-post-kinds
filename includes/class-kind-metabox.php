@@ -213,8 +213,8 @@ class Kind_Metabox {
 			$offset = $time['offset'];
 		}
 		$string  = '<label class="half ' . $class . '" for="' . $prefix . '">' . $label . '<br/>';
-		$string .= '<input class="date" type="date" name="' . $prefix . '_date" id="' . $prefix . '_date" value="' . ($time['date'] ?? '') . '"/>';
-		$string .= '<input class="time" type="time" name="' . $prefix . '_time" id="' . $prefix . '_time" step="1" value="' . ($time['time'] ?? '') . '"/>';
+		$string .= '<input class="date" type="date" name="' . $prefix . '_date" id="' . $prefix . '_date" value="' . ( $time['date'] ?? '' ) . '"/>';
+		$string .= '<input class="time" type="time" name="' . $prefix . '_time" id="' . $prefix . '_time" step="1" value="' . ( $time['time'] ?? '' ) . '"/>';
 		$string .= self::select_offset( $prefix, $offset );
 		$string .= '</label>';
 		return $string;
@@ -397,9 +397,9 @@ class Kind_Metabox {
 		}
 
 		$durations = array(
-			'Y' => intval( $_POST['duration_years'] ?? ''  ),
+			'Y' => intval( $_POST['duration_years'] ?? '' ),
 			'M' => intval( $_POST['duration_months'] ?? '' ),
-			'D' => intval( $_POST['duration_days'] ?? ''  ),
+			'D' => intval( $_POST['duration_days'] ?? '' ),
 			'H' => intval( $_POST['duration_hours'] ?? '' ),
 			'I' => intval( $_POST['duration_minutes'] ?? '' ),
 			'S' => intval( $_POST['duration_seconds'] ?? '' ),

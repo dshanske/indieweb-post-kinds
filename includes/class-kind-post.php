@@ -27,9 +27,6 @@ class Kind_Post {
 		}
 
 		$post = get_post( $post );
-		if ( ! $post ) {
-			return false;
-		}
 	}
 
 	/*
