@@ -284,12 +284,12 @@ class Kind_Post {
 		$post = $this->get_post();
 		if ( ! $post->post_author ) {
 			$author = get_post_meta( $post->ID, 'mf2_author', true );
-			return $author ?? false;
+			return ( $author ?? false );
 		}
 		// Attachments may have been uploaded by a user but may have metadata for original author
 		if ( 'attachment' === get_post_type( $this->id ) ) {
 			$author = get_post_meta( $post->ID, 'mf2_author', true );
-			return $author ?? false ;
+			return ( $author ?? false );
 		}
 		return array(
 			'type'       => array( 'h-card' ),

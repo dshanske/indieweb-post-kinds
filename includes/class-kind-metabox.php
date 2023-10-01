@@ -206,12 +206,15 @@ class Kind_Metabox {
 		$tz_seconds = get_option( 'gmt_offset' ) * 3600;
 		$offset     = tz_seconds_to_offset( $tz_seconds );
 		$time       = divide_datetime( $datetime );
+		if ( ! is_array( $time ) ) {
+			$time = array();
+		}
 		if ( isset( $time['offset'] ) ) {
 			$offset = $time['offset'];
 		}
 		$string  = '<label class="half ' . $class . '" for="' . $prefix . '">' . $label . '<br/>';
-		$string .= '<input class="date" type="date" name="' . $prefix . '_date" id="' . $prefix . '_date" value="' . $time['date'] ?? '' . '"/>';
-		$string .= '<input class="time" type="time" name="' . $prefix . '_time" id="' . $prefix . '_time" step="1" value="' . $time['time'] ?? '' . '"/>';
+		$string .= '<input class="date" type="date" name="' . $prefix . '_date" id="' . $prefix . '_date" value="' . ($time['date'] ?? '') . '"/>';
+		$string .= '<input class="time" type="time" name="' . $prefix . '_time" id="' . $prefix . '_time" step="1" value="' . ($time['time'] ?? '') . '"/>';
 		$string .= self::select_offset( $prefix, $offset );
 		$string .= '</label>';
 		return $string;

@@ -278,7 +278,7 @@ class Kind_Config {
 	 */
 	public static function checkbox_callback( array $args ) {
 		$option  = get_option( $args['name'] );
-		$checked = (int) $option ?? 0;
+		$checked = intval($option ?? 0);
 		printf( '<input name="%1$s" type="hidden" value="0" />', esc_attr( $args['name'] ) ); // phpcs:ignore
 		printf( '<input name="%1$s" type="checkbox" value="1" %2$s />', esc_attr( $args['name'] ), checked( 1, $checked, false) ); // phpcs:ignore
 	}

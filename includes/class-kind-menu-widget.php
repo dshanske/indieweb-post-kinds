@@ -116,7 +116,7 @@ class Kind_Menu_Widget extends WP_Widget {
 		?>
 				<p><label for="title"><?php esc_html_e( 'Title: ', 'indieweb-post-kinds' ); ?></label>
 				<input type="text" size="30" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?> id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" value="
-		<?php echo esc_html( $instance['title'] ?? '' ); ?>" /></p>
+		<?php echo esc_html( ( $instance['title'] ?? '' ) ); ?>" /></p>
 		<div id="kind-all"> 
 		<?php
 		foreach ( get_option( 'kind_termslist', Kind_Taxonomy::get_kind_list() ) as $term ) {
