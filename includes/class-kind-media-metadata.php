@@ -263,7 +263,7 @@ class Kind_Media_Metadata {
 				$value = wp_sanitize_media_metadata( $value );
 			} elseif ( is_string( $value ) && preg_match( '~[^\x20-\x7E\t\r\n]~', $value ) > 0 ) {
 				$encoding = mb_detect_encoding( $value, 'ISO-8859-1, UCS-2' );
-				$value    = $encoding ? mb_convert_encoding( $value, 'UTF-8', $encoding ) $value;
+				$value = $encoding ? mb_convert_encoding( $value, 'UTF-8', $encoding ) : $value;
 			}
 			$metadata[ $name ] = $value;
 		}
