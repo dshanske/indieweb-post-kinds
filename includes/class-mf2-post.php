@@ -76,14 +76,14 @@ class MF2_Post implements ArrayAccess {
 
 	public function get_published() {
 		if ( 'attachment' === $this->post_type ) {
-			return ifset( $this->meta['published'] );
+			return $this->meta['published'] ?? '';
 		}
 		return get_the_date( DATE_W3C, $this->uid );
 	}
 
 	public function get_updated() {
 		if ( 'attachment' === $this->post_type ) {
-			return ifset( $this->meta['updated'] );
+			return $this->meta['updated'] ?? '';
 		}
 		return get_the_modified_date( DATE_W3C, $this->uid );
 	}
@@ -92,7 +92,7 @@ class MF2_Post implements ArrayAccess {
 		if ( 'attachment' !== $this->post_type ) {
 			return get_bloginfo( 'title' );
 		}
-		return ifset( $this->meta['publication'] );
+		return $this->meta['publication'] ?? '';
 	}
 
 	public function offsetExists( $offset ) {
@@ -225,11 +225,11 @@ class MF2_Post implements ArrayAccess {
 	 */
 	public function get_author() {
 		if ( ! $this->post_author ) {
-			return ifset( $this->meta['author'], false );
+			return $this->meta['author'] ?? false;
 		}
 		// Attachments may have been uploaded by a user but may have metadata for original author
 		if ( 'attachment' === $this->post_type ) {
-			return ifset( $this->meta['author'] );
+			return $this->meta['author'] ?? '';
 		}
 		return array(
 			'type'       => array( 'h-card' ),
@@ -560,7 +560,7 @@ class MF2_Post implements ArrayAccess {
 		if ( is_array( $item ) && isset( $item['type'] ) && ! isset( $item['properties'] ) ) {
 			return jf2_to_mf2( $item );
 		}
-		$item['type'] = ifset( $item['type'], $type );
+		$item['type'] = $item['type'] ?? $type;
 		return jf2_to_mf2( $item );
 	}
 
@@ -633,7 +633,7 @@ class MF2_Post implements ArrayAccess {
 		if ( wp_attachment_is( 'image', $this->uid ) ) {
 			return array( $this->uid );
 		}
-		$post_content = ifset( $this->content['html'] );
+		$post_content = $this->content['html'] ?? '';
 		if ( $post_content ) {
 			$att_ids = get_post_meta( $this->uid, '_content_img_ids', true );
 			if ( false === $att_ids ) {
@@ -700,12 +700,10 @@ class MF2_Post implements ArrayAccess {
 			if ( is_string( $value ) ) {
 				if ( ! wp_http_validate_url( $value ) ) {
 					continue;
-				} else {
-					if ( ! attachment_url_to_postid( $value ) ) {
-						$id = self::media_sideload_image( $value, $this->uid );
-						if ( $id ) {
-							$photos[ $key ] = wp_get_attachment_url( $id );
-						}
+				} elseif ( ! attachment_url_to_postid( $value ) ) {
+					$id = self::media_sideload_image( $value, $this->uid );
+					if ( $id ) {
+						$photos[ $key ] = wp_get_attachment_url( $id );
 					}
 				}
 			}
@@ -721,8 +719,8 @@ class MF2_Post implements ArrayAccess {
 				}
 				$args = array(
 					'ID'           => $id,
-					'post_title'   => ifset( $value['name'] ),
-					'post_excerpt' => ifset( $value['summary'] ),
+					'post_title'   => $value['name'] ?? '',
+					'post_excerpt' => $value['summary'] ?? '',
 				);
 				$args = array_filter( $args );
 				wp_update_post( $args );
@@ -768,4 +766,3 @@ function get_mf2_post( $post_id ) {
 	}
 	return new MF2_Post( $post_id );
 }
-

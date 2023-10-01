@@ -208,21 +208,16 @@ class Kind_Plugins {
 							}
 						}
 					}
-				} else {
-					if ( isset( $value['url'] ) && wp_http_validate_url( $value['url'] ) ) {
-						$parse = new Parse_This( $value['url'] );
-						$fetch = $parse - fetch();
-						if ( ! is_wp_error( $fetch ) ) {
-							$parse->parse();
-							$input['properties'][ $property ] = array_merge( $value, jf2_to_mf2( $parse->get() ) );
-						}
+				} elseif ( isset( $value['url'] ) && wp_http_validate_url( $value['url'] ) ) {
+					$parse = new Parse_This( $value['url'] );
+					$fetch = $parse - fetch();
+					if ( ! is_wp_error( $fetch ) ) {
+						$parse->parse();
+						$input['properties'][ $property ] = array_merge( $value, jf2_to_mf2( $parse->get() ) );
 					}
 				}
 			}
 		}
 		return $input;
 	}
-
 } // End Class Kind_Plugins
-
-

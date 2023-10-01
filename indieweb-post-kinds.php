@@ -19,13 +19,13 @@ if ( ! defined( 'POST_KINDS_KSES' ) ) {
 }
 
 spl_autoload_register(
-	function ( $class ) {
+	function ( $cls ) {
 		$base_dir = trailingslashit( __DIR__ ) . 'includes/';
 		$bases    = array( 'Kind', 'Post_Kind', 'MF2' );
 
 		foreach ( $bases as $base ) {
-			if ( strncmp( $class, $base, strlen( $base ) ) === 0 ) {
-				$filename = 'class-' . strtolower( str_replace( '_', '-', $class ) );
+			if ( strncmp( $cls, $base, strlen( $base ) ) === 0 ) {
+				$filename = 'class-' . strtolower( str_replace( '_', '-', $cls ) );
 				$file     = $base_dir . $filename . '.php';
 				if ( file_exists( $file ) ) {
 					require $file;
@@ -248,18 +248,5 @@ class Post_Kinds_Plugin {
 		}
 
 		return $screen->is_block_editor;
-	}
-}
-
-if ( ! function_exists( 'ifset' ) ) {
-	/**
-	 * If set, return otherwise false.
-	 *
-	 * @param type $var Check if set.
-	 * @return $var|false Return either $var or $return.
-	 */
-	function ifset( &$var, $return = false ) {
-
-		return isset( $var ) ? $var : $return;
 	}
 }

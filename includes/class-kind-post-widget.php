@@ -27,7 +27,7 @@ class Kind_Post_Widget extends WP_Widget {
 		/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
 		$title = apply_filters( 'widget_title', $instance['title'], $instance, $this->id_base );
 
-		$kind = ifset( $instance['kind'], 'note' );
+		$kind = $instance['kind'] ?? 'note';
 		// phpcs:ignore
 		echo $args['before_widget'];
 		if ( ! empty( $instance['title'] ) ) {
@@ -43,7 +43,7 @@ class Kind_Post_Widget extends WP_Widget {
 							'terms'    => $kind,
 						),
 					),
-					'numberposts' => ifset( $instance['number'], 5 ),
+					'numberposts' => $instance['number'] ?? 5 ,
 				);
 				$posts = get_posts( $query );
 		}
@@ -89,11 +89,11 @@ class Kind_Post_Widget extends WP_Widget {
 	 * @param array $instance Previously saved values from database.
 	 */
 	public function form( $instance ) {
-		$instance['kind'] = ifset( $instance['kind'], 'note' );
+		$instance['kind'] = $instance['kind'] ?? 'note';
 		?>
 				<p><label for="title"><?php esc_html_e( 'Title: ', 'indieweb-post-kinds' ); ?></label>
 				<input type="text" size="30" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?> id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"
-				value="<?php echo esc_html( ifset( $instance['title'] ) ); ?>" /></p>
+				value="<?php echo esc_html( $instance['title'] ?? '' ); ?>" /></p>
 		<select name="<?php echo esc_attr( $this->get_field_name( 'kind' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'kind' ) ); ?>">
 		<?php
 		$list   = get_option( 'kind_termslist', Kind_Taxonomy::get_kind_list() );
@@ -112,7 +112,7 @@ class Kind_Post_Widget extends WP_Widget {
 		</select>
 		<p>
 		<label for="<?php echo esc_attr( $this->get_field_id( 'number' ) ); ?>"><?php esc_html_e( 'Number of Posts:', 'indieweb-post-kinds' ); ?></label>
-		<input type="number" min="1" step="1" name="<?php echo esc_attr( $this->get_field_name( 'number' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'number' ) ); ?>" value="<?php echo esc_attr( ifset( $instance['number'], 5 ) ); ?>" />
+		<input type="number" min="1" step="1" name="<?php echo esc_attr( $this->get_field_name( 'number' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'number' ) ); ?>" value="<?php echo esc_attr( $instance['number'] ?? 5 ); ?>" />
 		<?php
 	}
 }

@@ -236,7 +236,7 @@ class Kind_View {
 		} elseif ( wp_is_numeric_array( $cite ) ) {
 			$url = array_pop( $cite );
 		} else {
-			$url = ifset( $cite['url'] );
+			$url = $cite['url'] ?? '';
 		}
 		if ( $url ) {
 			$feed_item['external_url'] = $url;

@@ -210,8 +210,8 @@ class Kind_Metabox {
 			$offset = $time['offset'];
 		}
 		$string  = '<label class="half ' . $class . '" for="' . $prefix . '">' . $label . '<br/>';
-		$string .= '<input class="date" type="date" name="' . $prefix . '_date" id="' . $prefix . '_date" value="' . ifset( $time['date'] ) . '"/>';
-		$string .= '<input class="time" type="time" name="' . $prefix . '_time" id="' . $prefix . '_time" step="1" value="' . ifset( $time['time'] ) . '"/>';
+		$string .= '<input class="date" type="date" name="' . $prefix . '_date" id="' . $prefix . '_date" value="' . $time['date'] ?? '' . '"/>';
+		$string .= '<input class="time" type="time" name="' . $prefix . '_time" id="' . $prefix . '_time" step="1" value="' . $time['time'] ?? '' . '"/>';
 		$string .= self::select_offset( $prefix, $offset );
 		$string .= '</label>';
 		return $string;
@@ -394,12 +394,12 @@ class Kind_Metabox {
 		}
 
 		$durations = array(
-			'Y' => intval( ifset( ( $_POST['duration_years'] ) ) ),
-			'M' => intval( ifset( $_POST['duration_months'] ) ),
-			'D' => intval( ifset( $_POST['duration_days'] ) ),
-			'H' => intval( ifset( $_POST['duration_hours'] ) ),
-			'I' => intval( ifset( $_POST['duration_minutes'] ) ),
-			'S' => intval( ifset( $_POST['duration_seconds'] ) ),
+			'Y' => intval( $_POST['duration_years'] ?? ''  ),
+			'M' => intval( $_POST['duration_months'] ?? '' ),
+			'D' => intval( $_POST['duration_days'] ?? ''  ),
+			'H' => intval( $_POST['duration_hours'] ?? '' ),
+			'I' => intval( $_POST['duration_minutes'] ?? '' ),
+			'S' => intval( $_POST['duration_seconds'] ?? '' ),
 		);
 		$duration  = build_iso8601_duration( $durations );
 
@@ -424,25 +424,25 @@ class Kind_Metabox {
 		if ( isset( $_POST['cite_updated_date'] ) || isset( $_POST['cite_updated_time'] ) ) {
 			$cite['updated'] = build_iso8601_time( sanitize_text_field( $_POST['cite_updated_date'] ), sanitize_text_field( $_POST['cite_updated_time'] ), sanitize_text_field( $_POST['cite_updated_offset'] ) );
 		}
-		$cite['summary'] = wp_kses_post( ifset( $_POST['cite_summary'] ) );
-		$cite['name']    = sanitize_text_field( ifset( $_POST['cite_name'] ) );
-		$cite['url']     = esc_url( ifset( $_POST['cite_url'] ) );
+		$cite['summary'] = wp_kses_post( $_POST['cite_summary'] ?? '' );
+		$cite['name']    = sanitize_text_field( $_POST['cite_name'] ?? '' );
+		$cite['url']     = esc_url( $_POST['cite_url'] ?? '' );
 		if ( isset( $_POST['cite_tags'] ) ) {
 			$cite['category'] = array_filter( explode( ';', sanitize_text_field( $_POST['cite_tags'] ) ) );
 		}
-		$cite['publication'] = sanitize_text_field( ifset( $_POST['cite_publication'] ) );
-		$cite['featured']    = esc_url( ifset( $_POST['cite_featured'] ) );
+		$cite['publication'] = sanitize_text_field( $_POST['cite_publication'] ?? '' );
+		$cite['featured']    = esc_url( $_POST['cite_featured'] ?? '' );
 
 		$author         = array();
-		$author['name'] = self::explode( sanitize_text_field( ifset( $_POST['cite_author_name'] ) ) );
-		$author['url']  = self::explode( ifset( $_POST['cite_author_url'] ) );
+		$author['name'] = self::explode( sanitize_text_field( $_POST['cite_author_name'] ?? '' ) );
+		$author['url']  = self::explode( $_POST['cite_author_url'] ?? '' );
 		if ( is_array( $author['url'] ) ) {
 			$author['url'] = array_map( 'esc_url', $author['url'] );
 		} else {
 			$author['url'] = esc_url( $author['url'] );
 		}
 
-		$author['photo'] = self::explode( ifset( $_POST['cite_author_photo'] ) );
+		$author['photo'] = self::explode( $_POST['cite_author_photo'] ?? '' );
 
 		if ( is_array( $author['photo'] ) ) {
 			$author['photo'] = array_map( 'esc_url', $author['photo'] );

@@ -62,13 +62,13 @@ class Kind_Media_Metadata {
 
 		if ( wp_attachment_is( 'image', $post ) ) {
 			$form_fields['author_name'] = array(
-				'value'        => ifset( $author['name'] ),
+				'value'        => $author['name'] ?? '',
 				'label'        => __( 'Artist', 'indieweb-post-kinds' ),
 				'helps'        => __( 'The creator of the image', 'indieweb-post-kinds' ),
 				'show_in_edit' => true,
 			);
 			$form_fields['author_url']  = array(
-				'value'        => ifset( $author['url'] ),
+				'value'        => $author['url'] ?? '',
 				'label'        => __( 'Artist URL', 'indieweb-post-kinds' ),
 				'helps'        => __( 'The Artists URL or webpage', 'indieweb-post-kinds' ),
 				'show_in_edit' => true,

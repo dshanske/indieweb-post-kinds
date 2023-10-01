@@ -316,8 +316,8 @@ class Kind_Fields {
 		$return   = array();
 		$time     = divide_datetime( $datetime );
 		$return[] = sprintf( '<label for="mf2_%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
-		$return[] = sprintf( '<input type="date" name="mf2_%1$s_date" id="mf2_%1$s_date" value="%2$s"/>', $args['name'], ifset( $time['date'] ) );
-		$return[] = sprintf( '<input type="time" name="mf2_%1$s_time" id="mf2_%1$s_time" step="1" value="%2$s"/>', $args['name'], ifset( $time['time'] ) );
+		$return[] = sprintf( '<input type="date" name="mf2_%1$s_date" id="mf2_%1$s_date" value="%2$s"/>', $args['name'], $time['date'] ?? '' );
+		$return[] = sprintf( '<input type="time" name="mf2_%1$s_time" id="mf2_%1$s_time" step="1" value="%2$s"/>', $args['name'], $time['time'] ?? '' );
 		$return[] = sprintf( '<select name="%1s_offset" id="%1$s_offset">', $args['name'] );
 		foreach ( self::get_offset_list() as $offset ) {
 			$return[] = sprintf( '<option value="%1$s"%2$s>%3$s</option>', $offset, selected( $offset, $time['offset'], false ), sprintf( 'GMT%1$s', $offset ) );
@@ -356,7 +356,7 @@ class Kind_Fields {
 		);
 		$return[] = sprintf( '<label for="mf2_%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
 		foreach ( $args['pieces'] as $piece ) {
-			$return[] = sprintf( '<input type="number" name="mf2_%2$s_%1$s" id="mf2_%3$s_%1$s" value="%4$s" step="1" max="%5$s" />', $piece, $args['name'], $args['id'], ifset( $duration['year'], $max[ $piece ] ) );
+			$return[] = sprintf( '<input type="number" name="mf2_%2$s_%1$s" id="mf2_%3$s_%1$s" value="%4$s" step="1" max="%5$s" />', $piece, $args['name'], $args['id'], $duration['year'] ?? '', $max[ $piece ] ) );
 		}
 		$return[] = '</label>';
 		return implode( PHP_EOL, $return );

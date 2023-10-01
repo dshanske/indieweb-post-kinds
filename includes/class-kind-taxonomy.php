@@ -16,57 +16,56 @@ final class Kind_Taxonomy {
 
 		// Add the Correct Archive Title to Kind Archives.
 		if ( version_compare( $wp_version, '5.5', '>' ) ) {
-			add_filter( 'get_the_archive_title', array( static::class, 'kind_archive_title' ), 10 );
+			add_filter( 'get_the_archive_title', array( self::class, 'kind_archive_title' ), 10 );
 		} else {
-			add_filter( 'get_the_archive_title', array( static::class, 'kind_archive_title' ), 10, 3 );
+			add_filter( 'get_the_archive_title', array( self::class, 'kind_archive_title' ), 10, 3 );
 		}
 
-		add_filter( 'get_the_archive_title_prefix', array( static::class, 'kind_archive_prefix' ), 10 );
-		add_filter( 'get_the_archive_description', array( static::class, 'kind_archive_description' ), 10 );
-		add_filter( 'document_title_parts', array( static::class, 'document_title_parts' ), 10 );
+		add_filter( 'get_the_archive_title_prefix', array( self::class, 'kind_archive_prefix' ), 10 );
+		add_filter( 'get_the_archive_description', array( self::class, 'kind_archive_description' ), 10 );
+		add_filter( 'document_title_parts', array( self::class, 'document_title_parts' ), 10 );
 
 		// Add Kind Permalinks.
-		add_filter( 'post_link', array( static::class, 'kind_permalink' ), 10, 3 );
-		add_filter( 'post_type_link', array( static::class, 'kind_permalink' ), 10, 3 );
+		add_filter( 'post_link', array( self::class, 'kind_permalink' ), 10, 3 );
+		add_filter( 'post_type_link', array( self::class, 'kind_permalink' ), 10, 3 );
 
 		// Query Variable to Exclude Kinds from Feed
-		add_filter( 'query_vars', array( static::class, 'query_vars' ) );
-		add_action( 'pre_get_posts', array( static::class, 'kind_filter_query' ) );
-		add_action( 'pre_get_posts', array( static::class, 'kind_photo_filter' ) );
-		add_action( 'pre_get_posts', array( static::class, 'kind_alias_filter' ) );
-		add_action( 'pre_get_posts', array( static::class, 'kind_firehose_query' ), 99 );
+		add_filter( 'query_vars', array( self::class, 'query_vars' ) );
+		add_action( 'pre_get_posts', array( self::class, 'kind_filter_query' ) );
+		add_action( 'pre_get_posts', array( self::class, 'kind_photo_filter' ) );
+		add_action( 'pre_get_posts', array( self::class, 'kind_alias_filter' ) );
+		add_action( 'pre_get_posts', array( self::class, 'kind_firehose_query' ), 99 );
 
 		// Add Dropdown
-		add_action( 'restrict_manage_posts', array( static::class, 'kind_dropdown' ), 10, 2 );
+		add_action( 'restrict_manage_posts', array( self::class, 'kind_dropdown' ), 10, 2 );
 
 		// Add Links to Ping to the Webmention Sender.
-		add_filter( 'webmention_links', array( static::class, 'webmention_links' ), 11, 2 );
+		add_filter( 'webmention_links', array( self::class, 'webmention_links' ), 11, 2 );
 
 		// Add Links to Enclosures if Appropriate
-		add_filter( 'enclosure_links', array( static::class, 'enclosure_links' ), 11, 2 );
+		add_filter( 'enclosure_links', array( self::class, 'enclosure_links' ), 11, 2 );
 
 		// Add Classes to Post.
-		add_filter( 'post_class', array( static::class, 'post_class' ) );
+		add_filter( 'post_class', array( self::class, 'post_class' ) );
 
 		// Trigger Webmention on Change in Post Status.
-		add_filter( 'transition_post_status', array( static::class, 'transition' ), 10, 3 );
+		add_filter( 'transition_post_status', array( self::class, 'transition' ), 10, 3 );
 		// On Post Save Set Post Format
-		add_action( 'save_post', array( static::class, 'post_formats' ), 99, 3 );
+		add_action( 'save_post', array( self::class, 'post_formats' ), 99, 3 );
 
 		// Create hook triggered by change of kind
-		add_action( 'set_object_terms', array( static::class, 'set_object_terms' ), 10, 6 );
+		add_action( 'set_object_terms', array( self::class, 'set_object_terms' ), 10, 6 );
 
-		add_filter( 'single_post_title', array( static::class, 'single_post_title' ), 9, 2 );
-		add_filter( 'the_title', array( static::class, 'the_title' ), 9, 2 );
-		add_filter( 'get_sample_permalink', array( static::class, 'get_sample_permalink' ), 12, 5 );
+		add_filter( 'single_post_title', array( self::class, 'single_post_title' ), 9, 2 );
+		add_filter( 'the_title', array( self::class, 'the_title' ), 9, 2 );
+		add_filter( 'get_sample_permalink', array( self::class, 'get_sample_permalink' ), 12, 5 );
 
-		add_action( 'rest_api_init', array( static::class, 'rest_kind' ) );
+		add_action( 'rest_api_init', array( self::class, 'rest_kind' ) );
 
-		add_filter( 'embed_template_hierarchy', array( static::class, 'embed_template_hierarchy' ) );
-		add_filter( 'template_include', array( static::class, 'template_include' ) );
+		add_filter( 'embed_template_hierarchy', array( self::class, 'embed_template_hierarchy' ) );
+		add_filter( 'template_include', array( self::class, 'template_include' ) );
 
-		add_action( 'rest_api_init', array( static::class, 'register_routes' ) );
-
+		add_action( 'rest_api_init', array( self::class, 'register_routes' ) );
 	}
 
 	/** Template Redirect
@@ -81,7 +80,7 @@ final class Kind_Taxonomy {
 		}
 		// if this is not a request for 'kind_photos'.
 		if ( ! isset( $wp_query->query_vars['kind_photos'] ) ) {
-				  return $template;
+					return $template;
 		}
 		$photo_template = locate_template( 'kind-photos.php' );
 		if ( '' !== $photo_template ) {
@@ -100,7 +99,7 @@ final class Kind_Taxonomy {
 			array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( static::class, 'read' ),
+					'callback'            => array( self::class, 'read' ),
 					'args'                => array(
 						'kind' => array(
 							'required'          => true,
@@ -295,8 +294,8 @@ final class Kind_Taxonomy {
 			'post',
 			'kind',
 			array(
-				'get_callback'    => array( static::class, 'get_post_kind_slug' ),
-				'update_callback' => array( static::class, 'set_rest_post_kind' ),
+				'get_callback'    => array( self::class, 'get_post_kind_slug' ),
+				'update_callback' => array( self::class, 'set_rest_post_kind' ),
 				'schema'          => array(
 					'kind' => __( 'Post Kind', 'indieweb-post-kinds' ),
 					'type' => 'string',
@@ -498,7 +497,7 @@ final class Kind_Taxonomy {
 		// Build a regex to match the feed section of URLs, something like (feed|atom|rss|rss2)/?
 		$feedregex2 = '';
 		foreach ( (array) $wp_rewrite->feeds as $feed_name ) {
-			 $feedregex2 .= $feed_name . '|';
+			$feedregex2 .= $feed_name . '|';
 		}
 
 		$feedregex2 = '(' . trim( $feedregex2, '|' ) . ')';
@@ -553,7 +552,7 @@ final class Kind_Taxonomy {
 			'show_tagcloud'      => true,
 			'show_in_quick_edit' => false,
 			'show_admin_column'  => true,
-			'meta_box_cb'        => array( static::class, 'select_metabox' ),
+			'meta_box_cb'        => array( self::class, 'select_metabox' ),
 			'rewrite'            => true,
 			'query_var'          => true,
 			'default_term'       => array(
@@ -689,7 +688,6 @@ final class Kind_Taxonomy {
 			'index.php?kind_firehose=1',
 			'top'
 		);
-
 	}
 
 	/**
@@ -868,7 +866,7 @@ final class Kind_Taxonomy {
 
 		if ( $prefix ) {
 				$title = sprintf(
-					 /* translators: 1: Title prefix. 2: Title. */
+					/* translators: 1: Title prefix. 2: Title. */
 					_x( '%1$s %2$s', 'archive title', 'indieweb-post-kinds' ),
 					$prefix,
 					'<span>' . $title . '</span>'
@@ -1019,10 +1017,10 @@ final class Kind_Taxonomy {
 	public static function register_post_kind( $slug, $args ) {
 		$kind = new Post_Kind( $slug, $args );
 		// Do not allow reregistering existing kinds
-		if ( isset( static::$kinds[ $slug ] ) ) {
+		if ( isset( self::$kinds[ $slug ] ) ) {
 			return false;
 		}
-		static::$kinds[ $slug ] = $kind;
+		self::$kinds[ $slug ] = $kind;
 		return true;
 	}
 
@@ -1035,8 +1033,8 @@ final class Kind_Taxonomy {
 	 * @return bool|mixed
 	 */
 	public static function get_post_kind_info( $slug ) {
-		if ( isset( static::$kinds[ $slug ] ) ) {
-			return static::$kinds[ $slug ];
+		if ( isset( self::$kinds[ $slug ] ) ) {
+			return self::$kinds[ $slug ];
 		}
 		return false;
 	}
@@ -1053,8 +1051,8 @@ final class Kind_Taxonomy {
 	 * @return bool
 	 */
 	public static function set_post_kind_visibility( $slug, $show = true ) {
-		if ( isset( static::$kinds[ $slug ] ) ) {
-			static::$kinds[ $slug ]->show = ( $show ? true : false );
+		if ( isset( self::$kinds[ $slug ] ) ) {
+			self::$kinds[ $slug ]->show = ( $show ? true : false );
 			return true;
 		}
 		return false;
@@ -1067,7 +1065,7 @@ final class Kind_Taxonomy {
 	 * @return array
 	 */
 	public static function get_kind_list() {
-		return array_keys( static::$kinds );
+		return array_keys( self::$kinds );
 	}
 
 	/**
@@ -1082,12 +1080,12 @@ final class Kind_Taxonomy {
 			return false;
 		}
 		if ( 'all' === $kind ) {
-			return static::$kinds;
+			return self::$kinds;
 		}
-		if ( ! array_key_exists( $kind, static::$kinds ) ) {
+		if ( ! array_key_exists( $kind, self::$kinds ) ) {
 			return false;
 		}
-		$k = static::$kinds[ $kind ];
+		$k = self::$kinds[ $kind ];
 		if ( 'all' === $property ) {
 			return $k;
 		}
