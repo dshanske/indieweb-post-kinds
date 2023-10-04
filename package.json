@@ -3,7 +3,7 @@
     "node": ">= 0.10.0"
   },
   "devDependencies": {
-    "@wordpress/eslint-plugin": "^9.0",
+    "@wordpress/eslint-plugin": "^9.3",
     "grunt": "^1.5.3",
     "grunt-contrib-copy": "~1.0.0",
     "grunt-contrib-sass": "^2.0.0",
