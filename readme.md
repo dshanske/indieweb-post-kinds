@@ -1,10 +1,10 @@
 # Post Kinds #
 **Contributors:** [dshanske](https://profiles.wordpress.org/dshanske)  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.6.5  
+**Stable tag:** 3.7.0  
 **Requires at least:** 4.9.9  
 **Requires PHP:** 7.0  
-**Tested up to:** 6.2  
+**Tested up to:** 6.4  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -45,6 +45,10 @@ responsibilities to responsibly use this data, and to remove information on requ
 2. [Chris Aldrich](http://boffosocko.com) always receives a credit on my plugins due his regular feedback, input, and usage.
 
 ## Upgrade Notice ##
+
+### 3.7.0 ###
+
+This version introduces review posts, but they use an experimental review-of property as a h-entry, not an h-review.
 
 ### 3.6.0 ###
 
@@ -159,6 +163,7 @@ The Response Kinds
  * **RSVP** - A specific type of Reply regarding an event
  * **Check-In** - Identifying you are at a place. To show full location, the Simple Location plugin is recommended as it will display maps.
  * **Issue** - Issue is a special kind of article post that is a reply to typically some source code, though potentially anything at a source control repository.
+ * **Review** - Review is a post evaluating a product, service, or experience.
 
 
 The Passive Kinds
@@ -279,6 +284,11 @@ through future plugin updates.
 
 
 ## Changelog ##
+
+### 3.7.0 ( 2023-11-24 ) ###
+* Introduce rating property, offering 1-5 ratings
+* Introduce review post kind, which uses ratings
+* Extend ratings to Watch, Listen, Read, Eat, and Drink
 
 ### 3.6.5 ( 2023-10-01 ) ###
 * Posts with no Kind will appear even when the firehose filter is enabled

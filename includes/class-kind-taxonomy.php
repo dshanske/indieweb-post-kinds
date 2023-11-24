@@ -257,8 +257,8 @@ final class Kind_Taxonomy {
 				),
 				array(
 					'taxonomy' => 'kind',
-					'operator' => 'NOT EXISTS'
-				)
+					'operator' => 'NOT EXISTS',
+				),
 			)
 		);
 		return $query;

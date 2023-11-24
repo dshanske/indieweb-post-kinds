@@ -588,7 +588,7 @@ class Kind_View {
 		}
 
 		$ret = '';
-		for( $i = $rating; $i > 0; $i-- ) {
+		for ( $i = $rating; $i > 0; $i-- ) {
 			$ret .= '⭐';
 		}
 

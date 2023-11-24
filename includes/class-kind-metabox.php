@@ -268,14 +268,14 @@ class Kind_Metabox {
 	public static function rating_choice( $selected ) {
 		$selected = is_numeric( $selected ) ? intval( $selected ) : 0;
 		$ratings  = array(
-			0         => false,
-			1        => __( 'Very Dissatisfied', 'indieweb-post-kinds' ),
-			2        => __( 'Dissatisfied', 'indieweb-post-kinds' ),
-			3         => __( 'Neutral', 'indieweb-post-kinds' ),
-			4      => __( 'Satisfied', 'indieweb-post-kinds' ),
+			0 => false,
+			1 => __( 'Very Dissatisfied', 'indieweb-post-kinds' ),
+			2 => __( 'Dissatisfied', 'indieweb-post-kinds' ),
+			3 => __( 'Neutral', 'indieweb-post-kinds' ),
+			4 => __( 'Satisfied', 'indieweb-post-kinds' ),
 			5 => __( 'Very Satisfied', 'indieweb-post-kinds' ),
 		);
-		$ret = '';
+		$ret      = '';
 		foreach ( $ratings as $key => $value ) {
 			$ret .= '<option value="' . $key . '"';
 			if ( $selected === $key ) {
