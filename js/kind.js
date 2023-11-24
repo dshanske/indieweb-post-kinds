@@ -213,6 +213,7 @@ function changeSettings() {
 		case 'listen':
 		case 'jam':
 		case 'watch':
+		case 'read':
 		case 'play':
 			hideTitle();
 			showReply();
@@ -240,6 +241,8 @@ function changeSettings() {
 			hideMedia();
 			break;
 		case 'review':
+		case 'drink':
+		case 'eat':
 			showReply();
 			hideTitle();
 			hideTime();
