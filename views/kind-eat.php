@@ -37,9 +37,9 @@ if ( $cite ) {
 	}
 }
 
-<?php if ( $rating ) {
+if ( $rating ) {
 	echo '<data class="p-rating" value="' . $rating . '">' . sprintf( Kind_View::rating_text( $rating ), $url, $title ) . '</data>';
-} ?>
+} 
 
 if ( $photos && ! has_post_thumbnail( get_the_ID() ) ) {
 	$view = new Kind_Media_View( $photos, 'photo' );
