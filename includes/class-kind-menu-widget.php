@@ -11,6 +11,7 @@ class Kind_Menu_Widget extends WP_Widget {
 			array(
 				'classname'   => 'kind_menu_widget',
 				'description' => __( 'A widget that allows you to display a menu of kind archives', 'indieweb-post-kinds' ),
+				'show_instance_in_rest' => true,
 			)
 		);
 	} // end constructor
