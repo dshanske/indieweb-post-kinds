@@ -11,6 +11,7 @@ if ( ! $duration ) {
 		$duration = calculate_duration( $kind_post->get( 'start' ), $kind_post->get( 'end' ) );
 }
 $rsvp = $kind_post->get( 'rsvp', true );
+$rating = $kind_post->get( 'rating', true );
 
 if ( ! $kind ) {
 	return;
@@ -53,12 +54,16 @@ if ( $cite && is_array( $cite ) ) {
 	}
 }
 
-if ( $rsvp ) {
-	echo 'RSVP <span class="p-rsvp">' . $rsvp . '</span>';
-}
-
 // Close Response
 ?>
 </section>
+
+<?php if ( $rsvp && in_array( $kind, array( 'rsvp' ) ) ) {
+	echo 'RSVP <span class="p-rsvp">' . $rsvp . '</span>';
+}
+
+if ( $rating ) {
+	echo '<data class="p-rating" value="' . $rating . '">' . sprintf( Kind_View::rating_text( $rating ), $url, $title ) . '</data>';
+} ?>
 
 <?php

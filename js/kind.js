@@ -15,6 +15,7 @@ function clearPostProperties() {
 		'cite_featured',
 		'cite_publication',
 		'mf2_rsvp',
+		'mf2_rating',
 		'mf2_start_time',
 		'mf2_start_date',
 		'mf2_end_time',
@@ -189,6 +190,7 @@ function changeSettings() {
 			hideTitle();
 			hideReply();
 			hideRSVP();
+			hideRating();
 			hideTime();
 			hideMedia();
 			break;
@@ -196,6 +198,7 @@ function changeSettings() {
 			showTitle();
 			hideReply();
 			hideRSVP();
+			hideRating();
 			hideTime();
 			hideMedia();
 			break;
@@ -203,6 +206,7 @@ function changeSettings() {
 			showTitle();
 			showReply();
 			hideRSVP();
+			hideRating();
 			hideTime();
 			hideMedia();
 			break;
@@ -213,6 +217,7 @@ function changeSettings() {
 			hideTitle();
 			showReply();
 			hideRSVP();
+			showRating();
 			showTime();
 			hideMedia();
 			break;
@@ -222,6 +227,7 @@ function changeSettings() {
 			hideTitle();
 			showReply();
 			hideRSVP();
+			hideRating();
 			showTime();
 			showMedia();
 			break;
@@ -230,6 +236,15 @@ function changeSettings() {
 			hideTitle();
 			hideTime();
 			showRSVP();
+			hideRating();
+			hideMedia();
+			break;
+		case 'review':
+			showReply();
+			hideTitle();
+			hideTime();
+			hideRSVP();
+			showRating();
 			hideMedia();
 			break;
 		default:
@@ -237,6 +252,7 @@ function changeSettings() {
 			hideTime();
 			hideTitle();
 			hideRSVP();
+			hideRating();
 			hideMedia();
 	}
 }
@@ -274,6 +290,14 @@ function showRSVP() {
 
 function hideRSVP() {
 	$( '#rsvp-option' ).addClass( 'hide-if-js' );
+}
+
+function showRating() {
+	$( '#rating-option' ).removeClass( 'hide-if-js' );
+}
+
+function hideRating() {
+	$( '#rating-option' ).addClass( 'hide-if-js' );
 }
 
 function showTime() {

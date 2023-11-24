@@ -258,6 +258,35 @@ class Kind_Metabox {
 	}
 
 	/**
+	 * Render the options for the rating select field.
+	 *
+	 * @access public
+	 *
+	 * @param string $selected Selected Rating choice
+	 * @return string
+	 */
+	public static function rating_choice( $selected ) {
+		$selected = is_numeric( $selected ) ? intval( $selected ) : 0;
+		$ratings  = array(
+			0         => false,
+			1        => __( 'Very Dissatisfied', 'indieweb-post-kinds' ),
+			2        => __( 'Dissatisfied', 'indieweb-post-kinds' ),
+			3         => __( 'Neutral', 'indieweb-post-kinds' ),
+			4      => __( 'Satisfied', 'indieweb-post-kinds' ),
+			5 => __( 'Very Satisfied', 'indieweb-post-kinds' ),
+		);
+		$ret = '';
+		foreach ( $ratings as $key => $value ) {
+			$ret .= '<option value="' . $key . '"';
+			if ( $selected === $key ) {
+				$ret .= ' selected';
+			}
+			$ret .= '>' . $value . '</option>';
+		}
+		return $ret;
+	}
+
+	/**
 	 * Render the options for the RSVP select field.
 	 *
 	 * @access public
@@ -297,6 +326,22 @@ class Kind_Metabox {
 		$string  = '<label for="mf2_rsvp">' . __( 'RSVP', 'indieweb-post-kinds' ) . '</label><br/>';
 		$string .= '<select name="mf2_rsvp" id="mf2_rsvp">';
 		$string .= self::rsvp_choice( $selected );
+		$string .= '</select>';
+		return $string;
+	}
+
+	/**
+	 * Render our rating select input.
+	 *
+	 * @access public
+	 *
+	 * @param string $selected Selected Rating option.
+	 * @return string
+	 */
+	public static function rating_select( $selected ) {
+		$string  = '<label for="mf2_rating">' . __( 'Rating', 'indieweb-post-kinds' ) . '</label><br/>';
+		$string .= '<select name="mf2_rating" id="mf2_rating">';
+		$string .= self::rating_choice( $selected );
 		$string .= '</select>';
 		return $string;
 	}
@@ -420,6 +465,9 @@ class Kind_Metabox {
 		}
 
 		$kind_post->set( 'rsvp', $_POST['mf2_rsvp'] );
+		if ( array_key_exists( 'mf2_rating', $_POST ) && is_numeric( $_POST['mf2_rating'] ) ) {
+			$kind_post->set( 'rating', intval( $_POST['mf2_rating'] ) );
+		}
 
 		if ( isset( $_POST['cite_published_date'] ) || isset( $_POST['published_time'] ) ) {
 			$cite['published'] = build_iso8601_time( sanitize_text_field( $_POST['cite_published_date'] ), sanitize_text_field( $_POST['cite_published_time'] ), sanitize_text_field( $_POST['cite_published_offset'] ) );

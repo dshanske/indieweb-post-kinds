@@ -46,6 +46,9 @@ $cite = $kind_post->normalize_cite( $cite );
 <p class="field-row hide-if-js" id="rsvp-option">
 	<?php echo Kind_Metabox::rsvp_select( $kind_post->get( 'rsvp' ) ); ?>
 </p>
+<p class="field-row hide-if-js" id="rating-option">
+	<?php echo Kind_Metabox::rating_select( $kind_post->get( 'rating' ) ); ?>
+</p>
 <p id="kind-media hide-if-no-js">
 <?php $show_media = ( isset( $cite['url'] ) && in_array( $kind, array( 'photo', 'audio', 'video' ) ) ); ?>
 <div id="kind-media-container" <?php echo ( $show_media ) ? '' : 'class="hidden"'; ?> >

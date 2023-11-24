@@ -573,6 +573,29 @@ class Kind_View {
 	}
 
 	/**
+	 * Returns a requested Rating item.
+	 *
+	 * The returned value will be a printf-ready translated string.
+	 *
+	 * @access
+	 *
+	 * @param int $rating Rating Value.
+	 * @return mixed|string
+	 */
+	public static function rating_text( $rating ) {
+		if ( ! $rating || 0 === $rating ) {
+			return '';
+		}
+
+		$ret = '';
+		for( $i = $rating; $i > 0; $i-- ) {
+			$ret .= '⭐';
+		}
+
+		return $ret;
+	}
+
+	/**
 	 * Returns a requested RSVP option item.
 	 *
 	 * The returned value will be a printf-ready translated string.

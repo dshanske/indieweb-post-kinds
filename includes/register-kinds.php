@@ -1015,6 +1015,22 @@ register_post_kind(
 	)
 );
 
+register_post_kind(
+	'review',
+	array(
+		'singular_name'   => __( 'Review', 'indieweb-post-kinds' ), // Name for one instance of the kind
+		'name'            => __( 'Reviews', 'indieweb-post-kinds' ), // General name for the kind plural
+		'verb'            => __( 'Reviewed', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
+		'property'        => 'review-of', // microformats 2 property
+		'format'          => '', // Post Format that maps to this
+		'description'     => __( 'A review is a post evaluating a product or service, usually involving a written description, sometimes with summary numerical evaluations, also known as just a rating.', 'indieweb-post-kinds' ),
+		'description_url' => 'https://indieweb.org/review',
+		'shortlink'       => 't',
+		'title'           => false, // Should this kind have an explicit title
+		'show'            => true, // Show in Settings
+	)
+);
+
 
 register_post_kind(
 	'acquisition',

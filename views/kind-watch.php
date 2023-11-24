@@ -10,6 +10,7 @@ if ( ! $cite ) {
 $site_name = Kind_View::get_site_name( $cite, $url );
 $title     = Kind_View::get_cite_title( $cite, $url );
 $duration  = $kind_post->get( 'duration', true );
+$rating  = $kind_post->get( 'rating', true );
 if ( ! $duration ) {
 	$duration = calculate_duration( $kind_post->get( 'start' ), $kind_post->get( 'end' ) );
 }
@@ -48,5 +49,10 @@ if ( $cite ) {
 // Close Response
 ?>
 </section>
+
+<?php if ( $rating ) {
+	echo '<data class="p-rating" value="' . $rating . '">' . sprintf( Kind_View::rating_text( $rating ), $url, $title ) . '</data>';
+} ?>
+
 
 <?php
