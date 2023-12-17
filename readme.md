@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** [dshanske](https://profiles.wordpress.org/dshanske)  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 3.7.0  
+**Stable tag:** 3.7.1  
 **Requires at least:** 4.9.9  
 **Requires PHP:** 7.0  
 **Tested up to:** 6.4  
@@ -284,6 +284,9 @@ through future plugin updates.
 
 
 ## Changelog ##
+
+### 3.7.1 ( 2023-12-17 ) ###
+* Fix issue where the brackets for kind in the title were added even when there was no kind
 
 ### 3.7.0 ( 2023-11-24 ) ###
 * Introduce rating property, offering 1-5 ratings
