@@ -422,11 +422,12 @@ final class Kind_Taxonomy {
 		if ( ! is_single() ) {
 			return $title;
 		}
+
 		if ( empty( $title ) ) {
 			$title = self::generate_title( $post );
 		}
 		$post_kind = get_post_kind( $post );
-		if ( get_option( 'kind_title' ) && '' !== $post_kind ) {
+		if ( get_option( 'kind_title' ) && '' !== $post_kind && $post_kind ) {
 			$title = '[' . $post_kind . '] ' . $title;
 		}
 		return $title;
