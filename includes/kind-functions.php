@@ -136,25 +136,31 @@ function kind_src_url_in_content( $content ) {
  * Get a Marketed Up Link to the Post.
  *
  * @param WP_Post|null Post to Display.
+ * @param string|array Classes to add to link
+ * @param string|array Classes to add to the date
  * @return string Marked up link to a post.
  **/
 
-function kind_get_the_link( $post = null, $cls = null ) {
+function kind_get_the_link( $post = null, $cls = null, $date_cls = null ) {
 	$post = get_post( $post );
 	$kind = get_post_kind_slug( $post );
 
 	if ( is_array( $cls ) ) {
 		$cls = implode( ' ', $cls );
 	}
-	$cls         = 'class=' . $cls;
-	$time_string = '<time %1$s datetime="%2$s">%3$s</time>';
+
+	if ( is_array( $date_cls ) ) {
+		$date_cls = implode( ' ', $date_cls );
+	}
+
+	$time_string = '<time class="%3$s" datetime="%1$s">%2$s</time>';
 	$time_string = sprintf(
 		$time_string,
-		esc_attr( $cls ),
 		esc_attr( get_the_date( DATE_W3C, $post ) ),
-		get_the_date( '', $post )
+		get_the_date( '', $post ),
+		$date_cls
 	);
-	return sprintf( '<a href="%2$s">%1$s</a> - %3$s', kind_get_the_title( $post, $kind ), get_the_permalink( $post ), $time_string );
+	return sprintf( '<a class="%4$s" href="%2$s">%1$s</a> - %3$s', kind_get_the_title( $post, $kind ), get_the_permalink( $post ), $time_string, esc_attr( $cls ) );
 }
 
 
