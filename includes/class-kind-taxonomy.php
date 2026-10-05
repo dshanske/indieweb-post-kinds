@@ -11,15 +11,10 @@ final class Kind_Taxonomy {
 	private static $kinds = array(); // Store a Post_Kind class which is a definition of a specific kind
 
 	public static function init() {
-		$wp_version = get_bloginfo( 'version' );
 		require_once plugin_dir_path( __FILE__ ) . '/register-kinds.php';
 
 		// Add the Correct Archive Title to Kind Archives.
-		if ( version_compare( $wp_version, '5.5', '>' ) ) {
-			add_filter( 'get_the_archive_title', array( self::class, 'kind_archive_title' ), 10 );
-		} else {
-			add_filter( 'get_the_archive_title', array( self::class, 'kind_archive_title' ), 10, 3 );
-		}
+		add_filter( 'get_the_archive_title', array( self::class, 'kind_archive_title' ), 10 );
 
 		add_filter( 'get_the_archive_title_prefix', array( self::class, 'kind_archive_prefix' ), 10 );
 		add_filter( 'get_the_archive_description', array( self::class, 'kind_archive_description' ), 10 );
@@ -837,8 +832,7 @@ final class Kind_Taxonomy {
 	 * @return string|void
 	 */
 	public static function kind_archive_title( $title, $original_title = null, $prefix = null ) {
-		$return     = array();
-		$wp_version = get_bloginfo( 'version' );
+		$return = array();
 
 		$prefix = apply_filters( 'get_the_archive_title_prefix', $prefix );
 

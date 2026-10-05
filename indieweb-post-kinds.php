@@ -75,10 +75,6 @@ class Post_Kinds_Plugin {
 		if ( self::is_classicpress() ) {
 			return false;
 		}
-		// Do not show if less than Version 5
-		if ( version_compare( get_bloginfo( 'version' ), '5.0' ) <= 0 ) {
-			return false;
-		}
 		if ( class_exists( 'Classic_Editor' ) ) {
 			return false;
 		}
@@ -128,8 +124,6 @@ class Post_Kinds_Plugin {
 		$cls = get_called_class();
 		load_plugin_textdomain( 'indieweb-post-kinds', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
-		// Add WordPress Compatibility File for Functions Introduced Post 4.9.9.
-		require_once plugin_dir_path( __FILE__ ) . 'includes/compat.php';
 		// Parse this Compat File.
 		require_once plugin_dir_path( __FILE__ ) . 'lib/parse-this/includes/compat-functions.php';
 

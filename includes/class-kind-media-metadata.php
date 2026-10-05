@@ -11,11 +11,8 @@ class Kind_Media_Metadata {
 	 * @access public
 	 */
 	public static function init() {
-		$wp_version = get_bloginfo( 'version' );
 		add_filter( 'wp_generate_attachment_metadata', array( static::class, 'wp_generate_attachment_metadata' ), 33, 2 );
-		if ( version_compare( $wp_version, '5.3', '>' ) ) {
-			add_filter( 'wp_update_attachment_metadata', array( static::class, 'wp_sanitize_media_metadata' ), 9, 2 );
-		}
+		add_filter( 'wp_update_attachment_metadata', array( static::class, 'wp_sanitize_media_metadata' ), 9, 2 );
 		add_action( 'wp_enqueue_scripts', array( static::class, 'enqueue' ) );
 
 		add_action( 'save_post', array( static::class, 'save_post' ), 20 );
@@ -192,12 +189,8 @@ class Kind_Media_Metadata {
 		if ( ! empty( $ids ) ) {
 			return $ids[0];
 		}
-		$id = media_sideload_image( $url, $post_id, $description, 'id' );
-		// Version 5.4 adds this automatically.
-		if ( $id && version_compare( $wp_version, '5.3', '>' ) ) {
-			update_post_meta( $id, '_source_url', $url );
-		}
-		return $id;
+		// Since WordPress 5.4, media_sideload_image() stores _source_url itself.
+		return media_sideload_image( $url, $post_id, $description, 'id' );
 	}
 
 
