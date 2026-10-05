@@ -69,40 +69,71 @@ class Kind_Metabox {
 	}
 
 	/**
-	 * Function to change if a new post should be considered empty.
+	 * Filters whether a post should be considered empty.
+	 *
+	 * Many kinds (likes, bookmarks, reposts, and so on) legitimately have no
+	 * content, title or excerpt, which core would otherwise reject as empty.
 	 *
 	 * @access public
 	 *
 	 * @param bool  $maybe_empty Whether or not the post should be considered empty.
-	 * @param array $postarr     Data for the post to be inserted.
+	 * @param array $postarr     Data for the post to be inserted or updated.
 	 *
 	 * @return bool
 	 */
 	public static function wp_insert_post_empty_content( $maybe_empty, $postarr ) {
-		// Always let updates to trash posts through
-		if ( 'trash' === $postarr['post_status'] ) {
+		// Always let updates to trash posts through.
+		if ( isset( $postarr['post_status'] ) && 'trash' === $postarr['post_status'] ) {
 			return false;
 		}
-		// Let All Micropub Posts through
-		if ( isset( $postarr['meta_input'] ) && isset( $postarr['meta_input']['micropub_auth_response'] ) ) {
+		// Let all Micropub creates through.
+		if ( isset( $postarr['meta_input']['micropub_auth_response'] ) ) {
 			return false;
 		}
-		if ( ! isset( $postarr['tax_input'] ) && ! isset( $postarr['tax_input']['kind'] ) ) {
-			return $maybe_empty;
-		}
-		$kind = get_term_by( 'id', $postarr['tax_input']['kind'][0], 'kind' );
-		$kind = ( $kind instanceof WP_Term ) ? $kind->slug : '';
-		// Use traditional rules for articles
+		$kind = self::kind_from_postarr( $postarr );
+		// Use traditional rules for articles, and for posts without a kind.
 		if ( 'article' === $kind || ! $kind ) {
 			return $maybe_empty;
 		}
-		$keys = array( 'cite_url', 'cite_name', 'cite_summary' );
-		$keys = array_flip( $keys );
+		// An existing post of a kind other than article may have no content,
+		// for example when Micropub updates a like.
+		if ( ! empty( $postarr['ID'] ) ) {
+			return false;
+		}
+		// A new post from the metabox needs something to respond to.
+		$keys = array_flip( array( 'cite_url', 'cite_name', 'cite_summary' ) );
 		$diff = array_filter( array_intersect_key( $_POST, $keys ) );
 		if ( ! empty( $diff ) ) {
 			return false;
 		}
 		return $maybe_empty;
+	}
+
+	/**
+	 * Returns the kind slug for post data being inserted or updated.
+	 *
+	 * The kind comes from tax_input, which the kind metabox submits as a slug and
+	 * other callers may pass as term IDs, or failing that from the existing post.
+	 *
+	 * @access public
+	 *
+	 * @param array $postarr Data for the post to be inserted or updated.
+	 * @return string Kind slug, or an empty string if none.
+	 */
+	public static function kind_from_postarr( $postarr ) {
+		if ( isset( $postarr['tax_input']['kind'] ) ) {
+			$kind = $postarr['tax_input']['kind'];
+			if ( is_array( $kind ) ) {
+				$kind = reset( $kind );
+			}
+			$term = is_numeric( $kind ) ? get_term_by( 'id', (int) $kind, 'kind' ) : get_term_by( 'slug', (string) $kind, 'kind' );
+			return ( $term instanceof WP_Term ) ? $term->slug : '';
+		}
+		if ( ! empty( $postarr['ID'] ) ) {
+			$kind = get_post_kind_slug( $postarr['ID'] );
+			return $kind ? $kind : '';
+		}
+		return '';
 	}
 
 	/**
