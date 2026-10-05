@@ -43,9 +43,6 @@ register_activation_hook( __FILE__, array( 'Post_Kinds_Plugin', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'Post_Kinds_Plugin', 'deactivate' ) );
 add_action( 'upgrader_process_complete', array( 'Post_Kinds_Plugin', 'upgrader_process_complete' ), 10, 2 );
 
-if ( ! file_exists( plugin_dir_path( __FILE__ ) . 'lib/parse-this/parse-this.php' ) ) {
-	add_action( 'admin_notices', array( 'Post_Kinds_Plugin', 'parse_this_error' ) );
-}
 
 if ( Post_Kinds_Plugin::show_editor_error() ) {
 	add_action( 'admin_notices', array( 'Post_Kinds_Plugin', 'classic_editor_error' ) );
@@ -64,10 +61,74 @@ class Post_Kinds_Plugin {
 		Kind_Taxonomy::register();
 	}
 
+	/**
+	 * Outputs an admin notice when Parse This is not available at all.
+	 */
 	public static function parse_this_error() {
-		$class   = 'notice notice-error';
-		$message = __( 'Parse This is not installed. Please advise the developer', 'indieweb-post-kinds' );
-		printf( '<div class="%1$s"><p>%2$s</p></div>', esc_attr( $class ), esc_html( $message ) );
+		wp_admin_notice(
+			esc_html__( 'Parse This is not installed. Please advise the developer', 'indieweb-post-kinds' ),
+			array( 'type' => 'error' )
+		);
+	}
+
+	/**
+	 * Outputs an admin notice when another plugin loaded a copy of Parse This
+	 * older than 2.0.0.
+	 *
+	 * Post Kinds still works, because its bundled 2.0 API is loaded alongside the
+	 * older copy, but the older copy serves the parse-this REST route used by the
+	 * reply metabox.
+	 */
+	public static function parse_this_outdated_notice() {
+		if ( ! current_user_can( 'activate_plugins' ) ) {
+			return;
+		}
+		wp_admin_notice(
+			sprintf(
+				/* translators: %s: Name of the plugin, or path of the file, that loaded the older copy of Parse This. */
+				esc_html__( 'Post Kinds: %s is loading a copy of Parse This older than version 2.0. Post Kinds will keep working, but URL lookups in the post editor use that older copy. Updating that plugin, or installing the Parse This plugin (version 2.0 or later), resolves this.', 'indieweb-post-kinds' ),
+				'<strong>' . esc_html( self::parse_this_source() ) . '</strong>'
+			),
+			array( 'type' => 'warning' )
+		);
+	}
+
+	/**
+	 * Returns whether the loaded copy of Parse This is version 2.0.0 or later.
+	 *
+	 * Copies older than 2.0.0 do not define PARSE_THIS_VERSION.
+	 *
+	 * @return bool
+	 */
+	public static function parse_this_is_current() {
+		return defined( 'PARSE_THIS_VERSION' ) && version_compare( PARSE_THIS_VERSION, '2.0.0', '>=' );
+	}
+
+	/**
+	 * Returns a name for whatever loaded Parse This: the plugin's name, or the
+	 * file's path relative to the content directory if it isn't a plugin.
+	 *
+	 * @return string
+	 */
+	public static function parse_this_source() {
+		if ( ! function_exists( 'parse_this_loader' ) ) {
+			return '';
+		}
+		$file = wp_normalize_path( ( new ReflectionFunction( 'parse_this_loader' ) )->getFileName() );
+		$dir  = trailingslashit( wp_normalize_path( WP_PLUGIN_DIR ) );
+		if ( 0 === strpos( $file, $dir ) ) {
+			$slug = strtok( substr( $file, strlen( $dir ) ), '/' );
+			if ( ! function_exists( 'get_plugins' ) ) {
+				require_once ABSPATH . 'wp-admin/includes/plugin.php';
+			}
+			foreach ( get_plugins() as $basename => $data ) {
+				if ( 0 === strpos( $basename, $slug . '/' ) ) {
+					return $data['Name'];
+				}
+			}
+			return $slug;
+		}
+		return str_replace( trailingslashit( wp_normalize_path( WP_CONTENT_DIR ) ), '', $file );
 	}
 
 	public static function show_editor_error() {
@@ -124,6 +185,9 @@ class Post_Kinds_Plugin {
 		$cls = get_called_class();
 		load_plugin_textdomain( 'indieweb-post-kinds', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
+		// Polyfills for functions newer than the plugin's minimums.
+		require_once plugin_dir_path( __FILE__ ) . 'includes/compat.php';
+
 		// Add Kind Global Functions.
 		require_once plugin_dir_path( __FILE__ ) . '/includes/kind-functions.php';
 
@@ -140,6 +204,24 @@ class Post_Kinds_Plugin {
 		if ( ! function_exists( 'parse_this_loader' ) && file_exists( $parse_this ) ) {
 			require_once $parse_this;
 			parse_this_loader();
+		}
+
+		if ( ! function_exists( 'parse_this_loader' ) ) {
+			add_action( 'admin_notices', array( $cls, 'parse_this_error' ) );
+		} elseif ( ! self::parse_this_is_current() ) {
+			/*
+			 * Another plugin loaded a copy older than 2.0.0. Load the bundled 2.0
+			 * API alongside it: everything in 2.0 is in the ParseThis namespace,
+			 * so it does not clash with the old copy's global names, and both
+			 * versions only load their bundled Mf2\Parser and Masterminds\HTML5
+			 * if those classes do not already exist.
+			 */
+			$includes = plugin_dir_path( __FILE__ ) . 'lib/parse-this/includes/';
+			if ( file_exists( $includes . 'autoload.php' ) ) {
+				require_once $includes . 'autoload.php';
+				require_once $includes . 'functions.php';
+			}
+			add_action( 'admin_notices', array( $cls, 'parse_this_outdated_notice' ) );
 		}
 		$class_load = array(
 			'Plugins', // Plugin Specific Customization
