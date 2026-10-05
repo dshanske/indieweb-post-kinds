@@ -124,21 +124,23 @@ class Post_Kinds_Plugin {
 		$cls = get_called_class();
 		load_plugin_textdomain( 'indieweb-post-kinds', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 
-		// Parse this Compat File.
-		require_once plugin_dir_path( __FILE__ ) . 'lib/parse-this/includes/compat-functions.php';
-
 		// Add Kind Global Functions.
 		require_once plugin_dir_path( __FILE__ ) . '/includes/kind-functions.php';
 
 		// Add Time Global Functions.
 		require_once plugin_dir_path( __FILE__ ) . '/includes/time-functions.php';
 
-		// Parse This
-		require_once plugin_dir_path( __FILE__ ) . 'lib/parse-this/includes/autoload.php';
-		if ( ! class_exists( 'REST_Parse_This' ) ) {
-			require_once plugin_dir_path( __FILE__ ) . 'lib/parse-this/includes/class-rest-parse-this.php';
+		/*
+		 * Parse This. The standalone plugin, if active, has already loaded at
+		 * plugins_loaded priority 9 and defined parse_this_loader(). Otherwise
+		 * load the bundled copy. Its loader sets up the classes, the functions
+		 * and the REST route.
+		 */
+		$parse_this = plugin_dir_path( __FILE__ ) . 'lib/parse-this/parse-this.php';
+		if ( ! function_exists( 'parse_this_loader' ) && file_exists( $parse_this ) ) {
+			require_once $parse_this;
+			parse_this_loader();
 		}
-		require_once plugin_dir_path( __FILE__ ) . 'lib/parse-this/includes/functions.php';
 		$class_load = array(
 			'Plugins', // Plugin Specific Customization
 			'Media_Metadata', // Media Metadata Enhancements
