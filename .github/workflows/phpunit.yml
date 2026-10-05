@@ -4,7 +4,7 @@ on:
     pull_request:
 jobs:
   phpunit:
-    name: PHP ${{ matrix.php }} / WP ${{ matrix.wp }}
+    name: PHP ${{ matrix.php }} / ${{ startsWith( matrix.wp, 'cp-' ) && 'ClassicPress' || 'WP' }} ${{ startsWith( matrix.wp, 'cp-' ) && matrix.cp || matrix.wp }}
     runs-on: ubuntu-latest
     services:
      mysql:
@@ -19,6 +19,14 @@ jobs:
       matrix:
         php: [ '7.4', '8.1', '8.3', '8.4' ]
         wp: [ '6.2', 'latest' ]
+        include:
+          # ClassicPress 2.7.3, installed by install-wp-tests.sh as cp-<version>.
+          - php: '7.4'
+            wp: 'cp-2.7.3'
+            cp: '2.7.3'
+          - php: '8.3'
+            wp: 'cp-2.7.3'
+            cp: '2.7.3'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
