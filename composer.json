@@ -30,7 +30,7 @@
 	"squizlabs/php_codesniffer": "^3.13.6",
         "phpcompatibility/php-compatibility": "^9.3.5",
         "wp-coding-standards/wpcs": "^3.4",
-	"dshanske/parse-this": "dev-trunk",
+	"dshanske/parse-this": "^2.0",
         "phpcompatibility/phpcompatibility-wp": "^2.1.8",
         "php-parallel-lint/php-parallel-lint": "^1.4",
         "wp-cli/i18n-command": "^2.3",
@@ -51,16 +51,13 @@
 		"Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
 	],
 	"copy-files": [
-		"cp -u -r vendor/parse-this/*.php lib/parse-this",
-		"cp -u -r vendor/parse-this/readme.* lib/parse-this",
-		"cp -u -r vendor/parse-this/includes/*.php lib/parse-this/includes",
-		"cp -u -r vendor/parse-this/lib/mf2/*.* lib/parse-this/lib/mf2",
-		"cp -u -r vendor/parse-this/lib/html5 lib/parse-this/lib"
+		"test -f vendor/parse-this/parse-this.php",
+		"rm -rf lib/parse-this",
+		"mkdir -p lib/parse-this",
+		"cp -r vendor/parse-this/parse-this.php vendor/parse-this/readme.txt vendor/parse-this/LICENSE vendor/parse-this/includes vendor/parse-this/js vendor/parse-this/lib lib/parse-this/"
+	],
+	"post-update-cmd": [
+		"@copy-files"
 	]
-    },
-    "post-update-cmd": [
-	"@copy-files"
-    ],
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }

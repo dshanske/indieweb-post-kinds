@@ -1,25 +1,49 @@
 <?php
 /**
- * Parse This HTML class.
- * Originally Derived from the Press This Class with Enhancements.
+ * HTML class.
+ *
+ * @package Parse_This
  */
-class Parse_This_HTML extends Parse_This_Base {
+
+namespace ParseThis;
+
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * Extracts jf2 from HTML pages without microformats.
+ *
+ * Reads Open Graph, Dublin Core, Parse.ly, citation and other meta tags, plus
+ * <title>, <video> and <audio> elements. This is the last fallback in
+ * Parser::parse(). Originally derived from the Press This code removed
+ * from WordPress core.
+ *
+ * @since 1.0.0
+ */
+class HTML extends Base {
 	/**
-	 * Parses _meta, _images, and _links data from the content.
+	 * Parses meta tags and media elements of an HTML document into jf2.
 	 *
-	 * @access public
+	 * @since 1.0.0
+	 *
+	 * @since 2.0.0 Returns an empty array for anything that isn't a DOMDocument,
+	 *              rather than returning that value unchanged. Added $args.
+	 *
+	 * @param \DOMDocument|mixed $doc  Parsed HTML document.
+	 * @param string             $url  URL of the page.
+	 * @param array              $args Optional. Parse arguments (see Parser::parse()).
+	 * @return array jf2 properties, or an empty array if $doc is not a
+	 *               DOMDocument. When $args['debug'] is set, the collected meta tags are
+	 *               included under '_meta'.
 	 */
-	public static function parse( $doc, $url ) {
-		if ( ! $doc ) {
+	public static function parse( $doc, $url, $args = array() ) {
+		// Only HTML has meta tags. Decoded JSON (mf2 or jf2) must not be merged into results as is.
+		if ( ! $doc instanceof \DOMDocument ) {
 			return array();
 		}
-		if ( ! is_object( $doc ) ) {
-			return $doc;
-		}
-		$xpath = new DOMXPath( $doc );
+		$xpath = new \DOMXPath( $doc );
 
 		$meta = array();
-		// Look for OGP properties
+		// Look for OGP properties.
 		foreach ( $xpath->query( '//meta[(@name or @property or @itemprop) and @content]' ) as $tag ) {
 			$meta_name = self::limit_string( $tag->getAttribute( 'property' ) );
 			if ( ! $meta_name ) {
@@ -34,7 +58,7 @@ class Parse_This_HTML extends Parse_This_Base {
 			if ( strlen( $meta_name ) > 200 ) {
 				continue;
 			}
-			// Decode known JSON encoded properties
+			// Decode known JSON encoded properties.
 			if ( 'parsely-metadata' === $meta_name ) {
 				$json = json_decode( $meta_value, true );
 				if ( is_array( $json ) ) {
@@ -56,7 +80,10 @@ class Parse_This_HTML extends Parse_This_Base {
 			$meta = self::set( $meta, $meta_name, $meta_value );
 		}
 
-		$meta['title'] = trim( $xpath->query( '//title' )->item( 0 )->textContent );
+		$title = $xpath->query( '//title' )->item( 0 );
+		if ( $title ) {
+			$meta['title'] = trim( $title->textContent ); // phpcs:ignore
+		}
 		$meta          = self::parse_meta( $meta );
 		if ( isset( $meta['og'] ) ) {
 			$meta['og'] = self::parse_meta( $meta['og'] );
@@ -69,7 +96,7 @@ class Parse_This_HTML extends Parse_This_Base {
 			foreach ( $xpath->query( '//video' ) as $video ) {
 				$src = $video->getAttribute( 'src' );
 				if ( ! empty( $src ) ) {
-					$videos = $src;
+					$videos[] = $src;
 				}
 			}
 			$jf2['video'] = array_unique( $videos );
@@ -156,14 +183,28 @@ class Parse_This_HTML extends Parse_This_Base {
 			if ( in_array( $extension, $video_extensions, true ) ) {
 				$videos[] = $url;
 			}
-		} */
+		}
+		*/
 
-		if ( WP_DEBUG ) {
+		if ( ! empty( $args['debug'] ) ) {
 			$jf2['_meta'] = $meta;
 		}
 		return array_filter( $jf2 );
 	}
 
+	/**
+	 * Maps collected meta tag values to jf2 properties.
+	 *
+	 * Open Graph takes precedence, then Dublin Core, then citation_*, Parse.ly
+	 * and generic tags. The og:type value selects the jf2 type: article becomes
+	 * an entry, profile a card, and book, music.song and video types a cite.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $meta Meta values as grouped by parse_meta(), keyed by prefix
+	 *                    (og, article, dc, music, video, ...) or by plain name.
+	 * @return array jf2 properties.
+	 */
 	public static function meta_to_jf2( $meta ) {
 		if ( empty( $meta ) ) {
 			return array();
@@ -184,7 +225,7 @@ class Parse_This_HTML extends Parse_This_Base {
 				if ( is_string( $image ) ) {
 					$jf2['featured'] = $image;
 				} elseif ( is_array( $image ) ) {
-					$jf2['featured'] = ifset( $image[0], ifset( $image['secure_url'] ) );
+					$jf2['featured'] = $image[0] ?? $image['secure_url'] ?? null;
 				}
 			}
 			if ( isset( $meta['og']['site_name'] ) ) {
@@ -195,8 +236,8 @@ class Parse_This_HTML extends Parse_This_Base {
 				if ( is_string( $video ) ) {
 					$jf2['video'] = $video;
 				} elseif ( is_array( $video ) ) {
-					$jf2['video']    = ifset( $video['url'], ifset( $video[0] ) );
-					$jf2['category'] = ifset( $video['tag'] );
+					$jf2['video']    = $video['url'] ?? $video[0] ?? null;
+					$jf2['category'] = $video['tag'] ?? null;
 				}
 			}
 			if ( isset( $meta['og']['audio'] ) ) {
@@ -208,7 +249,7 @@ class Parse_This_HTML extends Parse_This_Base {
 			if ( isset( $meta['og']['longitude'] ) ) {
 				$jf2['location'] = array(
 					'longitude' => $meta['og']['longitude'],
-					'latitude'  => $meta['og']['longitude'],
+					'latitude'  => $meta['og']['latitude'] ?? null,
 				);
 			}
 			if ( isset( $meta['og']['type'] ) ) {
@@ -221,22 +262,22 @@ class Parse_This_HTML extends Parse_This_Base {
 				}
 				if ( 'article' === $type ) {
 					$jf2['type'] = 'entry';
-					$published   = ifset( $meta['article']['published_time'], ifset( $meta['article']['published'] ) );
+					$published   = $meta['article']['published_time'] ?? $meta['article']['published'] ?? null;
 					if ( $published ) {
 						$jf2['published'] = normalize_iso8601( $published );
 					}
-					$modified = ifset( $meta['article']['modified_time'], ifset( $meta['article']['modified'] ) );
+					$modified = $meta['article']['modified_time'] ?? $meta['article']['modified'] ?? null;
 					if ( $modified ) {
 						$jf2['modified'] = normalize_iso8601( $modified );
 					}
-					$jf2['category'] = ifset( $meta['article']['tag'] );
+					$jf2['category'] = $meta['article']['tag'] ?? null;
 				}
 				if ( 'book' === $type ) {
 					$jf2['type'] = 'cite';
 					if ( isset( $meta['book']['isbn'] ) ) {
 						$jf2['uid'] = $meta['book']['isbn'];
 					}
-					if ( isset( $meta['release_date'] ) ) {
+					if ( isset( $meta['book']['release_date'] ) ) {
 						$jf2['release_date'] = $meta['book']['release_date'];
 					}
 				}
@@ -331,8 +372,8 @@ class Parse_This_HTML extends Parse_This_Base {
 		}
 
 		if ( ! isset( $jf2['latitude'] ) && isset( $meta['playfoursquare'] ) ) {
-			$jf2['latitude']  = ifset( $meta['playfoursquare']['location:latitude'] );
-			$jf2['longitude'] = ifset( $meta['playfoursquare']['location:longitude'] );
+			$jf2['latitude']  = $meta['playfoursquare']['location:latitude'] ?? null;
+			$jf2['longitude'] = $meta['playfoursquare']['location:longitude'] ?? null;
 		}
 
 		if ( ! isset( $jf2['duration'] ) && isset( $meta['duration'] ) ) {
@@ -347,7 +388,7 @@ class Parse_This_HTML extends Parse_This_Base {
 			}
 		}
 
-		// If Site Name is not set use domain name less www
+		// If Site Name is not set use domain name less www.
 		if ( ! isset( $jf2['publication'] ) && isset( $jf2['url'] ) ) {
 			$jf2['publication'] = preg_replace( '/^www\./', '', wp_parse_url( $jf2['url'], PHP_URL_HOST ) );
 		}
@@ -365,6 +406,18 @@ class Parse_This_HTML extends Parse_This_Base {
 		return $jf2;
 	}
 
+	/**
+	 * Groups prefixed meta names into nested arrays.
+	 *
+	 * For example og:title and og:image become $return['og']['title'] and
+	 * $return['og']['image']. Names separated with a dot (DC.Title) are grouped
+	 * the same way. Unprefixed names are kept at the top level.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $meta Meta values keyed by their full name.
+	 * @return array Grouped meta values.
+	 */
 	public static function parse_meta( $meta ) {
 		$return = array();
 		if ( isset( $meta ) && is_array( $meta ) ) {
@@ -400,5 +453,4 @@ class Parse_This_HTML extends Parse_This_Base {
 		}
 		return $return;
 	}
-
 }
