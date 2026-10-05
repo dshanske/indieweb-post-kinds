@@ -3,7 +3,8 @@
 class MicropubTest extends WP_UnitTestCase {
 	const ENTRY = 'https://example.com/2026/01/01/an-entry/';
 	const HOME  = 'https://example.com/';
-	const DOWN  = 'https://unreachable.example.com/post';
+	// Resolves in DNS (wp_http_validate_url() checks), but the mock fails the request.
+	const DOWN  = 'https://example.net/down';
 	const GONE  = 'https://example.com/missing/';
 	const JSON  = 'https://example.com/data.json';
 
