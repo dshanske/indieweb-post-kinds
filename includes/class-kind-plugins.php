@@ -17,15 +17,38 @@ class Kind_Plugins {
 	const ENRICH_EVENT = 'post_kinds_enrich_citation';
 
 	/**
-	 * How many times a citation is parsed, counting the attempt during the request.
+	 * How many times a citation is parsed after temporary failures, counting the
+	 * attempt during the request.
 	 *
 	 * @var int
 	 */
 	const ENRICH_ATTEMPTS = 3;
 
 	/**
-	 * Citation URLs from the current Micropub request that could not be parsed
-	 * in time, as arrays of property and URL, waiting for the post ID.
+	 * Post meta holding the log of citation parsing outcomes for a post.
+	 *
+	 * @var string
+	 */
+	const LOG_META = '_kind_citation_log';
+
+	/**
+	 * Post meta holding the post's citation status: retrying or failed. It is
+	 * removed when no citation is retrying or failed.
+	 *
+	 * @var string
+	 */
+	const STATUS_META = '_kind_citation_status';
+
+	/**
+	 * How many log entries are kept per post.
+	 *
+	 * @var int
+	 */
+	const LOG_LIMIT = 20;
+
+	/**
+	 * Citation URLs from the current Micropub request that could not be parsed,
+	 * as arrays of property, URL and WP_Error, waiting for the post ID.
 	 *
 	 * @var array[]
 	 */
@@ -229,14 +252,12 @@ class Kind_Plugins {
 					continue;
 				}
 				// Keep the client waiting only briefly: a short timeout and no follow-up
-				// requests. A citation that fails for a temporary reason is retried in
-				// the background once the post exists (see schedule_enrichment()).
+				// requests. Failures are logged, and retried in the background where
+				// worthwhile, once the post exists (see schedule_enrichment()).
 				$cite = self::parse_citation( $value, self::request_parse_args() );
 				if ( is_wp_error( $cite ) ) {
 					self::report_failure( $value, $cite );
-					if ( self::is_temporary_failure( $cite ) ) {
-						self::$pending[] = array( $property, $value );
-					}
+					self::$pending[] = array( $property, $value, $cite );
 					continue;
 				}
 				$input['properties'][ $property ][ $i ] = $cite;
@@ -350,20 +371,82 @@ class Kind_Plugins {
 	}
 
 	/**
-	 * Whether a parse failure is worth retrying later: a connection problem or
-	 * timeout, a server error, or rate limiting. Pages that are missing, private
-	 * or not parseable are not retried.
+	 * Classifies a parse failure to decide whether to retry it.
 	 *
 	 * @param WP_Error $error Parse failure.
-	 * @return bool
+	 * @return string One of:
+	 *                'temporary'   A connection problem or timeout, a server error or rate limiting.
+	 *                'unavailable' The page was missing or refused (HTTP 404, 401 or 403), which
+	 *                              may be an outage or a configuration problem on the cited site.
+	 *                'permanent'   Anything else, such as content that cannot be parsed.
 	 */
-	public static function is_temporary_failure( $error ) {
+	public static function failure_type( $error ) {
 		if ( 'http_request_failed' === $error->get_error_code() ) {
-			return true;
+			return 'temporary';
 		}
+		$code = self::failure_response_code( $error );
+		if ( 429 === $code || $code >= 500 ) {
+			return 'temporary';
+		}
+		if ( in_array( $code, array( 401, 403, 404 ), true ) ) {
+			return 'unavailable';
+		}
+		return 'permanent';
+	}
+
+	/**
+	 * Returns the HTTP status code of a parse failure, if there was one.
+	 *
+	 * @param WP_Error $error Parse failure.
+	 * @return int HTTP status code, or 0.
+	 */
+	private static function failure_response_code( $error ) {
 		$data = $error->get_error_data();
-		$code = is_array( $data ) && isset( $data['response_code'] ) ? (int) $data['response_code'] : 0;
-		return 429 === $code || $code >= 500;
+		return is_array( $data ) && isset( $data['response_code'] ) ? (int) $data['response_code'] : 0;
+	}
+
+	/**
+	 * Returns how long to wait before retrying a failed citation, if at all.
+	 *
+	 * Temporary failures are retried after a minute, then after 15 minutes, up
+	 * to ENRICH_ATTEMPTS attempts in all. A missing or refused page is retried
+	 * once, after some hours, in case the cited site was down or misconfigured.
+	 * Other failures are not retried.
+	 *
+	 * @param int      $post_id Post ID.
+	 * @param string   $url     Cited URL.
+	 * @param WP_Error $error   The failure.
+	 * @param int      $attempt Which attempt failed.
+	 * @return int Seconds to wait, or 0 for no retry.
+	 */
+	public static function retry_delay( $post_id, $url, $error, $attempt ) {
+		switch ( self::failure_type( $error ) ) {
+			case 'temporary':
+				if ( $attempt >= self::ENRICH_ATTEMPTS ) {
+					return 0;
+				}
+				return 1 === $attempt ? MINUTE_IN_SECONDS : 15 * MINUTE_IN_SECONDS;
+			case 'unavailable':
+				// Only once per citation.
+				foreach ( self::get_citation_log( $post_id ) as $entry ) {
+					if ( $url === $entry['url'] && 'unavailable' === $entry['type'] ) {
+						return 0;
+					}
+				}
+				/**
+				 * Filters how long to wait before retrying, once, a citation whose page
+				 * was missing or refused (HTTP 404, 401 or 403).
+				 *
+				 * @since 4.0.0
+				 *
+				 * @param int      $delay Delay in seconds. Default 6 hours.
+				 * @param string   $url   Cited URL.
+				 * @param WP_Error $error The failure.
+				 */
+				return max( 0, (int) apply_filters( 'post_kinds_micropub_unavailable_retry_delay', 6 * HOUR_IN_SECONDS, $url, $error ) );
+			default:
+				return 0;
+		}
 	}
 
 	/**
@@ -380,8 +463,8 @@ class Kind_Plugins {
 	}
 
 	/**
-	 * Schedules background parsing for citations that could not be parsed during
-	 * a Micropub create request, now that the post exists.
+	 * Logs and, where worthwhile, schedules a retry for citations that could not
+	 * be parsed during a Micropub create request, now that the post exists.
 	 *
 	 * @param array      $input   Micropub request.
 	 * @param array|null $wp_args Arguments of the created or updated post.
@@ -393,24 +476,29 @@ class Kind_Plugins {
 			return;
 		}
 		foreach ( $pending as $citation ) {
-			self::schedule_retry( (int) $wp_args['ID'], $citation[0], $citation[1], 2 );
+			self::handle_failure( (int) $wp_args['ID'], $citation[0], $citation[1], 1, $citation[2] );
 		}
 	}
 
 	/**
-	 * Schedules one background parse of a citation.
+	 * Logs a failed attempt and schedules a retry if one is worthwhile.
 	 *
-	 * @param int    $post_id  Post ID.
-	 * @param string $property Micropub property, such as in-reply-to.
-	 * @param string $url      Cited URL.
-	 * @param int    $attempt  Which attempt this will be, starting at 2.
+	 * @param int      $post_id  Post ID.
+	 * @param string   $property Micropub property, such as in-reply-to.
+	 * @param string   $url      Cited URL.
+	 * @param int      $attempt  Which attempt failed.
+	 * @param WP_Error $error    The failure.
 	 */
-	private static function schedule_retry( $post_id, $property, $url, $attempt ) {
-		// Wait a minute, then 15 minutes, then an hour, and so on.
-		$delay = 2 === $attempt ? MINUTE_IN_SECONDS : 15 * MINUTE_IN_SECONDS * ( 4 ** ( $attempt - 3 ) );
-		$args  = array( $post_id, $property, $url, $attempt );
-		if ( ! wp_next_scheduled( self::ENRICH_EVENT, $args ) ) {
-			wp_schedule_single_event( time() + $delay, self::ENRICH_EVENT, $args );
+	private static function handle_failure( $post_id, $property, $url, $attempt, $error ) {
+		// Work out the delay before logging, so the log holds only earlier failures.
+		$delay    = self::retry_delay( $post_id, $url, $error, $attempt );
+		$retry_at = $delay ? time() + $delay : 0;
+		self::log_outcome( $post_id, $property, $url, $attempt, $error, $retry_at );
+		if ( $retry_at ) {
+			$args = array( $post_id, $property, $url, $attempt + 1 );
+			if ( ! wp_next_scheduled( self::ENRICH_EVENT, $args ) ) {
+				wp_schedule_single_event( $retry_at, self::ENRICH_EVENT, $args );
+			}
 		}
 	}
 
@@ -433,18 +521,103 @@ class Kind_Plugins {
 		$values = get_post_meta( $post_id, $key, true );
 		$index  = is_array( $values ) ? array_search( $url, $values, true ) : false;
 		if ( false === $index ) {
+			self::log_outcome( $post_id, $property, $url, $attempt, 'skipped', 0 );
 			return;
 		}
 		$cite = self::parse_citation( $url );
 		if ( is_wp_error( $cite ) ) {
 			self::report_failure( $url, $cite );
-			if ( self::is_temporary_failure( $cite ) && $attempt < self::ENRICH_ATTEMPTS ) {
-				self::schedule_retry( $post_id, $property, $url, $attempt + 1 );
-			}
+			self::handle_failure( $post_id, $property, $url, $attempt, $cite );
 			return;
 		}
 		$values[ $index ] = $cite;
 		update_post_meta( $post_id, $key, $values );
+		self::log_outcome( $post_id, $property, $url, $attempt, 'enriched', 0 );
+	}
+
+	/**
+	 * Returns the log of citation parsing outcomes for a post, oldest first.
+	 *
+	 * Each entry is an array with these keys:
+	 * - time          Unix timestamp of the attempt.
+	 * - property      Micropub property, such as in-reply-to.
+	 * - url           Cited URL.
+	 * - attempt       Attempt number; 1 is the attempt during the Micropub request.
+	 * - result        'enriched', 'failed', or 'skipped' (the citation was edited since).
+	 * - type          For failures: 'temporary', 'unavailable' or 'permanent'. Otherwise empty.
+	 * - code          For failures: the WP_Error code. Otherwise empty.
+	 * - response_code For failures: the HTTP status code, or 0.
+	 * - message       For failures: the error message. Otherwise empty.
+	 * - retry         Unix timestamp of the scheduled retry, or 0 if none.
+	 *
+	 * @param int $post_id Post ID.
+	 * @return array[] Log entries.
+	 */
+	public static function get_citation_log( $post_id ) {
+		$log = get_post_meta( $post_id, self::LOG_META, true );
+		return is_array( $log ) ? $log : array();
+	}
+
+	/**
+	 * Adds an outcome to a post's citation log and updates its citation status.
+	 *
+	 * @param int             $post_id  Post ID.
+	 * @param string          $property Micropub property.
+	 * @param string          $url      Cited URL.
+	 * @param int             $attempt  Attempt number.
+	 * @param WP_Error|string $result   The failure, or 'enriched' or 'skipped'.
+	 * @param int             $retry_at Timestamp of the scheduled retry, or 0.
+	 */
+	private static function log_outcome( $post_id, $property, $url, $attempt, $result, $retry_at ) {
+		$failed = is_wp_error( $result );
+		$entry  = array(
+			'time'          => time(),
+			'property'      => $property,
+			'url'           => $url,
+			'attempt'       => (int) $attempt,
+			'result'        => $failed ? 'failed' : $result,
+			'type'          => $failed ? self::failure_type( $result ) : '',
+			'code'          => $failed ? $result->get_error_code() : '',
+			'response_code' => $failed ? self::failure_response_code( $result ) : 0,
+			'message'       => $failed ? $result->get_error_message() : '',
+			'retry'         => (int) $retry_at,
+		);
+		$log    = self::get_citation_log( $post_id );
+		$log[]  = $entry;
+		$log    = array_slice( $log, -self::LOG_LIMIT );
+		update_post_meta( $post_id, self::LOG_META, $log );
+
+		// The status reflects the latest outcome for each cited URL.
+		$latest = array();
+		foreach ( $log as $item ) {
+			$latest[ $item['url'] ] = $item;
+		}
+		$status = '';
+		foreach ( $latest as $item ) {
+			if ( 'failed' !== $item['result'] ) {
+				continue;
+			}
+			if ( ! $item['retry'] ) {
+				$status = 'failed';
+				break;
+			}
+			$status = 'retrying';
+		}
+		if ( $status ) {
+			update_post_meta( $post_id, self::STATUS_META, $status );
+		} else {
+			delete_post_meta( $post_id, self::STATUS_META );
+		}
+
+		/**
+		 * Fires after each attempt to parse a Micropub citation.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param array $entry   The log entry. See Kind_Plugins::get_citation_log().
+		 * @param int   $post_id Post ID.
+		 */
+		do_action( 'post_kinds_citation_enrichment', $entry, $post_id );
 	}
 
 	/**

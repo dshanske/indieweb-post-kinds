@@ -7,6 +7,7 @@ class MicropubTest extends WP_UnitTestCase {
 	const DOWN  = 'https://example.net/down';
 	const GONE  = 'https://example.com/missing/';
 	const JSON  = 'https://example.com/data.json';
+	const IMAGE = 'https://example.com/picture.png';
 
 	/**
 	 * Timeouts the mocked requests were made with, keyed by URL.
@@ -30,7 +31,23 @@ class MicropubTest extends WP_UnitTestCase {
 	 * Serves fixed pages instead of making network requests.
 	 */
 	public function mock_http( $pre, $args, $url ) {
+		// A response supplied by an earlier filter (in a test) wins.
+		if ( false !== $pre ) {
+			return $pre;
+		}
 		$this->timeouts[ $url ] = isset( $args['timeout'] ) ? $args['timeout'] : null;
+		if ( self::IMAGE === $url ) {
+			return array(
+				'headers'  => array( 'content-type' => 'image/png' ),
+				'body'     => 'not really a png',
+				'response' => array(
+					'code'    => 200,
+					'message' => 'OK',
+				),
+				'cookies'  => array(),
+				'filename' => null,
+			);
+		}
 		if ( self::JSON === $url ) {
 			return array(
 				'headers'  => array( 'content-type' => 'application/json' ),
@@ -192,15 +209,96 @@ class MicropubTest extends WP_UnitTestCase {
 		$this->assertNotFalse( wp_next_scheduled( Kind_Plugins::ENRICH_EVENT, array( $post, 'in-reply-to', self::DOWN, 2 ) ) );
 	}
 
-	public function test_permanent_failure_is_not_retried() {
-		$post = self::factory()->post->create();
+	/**
+	 * Runs a Micropub create for one citation and the after_micropub step,
+	 * capturing the failure notices.
+	 */
+	private function create_with_citation( $property, $url ) {
+		$post = self::factory()->post->create( array( 'meta_input' => array( 'mf2_' . $property => array( $url ) ) ) );
 		$this->capture_notices(
-			function () use ( $post ) {
-				$input = Kind_Plugins::micropub_parse( $this->create_request( array( 'in-reply-to' => array( self::GONE ) ) ) );
+			function () use ( $post, $property, $url ) {
+				$input = Kind_Plugins::micropub_parse( $this->create_request( array( $property => array( $url ) ) ) );
 				Kind_Plugins::schedule_enrichment( $input, array( 'ID' => $post ) );
 			}
 		);
-		$this->assertFalse( wp_next_scheduled( Kind_Plugins::ENRICH_EVENT, array( $post, 'in-reply-to', self::GONE, 2 ) ) );
+		return $post;
+	}
+
+	public function test_missing_page_is_retried_once_after_hours() {
+		$post = $this->create_with_citation( 'in-reply-to', self::GONE );
+		$next = wp_next_scheduled( Kind_Plugins::ENRICH_EVENT, array( $post, 'in-reply-to', self::GONE, 2 ) );
+		$this->assertNotFalse( $next );
+		$this->assertGreaterThanOrEqual( time() + 6 * HOUR_IN_SECONDS - 60, $next );
+
+		// The retry also finds the page missing: no further retry.
+		$this->capture_notices(
+			function () use ( $post ) {
+				Kind_Plugins::enrich_citation( $post, 'in-reply-to', self::GONE, 2 );
+			}
+		);
+		$this->assertFalse( wp_next_scheduled( Kind_Plugins::ENRICH_EVENT, array( $post, 'in-reply-to', self::GONE, 3 ) ) );
+		$this->assertSame( 'failed', get_post_meta( $post, Kind_Plugins::STATUS_META, true ) );
+	}
+
+	public function test_unavailable_retry_delay_is_filterable() {
+		$delay = function () {
+			return HOUR_IN_SECONDS;
+		};
+		add_filter( 'post_kinds_micropub_unavailable_retry_delay', $delay );
+		$post = $this->create_with_citation( 'in-reply-to', self::GONE );
+		remove_filter( 'post_kinds_micropub_unavailable_retry_delay', $delay );
+		$next = wp_next_scheduled( Kind_Plugins::ENRICH_EVENT, array( $post, 'in-reply-to', self::GONE, 2 ) );
+		$this->assertLessThanOrEqual( time() + HOUR_IN_SECONDS, $next );
+	}
+
+	public function test_unparseable_content_is_not_retried() {
+		$post = $this->create_with_citation( 'bookmark-of', self::IMAGE );
+		$this->assertFalse( wp_next_scheduled( Kind_Plugins::ENRICH_EVENT, array( $post, 'bookmark-of', self::IMAGE, 2 ) ) );
+		$log = Kind_Plugins::get_citation_log( $post );
+		$this->assertSame( 'permanent', $log[0]['type'] );
+		$this->assertSame( 'failed', get_post_meta( $post, Kind_Plugins::STATUS_META, true ) );
+	}
+
+	public function test_failures_are_logged_with_details() {
+		$entries = array();
+		$capture = function ( $entry ) use ( &$entries ) {
+			$entries[] = $entry;
+		};
+		add_action( 'post_kinds_citation_enrichment', $capture );
+		$post = $this->create_with_citation( 'like-of', self::GONE );
+		remove_action( 'post_kinds_citation_enrichment', $capture );
+
+		$log = Kind_Plugins::get_citation_log( $post );
+		$this->assertCount( 1, $log );
+		$this->assertSame( $log, $entries );
+		$entry = $log[0];
+		$this->assertSame( 'like-of', $entry['property'] );
+		$this->assertSame( self::GONE, $entry['url'] );
+		$this->assertSame( 1, $entry['attempt'] );
+		$this->assertSame( 'failed', $entry['result'] );
+		$this->assertSame( 'unavailable', $entry['type'] );
+		$this->assertSame( 'not_found', $entry['code'] );
+		$this->assertSame( 404, $entry['response_code'] );
+		$this->assertNotEmpty( $entry['message'] );
+		$this->assertGreaterThan( time(), $entry['retry'] );
+		$this->assertSame( 'retrying', get_post_meta( $post, Kind_Plugins::STATUS_META, true ) );
+	}
+
+	public function test_successful_retry_clears_the_status() {
+		$post = $this->create_with_citation( 'in-reply-to', self::DOWN );
+		$this->assertSame( 'retrying', get_post_meta( $post, Kind_Plugins::STATUS_META, true ) );
+
+		// The site is back: serve the entry for the same URL.
+		$serve = function ( $pre, $args, $url ) {
+			return self::DOWN === $url ? $this->mock_http( $pre, $args, self::ENTRY ) : $pre;
+		};
+		add_filter( 'pre_http_request', $serve, 5, 3 );
+		Kind_Plugins::enrich_citation( $post, 'in-reply-to', self::DOWN, 2 );
+		remove_filter( 'pre_http_request', $serve, 5 );
+
+		$log = Kind_Plugins::get_citation_log( $post );
+		$this->assertSame( 'enriched', end( $log )['result'] );
+		$this->assertSame( '', get_post_meta( $post, Kind_Plugins::STATUS_META, true ) );
 	}
 
 	public function test_background_parse_replaces_the_url() {
@@ -216,6 +314,8 @@ class MicropubTest extends WP_UnitTestCase {
 		$post   = self::factory()->post->create( array( 'meta_input' => array( 'mf2_in-reply-to' => $edited ) ) );
 		Kind_Plugins::enrich_citation( $post, 'in-reply-to', self::ENTRY, 2 );
 		$this->assertSame( $edited, get_post_meta( $post, 'mf2_in-reply-to', true ) );
+		$log = Kind_Plugins::get_citation_log( $post );
+		$this->assertSame( 'skipped', end( $log )['result'] );
 	}
 
 	public function test_background_retries_stop_after_the_last_attempt() {
