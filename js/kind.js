@@ -1,6 +1,9 @@
+/* global PKAPI, moment, wp */
+/* eslint-disable no-alert -- The metabox uses alert() and confirm() for feedback by design. */
 jQuery( document ).ready( function( $ ) {
-	changeSettings();
+	var KindWindow;
 
+	changeSettings();
 
 function clearPostProperties() {
 	var fieldIds = [
@@ -43,13 +46,6 @@ function clearPostProperties() {
 
 }
 
-function addhttp( url ) {
-	if ( ! /^(?:f|ht)tps?\:\/\//.test( url ) ) {
-		url = 'http://' + url;
-	}
-	return url;
-}
-
 function showLoadingSpinner() {
 	$( '#replybox-meta' ).addClass( 'is-loading' );
 }
@@ -64,11 +60,7 @@ function checkUrl( url ) {
     //regular expression for URL
     var pattern = /^(http|https)?:\/\/[a-zA-Z0-9-\.]+\.[a-z]{2,4}/;
 
-    if ( pattern.test( url ) ) {
-        return true;
-    } else {
-        return false;
-    }
+    return pattern.test( url );
 }
 
 function getLinkPreview() {
@@ -87,14 +79,12 @@ function getLinkPreview() {
 		},
 		data: {
 			url: $( '#cite_url' ).val(),
-			kind: $( 'input[name=\'tax_input[kind]\']:checked' ).val(),
 			follow: true
 		},
 		success: function( response ) {
-			var published;
-			var updated;
+			var published, updated, duration;
 			if ( 'undefined' === typeof response ) {
-				alert( 'Error: Unable to Retrieve' );
+				alert( PKAPI.error_message );
 				return;
 			}
 			if ( 'message' in response ) {
@@ -105,19 +95,19 @@ function getLinkPreview() {
 				$( '#cite_name' ).val( response.name );
 			}
 			if ( 'published' in response ) {
-				var published = moment.parseZone( response.published );
+				published = moment.parseZone( response.published );
 				$( '#cite_published_date' ).val( published.format( 'YYYY-MM-DD' ) ) ;
 				$( '#cite_published_time' ).val( published.format( 'HH:mm:ss' ) ) ;
 				$( '#cite_published_offset' ).val( published.format( 'Z' ) );
 			}
 			if ( 'updated' in response ) {
-				var updated = moment.parseZone( response.updated );
+				updated = moment.parseZone( response.updated );
 				$( '#cite_updated_date' ).val( updated.format( 'YYYY-MM-DD' ) ) ;
 				$( '#cite_updated_time' ).val( updated.format( 'HH:mm:ss' ) ) ;
 				$( '#cite_updated_offset' ).val( updated.format( 'Z' ) );
 			}
 			if ( 'duration' in response ) {
-				var duration = moment.duration( response.duration);
+				duration = moment.duration( response.duration );
 				$( '#duration_years' ).val( duration.years() );
 				$( '#duration_months' ).val( duration.months() );
 				$( '#duration_days' ).val( duration.days() );
@@ -132,7 +122,7 @@ function getLinkPreview() {
 			if ( 'featured' in response ) {
 				$( '#cite_featured' ).val( response.featured ) ;
 			}
-			if ( ( 'author' in response ) && ( 'string' != typeof response.author ) ) {
+			if ( ( 'author' in response ) && ( 'string' !== typeof response.author ) ) {
 				if ( 'name' in response.author ) {
 					if ( 'string' === typeof response.author.name ) {
 						$( '#cite_author_name' ).val( response.author.name );
@@ -141,7 +131,7 @@ function getLinkPreview() {
 					}
 				}
 				if ( 'photo' in response.author ) {
-					if ( 'string' === typeof response.author.name ) {
+					if ( 'string' === typeof response.author.photo ) {
 						$( '#cite_author_photo' ).val( response.author.photo );
 					} else {
 						$( '#cite_author_photo' ).val( response.author.photo.join( ';' ) ) ;
@@ -155,7 +145,7 @@ function getLinkPreview() {
 					}
 				}
 			}
-			if ( 'publication' in response && ( 'string' != typeof response.publication ) ) {
+			if ( 'publication' in response && ( 'string' !== typeof response.publication ) ) {
 				if ( 'name' in response.publication ) {
 					$( '#cite_publication' ).val( response.publication.name );
 				}
@@ -169,22 +159,20 @@ function getLinkPreview() {
 				}
 			}
 		alert( PKAPI.success_message );
-		console.log( response );
 		},
-		fail: function( response ) {
-			console.log( response );
-			alert( response.message );
+		error: function( jqXHR ) {
+			if ( jqXHR.responseJSON && jqXHR.responseJSON.message ) {
+				alert( jqXHR.responseJSON.message );
+			} else {
+				alert( PKAPI.error_message );
+			}
 		},
-		error: function( jqXHR, textStatus, errorThrown ) {
-			alert( jqXHR.responseJSON.message );
-			console.log( jqXHR );
-		},
-		always: hideLoadingSpinner()
+		complete: hideLoadingSpinner
 	});
 }
 
 function changeSettings() {
-	kind = $( 'input[name=\'tax_input[kind]\']:checked' ).val();
+	var kind = $( 'input[name=\'tax_input[kind]\']:checked' ).val();
 	switch ( kind ) {
 		case 'note':
 			hideTitle();
@@ -314,7 +302,7 @@ function hideTime() {
 function handleKindMediaWindow() {
 	'use strict';
 
-        var KindWindow, ImageData, json;
+	var json;
 
 	/**
 	 * If an instance of KindWindow already exists, then we can open it
@@ -326,17 +314,16 @@ function handleKindMediaWindow() {
 	}
 
 	KindWindow = wp.media.frames.KindWindow = wp.media({
-		title: 'Attach',
+		title: PKAPI.media_title,
 		button: {
-			text: 'Use this media'
+			text: PKAPI.media_button,
 		},
 		multiple: false
 	});
 
 	KindWindow.on( 'select', function() {
 		json = KindWindow.state().get( 'selection' ).first().toJSON();
-		console.log( json );
-		if ( 0 > $.trim( json.url.length ) ) {
+		if ( ! json.url ) {
 			return;
 		}
 		$( '#cite_name' ).val( json.title );
@@ -365,8 +352,8 @@ jQuery( document )
 	})
 	.on( 'blur', '#cite_url', function( event ) {
 		if ( '' !== $( '#cite_url' ).val() ) {
-			if ( false == checkUrl( $( '#cite_url' ).val() ) ) {
-				alert( 'Invalid URL' );
+			if ( false === checkUrl( $( '#cite_url' ).val() ) ) {
+				alert( PKAPI.invalid_url );
 			} else if ( '' === $( '#cite_name' ).val() ) {
 				showLoadingSpinner();
 				getLinkPreview();

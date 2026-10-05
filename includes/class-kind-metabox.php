@@ -155,6 +155,10 @@ class Kind_Metabox {
 					'api_url'         => rest_url( '/parse-this/1.0/' ),
 					'success_message' => __( 'Your URL has been successfully retrieved and parsed', 'indieweb-post-kinds' ),
 					'clear_message'   => __( 'Are you sure you want to clear post properties?', 'indieweb-post-kinds' ),
+					'error_message'   => __( 'Error: Unable to Retrieve', 'indieweb-post-kinds' ),
+					'invalid_url'     => __( 'Invalid URL', 'indieweb-post-kinds' ),
+					'media_title'     => __( 'Attach', 'indieweb-post-kinds' ),
+					'media_button'    => __( 'Use this media', 'indieweb-post-kinds' ),
 				)
 			);
 
