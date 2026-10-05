@@ -18,4 +18,5 @@ jobs:
         exclude-directories: |
           './bin'
           './.github'
+          './lib/parse-this'
         exclude-checks: 'file_type'

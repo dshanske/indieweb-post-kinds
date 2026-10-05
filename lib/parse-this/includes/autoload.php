@@ -1,18 +1,29 @@
 <?php
+/**
+ * Class autoloader for Parse This.
+ *
+ * @package Parse_This
+ */
 
-// autoloader for Parse This
+defined( 'ABSPATH' ) || exit;
+
+/*
+ * Maps classes in the ParseThis namespace to files in this directory, for
+ * example ParseThis\MF2_Utils to class-mf2-utils.php.
+ */
 spl_autoload_register(
 	function ( $class ) {
-		$base_dir = trailingslashit( __DIR__ );
-		$bases    = array( 'Parse_This' );
-		foreach ( $bases as $base ) {
-			if ( strncmp( $class, $base, strlen( $base ) ) === 0 ) {
-				$filename = 'class-' . strtolower( str_replace( '_', '-', $class ) );
-				$file     = $base_dir . $filename . '.php';
-				if ( file_exists( $file ) ) {
-					require $file;
-				}
-			}
+		$prefix = 'ParseThis\\';
+		if ( 0 !== strncmp( $class, $prefix, strlen( $prefix ) ) ) {
+			return;
+		}
+		$name = substr( $class, strlen( $prefix ) );
+		$file = __DIR__ . '/class-' . strtolower( str_replace( '_', '-', $name ) ) . '.php';
+		if ( file_exists( $file ) ) {
+			require $file;
 		}
 	}
 );
+
+// Deprecated global names still used by other plugins.
+require_once __DIR__ . '/aliases.php';
