@@ -507,7 +507,7 @@ class Kind_Metabox {
 		if ( ! empty( $author ) ) {
 
 			$author['type'] = 'card';
-			$cite['author'] = jf2_to_mf2( $author );
+			$cite['author'] = \ParseThis\jf2_to_mf2( $author );
 		}
 		$kind = $kind_post->get_kind();
 		$type = Kind_Taxonomy::get_kind_info( $kind, 'property' );

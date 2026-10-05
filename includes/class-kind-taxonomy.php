@@ -367,7 +367,7 @@ final class Kind_Taxonomy {
 		if ( ! in_array( $kind, array( 'note', 'article' ), true ) || ! $kind ) {
 			$kind_post = new Kind_Post( $post );
 			$cite      = $kind_post->get_cite();
-			if ( Parse_This_MF2::is_microformat( $cite ) ) {
+			if ( \ParseThis\MF2_Utils::is_microformat( $cite ) ) {
 				if ( array_key_exists( 'name', $cite['properties'] ) ) {
 					$excerpt = $cite['properties']['name'];
 					if ( is_array( $excerpt ) ) {

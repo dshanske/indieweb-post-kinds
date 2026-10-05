@@ -568,7 +568,7 @@ class Kind_Post {
 			if ( $duration instanceof DateInterval ) {
 				$duration = date_interval_to_iso8601( $duration );
 			}
-			$cite = jf2_to_mf2(
+			$cite = \ParseThis\jf2_to_mf2(
 				array_filter(
 					array(
 						'type'        => 'cite',
@@ -610,7 +610,7 @@ class Kind_Post {
 		// If this is formatted as JF2 try to convert it to MF2 and update.
 		if ( is_array( $cite ) && ! wp_is_numeric_array( $cite ) ) {
 			$cite['type'] = 'cite';
-			$cite         = jf2_to_mf2( $cite );
+			$cite         = \ParseThis\jf2_to_mf2( $cite );
 			$property     = Kind_Taxonomy::get_kind_info( $this->get_kind(), 'property' );
 			$this->set( $property, $cite );
 		}
@@ -679,8 +679,8 @@ class Kind_Post {
 		if ( wp_is_numeric_array( $cite ) && 1 === count( $cite ) ) {
 			$cite = $cite[0];
 		}
-		if ( Parse_This_MF2_Utils::is_microformat( $cite ) ) {
-			$cite = mf2_to_jf2( $cite );
+		if ( \ParseThis\MF2_Utils::is_microformat( $cite ) ) {
+			$cite = \ParseThis\mf2_to_jf2( $cite );
 		}
 
 		if ( is_string( $cite ) ) {
@@ -837,11 +837,11 @@ class Kind_Post {
 				/* All Media is handled identically.
 				*/
 			case 'photo':
-				if ( Parse_This_MF2::is_microformat( $value ) ) {
-					$url = Parse_This_MF2::get_plaintext( $value, 'url' );
+				if ( \ParseThis\MF2_Utils::is_microformat( $value ) ) {
+					$url = \ParseThis\MF2_Utils::get_plaintext( $value, 'url' );
 					$id  = attachment_url_to_postid( $url );
 					if ( $id ) {
-						$value = mf2_to_jf2( $value );
+						$value = \ParseThis\mf2_to_jf2( $value );
 						unset( $value['type'] );
 						$attachment = new Kind_Post( $id );
 						foreach ( $value as $k => $v ) {

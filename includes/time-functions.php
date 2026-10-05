@@ -143,25 +143,6 @@ if ( ! function_exists( 'calculate_duration' ) ) {
 	}
 }
 
-if ( ! function_exists( 'seconds_to_iso8601' ) ) {
-	function seconds_to_iso8601( $second ) {
-		$h   = intval( $second / 3600 );
-		$m   = intval( ( $second - $h * 3600 ) / 60 );
-		$s   = $second - ( $h * 3600 + $m * 60 );
-		$ret = 'PT';
-		if ( $h ) {
-			$ret .= $h . 'H';
-		}
-		if ( $m ) {
-			$ret .= $m . 'M';
-		}
-		if ( ( ! $h && ! $m ) || $s ) {
-			$ret .= $s . 'S';
-		}
-		return $ret;
-	}
-}
-
 if ( ! function_exists( 'date_interval_to_iso8601' ) ) {
 
 	// Return a date interval as an ISO8601 string
