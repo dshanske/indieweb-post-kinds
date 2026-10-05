@@ -24,9 +24,6 @@ if ( ! function_exists( 'tz_offset_to_seconds' ) ) {
 
 if ( ! function_exists( 'tz_seconds_to_timezone' ) ) {
 	function tz_seconds_to_timezone( $seconds ) {
-		if ( version_compare( phpversion(), '5.5.10', '<' ) ) {
-			return timezone_name_from_abbr( '', $seconds, 0 );
-		}
 		if ( 0 !== $seconds ) {
 			$tz = timezone_open( tz_seconds_to_offset( $seconds ) );
 		} else {
