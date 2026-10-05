@@ -8,6 +8,8 @@
 class Kind_Metabox {
 
 	/**
+	 * Plugin version, used to version enqueued assets.
+	 *
 	 * @var string $version
 	 */
 	public static $version;

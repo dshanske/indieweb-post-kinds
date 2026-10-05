@@ -57,8 +57,9 @@ class Kind_Plugins {
 	}
 
 	/**
+	 * Sets the ActivityPub object type based on the post kind.
 	 *
-	 * @param array $post_array
+	 * @param array $post_array ActivityPub object array.
 	 *
 	 * @return array
 	 */
