@@ -8,7 +8,10 @@
  */
 
 /**
+ * Registers a post kind.
  *
+ * @param string $slug Post kind slug.
+ * @param array  $args Post kind arguments. See Kind_Taxonomy::register_post_kind().
  */
 function register_post_kind( $slug, $args ) {
 	Kind_Taxonomy::register_post_kind( $slug, $args );
