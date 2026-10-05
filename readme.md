@@ -2,9 +2,9 @@
 **Contributors:** [dshanske](https://profiles.wordpress.org/dshanske)  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
 **Stable tag:** 3.7.3  
-**Requires at least:** 4.9.9  
-**Requires PHP:** 7.0  
-**Tested up to:** 6.5  
+**Requires at least:** 6.2  
+**Requires PHP:** 7.4  
+**Tested up to:** 7.1  
 **License:** GPLv2 or later  
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -19,6 +19,8 @@ It can also distinguish certain types of passive posts in a manner similar to [p
 post formats, it is recommended as a replacement as it is designed as a replacement using IndieWeb Post Types.
 
 Many sites will not need all of the kinds set up. What kinds of posts you wish to publish are specific to your needs.
+
+Post Kinds requires PHP 7.4 or later and WordPress 6.2 or later. It also supports ClassicPress 2.7.3 or later.
 
 
 ## Screenshots ##
@@ -45,6 +47,10 @@ responsibilities to responsibly use this data, and to remove information on requ
 2. [Chris Aldrich](http://boffosocko.com) always receives a credit on my plugins due his regular feedback, input, and usage.
 
 ## Upgrade Notice ##
+
+### 4.0.0 ###
+
+This version requires PHP 7.4 and WordPress 6.2 or later, or ClassicPress 2.7.3 or later. Sites on older versions should stay on 3.7.x.
 
 ### 3.7.0 ###
 
@@ -284,6 +290,9 @@ through future plugin updates.
 
 
 ## Changelog ##
+
+### 4.0.0 ( unreleased ) ###
+* Raise the minimum requirements to PHP 7.4 and WordPress 6.2, and declare ClassicPress 2.7.3 support
 
 * 3.7.3 ( 2024-04-09 ) =
 * Ensure widget array is instantiated
