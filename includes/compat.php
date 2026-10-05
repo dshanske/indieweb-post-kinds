@@ -162,3 +162,67 @@ if ( ! function_exists( 'wp_admin_notice' ) ) {
 		echo wp_kses_post( wp_get_admin_notice( $message, $args ) );
 	}
 }
+
+// wp_trigger_error() was introduced in WordPress 6.4 (ClassicPress 2.2.0).
+if ( ! function_exists( 'wp_trigger_error' ) ) {
+	/**
+	 * Generates a user-level error/warning/notice/deprecation message.
+	 *
+	 * Generates the message when `WP_DEBUG` is true.
+	 *
+	 * @since 6.4.0
+	 *
+	 * @param string $function_name The function that triggered the error.
+	 * @param string $message       The message explaining the error.
+	 *                              The message can contain allowed HTML 'a' (with href), 'code',
+	 *                              'br', 'em', and 'strong' tags and http or https protocols.
+	 *                              If it contains other HTML tags or protocols, the message should be escaped
+	 *                              before passing to this function to avoid being stripped {@see wp_kses()}.
+	 * @param int    $error_level   Optional. The designated error type for this error.
+	 *                              Only works with E_USER family of constants. Default E_USER_NOTICE.
+	 */
+	function wp_trigger_error( $function_name, $message, $error_level = E_USER_NOTICE ) {
+
+		// Bail out if WP_DEBUG is not turned on.
+		if ( ! WP_DEBUG ) {
+			return;
+		}
+
+		/**
+		 * Fires when the given function triggers a user-level error/warning/notice/deprecation message.
+		 *
+		 * Can be used for debug backtracking.
+		 *
+		 * @since 6.4.0
+		 *
+		 * @param string $function_name The function that was called.
+		 * @param string $message       A message explaining what has been done incorrectly.
+		 * @param int    $error_level   The designated error type for this error.
+		 */
+		do_action( 'wp_trigger_error_run', $function_name, $message, $error_level );
+
+		if ( ! empty( $function_name ) ) {
+			$message = sprintf( '%s(): %s', $function_name, $message );
+		}
+
+		$message = wp_kses(
+			$message,
+			array(
+				'a'      => array( 'href' => true ),
+				'br'     => array(),
+				'code'   => array(),
+				'em'     => array(),
+				'strong' => array(),
+			),
+			array( 'http', 'https' )
+		);
+
+		if ( E_USER_ERROR === $error_level ) {
+			// WP_Exception was also introduced in WordPress 6.4.
+			$exception = class_exists( 'WP_Exception' ) ? 'WP_Exception' : 'Exception';
+			throw new $exception( $message ); // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
+		}
+
+		trigger_error( $message, $error_level ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_trigger_error, WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+}
