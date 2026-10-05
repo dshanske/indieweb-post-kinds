@@ -23,16 +23,9 @@ class Kind_Plugins {
 		// Override Post Type in Semantic Linkbacks.
 		add_filter( 'semantic_linkbacks_post_type', array( static::class, 'semantic_post_type' ), 11, 2 );
 
-		// Remove the Automatic Post Generation that the Micropub Plugin Offers
-		if ( class_exists( 'Micropub_Render' ) ) {
-			if ( has_filter( 'micropub_post_content', array( 'Micropub_Render', 'generate_post_content' ) ) ) {
-				remove_filter( 'micropub_post_content', array( 'Micropub_Render', 'generate_post_content' ), 1, 2 );
-			}
-		} elseif ( class_exists( 'Micropub_Plugin' ) ) {
-			if ( has_filter( 'micropub_post_content', array( 'Micropub_Plugin', 'generate_post_content' ) ) ) {
-				remove_filter( 'micropub_post_content', array( 'Micropub_Plugin', 'generate_post_content' ), 1, 2 );
-			}
-		}
+		// Post Kinds displays the response itself, so turn off Micropub's dynamic
+		// rendering of Micropub posts (Micropub 2.4.0 and later).
+		add_filter( 'micropub_dynamic_render', '__return_false' );
 
 		// Hum Compatibility Filters
 		add_action( 'hum_local_types', array( static::class, 'hum_local_types' ), 11 );
@@ -146,7 +139,10 @@ class Kind_Plugins {
 		if ( ! $wp_args ) {
 			return;
 		}
-		$type = post_type_discovery( mf2_to_jf2( $input ) );
+		if ( ! function_exists( '\\ParseThis\\post_type_discovery' ) ) {
+			return;
+		}
+		$type = \ParseThis\post_type_discovery( \ParseThis\mf2_to_jf2( $input ) );
 		if ( ! empty( $type ) ) {
 			set_post_kind( $wp_args['ID'], $type );
 		}
@@ -169,56 +165,111 @@ class Kind_Plugins {
 	}
 
 	/**
-	 * Parse our micropub values.
+	 * Returns the Micropub properties whose URL values are enriched into citations.
+	 *
+	 * @return string[] Property names.
+	 */
+	public static function citation_properties() {
+		return array( 'bookmark-of', 'like-of', 'favorite-of', 'in-reply-to', 'read-of', 'listen-of', 'watch-of' );
+	}
+
+	/**
+	 * Enriches the URLs in citation properties of a Micropub create request into
+	 * h-cite objects parsed from the cited page.
+	 *
+	 * Follows the Micropub spec: property values are arrays, so a property whose
+	 * value is not an array is left for Micropub to handle, and only string URLs
+	 * inside the array are enriched. Values the client already sent as objects,
+	 * such as an h-cite, are kept as sent.
 	 *
 	 * @access public
 	 *
-	 * @param array $input Array of inputs to parse.
-	 * @return mixed
+	 * @param array $input Micropub request, in mf2 JSON.
+	 * @return array The request, with citation URLs enriched where possible.
 	 */
 	public static function micropub_parse( $input ) {
-		if ( ! $input ) {
+		// Queries (q) and requests without properties, such as updates, are left as is.
+		if ( ! is_array( $input ) || isset( $input['q'] ) || ! isset( $input['properties'] ) || ! is_array( $input['properties'] ) ) {
 			return $input;
 		}
-		// q indicates a get query
-		if ( isset( $input['q'] ) ) {
+		if ( ! class_exists( '\\ParseThis\\Parser' ) ) {
 			return $input;
 		}
-		if ( ! isset( $input['properties'] ) ) {
-			return $input;
-		}
-		$parsed = array( 'bookmark-of', 'like-of', 'favorite-of', 'in-reply-to', 'read-of', 'listen-of', 'watch-of' );
-		foreach ( $input['properties'] as $property => $value ) {
-			if ( in_array( $property, $parsed, true ) ) {
-				if ( wp_is_numeric_array( $value ) ) {
-					foreach ( $value as $i => $v ) {
-						if ( wp_http_validate_url( $v ) ) {
-							$parse = new Parse_This( $v );
-							$fetch = $parse->fetch();
-							if ( ! is_wp_error( $fetch ) ) {
-								$parse->parse();
-								$jf2 = $parse->get();
-								// Entries become citations
-								if ( 'entry' === $jf2['type'] ) {
-									$jf2['type'] = 'cite';
-								}
-								$mf2                                    = jf2_to_mf2( $jf2 );
-								$input['properties'][ $property ][ $i ] = $mf2;
-							} else {
-								error_log( wp_json_encode( $fetch ) ); // phpcs:ignore
-							}
-						}
-					}
-				} elseif ( isset( $value['url'] ) && wp_http_validate_url( $value['url'] ) ) {
-					$parse = new Parse_This( $value['url'] );
-					$fetch = $parse - fetch();
-					if ( ! is_wp_error( $fetch ) ) {
-						$parse->parse();
-						$input['properties'][ $property ] = array_merge( $value, jf2_to_mf2( $parse->get() ) );
-					}
+		foreach ( self::citation_properties() as $property ) {
+			if ( empty( $input['properties'][ $property ] ) || ! wp_is_numeric_array( $input['properties'][ $property ] ) ) {
+				continue;
+			}
+			foreach ( $input['properties'][ $property ] as $i => $value ) {
+				if ( ! is_string( $value ) || ! wp_http_validate_url( $value ) ) {
+					continue;
+				}
+				$cite = self::parse_citation( $value );
+				if ( $cite ) {
+					$input['properties'][ $property ][ $i ] = $cite;
 				}
 			}
 		}
 		return $input;
+	}
+
+	/**
+	 * Fetches and parses a URL into an mf2 citation.
+	 *
+	 * @access public
+	 *
+	 * @param string $url URL of the cited page.
+	 * @return array|false mf2 citation, or false if the page could not be fetched.
+	 */
+	public static function parse_citation( $url ) {
+		$parse = new \ParseThis\Parser( $url );
+		$fetch = $parse->fetch();
+		if ( is_wp_error( $fetch ) ) {
+			error_log( wp_json_encode( $fetch ) ); // phpcs:ignore
+			return false;
+		}
+		// Keep nested objects in place rather than moving them to refs.
+		$parse->parse( array( 'references' => false ) );
+		$jf2 = $parse->get();
+		if ( ! is_array( $jf2 ) || empty( $jf2 ) ) {
+			return false;
+		}
+		$type = isset( $jf2['type'] ) ? $jf2['type'] : '';
+		// A page that parses as a feed (a home page, for example) is cited as the
+		// page itself, not its entries.
+		if ( 'feed' === $type ) {
+			$jf2 = array_intersect_key( $jf2, array_flip( array( 'name', 'url', 'author', 'summary', 'photo' ) ) );
+		}
+		$jf2 = self::clean_citation( $jf2 );
+		// Entries and feeds become citations. Other types, such as an h-event for
+		// an RSVP, are kept.
+		$jf2['type'] = in_array( $type, array( '', 'entry', 'feed' ), true ) ? 'cite' : $type;
+		return \ParseThis\jf2_to_mf2( $jf2 );
+	}
+
+	/**
+	 * Removes Parse This bookkeeping from parsed jf2, recursively.
+	 *
+	 * Keys starting with an underscore (_code, _links, _alternate,
+	 * _source_format, ...), post-type and refs are not microformats properties,
+	 * and would otherwise be stored in post meta and returned by Micropub's
+	 * q=source.
+	 *
+	 * @access public
+	 *
+	 * @param mixed $jf2 Parsed jf2, or any value within it.
+	 * @return mixed The value without bookkeeping keys.
+	 */
+	public static function clean_citation( $jf2 ) {
+		if ( ! is_array( $jf2 ) ) {
+			return $jf2;
+		}
+		foreach ( array_keys( $jf2 ) as $key ) {
+			if ( is_string( $key ) && ( 0 === strpos( $key, '_' ) || in_array( $key, array( 'post-type', 'refs' ), true ) ) ) {
+				unset( $jf2[ $key ] );
+			} elseif ( is_array( $jf2[ $key ] ) ) {
+				$jf2[ $key ] = self::clean_citation( $jf2[ $key ] );
+			}
+		}
+		return $jf2;
 	}
 } // End Class Kind_Plugins
