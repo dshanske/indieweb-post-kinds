@@ -15,8 +15,11 @@ jobs:
     - name: Run plugin check
       uses: wordpress/plugin-check-action@v1
       with:
+        # One directory per line, as bare paths: quotes and ./ are passed through
+        # literally and match nothing.
         exclude-directories: |
-          './bin'
-          './.github'
-          './lib/parse-this'
+          bin
+          .github
+          lib/parse-this
+          tests
         exclude-checks: 'file_type'
