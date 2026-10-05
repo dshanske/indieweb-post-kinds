@@ -5,7 +5,7 @@
 /bin
 /sass
 /vendor
-/test
+/tests
 .eslintrc.js
 readme.md
 package.json
