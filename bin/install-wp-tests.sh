@@ -2,6 +2,7 @@
 
 if [ $# -lt 3 ]; then
 	echo "usage: $0 <db-name> <db-user> <db-pass> [db-host] [wp-version] [skip-database-creation]"
+	echo "       wp-version may also be cp-<version> (for example cp-2.7.3) to test against ClassicPress"
 	exit 1
 fi
 
@@ -19,13 +20,20 @@ WP_CORE_DIR=${WP_CORE_DIR-$TMPDIR/wordpress}
 
 download() {
     if [ `which curl` ]; then
-        curl -s "$1" > "$2";
+        curl -sL "$1" > "$2";
     elif [ `which wget` ]; then
         wget -nv -O "$2" "$1"
     fi
 }
 
-if [[ $WP_VERSION =~ ^[0-9]+\.[0-9]+\-(beta|RC)[0-9]+$ ]]; then
+# ClassicPress: cp-<version>. The core files come from the built release in
+# ClassicPress-release and the test library from the matching <version>+dev
+# tag of the ClassicPress development repository.
+CP_VERSION=''
+if [[ $WP_VERSION =~ ^cp-([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+	CP_VERSION=${BASH_REMATCH[1]}
+	CP_TESTS_TAG="${CP_VERSION}+dev"
+elif [[ $WP_VERSION =~ ^[0-9]+\.[0-9]+\-(beta|RC)[0-9]+$ ]]; then
 	WP_BRANCH=${WP_VERSION%\-*}
 	WP_TESTS_TAG="branches/$WP_BRANCH"
 
@@ -61,7 +69,10 @@ install_wp() {
 
 	mkdir -p $WP_CORE_DIR
 
-	if [[ $WP_VERSION == 'nightly' || $WP_VERSION == 'trunk' ]]; then
+	if [[ -n $CP_VERSION ]]; then
+		download https://github.com/ClassicPress/ClassicPress-release/archive/refs/tags/${CP_VERSION}.tar.gz $TMPDIR/classicpress.tar.gz
+		tar --strip-components=1 -zxmf $TMPDIR/classicpress.tar.gz -C $WP_CORE_DIR
+	elif [[ $WP_VERSION == 'nightly' || $WP_VERSION == 'trunk' ]]; then
 		mkdir -p $TMPDIR/wordpress-trunk
 		rm -rf $TMPDIR/wordpress-trunk/*
 		svn export --quiet https://core.svn.wordpress.org/trunk $TMPDIR/wordpress-trunk/wordpress
@@ -107,12 +118,26 @@ install_test_suite() {
 		# set up testing suite
 		mkdir -p $WP_TESTS_DIR
 		rm -rf $WP_TESTS_DIR/{includes,data}
-		svn export --quiet --ignore-externals https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/includes/ $WP_TESTS_DIR/includes
-		svn export --quiet --ignore-externals https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/data/ $WP_TESTS_DIR/data
+		if [[ -n $CP_VERSION ]]; then
+			local CP_CHECKOUT=$TMPDIR/classicpress-develop
+			rm -rf $CP_CHECKOUT
+			git clone --quiet --depth 1 --filter=blob:none --sparse --branch "$CP_TESTS_TAG" https://github.com/ClassicPress/ClassicPress.git $CP_CHECKOUT
+			git -C $CP_CHECKOUT sparse-checkout set tests/phpunit/includes tests/phpunit/data
+			mv $CP_CHECKOUT/tests/phpunit/includes $WP_TESTS_DIR/includes
+			mv $CP_CHECKOUT/tests/phpunit/data $WP_TESTS_DIR/data
+			rm -rf $CP_CHECKOUT
+		else
+			svn export --quiet --ignore-externals https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/includes/ $WP_TESTS_DIR/includes
+			svn export --quiet --ignore-externals https://develop.svn.wordpress.org/${WP_TESTS_TAG}/tests/phpunit/data/ $WP_TESTS_DIR/data
+		fi
 	fi
 
 	if [ ! -f wp-tests-config.php ]; then
-		download https://develop.svn.wordpress.org/${WP_TESTS_TAG}/wp-tests-config-sample.php "$WP_TESTS_DIR"/wp-tests-config.php
+		if [[ -n $CP_VERSION ]]; then
+			download "https://raw.githubusercontent.com/ClassicPress/ClassicPress/${CP_TESTS_TAG/+/%2B}/wp-tests-config-sample.php" "$WP_TESTS_DIR"/wp-tests-config.php
+		else
+			download https://develop.svn.wordpress.org/${WP_TESTS_TAG}/wp-tests-config-sample.php "$WP_TESTS_DIR"/wp-tests-config.php
+		fi
 		# remove all forward slashes in the end
 		WP_CORE_DIR=$(echo $WP_CORE_DIR | sed "s:/\+$::")
 		sed $ioption "s:dirname( __FILE__ ) . '/src/':'$WP_CORE_DIR/':" "$WP_TESTS_DIR"/wp-tests-config.php
