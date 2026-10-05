@@ -4,6 +4,6 @@ module.exports = {
     "jquery": true,
     "es6": true,
   },
-  "extends": "wordpress",
+  "extends": "plugin:@wordpress/eslint-plugin/es5",
   "rules": {}
 };
