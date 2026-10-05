@@ -8,6 +8,8 @@
  * Plugin URI: https://wordpress.org/plugins/indieweb-post-kinds/
  * Description: Ever want to reply to someone else's post with a post on your own site? Or to "like" someone else's post, but with your own site?
  * Version: 3.7.3
+ * Requires at least: 6.2
+ * Requires PHP: 7.4
  * Author: David Shanske
  * Author URI: https://david.shanske.com
  * Text Domain: indieweb-post-kinds
