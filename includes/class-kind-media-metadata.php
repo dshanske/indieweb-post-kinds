@@ -51,8 +51,8 @@ class Kind_Media_Metadata {
 	public static function attachment_fields_to_edit( $form_fields, $post ) {
 
 		$author = get_post_meta( $post->ID, 'mf2_author', true );
-		if ( Parse_This_MF2_Utils::is_microformat( $author ) ) {
-			$author = mf2_to_jf2( $author );
+		if ( \ParseThis\MF2_Utils::is_microformat( $author ) ) {
+			$author = \ParseThis\mf2_to_jf2( $author );
 		} else {
 			$author = array();
 		}
@@ -93,7 +93,7 @@ class Kind_Media_Metadata {
 			delete_post_meta( $post['ID'], 'mf2_author' );
 		} else {
 			$author['type'] = 'card';
-			update_post_meta( $post['ID'], 'mf2_author', jf2_to_mf2( $author ) );
+			update_post_meta( $post['ID'], 'mf2_author', \ParseThis\jf2_to_mf2( $author ) );
 		}
 		return $post;
 	}
@@ -107,7 +107,7 @@ class Kind_Media_Metadata {
 	public static function get_img_from_content( $content ) {
 		$content = wp_unslash( $content );
 		$return  = array();
-		$doc     = pt_load_domdocument( $content );
+		$doc     = \ParseThis\pt_load_domdocument( $content );
 		$images  = $doc->getElementsByTagName( 'img' );
 		foreach ( $images as $image ) {
 			$classes = $image->getAttribute( 'class' );
@@ -139,7 +139,7 @@ class Kind_Media_Metadata {
 	public static function get_audio_from_content( $content ) {
 		$content = wp_unslash( $content );
 		$return  = array();
-		$doc     = pt_load_domdocument( $content );
+		$doc     = \ParseThis\pt_load_domdocument( $content );
 		$audios  = $doc->getElementsByTagName( 'audio' );
 		foreach ( $audios as $audio ) {
 			$sources = $audio->getElementsByTagName( 'source' );
@@ -161,7 +161,7 @@ class Kind_Media_Metadata {
 	public static function get_video_from_content( $content ) {
 		$content = wp_unslash( $content );
 		$return  = array();
-		$doc     = pt_load_domdocument( $content );
+		$doc     = \ParseThis\pt_load_domdocument( $content );
 		$videos  = $doc->getElementsByTagName( 'video' );
 		foreach ( $videos as $video ) {
 			$sources = $video->getElementsByTagName( 'source' );
@@ -275,7 +275,7 @@ class Kind_Media_Metadata {
 				update_post_meta(
 					$attachment_id,
 					'mf2_author',
-					jf2_to_mf2(
+					\ParseThis\jf2_to_mf2(
 						array(
 							'name' => $meta['credit'],
 							'type' => 'card',
@@ -291,7 +291,7 @@ class Kind_Media_Metadata {
 			update_post_meta(
 				$attachment_id,
 				'mf2_author',
-				jf2_to_mf2(
+				\ParseThis\jf2_to_mf2(
 					array(
 						'name' => $data['artist'],
 						'type' => 'card',
@@ -300,7 +300,7 @@ class Kind_Media_Metadata {
 			);
 		}
 		if ( isset( $data['length'] ) ) {
-			update_post_meta( $attachment_id, 'mf2_duration', array( seconds_to_iso8601( $data['length'] ) ) );
+			update_post_meta( $attachment_id, 'mf2_duration', array( \ParseThis\seconds_to_iso8601( $data['length'] ) ) );
 		}
 		return $data;
 	}

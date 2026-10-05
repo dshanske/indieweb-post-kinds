@@ -10,7 +10,7 @@ $publication = null;
 if ( is_array( $audios ) ) {
 	if ( 1 === count( $audios ) && 0 !== $audios[0] ) {
 		$audio_attachment = new Kind_Post( $audios[0] );
-		$cite = mf2_to_jf2( $audio_attachment->get_cite() );
+		$cite = \ParseThis\mf2_to_jf2( $audio_attachment->get_cite() );
 		if ( ! $cite ) {
 			$cite = array();
 		}

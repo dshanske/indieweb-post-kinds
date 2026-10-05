@@ -229,7 +229,7 @@ class Kind_View {
 		$kind_post = new Kind_Post( $post );
 		$kind      = $kind_post->get_kind();
 		$type      = Kind_Taxonomy::get_kind_info( $kind, 'property' );
-		$cite      = mf2_to_jf2( $kind_post->get_cite() );
+		$cite      = \ParseThis\mf2_to_jf2( $kind_post->get_cite() );
 
 		if ( is_string( $cite ) ) {
 			$url = wp_http_validate_url( $cite ) ? $cite : false;
