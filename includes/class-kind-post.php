@@ -293,7 +293,7 @@ class Kind_Post {
 			'properties' => array(
 				'name'  => array( get_the_author_meta( 'display_name', $post->post_author ) ),
 				'url'   => array( get_the_author_meta( 'user_url', $post->post_author ) ? get_the_author_meta( 'user_url', $post->post_author ) : get_author_posts_url( $post->post_author ) ),
-				'photo' => array( get_avatar_url( $this->post_author ) ),
+				'photo' => array( get_avatar_url( $post->post_author ) ),
 			),
 		);
 	}

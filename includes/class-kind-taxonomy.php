@@ -924,7 +924,8 @@ final class Kind_Taxonomy {
 	 */
 	public static function document_title_parts( $parts ) {
 		if ( is_tax() || is_category() || is_tag() ) {
-			$terms = self::get_terms_from_query();
+			$terms  = self::get_terms_from_query();
+			$return = array();
 			foreach ( $terms as $term ) {
 				if ( 'kind' === $term->taxonomy ) {
 					$return[] = self::get_kind_info( $term->slug, 'name' );
@@ -1087,7 +1088,7 @@ final class Kind_Taxonomy {
 		if ( 'all' === $property ) {
 			return $k;
 		}
-		if ( ! array_key_exists( $property, get_object_vars( $k ) ) ) {
+		if ( ! $k->has( $property ) ) {
 			return false;
 		}
 		return $k->$property;

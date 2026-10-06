@@ -76,14 +76,14 @@ class MF2_Post implements ArrayAccess {
 
 	public function get_published() {
 		if ( 'attachment' === $this->post_type ) {
-			return $this->meta['published'] ?? '';
+			return $this->get_single( $this->mf2['published'] ?? '' );
 		}
 		return get_the_date( DATE_W3C, $this->uid );
 	}
 
 	public function get_updated() {
 		if ( 'attachment' === $this->post_type ) {
-			return $this->meta['updated'] ?? '';
+			return $this->get_single( $this->mf2['updated'] ?? '' );
 		}
 		return get_the_modified_date( DATE_W3C, $this->uid );
 	}
@@ -92,9 +92,10 @@ class MF2_Post implements ArrayAccess {
 		if ( 'attachment' !== $this->post_type ) {
 			return get_bloginfo( 'title' );
 		}
-		return $this->meta['publication'] ?? '';
+		return $this->get_single( $this->mf2['publication'] ?? '' );
 	}
 
+	#[\ReturnTypeWillChange]
 	public function offsetExists( $offset ) {
 		$vars = get_object_vars( $this );
 		if ( array_key_exists( $offset, $vars ) ) {
@@ -103,6 +104,7 @@ class MF2_Post implements ArrayAccess {
 		return array_key_exists( $offset, $this->mf2 );
 	}
 
+	#[\ReturnTypeWillChange]
 	public function offsetGet( $offset ) {
 		$vars = get_object_vars( $this );
 		if ( array_key_exists( $offset, $vars ) ) {
@@ -114,10 +116,12 @@ class MF2_Post implements ArrayAccess {
 		return null;
 	}
 
+	#[\ReturnTypeWillChange]
 	public function offsetSet( $offset, $value ) {
 		$this->set( $offset, $value );
 	}
 
+	#[\ReturnTypeWillChange]
 	public function offsetUnset( $offset ) {
 		$this->delete( $offset );
 	}
@@ -225,11 +229,11 @@ class MF2_Post implements ArrayAccess {
 	 */
 	public function get_author() {
 		if ( ! $this->post_author ) {
-			return $this->meta['author'] ?? false;
+			return $this->get_single( $this->mf2['author'] ?? false );
 		}
 		// Attachments may have been uploaded by a user but may have metadata for original author
 		if ( 'attachment' === $this->post_type ) {
-			return $this->meta['author'] ?? '';
+			return $this->get_single( $this->mf2['author'] ?? '' );
 		}
 		return array(
 			'type'       => array( 'h-card' ),
@@ -635,7 +639,7 @@ class MF2_Post implements ArrayAccess {
 		if ( $post_content ) {
 			$att_ids = get_post_meta( $this->uid, '_content_img_ids', true );
 			if ( false === $att_ids ) {
-				$att_ids = Kind_Media_Metadata::get_img_from_content( $post->post_content );
+				$att_ids = Kind_Media_Metadata::get_img_from_content( $post_content );
 				update_post_meta( $this->uid, '_content_img_ids', $att_ids );
 			}
 			if ( $att_ids ) {

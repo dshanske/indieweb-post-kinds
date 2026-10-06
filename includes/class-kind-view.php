@@ -66,8 +66,7 @@ class Kind_View {
 		if ( empty( $name ) ) {
 			return '';
 		}
-		$templates[] = "{$slug}-{$name}.php";
-		$templates[] = "{$slug}.php";
+		$templates   = array( "{$slug}-{$name}.php", "{$slug}.php" );
 		$look        = apply_filters( 'kind_view_paths', array( get_theme_file_path( 'kind_views/' ) ) );
 		$look[]      = plugin_dir_path( __DIR__ ) . 'views/';
 		$located     = null;
@@ -332,7 +331,7 @@ class Kind_View {
 	 */
 	public static function get_formatted( $field, $attr, $type = 'span' ) {
 		if ( ! isset( $field ) ) {
-			return $string;
+			return '';
 		}
 		$string = '<' . $type . $attr . '>' . $field . '</' . $type . '>';
 		return $string;
@@ -388,9 +387,10 @@ class Kind_View {
 		if ( ! in_array( $host, $approvelist, true ) ) {
 			return '';
 		}
-		if ( isset( $GLOBALS['wp_embed'] ) ) {
-			$embed = $GLOBALS['wp_embed']->autoembed( $url );
+		if ( ! isset( $GLOBALS['wp_embed'] ) ) {
+			return '';
 		}
+		$embed = $GLOBALS['wp_embed']->autoembed( $url );
 		if ( 0 === strcmp( $embed, $url ) ) {
 			$embed = '';
 		} else {

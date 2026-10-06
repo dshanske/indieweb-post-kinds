@@ -6,7 +6,7 @@
  * Used to define a Post Kind object
  */
 
-final class Post_Kind {
+final class Post_Kind implements JsonSerializable {
 	public $id; // Term ID
 	public $slug; // Kind Slug
 	public $name; // Name of Kind - Plural
@@ -22,6 +22,15 @@ final class Post_Kind {
 	public $properties; // Array of Properties
 	public $shortlink; // Shortlink Coding per http://tantek.pbworks.com/w/page/21743973/Whistle#design
 
+	/**
+	 * Arguments given at registration that are not declared properties, such as
+	 * those a custom kind adds. Kept here rather than as dynamic properties,
+	 * which are deprecated in PHP 8.2, and still readable as $kind->name.
+	 *
+	 * @var array
+	 */
+	private $extra = array();
+
 	public function __construct( $slug, $args = array() ) {
 		$this->slug = $slug;
 		$this->set_props( $args );
@@ -34,12 +43,68 @@ final class Post_Kind {
 			'verb'          => $this->slug,
 			'format'        => 'standard',
 			'icon'          => $this->slug,
-			'show'          => 'false',
+			'show'          => false,
 			'property'      => '',
 		);
 		$args     = wp_parse_args( $args, $defaults );
 		foreach ( $args as $property_name => $property_value ) {
-			$this->$property_name = $property_value;
+			if ( 'extra' !== $property_name && property_exists( $this, $property_name ) ) {
+				$this->$property_name = $property_value;
+			} else {
+				$this->extra[ $property_name ] = $property_value;
+			}
 		}
+	}
+
+	/**
+	 * Reads an extra argument given at registration.
+	 *
+	 * @param string $name Argument name.
+	 * @return mixed The value, or null if it was not given.
+	 */
+	public function __get( $name ) {
+		return isset( $this->extra[ $name ] ) ? $this->extra[ $name ] : null;
+	}
+
+	/**
+	 * Whether an extra argument was given at registration.
+	 *
+	 * @param string $name Argument name.
+	 * @return bool
+	 */
+	public function __isset( $name ) {
+		return isset( $this->extra[ $name ] );
+	}
+
+	/**
+	 * Sets an extra argument, without creating a dynamic property.
+	 *
+	 * @param string $name  Argument name.
+	 * @param mixed  $value Value.
+	 */
+	public function __set( $name, $value ) {
+		$this->extra[ $name ] = $value;
+	}
+
+	/**
+	 * Whether the kind has a declared property or an extra argument of this name.
+	 *
+	 * @param string $name Property or argument name.
+	 * @return bool
+	 */
+	public function has( $name ) {
+		return ( 'extra' !== $name && property_exists( $this, $name ) ) || array_key_exists( $name, $this->extra );
+	}
+
+	/**
+	 * Returns the kind's declared properties and extra arguments, for JSON.
+	 *
+	 * @return array
+	 */
+	#[\ReturnTypeWillChange]
+	public function jsonSerialize() {
+		$vars = get_object_vars( $this );
+		unset( $vars['extra'] );
+		return array_merge( $this->extra, $vars );
 	}
 }
