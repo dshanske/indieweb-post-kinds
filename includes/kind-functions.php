@@ -27,7 +27,7 @@ function set_post_kind_visibility( $slug, $show = true ) {
  * @return array The array of post kind slugs.
  */
 function get_post_kind_slugs() {
-	return Kind_Taxonomy::get_post_kind_slugs();
+	return Kind_Taxonomy::get_kind_list();
 }
 
 /**

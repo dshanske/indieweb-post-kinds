@@ -97,8 +97,9 @@ class Kind_Post_Widget extends WP_Widget {
 				value="<?php echo esc_html( $instance['title'] ?? '' ); ?>" /></p>
 		<select name="<?php echo esc_attr( $this->get_field_name( 'kind' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'kind' ) ); ?>">
 		<?php
-		$list   = get_option( 'kind_termslist', Kind_Taxonomy::get_kind_list() );
+		$list   = Kind_Config::get_termslist();
 		$list[] = 'note';
+		$list   = array_unique( $list );
 		foreach ( $list as $term ) {
 			$value = Kind_Taxonomy::get_post_kind_info( $term );
 			printf(

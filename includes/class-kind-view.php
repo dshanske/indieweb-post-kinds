@@ -150,7 +150,7 @@ class Kind_View {
 		}
 		if ( 'post' === get_post_type( $post_id ) ) {
 			$kind    = get_post_kind_slug( $post_id );
-			$content = self::get_view_part( 'kind', $kind );
+			$content = self::get_view_part( 'kind', $kind, array( 'post_id' => $post_id ) );
 			return apply_filters( 'kind_response_display', $content, $post_id );
 		}
 	}

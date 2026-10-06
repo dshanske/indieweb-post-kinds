@@ -222,7 +222,7 @@ class Kind_Post {
 		// Get a list of tags and extract their names
 		$post_tags = get_the_terms( $this->id, 'post_tag' );
 		if ( ! empty( $post_tags ) && ! is_wp_error( $post_tags ) ) {
-			$category = array_merge( $this->category, wp_list_pluck( $post_tags, 'name' ) );
+			$category = array_merge( $category, wp_list_pluck( $post_tags, 'name' ) );
 		}
 		if ( in_array( 'Uncategorized', $category, true ) ) {
 			unset( $category[ array_search( 'Uncategorized', $category, true ) ] );
@@ -327,6 +327,9 @@ class Kind_Post {
 	 *
 	 */
 	public function get_photo( $content = true ) {
+		if ( ! $this->get_post() ) {
+			return false;
+		}
 		// Check if the post itself is an image attachment.
 		if ( wp_attachment_is( 'image', $this->id ) ) {
 			return array( $this->id );
@@ -337,13 +340,13 @@ class Kind_Post {
 		if ( false === $content_ids ) {
 			// Check for a gallery first.
 			$gallery = get_post_gallery( $this->id, false );
-			if ( $gallery & array_key_exists( 'ids', $gallery ) ) {
+			if ( is_array( $gallery ) && array_key_exists( 'ids', $gallery ) ) {
 				$content_ids = explode( ',', $gallery['ids'] );
 			}
 			$content_ids = array();
 			$post        = $this->get_post();
 			$shortcode   = false;
-			$shortcodes  = apply_filter( 'kind_photo_shortcode_exclude', array( 'vr', '360' ) );
+			$shortcodes  = apply_filters( 'kind_photo_shortcode_exclude', array( 'vr', '360' ) );
 			if ( $post->post_content ) {
 				foreach ( $shortcodes as $code ) {
 					if ( has_shortcode( $post->post_content, $code ) ) {

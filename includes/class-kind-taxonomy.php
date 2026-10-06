@@ -293,7 +293,7 @@ final class Kind_Taxonomy {
 			'post',
 			'kind',
 			array(
-				'get_callback'    => array( self::class, 'get_post_kind_slug' ),
+				'get_callback'    => array( self::class, 'get_rest_post_kind' ),
 				'update_callback' => array( self::class, 'set_rest_post_kind' ),
 				'schema'          => array(
 					'kind' => __( 'Post Kind', 'indieweb-post-kinds' ),
@@ -947,8 +947,7 @@ final class Kind_Taxonomy {
 	 * @param WP_Post $post Post object.
 	 */
 	public static function select_metabox( $post ) {
-		$include = get_option( 'kind_termslist' );
-		$include = array_merge( $include, array( 'note', 'reply', 'article' ) );
+		$include = array_merge( Kind_Config::get_termslist(), array( 'note', 'reply', 'article' ) );
 		// If Simple Location is Enabled, include the check-in type
 		// Filter Kinds
 		$include = array_unique( apply_filters( 'kind_include', $include ) );
@@ -1333,17 +1332,43 @@ final class Kind_Taxonomy {
 	}
 
 	/**
-	 * Update callback for REST API endpoint.
+	 * Update callback for the kind REST field.
 	 *
 	 * @access public
 	 *
-	 * @param string $kind Post kind being processed.
-	 * @param $post_array
+	 * @param string        $kind Post kind to set.
+	 * @param WP_Post|array $post Post being updated.
+	 * @return true|WP_Error True on success, WP_Error if the kind could not be set.
 	 */
-	public static function set_rest_post_kind( $kind, $post_array ) {
-		if ( isset( $post_array['id'] ) ) {
-			self::set_post_kind( $post_array['id'], $kind );
+	public static function set_rest_post_kind( $kind, $post ) {
+		// WordPress passes the post being updated as a WP_Post object.
+		$post_id = $post instanceof WP_Post ? $post->ID : ( is_array( $post ) && isset( $post['id'] ) ? (int) $post['id'] : 0 );
+		if ( ! $post_id ) {
+			return new WP_Error( 'rest_invalid_post', __( 'Invalid post.', 'indieweb-post-kinds' ), array( 'status' => 400 ) );
 		}
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			return new WP_Error( 'rest_cannot_edit', __( 'Sorry, you are not allowed to set the kind of this post.', 'indieweb-post-kinds' ), array( 'status' => rest_authorization_required_code() ) );
+		}
+		$result = self::set_post_kind( $post_id, $kind );
+		if ( is_wp_error( $result ) ) {
+			$result->add_data( array( 'status' => 400 ) );
+			return $result;
+		}
+		return true;
+	}
+
+	/**
+	 * Get callback for the kind REST field.
+	 *
+	 * @access public
+	 *
+	 * @param array $post Prepared post data, as an array with an id key.
+	 * @return string|false The post's kind slug, or false if it has none.
+	 */
+	public static function get_rest_post_kind( $post ) {
+		// The prepared post is an array; passing it to get_post() would cast it to 1.
+		$post_id = is_array( $post ) && isset( $post['id'] ) ? (int) $post['id'] : 0;
+		return $post_id ? self::get_post_kind_slug( $post_id ) : false;
 	}
 
 	/**
