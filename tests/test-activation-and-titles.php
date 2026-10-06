@@ -66,6 +66,7 @@ class ActivationAndTitlesTest extends WP_UnitTestCase {
 			array(
 				'post_title'   => '',
 				'post_content' => 'Replying to this.',
+				'post_excerpt' => '',
 				'meta_input'   => array(
 					'mf2_in-reply-to' => array(
 						array(
@@ -88,6 +89,7 @@ class ActivationAndTitlesTest extends WP_UnitTestCase {
 			array(
 				'post_title'   => '',
 				'post_content' => 'Liked this.',
+				'post_excerpt' => '',
 				'meta_input'   => array( 'mf2_like-of' => array( 'https://example.com/post' ) ),
 			)
 		);
