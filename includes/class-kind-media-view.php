@@ -71,6 +71,7 @@ class Kind_Media_View {
 		}
 		$return = '';
 		if ( $args['src'] ) {
+			$args   = wp_parse_args( $args, $default );
 			$return = wp_audio_shortcode( $args );
 		}
 		return $return;
@@ -97,7 +98,7 @@ class Kind_Media_View {
 			return implode( ' ', $return );
 		} elseif ( wp_http_validate_url( $id ) ) {
 			$args['src'] = $id;
-		} if ( 0 === $id ) {
+		} elseif ( 0 === $id ) {
 			return '';
 		} else {
 			$args['src'] = wp_get_attachment_url( (int) $id );

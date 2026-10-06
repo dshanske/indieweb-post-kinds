@@ -492,7 +492,6 @@ class Kind_Metabox {
 			$duration = calculate_duration( $start, $end );
 			if ( $duration instanceof DateInterval ) {
 				$duration = date_interval_to_iso8601( $duration );
-				error_log( wp_json_encode( $duration ) );
 			}
 		}
 		if ( ! empty( $duration ) ) {
@@ -506,7 +505,7 @@ class Kind_Metabox {
 			$kind_post->set( 'rating', intval( $_POST['mf2_rating'] ) );
 		}
 
-		if ( isset( $_POST['cite_published_date'] ) || isset( $_POST['published_time'] ) ) {
+		if ( isset( $_POST['cite_published_date'] ) || isset( $_POST['cite_published_time'] ) ) {
 			$cite['published'] = build_iso8601_time( sanitize_text_field( $_POST['cite_published_date'] ), sanitize_text_field( $_POST['cite_published_time'] ), sanitize_text_field( $_POST['cite_published_offset'] ) );
 		}
 		if ( isset( $_POST['cite_updated_date'] ) || isset( $_POST['cite_updated_time'] ) ) {

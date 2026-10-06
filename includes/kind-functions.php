@@ -104,7 +104,7 @@ function set_post_kind( $post, $kind ) {
  */
 
 function get_kind_view_part( $slug, $name = null, $args = null ) {
-	Kind_View::get_view_part( $slug, $name, $args );
+	return Kind_View::get_view_part( $slug, $name, $args );
 }
 
 function kind_display( $post_id = null ) {
@@ -116,12 +116,17 @@ function kind_flatten_array( $a ) {
 		return $a;
 	}
 	if ( wp_is_numeric_array( $a ) ) {
-		$array = array_map( 'kind_flatten_array', $a );
+		$a = array_values( array_filter( array_map( 'kind_flatten_array', $a ) ) );
+	} else {
+		$a = array_filter( $a );
 	}
-	$array = array_filter( $a );
-	if ( 1 === count( $a ) ) {
+	if ( empty( $a ) ) {
+		return '';
+	}
+	if ( 1 === count( $a ) && isset( $a[0] ) ) {
 		return $a[0];
 	}
+	return $a;
 }
 
 // Return any sort of src urls in content
