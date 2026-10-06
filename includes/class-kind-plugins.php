@@ -60,7 +60,9 @@ class Kind_Plugins {
 	 * @access public
 	 */
 	public static function init() {
-		// Set Post Kind for Micropub Inputs.
+		// Set the post kind for Micropub posts before they are inserted (Micropub 2.1.0
+		// and later), with after_micropub as a fallback.
+		add_filter( 'micropub_tax_input', array( static::class, 'micropub_tax_input' ), 10, 2 );
 		add_action( 'after_micropub', array( static::class, 'micropub_set_kind' ), 9, 2 );
 		add_action( 'after_micropub', array( static::class, 'post_formats' ), 11, 2 );
 		add_filter( 'before_micropub', array( static::class, 'micropub_parse' ), 11 );
@@ -175,23 +177,65 @@ class Kind_Plugins {
 	}
 
 	/**
-	 * Take mf2 properties and set a post kind.
-	 * Implements Post Type Discovery https://www.w3.org/TR/post-type-discovery/
+	 * Returns the post kind for an mf2 object, using Post Type Discovery.
+	 * Implements https://www.w3.org/TR/post-type-discovery/ via Parse This.
 	 *
-	 * @param array $input   Micropub Request in JSON.
-	 * @param array $wp_args Arguments passed to insert or update posts.
+	 * @param array $mf2 mf2 object, such as a Micropub request.
+	 * @return string Registered kind slug, or an empty string if none applies.
+	 */
+	public static function discover_kind( $mf2 ) {
+		if ( ! is_array( $mf2 ) || empty( $mf2['properties'] ) || ! function_exists( '\\ParseThis\\post_type_discovery' ) ) {
+			return '';
+		}
+		$type = \ParseThis\post_type_discovery( \ParseThis\mf2_to_jf2( $mf2 ) );
+		return ( $type && Kind_Taxonomy::get_post_kind_info( $type ) ) ? $type : '';
+	}
+
+	/**
+	 * Sets the kind of a Micropub post in the taxonomy input, so the post is
+	 * inserted with its kind rather than the default term. Everything that runs
+	 * during the insert, such as the publish transition, post formats and other
+	 * plugins' publish hooks, then sees the right kind.
+	 *
+	 * Hooked to Micropub's micropub_tax_input filter (Micropub 2.1.0 and later),
+	 * which is applied when a post is created.
+	 *
+	 * @param array|null $tax_input Taxonomy input for the new post.
+	 * @param array      $input     Micropub request.
+	 * @return array|null Taxonomy input, with the kind added.
+	 */
+	public static function micropub_tax_input( $tax_input, $input ) {
+		$kind = self::discover_kind( $input );
+		if ( ! $kind ) {
+			return $tax_input;
+		}
+		if ( ! is_array( $tax_input ) ) {
+			$tax_input = array();
+		}
+		if ( empty( $tax_input['kind'] ) ) {
+			$tax_input['kind'] = array( $kind );
+		}
+		return $tax_input;
+	}
+
+	/**
+	 * Sets the kind of a Micropub post after it is created, if it does not
+	 * already have it.
+	 *
+	 * The kind is normally set before the insert (see micropub_tax_input()). This
+	 * covers Micropub versions before 2.1.0, and users who cannot assign kind
+	 * terms, for whom WordPress ignores the taxonomy input.
+	 *
+	 * @param array      $input   Micropub request.
+	 * @param array|null $wp_args Arguments of the created or updated post; null for queries.
 	 */
 	public static function micropub_set_kind( $input, $wp_args ) {
-		// Only continue if create or update
-		if ( ! $wp_args ) {
+		if ( empty( $wp_args['ID'] ) ) {
 			return;
 		}
-		if ( ! function_exists( '\\ParseThis\\post_type_discovery' ) ) {
-			return;
-		}
-		$type = \ParseThis\post_type_discovery( \ParseThis\mf2_to_jf2( $input ) );
-		if ( ! empty( $type ) ) {
-			set_post_kind( $wp_args['ID'], $type );
+		$kind = self::discover_kind( $input );
+		if ( $kind && get_post_kind_slug( $wp_args['ID'] ) !== $kind ) {
+			set_post_kind( $wp_args['ID'], $kind );
 		}
 	}
 

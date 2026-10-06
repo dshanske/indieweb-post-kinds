@@ -354,6 +354,56 @@ class MicropubTest extends WP_UnitTestCase {
 		$this->assertSame( 'like', get_post_kind_slug( $post ) );
 	}
 
+	public function test_tax_input_gets_the_kind() {
+		$like = $this->create_request( array( 'like-of' => array( self::ENTRY ) ) );
+		$this->assertSame( array( 'kind' => array( 'like' ) ), Kind_Plugins::micropub_tax_input( null, $like ) );
+		// Other taxonomies are kept, and a kind already chosen is not replaced.
+		$this->assertSame(
+			array(
+				'location' => array( 'here' ),
+				'kind'     => array( 'like' ),
+			),
+			Kind_Plugins::micropub_tax_input( array( 'location' => array( 'here' ) ), $like )
+		);
+		$this->assertSame( array( 'kind' => array( 'bookmark' ) ), Kind_Plugins::micropub_tax_input( array( 'kind' => array( 'bookmark' ) ), $like ) );
+		// Nothing to discover.
+		$this->assertNull( Kind_Plugins::micropub_tax_input( null, array( 'action' => 'delete' ) ) );
+	}
+
+	public function test_post_is_inserted_with_its_kind_and_format() {
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'author' ) ) );
+		$seen    = array();
+		$observe = function ( $new_status, $old_status, $post ) use ( &$seen ) {
+			$seen[] = get_post_kind_slug( $post->ID );
+		};
+		add_action( 'transition_post_status', $observe, 10, 3 );
+		$id = wp_insert_post(
+			array(
+				'post_status'  => 'publish',
+				'post_content' => 'Liked',
+				'tax_input'    => Kind_Plugins::micropub_tax_input( null, $this->create_request( array( 'like-of' => array( self::ENTRY ) ) ) ),
+			)
+		);
+		remove_action( 'transition_post_status', $observe, 10 );
+		$this->assertSame( array( 'like' ), $seen );
+		$this->assertSame( 'like', get_post_kind_slug( $id ) );
+		$this->assertSame( Kind_Taxonomy::get_kind_info( 'like', 'format' ), get_post_format( $id ) );
+	}
+
+	public function test_set_kind_fallback_only_changes_a_wrong_kind() {
+		$post = self::factory()->post->create();
+		set_post_kind( $post, 'like' );
+		$changes = 0;
+		$count   = function () use ( &$changes ) {
+			++$changes;
+		};
+		add_action( 'change_kind', $count );
+		Kind_Plugins::micropub_set_kind( $this->create_request( array( 'like-of' => array( self::ENTRY ) ) ), array( 'ID' => $post ) );
+		remove_action( 'change_kind', $count );
+		$this->assertSame( 0, $changes );
+		$this->assertSame( 'like', get_post_kind_slug( $post ) );
+	}
+
 	public function test_micropub_dynamic_render_is_turned_off() {
 		$this->assertFalse( apply_filters( 'micropub_dynamic_render', true, null ) );
 	}
