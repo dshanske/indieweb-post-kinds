@@ -337,15 +337,115 @@ class MicropubTest extends WP_UnitTestCase {
 		remove_filter( 'post_kinds_micropub_enrich', '__return_false' );
 	}
 
-	public function test_queries_and_updates_are_untouched() {
-		$query  = array( 'q' => 'source', 'url' => self::ENTRY );
+	public function test_queries_and_updates_without_citations_are_untouched() {
+		$query  = array(
+			'q'   => 'source',
+			'url' => self::ENTRY,
+		);
 		$update = array(
 			'action'  => 'update',
 			'url'     => self::ENTRY,
-			'replace' => array( 'in-reply-to' => array( self::ENTRY ) ),
+			'replace' => array( 'content' => array( 'Edited' ) ),
+			'delete'  => array( 'category' ),
 		);
 		$this->assertSame( $query, Kind_Plugins::micropub_parse( $query ) );
 		$this->assertSame( $update, Kind_Plugins::micropub_parse( $update ) );
+	}
+
+	public function test_replaced_citation_is_enriched_in_updates() {
+		$update = Kind_Plugins::micropub_parse(
+			array(
+				'action'  => 'update',
+				'url'     => 'https://example.com/my-post/',
+				'replace' => array( 'in-reply-to' => array( self::ENTRY ) ),
+			)
+		);
+		$cite   = $update['replace']['in-reply-to'][0];
+		$this->assertSame( array( 'h-cite' ), $cite['type'] );
+		$this->assert_no_bookkeeping( $cite );
+	}
+
+	/**
+	 * Creates a post as Micropub would store it: kind and mf2_ properties.
+	 */
+	private function micropub_post( $kind, $properties ) {
+		$meta = array();
+		foreach ( $properties as $name => $values ) {
+			$meta[ 'mf2_' . $name ] = $values;
+		}
+		$post = self::factory()->post->create(
+			array(
+				'post_content' => '',
+				'meta_input'   => $meta,
+			)
+		);
+		set_post_kind( $post, $kind );
+		return $post;
+	}
+
+	public function test_update_that_changes_the_response_property_changes_the_kind() {
+		$post = $this->micropub_post( 'like', array( 'like-of' => array( self::ENTRY ) ) );
+		// What Micropub stores for: replace in-reply-to, delete like-of.
+		update_post_meta( $post, 'mf2_in-reply-to', array( self::HOME ) );
+		delete_post_meta( $post, 'mf2_like-of' );
+		$update = array(
+			'action'  => 'update',
+			'url'     => get_permalink( $post ),
+			'replace' => array( 'in-reply-to' => array( self::HOME ) ),
+			'delete'  => array( 'like-of' ),
+		);
+		Kind_Plugins::micropub_set_kind( $update, array( 'ID' => $post ) );
+		Kind_Plugins::post_formats( $update, array( 'ID' => $post ) );
+		$this->assertSame( 'reply', get_post_kind_slug( $post ) );
+		$this->assertSame( Kind_Taxonomy::get_kind_info( 'reply', 'format' ), get_post_format( $post ) );
+		// The properties stay where the client put them.
+		$this->assertSame( array( self::HOME ), get_post_meta( $post, 'mf2_in-reply-to', true ) );
+	}
+
+	public function test_kind_change_does_not_move_properties() {
+		// Replacing like-of on a reply, keeping its in-reply-to: Parse This's Post
+		// Type Discovery checks like-of before in-reply-to, so the kind becomes
+		// like. The editor's change_kind handler would have moved the old
+		// in-reply-to over the new like-of.
+		$post = $this->micropub_post( 'reply', array( 'in-reply-to' => array( self::ENTRY ) ) );
+		update_post_meta( $post, 'mf2_like-of', array( self::HOME ) );
+		Kind_Plugins::micropub_set_kind(
+			array(
+				'action'  => 'update',
+				'url'     => get_permalink( $post ),
+				'replace' => array( 'like-of' => array( self::HOME ) ),
+			),
+			array( 'ID' => $post )
+		);
+		$this->assertSame( 'like', get_post_kind_slug( $post ) );
+		$this->assertSame( array( self::HOME ), get_post_meta( $post, 'mf2_like-of', true ) );
+		$this->assertSame( array( self::ENTRY ), get_post_meta( $post, 'mf2_in-reply-to', true ) );
+		// The editor handler is restored afterwards.
+		$this->assertSame( 10, has_action( 'change_kind', array( 'Kind_Metabox', 'change_kind' ) ) );
+	}
+
+	public function test_unrelated_update_keeps_a_chosen_kind() {
+		// A kind chosen in the editor that Post Type Discovery would not produce.
+		$post = $this->micropub_post( 'watch', array( 'in-reply-to' => array( self::ENTRY ) ) );
+		Kind_Plugins::micropub_set_kind(
+			array(
+				'action'  => 'update',
+				'url'     => get_permalink( $post ),
+				'replace' => array( 'content' => array( 'Edited' ) ),
+				'add'     => array( 'category' => array( 'film' ) ),
+			),
+			array( 'ID' => $post )
+		);
+		$this->assertSame( 'watch', get_post_kind_slug( $post ) );
+	}
+
+	public function test_update_changes_kind_detects_kind_properties() {
+		$this->assertTrue( Kind_Plugins::update_changes_kind( array( 'replace' => array( 'like-of' => array( self::ENTRY ) ) ) ) );
+		$this->assertTrue( Kind_Plugins::update_changes_kind( array( 'delete' => array( 'in-reply-to' ) ) ) );
+		$this->assertTrue( Kind_Plugins::update_changes_kind( array( 'delete' => array( 'photo' => array( 'https://example.com/a.jpg' ) ) ) ) );
+		$this->assertTrue( Kind_Plugins::update_changes_kind( array( 'replace' => array( 'rsvp' => array( 'yes' ) ) ) ) );
+		$this->assertFalse( Kind_Plugins::update_changes_kind( array( 'replace' => array( 'content' => array( 'x' ) ) ) ) );
+		$this->assertFalse( Kind_Plugins::update_changes_kind( array( 'delete' => array( 'category' ) ) ) );
 	}
 
 	public function test_kind_is_set_from_post_type_discovery() {

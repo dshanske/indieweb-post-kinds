@@ -235,9 +235,111 @@ class Kind_Plugins {
 		if ( empty( $wp_args['ID'] ) ) {
 			return;
 		}
-		$kind = self::discover_kind( $input );
-		if ( $kind && get_post_kind_slug( $wp_args['ID'] ) !== $kind ) {
-			set_post_kind( $wp_args['ID'], $kind );
+		$post_id = (int) $wp_args['ID'];
+		if ( isset( $input['action'] ) && 'update' === $input['action'] ) {
+			// Only recalculate when the update changed a property that decides the
+			// kind, so a kind chosen in the editor survives unrelated updates.
+			if ( ! self::update_changes_kind( $input ) ) {
+				return;
+			}
+			$kind = self::discover_kind( self::stored_mf2( $post_id ) );
+		} else {
+			$kind = self::discover_kind( $input );
+		}
+		if ( $kind && get_post_kind_slug( $post_id ) !== $kind ) {
+			self::set_kind_without_moving_properties( $post_id, $kind );
+		}
+	}
+
+	/**
+	 * Returns the properties that decide a post's kind: each registered kind's
+	 * property, plus rsvp, which Post Type Discovery checks first.
+	 *
+	 * @return string[] Property names.
+	 */
+	public static function kind_properties() {
+		$properties = array( 'rsvp' );
+		foreach ( Kind_Taxonomy::get_kind_list() as $kind ) {
+			$property = Kind_Taxonomy::get_kind_info( $kind, 'property' );
+			if ( $property ) {
+				$properties[] = $property;
+			}
+		}
+		return array_values( array_unique( $properties ) );
+	}
+
+	/**
+	 * Whether a Micropub update request replaces, adds or deletes a property
+	 * that decides the kind.
+	 *
+	 * @param array $input Micropub update request.
+	 * @return bool
+	 */
+	public static function update_changes_kind( $input ) {
+		$changed = array();
+		foreach ( array( 'replace', 'add' ) as $operation ) {
+			if ( isset( $input[ $operation ] ) && is_array( $input[ $operation ] ) ) {
+				$changed = array_merge( $changed, array_keys( $input[ $operation ] ) );
+			}
+		}
+		if ( isset( $input['delete'] ) && is_array( $input['delete'] ) ) {
+			// Either a list of property names, or an object of property => values.
+			$changed = array_merge( $changed, wp_is_numeric_array( $input['delete'] ) ? $input['delete'] : array_keys( $input['delete'] ) );
+		}
+		return (bool) array_intersect( $changed, self::kind_properties() );
+	}
+
+	/**
+	 * Builds the mf2 for a post from what is stored: the mf2_ post meta, plus the
+	 * title and content, which Post Type Discovery uses to tell articles from notes.
+	 *
+	 * @param int $post_id Post ID.
+	 * @return array mf2 object.
+	 */
+	public static function stored_mf2( $post_id ) {
+		$properties = array();
+		foreach ( get_post_meta( $post_id ) as $key => $values ) {
+			if ( 0 !== strpos( $key, 'mf2_' ) || 'mf2_type' === $key ) {
+				continue;
+			}
+			$value = maybe_unserialize( $values[0] );
+			if ( '' === $value || array() === $value ) {
+				continue;
+			}
+			$properties[ substr( $key, 4 ) ] = is_array( $value ) ? $value : array( $value );
+		}
+		$post = get_post( $post_id );
+		if ( $post && '' !== $post->post_title ) {
+			$properties['name'] = array( $post->post_title );
+		}
+		if ( $post && '' !== $post->post_content ) {
+			$properties['content'] = array( $post->post_content );
+		}
+		return array(
+			'type'       => array( 'h-entry' ),
+			'properties' => $properties,
+		);
+	}
+
+	/**
+	 * Sets a post's kind without moving property values between properties.
+	 *
+	 * When the kind changes in the editor, Kind_Metabox::change_kind() moves the
+	 * old kind's property to the new one (a like-of becomes an in-reply-to, for
+	 * example). After a Micropub update the properties are already where the
+	 * client put them, so that is suspended here.
+	 *
+	 * @param int    $post_id Post ID.
+	 * @param string $kind    Kind slug.
+	 */
+	private static function set_kind_without_moving_properties( $post_id, $kind ) {
+		$moving = has_action( 'change_kind', array( 'Kind_Metabox', 'change_kind' ) );
+		if ( false !== $moving ) {
+			remove_action( 'change_kind', array( 'Kind_Metabox', 'change_kind' ), $moving );
+		}
+		set_post_kind( $post_id, $kind );
+		if ( false !== $moving ) {
+			add_action( 'change_kind', array( 'Kind_Metabox', 'change_kind' ), $moving, 3 );
 		}
 	}
 
@@ -267,8 +369,9 @@ class Kind_Plugins {
 	}
 
 	/**
-	 * Enriches the URLs in citation properties of a Micropub create request into
-	 * h-cite objects parsed from the cited page.
+	 * Enriches the URLs in citation properties of a Micropub create request, or
+	 * of the replace part of an update request, into h-cite objects parsed from
+	 * the cited page.
 	 *
 	 * Follows the Micropub spec: property values are arrays, so a property whose
 	 * value is not an array is left for Micropub to handle, and only string URLs
@@ -282,18 +385,36 @@ class Kind_Plugins {
 	 */
 	public static function micropub_parse( $input ) {
 		self::$pending = array();
-		// Queries (q) and requests without properties, such as updates, are left as is.
-		if ( ! is_array( $input ) || isset( $input['q'] ) || ! isset( $input['properties'] ) || ! is_array( $input['properties'] ) ) {
+		// Queries (q) are left as is.
+		if ( ! is_array( $input ) || isset( $input['q'] ) ) {
 			return $input;
 		}
 		if ( ! class_exists( '\\ParseThis\\Parser' ) || ! self::enrichment_enabled( $input ) ) {
 			return $input;
 		}
+		// Create requests carry properties. Update requests can replace citation
+		// properties; Micropub only allows adding categories, syndication and media.
+		if ( isset( $input['properties'] ) && is_array( $input['properties'] ) ) {
+			$input['properties'] = self::enrich_properties( $input['properties'] );
+		}
+		if ( isset( $input['action'] ) && 'update' === $input['action'] && isset( $input['replace'] ) && is_array( $input['replace'] ) ) {
+			$input['replace'] = self::enrich_properties( $input['replace'] );
+		}
+		return $input;
+	}
+
+	/**
+	 * Enriches the citation URLs in a set of Micropub properties.
+	 *
+	 * @param array $properties Properties, keyed by name, each an array of values.
+	 * @return array The properties, with citation URLs enriched where possible.
+	 */
+	private static function enrich_properties( $properties ) {
 		foreach ( self::citation_properties() as $property ) {
-			if ( empty( $input['properties'][ $property ] ) || ! wp_is_numeric_array( $input['properties'][ $property ] ) ) {
+			if ( empty( $properties[ $property ] ) || ! wp_is_numeric_array( $properties[ $property ] ) ) {
 				continue;
 			}
-			foreach ( $input['properties'][ $property ] as $i => $value ) {
+			foreach ( $properties[ $property ] as $i => $value ) {
 				if ( ! is_string( $value ) || ! wp_http_validate_url( $value ) ) {
 					continue;
 				}
@@ -306,10 +427,10 @@ class Kind_Plugins {
 					self::$pending[] = array( $property, $value, $cite );
 					continue;
 				}
-				$input['properties'][ $property ][ $i ] = $cite;
+				$properties[ $property ][ $i ] = $cite;
 			}
 		}
-		return $input;
+		return $properties;
 	}
 
 	/**
@@ -510,7 +631,7 @@ class Kind_Plugins {
 
 	/**
 	 * Logs and, where worthwhile, schedules a retry for citations that could not
-	 * be parsed during a Micropub create request, now that the post exists.
+	 * be parsed during a Micropub create or update request, once the post ID is known.
 	 *
 	 * @param array      $input   Micropub request.
 	 * @param array|null $wp_args Arguments of the created or updated post.
