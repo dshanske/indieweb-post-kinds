@@ -10,8 +10,15 @@
 final class Kind_Taxonomy {
 	private static $kinds = array(); // Store a Post_Kind class which is a definition of a specific kind
 
+	/**
+	 * Whether the built-in kinds have been registered.
+	 *
+	 * @var bool
+	 */
+	private static $builtins_loaded = false;
+
 	public static function init() {
-		require_once plugin_dir_path( __FILE__ ) . '/register-kinds.php';
+		self::load_kinds();
 
 		// Add the Correct Archive Title to Kind Archives.
 		add_filter( 'get_the_archive_title', array( self::class, 'kind_archive_title' ), 10 );
@@ -367,7 +374,11 @@ final class Kind_Taxonomy {
 		if ( ! in_array( $kind, array( 'note', 'article' ), true ) || ! $kind ) {
 			$kind_post = new Kind_Post( $post );
 			$cite      = $kind_post->get_cite();
-			if ( \ParseThis\MF2_Utils::is_microformat( $cite ) ) {
+			// Citations are stored as a list; use the first.
+			if ( wp_is_numeric_array( $cite ) && 1 === count( $cite ) ) {
+				$cite = $cite[0];
+			}
+			if ( class_exists( '\\ParseThis\\MF2_Utils' ) && \ParseThis\MF2_Utils::is_microformat( $cite ) ) {
 				if ( array_key_exists( 'name', $cite['properties'] ) ) {
 					$excerpt = $cite['properties']['name'];
 					if ( is_array( $excerpt ) ) {
@@ -477,11 +488,31 @@ final class Kind_Taxonomy {
 	/**
 	 * To Be Run on Plugin Activation.
 	 */
+	/**
+	 * Registers the built-in kinds, once.
+	 *
+	 * Called from init() and on activation. A plugin is activated after
+	 * plugins_loaded and init have run for the request, so neither the kinds
+	 * nor the register_post_kind() function (kind-functions.php) would
+	 * otherwise be loaded when the kind terms are created.
+	 */
+	public static function load_kinds() {
+		if ( self::$builtins_loaded ) {
+			return;
+		}
+		self::$builtins_loaded = true;
+		if ( ! function_exists( 'register_post_kind' ) ) {
+			require_once plugin_dir_path( __FILE__ ) . 'kind-functions.php';
+		}
+		require plugin_dir_path( __FILE__ ) . 'register-kinds.php';
+	}
+
 	public static function activate_kinds() {
 		if ( function_exists( 'iwt_plugin_notice' ) ) {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
 			wp_die( 'You have Indieweb Taxonomy activated. Post Kinds replaces this plugin. Please disable Taxonomy before activating' );
 		}
+		self::load_kinds();
 		self::register();
 		self::kind_defaultterms();
 		flush_rewrite_rules();
