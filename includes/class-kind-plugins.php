@@ -66,6 +66,8 @@ class Kind_Plugins {
 		add_filter( 'before_micropub', array( static::class, 'micropub_parse' ), 11 );
 		add_action( 'after_micropub', array( static::class, 'schedule_enrichment' ), 20, 2 );
 		add_action( self::ENRICH_EVENT, array( static::class, 'enrich_citation' ), 10, 4 );
+		// Advertise the enabled kinds to Micropub clients (Micropub 1.4 and later).
+		add_filter( 'micropub_query', array( static::class, 'micropub_query' ), 10, 2 );
 		add_filter( 'tempus_widget_post_title', array( static::class, 'tempus_widget_post_title' ), 10, 2 );
 		// Override Post Type in Semantic Linkbacks.
 		add_filter( 'semantic_linkbacks_post_type', array( static::class, 'semantic_post_type' ), 11, 2 );
@@ -645,5 +647,62 @@ class Kind_Plugins {
 			}
 		}
 		return $jf2;
+	}
+	/**
+	 * Adds the enabled kinds to Micropub's configuration query, using the
+	 * post-types extension (Query for Supported Vocabulary), so clients only
+	 * offer the kinds this site uses.
+	 *
+	 * @see https://indieweb.org/Micropub-extensions#Query_for_Supported_Vocabulary
+	 *
+	 * @param array|mixed $response Micropub query response.
+	 * @param array       $input    Micropub query.
+	 * @return array|mixed The response, with post-types added for q=config.
+	 */
+	public static function micropub_query( $response, $input ) {
+		if ( ! is_array( $response ) || ! isset( $input['q'] ) || 'config' !== $input['q'] ) {
+			return $response;
+		}
+		$types = isset( $response['post-types'] ) && is_array( $response['post-types'] ) ? $response['post-types'] : array();
+		$known = wp_list_pluck( $types, 'type' );
+		foreach ( self::micropub_post_types() as $type ) {
+			if ( ! in_array( $type['type'], $known, true ) ) {
+				$types[] = $type;
+			}
+		}
+		$response['post-types'] = $types;
+		return $response;
+	}
+
+	/**
+	 * Returns the enabled kinds as Micropub post types.
+	 *
+	 * @return array[] Arrays with the keys type (the kind slug, which is its Post
+	 *                 Type Discovery type) and name (the kind's singular name).
+	 */
+	public static function micropub_post_types() {
+		// The kinds offered in the editor: those enabled in settings, plus note,
+		// which is always available.
+		$kinds = get_option( 'kind_termslist' );
+		$kinds = is_array( $kinds ) ? $kinds : array();
+		array_unshift( $kinds, 'note' );
+		$types = array();
+		foreach ( array_unique( $kinds ) as $kind ) {
+			$name = Kind_Taxonomy::get_kind_info( $kind, 'singular_name' );
+			if ( $name ) {
+				$types[] = array(
+					'type' => $kind,
+					'name' => $name,
+				);
+			}
+		}
+		/**
+		 * Filters the post types advertised to Micropub clients in q=config.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param array[] $types Arrays with the keys type and name.
+		 */
+		return apply_filters( 'post_kinds_micropub_post_types', $types );
 	}
 } // End Class Kind_Plugins
