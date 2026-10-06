@@ -153,7 +153,7 @@ class Kind_Post {
 	 * Return datetime property as a DateTime Object.
 	 *
 	 * @param string $property Property You Wish to Return.
-	 * @return DateTimeImmutable Published Time in Local Timezone.
+	 * @return DateTimeImmutable|false The date, or false if it is missing or not a valid date.
 	 *
 	 */
 	public function get_datetime_property( $property ) {
@@ -174,7 +174,7 @@ class Kind_Post {
 		if ( is_array( $datetime ) ) {
 			$datetime = $datetime[0];
 		}
-		return new DateTimeImmutable( $datetime );
+		return kind_safe_datetime( $datetime );
 	}
 
 	/*
@@ -199,10 +199,7 @@ class Kind_Post {
 		if ( is_array( $duration ) ) {
 			$duration = $duration[0];
 		}
-		if ( $duration ) {
-			return new DateInterval( $duration );
-		}
-		return false;
+		return kind_safe_interval( $duration );
 	}
 
 	/*
@@ -734,9 +731,8 @@ class Kind_Post {
 
 	public function set_datetime_property( $key, $value ) {
 		// In an attachment the post date properties reflect when the item was uploaded not when the piece was created.
-		if ( ! $value instanceof DateTime ) {
-			$value = new DateTime( $value );
-		}
+		// A mutable copy, as the timezone is changed below.
+		$value = kind_safe_datetime( $value, null, false );
 		if ( ! $value ) {
 			return false;
 		}
@@ -755,9 +751,7 @@ class Kind_Post {
 	}
 
 	public function set_duration( $value ) {
-		if ( ! $value instanceof DateInterval ) {
-			$value = new DateInterval( $value );
-		}
+		$value = kind_safe_interval( $value );
 		if ( ! $value ) {
 			return false;
 		}

@@ -5,6 +5,58 @@
  * Global Scoped Functions for Handling Time.
  */
 
+if ( ! function_exists( 'kind_safe_datetime' ) ) {
+	/**
+	 * Creates a date from a value without throwing on invalid input.
+	 *
+	 * Dates come from post meta and Micropub requests, where a malformed value
+	 * would otherwise throw an uncaught exception and break the page.
+	 *
+	 * @param DateTimeInterface|string $value     Date, or a date string.
+	 * @param DateTimeZone|null        $timezone  Optional. Timezone for strings without one.
+	 * @param bool                     $immutable Optional. Whether to return a DateTimeImmutable. Default true.
+	 * @return DateTimeImmutable|DateTime|false The date, or false if the value is not a valid date.
+	 */
+	function kind_safe_datetime( $value, $timezone = null, $immutable = true ) {
+		if ( $value instanceof DateTimeInterface ) {
+			if ( $immutable ) {
+				return $value instanceof DateTimeImmutable ? $value : DateTimeImmutable::createFromMutable( $value );
+			}
+			return $value instanceof DateTime ? $value : DateTime::createFromImmutable( $value );
+		}
+		if ( ! is_string( $value ) || '' === trim( $value ) ) {
+			return false;
+		}
+		try {
+			return $immutable ? new DateTimeImmutable( $value, $timezone ) : new DateTime( $value, $timezone );
+		} catch ( Exception $e ) {
+			return false;
+		}
+	}
+}
+
+if ( ! function_exists( 'kind_safe_interval' ) ) {
+	/**
+	 * Creates a duration from an ISO 8601 duration without throwing on invalid input.
+	 *
+	 * @param DateInterval|string $value Duration, or an ISO 8601 duration such as PT3M30S.
+	 * @return DateInterval|false The duration, or false if the value is not a valid duration.
+	 */
+	function kind_safe_interval( $value ) {
+		if ( $value instanceof DateInterval ) {
+			return $value;
+		}
+		if ( ! is_string( $value ) || '' === trim( $value ) ) {
+			return false;
+		}
+		try {
+			return new DateInterval( $value );
+		} catch ( Exception $e ) {
+			return false;
+		}
+	}
+}
+
 if ( ! function_exists( 'tz_seconds_to_offset' ) ) {
 	function tz_seconds_to_offset( $seconds ) {
 		return ( $seconds < 0 ? '-' : '+' ) . sprintf( '%02d:%02d', abs( $seconds / 60 / 60 ), abs( $seconds / 60 ) % 60 );
@@ -14,7 +66,7 @@ if ( ! function_exists( 'tz_seconds_to_offset' ) ) {
 if ( ! function_exists( 'tz_offset_to_seconds' ) ) {
 	function tz_offset_to_seconds( $offset ) {
 		if ( preg_match( '/([+-])(\d{2}):?(\d{2})/', $offset, $match ) ) {
-			$sign = ( '-' ? -1 : 1 === $match[1] );
+			$sign = ( '-' === $match[1] ) ? -1 : 1;
 			return ( ( $match[2] * 60 * 60 ) + ( $match[3] * 60 ) ) * $sign;
 		} else {
 			return 0;
@@ -50,15 +102,14 @@ if ( ! function_exists( 'get_gmt_offsets' ) ) {
 		$o       = array();
 		$t_zones = timezone_identifiers_list();
 		foreach ( $t_zones as $a ) {
-			$t = '';
 			try {
-				// this throws exception for 'US/Pacific-New'
+				// Some identifiers, such as 'US/Pacific-New', throw on some PHP versions.
 				$zone    = new DateTimeZone( $a );
 				$seconds = $zone->getOffset( new DateTime( 'now', $zone ) );
 				$o[]     = tz_seconds_to_offset( $seconds );
 			} catch ( Exception $e ) {
-				die( 'Exception : ' . esc_html( $e->getMessage() ) . '<br />' );
-				// what to do in catch ? , nothing just relax
+				// Skip the zone rather than fail.
+				continue;
 			}
 		}
 		$o = array_unique( $o );
@@ -179,8 +230,9 @@ if ( ! function_exists( 'date_interval_to_iso8601' ) ) {
 }
 
 function display_formatted_datetime( $date ) {
-	if ( is_string( $date ) ) {
-		$date = new DateTimeImmutable( $date );
+	$date = kind_safe_datetime( $date );
+	if ( ! $date ) {
+		return '';
 	}
 
 	return $date->format( get_option( 'date_format' ) ) . ' ' . $date->format( get_option( 'time_format' ) );
@@ -204,10 +256,7 @@ function divide_datetime( $datetime ) {
 		return false;
 	}
 
-	if ( is_string( $datetime ) ) {
-		$datetime = new DateTime( $datetime );
-	}
-
+	$datetime = kind_safe_datetime( $datetime );
 	if ( ! $datetime ) {
 		return false;
 	}
@@ -235,20 +284,21 @@ function divide_datetime( $datetime ) {
  * @return DateTimeImmutable|false DateTime object or false if not valid
  */
 function build_datetime( $date, $time, $offset = null ) {
-	if ( empty( $date ) && empty( $time ) ) {
+	if ( empty( $date ) || empty( $time ) ) {
 		return false;
 	}
-	if ( is_string( $offset ) ) {
-		$timezone = timezone_open( $offset );
+	$timezone = false;
+	if ( is_string( $offset ) && '' !== $offset ) {
+		// timezone_open() warns on invalid input; it then returns false.
+		$timezone = @timezone_open( $offset ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
 	} elseif ( $offset instanceof DateTimeZone ) {
 		$timezone = $offset;
-	} else {
-		return false;
 	}
 	if ( ! $timezone ) {
 		$timezone = wp_timezone();
 	}
-	return date_create_immutable_from_format( 'Y-m-d\TH:i:sP', $date . 'T' . $time, $timezone );
+	// The time may be H:i or H:i:s; the offset is applied as the timezone.
+	return kind_safe_datetime( $date . 'T' . $time, $timezone );
 }
 
 /**
@@ -309,7 +359,9 @@ function divide_interval( $interval ) {
 function build_interval( $values ) {
 	$date = wp_array_slice_assoc( $values, array( 'Y', 'M', 'D' ) );
 	$time = wp_array_slice_assoc( $values, array( 'H', 'I', 'S' ) );
-	if ( ! $date || ! $time ) {
+	$date = array_filter( $date );
+	$time = array_filter( $time );
+	if ( ! $date && ! $time ) {
 		return '';
 	}
 	$spec = 'P';
