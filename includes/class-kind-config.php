@@ -84,6 +84,23 @@ class Kind_Config {
 	}
 
 	/**
+	 * Returns the kinds enabled in settings (the kind_termslist option).
+	 *
+	 * Always returns an array of registered kind slugs, whatever is stored: the
+	 * option can be missing, false or hold kinds that are no longer registered.
+	 * Note, which is always available, is not included unless it was saved.
+	 *
+	 * @return string[] Kind slugs.
+	 */
+	public static function get_termslist() {
+		$termslist = get_option( 'kind_termslist' );
+		if ( ! is_array( $termslist ) ) {
+			return array();
+		}
+		return array_values( array_intersect( $termslist, Kind_Taxonomy::get_kind_list() ) );
+	}
+
+	/**
 	 * Function to Set up Settings.
 	 *
 	 * @access public
@@ -223,10 +240,10 @@ class Kind_Config {
 	 * @param WP_Admin_Bar $wp_admin_bar
 	 */
 	public static function dashbar_links( $wp_admin_bar ) {
-		$termslist = get_option( 'kind_termslist' );
+		$termslist = self::get_termslist();
 		// Note can never be removed
 		array_unshift( $termslist, 'note' );
-		foreach ( $termslist as $term ) {
+		foreach ( array_unique( $termslist ) as $term ) {
 			$wp_admin_bar->add_menu(
 				array(
 					'parent' => 'new-content',
@@ -308,7 +325,7 @@ class Kind_Config {
 	public static function termcheck_callback() {
 		$terms = Kind_Taxonomy::get_kind_list();
 		// Hide these terms until ready for use for now.
-		$termslist = get_option( 'kind_termslist' );
+		$termslist = self::get_termslist();
 		echo '<div id="kind-all">';
 		foreach ( $terms as $term ) {
 			$value = Kind_Taxonomy::get_post_kind_info( $term );
@@ -326,8 +343,9 @@ class Kind_Config {
 	 * @access public
 	 */
 	public static function kindmultiselect_callback( array $args ) {
-		$terms   = get_option( 'kind_termslist' );
+		$terms   = self::get_termslist();
 		$terms[] = 'note';
+		$terms   = array_unique( $terms );
 
 		$kindlist = get_option( $args['name'] );
 		if ( ! is_array( $kindlist ) ) {
@@ -351,8 +369,9 @@ class Kind_Config {
 	 * @access public
 	 */
 	public static function defaultkind_callback() {
-		$terms   = get_option( 'kind_termslist' );
+		$terms   = self::get_termslist();
 		$terms[] = 'note';
+		$terms   = array_unique( $terms );
 		sort( $terms, SORT_STRING );
 
 		$defaultkind = get_option( 'kind_default' );

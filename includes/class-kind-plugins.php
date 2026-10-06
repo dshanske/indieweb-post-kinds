@@ -848,8 +848,7 @@ class Kind_Plugins {
 	public static function micropub_post_types() {
 		// The kinds offered in the editor: those enabled in settings, plus note,
 		// which is always available.
-		$kinds = get_option( 'kind_termslist' );
-		$kinds = is_array( $kinds ) ? $kinds : array();
+		$kinds = Kind_Config::get_termslist();
 		array_unshift( $kinds, 'note' );
 		$types = array();
 		foreach ( array_unique( $kinds ) as $kind ) {

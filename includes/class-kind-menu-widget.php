@@ -124,7 +124,7 @@ class Kind_Menu_Widget extends WP_Widget {
 		<?php echo esc_html( ( $instance['title'] ?? '' ) ); ?>" /></p>
 		<div id="kind-all">
 		<?php
-		foreach ( get_option( 'kind_termslist', Kind_Taxonomy::get_kind_list() ) as $term ) {
+		foreach ( Kind_Config::get_termslist() as $term ) {
 			$value = Kind_Taxonomy::get_post_kind_info( $term );
 			if ( $value->show ) {
 				printf(
