@@ -565,14 +565,14 @@ class Kind_Fields {
 				}
 				break;
 			case 'select':
-				if ( ! array_key_exists( 'options', $elements ) ) {
+				if ( ! array_key_exists( 'options', $element ) ) {
 					return false;
 				}
 				break;
 			case 'duration':
-				if ( array_key_exists( 'pieces', $elements ) ) {
+				if ( array_key_exists( 'pieces', $element ) ) {
 					// Ensure only valid options
-					$element['pieces'] = array_intersect( array( 'Y', 'M', 'D', 'H', 'I', 'S' ), $elements['pieces'] );
+					$element['pieces'] = array_intersect( array( 'Y', 'M', 'D', 'H', 'I', 'S' ), $element['pieces'] );
 				} else {
 					// By default only show hours, minutes, seconds
 					$element['pieces'] = array( 'H', 'I', 'S' );
