@@ -533,7 +533,7 @@ final class Kind_Taxonomy {
 			'separate_items_with_commas' => _x( 'Separate kinds with commas', 'separate kinds with commas', 'indieweb-post-kinds' ),
 			'add_or_remove_items'        => _x( 'Add or remove kinds', 'add or remove items', 'indieweb-post-kinds' ),
 			'choose_from_most_used'      => _x( 'Choose from the most used kinds', 'choose most used', 'indieweb-post-kinds' ),
-			'not found'                  => _x( 'No kinds found', 'no kinds found', 'indieweb-post-kinds' ),
+			'not_found'                  => _x( 'No kinds found', 'no kinds found', 'indieweb-post-kinds' ),
 			'no_terms'                   => _x( 'No kinds', 'no kinds', 'indieweb-post-kinds' ),
 			'back_to_items'              => __( 'Back to Kinds', 'indieweb-post-kinds' ),
 			'item_link'                  => __( 'Kind Link', 'indieweb-post-kinds' ),
@@ -581,7 +581,7 @@ final class Kind_Taxonomy {
 		$kind_firehose_slug = apply_filters( 'kind_firehose_slug', 'firehose' );
 
 		$year_regex       = '([0-9]{4})';
-		$month_regex      = '(0-9]{2})';
+		$month_regex      = '([0-9]{2})';
 		$day_regex        = '([0-9]{1,})';
 		$pagination_regex = self::get_pagination_regex();
 		$feed_regex       = self::get_feed_regex();
@@ -1179,8 +1179,8 @@ final class Kind_Taxonomy {
 		if ( 'post' !== get_post_type( $post_id ) ) {
 			return;
 		}
-		$count = wp_get_post_terms( $post_id, 'kind' );
-		if ( is_countable( $count ) && $count <= 0 ) {
+		$terms = wp_get_post_terms( $post_id, 'kind' );
+		if ( ! is_wp_error( $terms ) && empty( $terms ) ) {
 			set_post_kind( $post_id, get_option( 'kind_default' ) );
 		}
 	}
@@ -1224,7 +1224,7 @@ final class Kind_Taxonomy {
 	 */
 	public static function get_post_kind_string( $slug ) {
 		$string = self::get_kind_info( $slug, 'singular_name' );
-		return $slug ? $slug : '';
+		return $string ? $string : '';
 	}
 
 	/**

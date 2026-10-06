@@ -410,7 +410,7 @@ class Kind_Post {
 		$content_ids = get_post_meta( $this->id, '_content_audio_ids', true );
 
 		if ( false === $content_ids ) {
-			$post = get_post();
+			$post = $this->get_post();
 			if ( $post->post_content ) {
 				$content_ids = Kind_Media_Metadata::get_audio_from_content( $post->post_content );
 				update_post_meta( $this->id, '_content_audio_ids', $content_ids );
@@ -460,7 +460,7 @@ class Kind_Post {
 		$content_ids = get_post_meta( $this->id, '_content_video_ids', true );
 
 		if ( false === $content_ids ) {
-			$post = get_post();
+			$post = $this->get_post();
 			if ( $post->post_content ) {
 				$content_ids = Kind_Media_Metadata::get_video_from_content( $post->post_content );
 				update_post_meta( $this->id, '_content_video_ids', $content_ids );
