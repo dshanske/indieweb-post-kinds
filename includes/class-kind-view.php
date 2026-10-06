@@ -650,13 +650,10 @@ class Kind_View {
 	 * @access public
 	 *
 	 * @param string|Dateinterval $interval Duration to display.
-	 * @return string
-	 * @throws Exception
+	 * @return string The duration markup, or an empty string if it is not a valid duration.
 	 */
 	public static function display_duration( $interval ) {
-		if ( ! $interval instanceof DateInterval ) {
-			$interval = new DateInterval( $interval );
-		}
+		$interval = kind_safe_interval( $interval );
 		if ( ! $interval ) {
 			return '';
 		}
