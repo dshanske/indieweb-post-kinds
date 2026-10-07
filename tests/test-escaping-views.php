@@ -36,9 +36,12 @@ class EscapingViewsTest extends WP_UnitTestCase {
 		return Kind_View::get_view_part( 'kind', $kind, array( 'post_id' => $id ) );
 	}
 
-	public function kinds() {
-		$kinds = array( 'like', 'bookmark', 'favorite', 'reply', 'repost', 'read', 'listen', 'watch', 'jam', 'rsvp', 'checkin', 'eat', 'drink', 'issue', 'audio', 'video', 'photo', 'event', 'itinerary', 'quote', 'follow', 'wish', 'play', 'acquisition' );
-		return array_combine( $kinds, array_map( 'array', $kinds ) );
+	public static function kinds() {
+		$data = array();
+		foreach ( array( 'like', 'bookmark', 'favorite', 'reply', 'repost', 'read', 'listen', 'watch', 'jam', 'rsvp', 'checkin', 'eat', 'drink', 'issue', 'audio', 'video', 'photo', 'event', 'itinerary', 'quote', 'follow', 'wish', 'play', 'acquisition' ) as $kind ) {
+			$data[ $kind ] = array( $kind );
+		}
+		return $data;
 	}
 
 	/**
