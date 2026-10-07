@@ -29,10 +29,9 @@ class Kind_Post_Widget extends WP_Widget {
 		$title = apply_filters( 'widget_title', $instance['title'], $instance, $this->id_base );
 
 		$kind = $instance['kind'] ?? 'note';
-		// phpcs:ignore
-		echo $args['before_widget'];
+		echo $args['before_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Widget wrapper markup registered by the theme.
 		if ( ! empty( $instance['title'] ) ) {
-			echo $args['before_title'] . $title . $args['after_title']; // phpcs:ignore
+			echo $args['before_title'] . $title . $args['after_title']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Wrapper markup is the theme's; the title is escaped by core's widget_title filter.
 		}
 		$transient = get_transient( 'kind_post_widget' );
 		if ( false === $transient ) {
@@ -56,14 +55,14 @@ class Kind_Post_Widget extends WP_Widget {
 		if ( 0 !== count( $posts ) ) {
 			echo '<ul>';
 			foreach ( $posts as $post ) {
-				printf( '<li>%1$s</li>', kind_get_the_link( $post ) ); // phpcs:ignore
+				printf( '<li>%1$s</li>', kind_get_the_link( $post ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- kind_get_the_link() escapes its parts.
 			}
 			echo '</ul>';
 		} else {
 			esc_html_e( 'No Posts Found', 'indieweb-post-kinds' );
 		}
 		echo '</div>';
-		echo $args['after_widget']; // phpcs:ignore
+		echo $args['after_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Widget wrapper markup registered by the theme.
 	}
 
 	/**
@@ -92,23 +91,21 @@ class Kind_Post_Widget extends WP_Widget {
 	public function form( $instance ) {
 		$instance['kind'] = ( $instance['kind'] ?? 'note' );
 		?>
-				<p><label for="title"><?php esc_html_e( 'Title: ', 'indieweb-post-kinds' ); ?></label>
-				<input type="text" size="30" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?> id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"
-				value="<?php echo esc_html( $instance['title'] ?? '' ); ?>" /></p>
+				<p><label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_html_e( 'Title: ', 'indieweb-post-kinds' ); ?></label>
+				<input type="text" size="30" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"
+				value="<?php echo esc_attr( $instance['title'] ?? '' ); ?>" /></p>
 		<select name="<?php echo esc_attr( $this->get_field_name( 'kind' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'kind' ) ); ?>">
 		<?php
 		$list   = Kind_Config::get_termslist();
 		$list[] = 'note';
 		$list   = array_unique( $list );
 		foreach ( $list as $term ) {
-			$value = Kind_Taxonomy::get_post_kind_info( $term );
 			printf(
 				'<option value="%1$s" %3$s>%2$s</option>',
 				esc_attr( $term ),
-				Kind_Taxonomy::get_kind_info( $term, 'singular_name' ), // phpcs:ignore
-				selected( $instance['kind'], $term )
+				esc_html( Kind_Taxonomy::get_kind_info( $term, 'singular_name' ) ),
+				selected( $instance['kind'], $term, false )
 			);
-				printf( '%1$s %2$s<br />', Kind_Taxonomy::get_icon( $term ), esc_html( $value->singular_name ) ); //phpcs:ignore
 		}
 		?>
 		</select>

@@ -296,8 +296,8 @@ class Kind_Config {
 	public static function checkbox_callback( array $args ) {
 		$option  = get_option( $args['name'] );
 		$checked = intval( $option ?? 0 );
-		printf( '<input name="%1$s" type="hidden" value="0" />', esc_attr( $args['name'] ) ); // phpcs:ignore
-		printf( '<input name="%1$s" type="checkbox" value="1" %2$s />', esc_attr( $args['name'] ), checked( 1, $checked, false) ); // phpcs:ignore
+		printf( '<input name="%1$s" type="hidden" value="0" />', esc_attr( $args['name'] ) );
+		printf( '<input name="%1$s" type="checkbox" value="1" %2$s />', esc_attr( $args['name'] ), checked( 1, $checked, false ) );
 	}
 
 	/**
@@ -312,9 +312,9 @@ class Kind_Config {
 	public static function textbox_callback( array $args ) {
 		$option = get_option( $args['name'] );
 		if ( is_array( $option ) ) {
-			$option = print_r( $option, true );
+			$option = wp_json_encode( $option, JSON_PRETTY_PRINT );
 		}
-		echo "<textarea rows='10' cols='50' class='large-text code' name='" . esc_attr( $args['name'] ) . "'>" . $option . '</textarea> '; // phpcs:ignore
+		echo "<textarea rows='10' cols='50' class='large-text code' name='" . esc_attr( $args['name'] ) . "'>" . esc_textarea( (string) $option ) . '</textarea> ';
 	}
 
 	/**
@@ -330,8 +330,8 @@ class Kind_Config {
 		foreach ( $terms as $term ) {
 			$value = Kind_Taxonomy::get_post_kind_info( $term );
 			if ( $value->show ) {
-				printf( '<input name="kind_termslist[]" type="checkbox" value="%1$s" %2$s />', esc_attr( $term ), checked( in_array( $term, $termslist, true ), true, false ) ); // phpcs:ignore
-				printf( '%1$s<strong>%2$s</strong> - %3$s<br />', Kind_Taxonomy::get_icon( $term ), sanitize_text_field( $value->singular_name ), sanitize_text_field( $value->description ) );  // phpcs:ignore
+				printf( '<input name="kind_termslist[]" type="checkbox" value="%1$s" %2$s />', esc_attr( $term ), checked( in_array( $term, $termslist, true ), true, false ) );
+				printf( '%1$s<strong>%2$s</strong> - %3$s<br />', Kind_Taxonomy::get_icon( $term ), esc_html( $value->singular_name ), esc_html( $value->description ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The plugin's own SVG icon markup.
 			}
 		}
 		echo '</div>';
@@ -356,7 +356,7 @@ class Kind_Config {
 
 		foreach ( $terms as $term ) {
 			$value = Kind_Taxonomy::get_post_kind_info( $term );
-			printf( '<option value="%1$s" %2$s />%3$s</option>', esc_attr($term), selected( in_array( $term, $kindlist ), true, false ), sanitize_text_field( $value->singular_name ) );  // phpcs:ignore
+			printf( '<option value="%1$s" %2$s>%3$s</option>', esc_attr( $term ), selected( in_array( $term, $kindlist, true ), true, false ), esc_html( $value->singular_name ) );
 		}
 		echo '</select>';
 	}
@@ -379,7 +379,7 @@ class Kind_Config {
 
 		foreach ( $terms as $term ) {
 			$value = Kind_Taxonomy::get_post_kind_info( $term );
-			printf( '<option value="%1$s" %2$s />%3$s</option>', esc_attr($term), selected( $term, $defaultkind, false ), sanitize_text_field( $value->singular_name ) );  // phpcs:ignore
+			printf( '<option value="%1$s" %2$s>%3$s</option>', esc_attr( $term ), selected( $term, $defaultkind, false ), esc_html( $value->singular_name ) );
 		}
 		echo '</select>';
 	}
@@ -394,7 +394,7 @@ class Kind_Config {
 	public static function radio_callback( array $args ) {
 		$display = get_option( 'kind_display' );
 		foreach ( $args['options'] as $key => $value ) {
-			printf( '<input id="%1$s" name="%1$s" type="radio" value="%2$s" class="%3$s" %4$s />%5$s<br />', esc_attr( $args['name'] ), esc_attr( $key ), esc_attr( $args['class'] ), checked( $key, $display, false ), sanitize_text_field( $value ) ); // phpcs:ignore
+			printf( '<input id="%1$s" name="%1$s" type="radio" value="%2$s" class="%3$s" %4$s />%5$s<br />', esc_attr( $args['name'] ), esc_attr( $key ), esc_attr( $args['class'] ), checked( $key, $display, false ), esc_html( $value ) );
 		}
 	}
 
