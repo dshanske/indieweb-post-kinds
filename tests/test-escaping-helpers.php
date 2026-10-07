@@ -52,8 +52,9 @@ class EscapingHelpersTest extends WP_UnitTestCase {
 	public function test_hcard_with_list_values() {
 		$card = Kind_View::get_hcard(
 			array(
-				'name' => array( 'Ann', 'Bob' ),
-				'url'  => array( 'https://example.com/ann' ),
+				'name'  => array( 'Ann', 'Bob' ),
+				'url'   => array( 'https://example.com/ann' ),
+				'photo' => array( 'https://example.com/ann.png' ),
 			)
 		);
 		$this->assertStringContainsString( 'href="https://example.com/ann"', $card );
@@ -112,7 +113,9 @@ class EscapingHelpersTest extends WP_UnitTestCase {
 				)
 			)
 		);
-		$this->assertSame( '&lt;3 &amp; more', strip_tags( Kind_View::get_summary( array( 'summary' => '<3 & more' ) ) ) );
+		// Stored summaries hold entities (the metabox saves through wp_kses_post()); they
+		// are shown as written, without double encoding.
+		$this->assertSame( '<blockquote class="p-summary">&lt;3 &amp; more</blockquote>', Kind_View::get_summary( array( 'summary' => '&lt;3 &amp; more' ) ) );
 		$this->assertSame( '', Kind_View::get_summary( array( 'summary' => '<p></p>' ) ) );
 		$this->assertSame( '', Kind_View::get_summary( array() ) );
 	}
