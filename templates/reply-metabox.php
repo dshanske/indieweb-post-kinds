@@ -27,20 +27,20 @@ if ( in_array( $kind, array( 'audio', 'video', 'photo' ) ) ) {
 $cite = $kind_post->normalize_cite( $cite );
 
 ?>
-<a href="#kind-details" class="show-kind-details button hide-if-no-js"><?php _e( 'Details', 'indieweb-post-kinds' ); ?></a>
-<a href="#kind-author" class="show-kind-author-details button hide-if-no-js"><?php _e( 'Author', 'indieweb-post-kinds' ); ?></a>
-<a id="add-kind-media" class="button hide-if-no-js hidden" href="javascript:;">Upload or Attach Media</a>
-<button class="clear-kindmeta-button button hide-if-no-js"><?php _e( 'Clear', 'indieweb-post-kinds' ); ?></button>
+<a href="#kind-details" class="show-kind-details button hide-if-no-js"><?php esc_html_e( 'Details', 'indieweb-post-kinds' ); ?></a>
+<a href="#kind-author" class="show-kind-author-details button hide-if-no-js"><?php esc_html_e( 'Author', 'indieweb-post-kinds' ); ?></a>
+<a id="add-kind-media" class="button hide-if-no-js hidden" href="javascript:;"><?php esc_html_e( 'Upload or Attach Media', 'indieweb-post-kinds' ); ?></a>
+<button class="clear-kindmeta-button button hide-if-no-js"><?php esc_html_e( 'Clear', 'indieweb-post-kinds' ); ?></button>
 <p class="field-row">
 	<label for="cite_url" class="three-quarters">
-		<?php _e( 'URL', 'indieweb-post-kinds' ); ?>
-			<input type="text" name="cite_url" id="cite_url" class="widefat" value="<?php echo $cite['url']; ?>" />
+		<?php esc_html_e( 'URL', 'indieweb-post-kinds' ); ?>
+			<input type="text" name="cite_url" id="cite_url" class="widefat" value="<?php echo esc_attr( $cite['url'] ); ?>" />
 	</label>
 </p>
 <p class="field-row">
 	<label for="cite_name" class="three-quarters">
-		<?php _e( 'Name', 'indieweb-post-kinds' ); ?>
-			<input type="text" name="cite_name" id="cite_name" class="widefat" value="<?php echo $cite['name']; ?>" />
+		<?php esc_html_e( 'Name', 'indieweb-post-kinds' ); ?>
+			<input type="text" name="cite_name" id="cite_name" class="widefat" value="<?php echo esc_attr( $cite['name'] ); ?>" />
 	</label>
 </p>
 <p class="field-row hide-if-js" id="rsvp-option">
@@ -66,7 +66,7 @@ if ( $attachment ) {
 }
 ?>
 	</div>
-	<input type="hidden" id="cite_media" name="cite_media" value="<?php echo $attachment; ?>" >
+	<input type="hidden" id="cite_media" name="cite_media" value="<?php echo absint( $attachment ); ?>" >
 </p>
 
 
