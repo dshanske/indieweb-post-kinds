@@ -165,10 +165,10 @@ function kind_get_the_link( $post = null, $cls = null, $date_cls = null ) {
 	$time_string = sprintf(
 		$time_string,
 		esc_attr( get_the_date( DATE_W3C, $post ) ),
-		get_the_date( '', $post ),
-		$date_cls
+		esc_html( get_the_date( '', $post ) ),
+		esc_attr( $date_cls )
 	);
-	return sprintf( '<a class="%4$s" href="%2$s">%1$s</a> - %3$s', kind_get_the_title( $post, $kind ), get_the_permalink( $post ), $time_string, esc_attr( $cls ) );
+	return sprintf( '<a class="%4$s" href="%2$s">%1$s</a> - %3$s', kind_get_the_title( $post, $kind ), esc_url( get_the_permalink( $post ) ), $time_string, esc_attr( $cls ) );
 }
 
 
@@ -231,6 +231,8 @@ function kind_get_the_title( $post = null, $args = array() ) {
 	if ( is_array( $content ) ) {
 		$content = wp_json_encode( $content );
 	}
+	// The content is text (a cited name or an excerpt), often from another site.
+	$content = esc_html( wp_strip_all_tags( (string) $content ) );
 
 	$content = apply_filters( 'kind_get_the_title_content', $content, $post );
 	$before  = apply_filters( 'kind_get_the_title_before', $before, $post );

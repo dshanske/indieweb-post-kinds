@@ -1427,7 +1427,7 @@ final class Kind_Taxonomy {
 		if ( ! $display ) {
 			$display = get_option( 'kind_display' );
 		}
-		$text = '<span class="kind-display-text">' . self::get_kind_info( $kind, 'verb' ) . '</span> ';
+		$text = '<span class="kind-display-text">' . esc_html( self::get_kind_info( $kind, 'verb' ) ) . '</span> ';
 		$icon = self::get_icon( $kind );
 		// Hide Icon in Feed View
 		if ( 'text' !== $display && is_feed() ) {
