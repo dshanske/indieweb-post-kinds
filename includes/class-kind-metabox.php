@@ -249,9 +249,10 @@ class Kind_Metabox {
 		if ( isset( $time['offset'] ) ) {
 			$offset = $time['offset'];
 		}
-		$string  = '<label class="half ' . $class . '" for="' . $prefix . '">' . $label . '<br/>';
-		$string .= '<input class="date" type="date" name="' . $prefix . '_date" id="' . $prefix . '_date" value="' . ( $time['date'] ?? '' ) . '"/>';
-		$string .= '<input class="time" type="time" name="' . $prefix . '_time" id="' . $prefix . '_time" step="1" value="' . ( $time['time'] ?? '' ) . '"/>';
+		$prefix  = esc_attr( $prefix );
+		$string  = '<label class="half ' . esc_attr( $class ) . '" for="' . $prefix . '">' . esc_html( $label ) . '<br/>';
+		$string .= '<input class="date" type="date" name="' . $prefix . '_date" id="' . $prefix . '_date" value="' . esc_attr( $time['date'] ?? '' ) . '"/>';
+		$string .= '<input class="time" type="time" name="' . $prefix . '_time" id="' . $prefix . '_time" step="1" value="' . esc_attr( $time['time'] ?? '' ) . '"/>';
 		$string .= self::select_offset( $prefix, $offset );
 		$string .= '</label>';
 		return $string;
@@ -267,7 +268,7 @@ class Kind_Metabox {
 	 * @return string
 	 */
 	public static function select_offset( $prefix, $select ) {
-		$string  = '<select name="' . $prefix . '_offset" id="' . $prefix . '_offset">';
+		$string  = '<select name="' . esc_attr( $prefix ) . '_offset" id="' . esc_attr( $prefix ) . '_offset">';
 		$string .= self::timezone_offset_choice( $select );
 		$string .= '</select>';
 		return $string;
@@ -285,11 +286,11 @@ class Kind_Metabox {
 		$tzlist = get_gmt_offsets();
 		$string = '';
 		foreach ( $tzlist as $key => $value ) {
-			$string .= '<option value="' . $value . '"';
+			$string .= '<option value="' . esc_attr( $value ) . '"';
 			if ( $select === $value ) {
 				$string .= ' selected';
 			}
-			$string .= '>GMT' . $value . '</option>';
+			$string .= '>GMT' . esc_html( $value ) . '</option>';
 		}
 		return $string;
 	}
@@ -314,11 +315,11 @@ class Kind_Metabox {
 		);
 		$ret      = '';
 		foreach ( $ratings as $key => $value ) {
-			$ret .= '<option value="' . $key . '"';
+			$ret .= '<option value="' . esc_attr( $key ) . '"';
 			if ( $selected === $key ) {
 				$ret .= ' selected';
 			}
-			$ret .= '>' . $value . '</option>';
+			$ret .= '>' . esc_html( (string) $value ) . '</option>';
 		}
 		return $ret;
 	}
@@ -342,11 +343,11 @@ class Kind_Metabox {
 		);
 		$string = '';
 		foreach ( $rsvps as $key => $value ) {
-			$string .= '<option value="' . $key . '"';
+			$string .= '<option value="' . esc_attr( $key ) . '"';
 			if ( $selected === $key ) {
 				$string .= ' selected';
 			}
-			$string .= '>' . $value . '</option>';
+			$string .= '>' . esc_html( (string) $value ) . '</option>';
 		}
 		return $string;
 	}
@@ -360,7 +361,7 @@ class Kind_Metabox {
 	 * @return string
 	 */
 	public static function rsvp_select( $selected ) {
-		$string  = '<label for="mf2_rsvp">' . __( 'RSVP', 'indieweb-post-kinds' ) . '</label><br/>';
+		$string  = '<label for="mf2_rsvp">' . esc_html__( 'RSVP', 'indieweb-post-kinds' ) . '</label><br/>';
 		$string .= '<select name="mf2_rsvp" id="mf2_rsvp">';
 		$string .= self::rsvp_choice( $selected );
 		$string .= '</select>';
@@ -376,7 +377,7 @@ class Kind_Metabox {
 	 * @return string
 	 */
 	public static function rating_select( $selected ) {
-		$string  = '<label for="mf2_rating">' . __( 'Rating', 'indieweb-post-kinds' ) . '</label><br/>';
+		$string  = '<label for="mf2_rating">' . esc_html__( 'Rating', 'indieweb-post-kinds' ) . '</label><br/>';
 		$string .= '<select name="mf2_rating" id="mf2_rating">';
 		$string .= self::rating_choice( $selected );
 		$string .= '</select>';
