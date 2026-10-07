@@ -41,17 +41,16 @@ class Kind_Menu_Widget extends WP_Widget {
 			$include[] = 'note';
 		}
 
-		// phpcs:ignore
-		echo $args['before_widget'];
+		echo $args['before_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Widget wrapper markup registered by the theme.
 		if ( $title ) {
-			echo $args['before_title'] . $title . $args['after_title']; // phpcs:ignore
+			echo $args['before_title'] . $title . $args['after_title']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Wrapper markup is the theme's; the title is escaped by core's widget_title filter.
 		}
 		?>
 
 		<div id="kind-menu">
 		<ul>
 		<?php
-		$feed = is_front_page() ? 'rel="feed"' : '';
+		$feed = is_front_page() ? ' rel="feed"' : '';
 		foreach ( $include as $i ) {
 			$count = Kind_Taxonomy::get_post_kind_count( $i );
 			if ( 0 === $count ) {
@@ -59,31 +58,30 @@ class Kind_Menu_Widget extends WP_Widget {
 			}
 			$name = ( 1 === $count ) ? Kind_Taxonomy::get_kind_info( $i, 'singular_name' ) : Kind_Taxonomy::get_kind_info( $i, 'name' );
 			/* translators: 1. Blog Title 2. Kind Singular Name */
-			$title = sprintf( __( 'title="%1$s %2$s Feed"', 'indieweb-post-kinds' ), esc_attr( get_bloginfo( 'name' ) ), esc_attR( Kind_Taxonomy::get_kind_info( $i, 'singular_name' ) ) );
-			if ( 1 === (int) $instance['count'] ) {
-				$count = sprintf( '%1$s (%2$s)', $name, $count );
+			$feed_title = sprintf( __( '%1$s %2$s Feed', 'indieweb-post-kinds' ), get_bloginfo( 'name' ), Kind_Taxonomy::get_kind_info( $i, 'singular_name' ) );
+			if ( 1 === (int) ( $instance['count'] ?? 0 ) ) {
+				$label = sprintf( '%1$s (%2$s)', $name, number_format_i18n( $count ) );
 			} else {
-				$count = $name;
+				$label = $name;
 			}
 			printf(
-				'<li><a %4$s %5$s type="text/html" href="%2$s">%1$s%3$s</a></li>',
-				Kind_Taxonomy::get_icon( $i ), // phpcs:ignore
+				'<li><a%4$s title="%5$s" type="text/html" href="%2$s">%1$s%3$s</a></li>',
+				Kind_Taxonomy::get_icon( $i ), // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The plugin's own SVG icon markup.
 				esc_url( Kind_Taxonomy::get_post_kind_link( $i ) ),
-				$count, // phpcs:ignore
-				$feed, // phpcs:ignore
-				$title  // phpcs:ignore
-			); // phpcs:ignore
+				esc_html( $label ),
+				$feed, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- A fixed attribute string.
+				esc_attr( $feed_title )
+			);
 		}
-		if ( 1 === (int) $instance['all'] ) {
-			printf( '<li><a type="text/html" href="%2$s">%1$s%3$s</a></li>', Kind_Taxonomy::get_icon( 'firehose' ), esc_url( get_post_type_archive_link( 'post' ) ), esc_html__( 'All Posts', 'indieweb-post-kinds' ) ); // phpcs:ignore
+		if ( 1 === (int) ( $instance['all'] ?? 0 ) ) {
+			printf( '<li><a type="text/html" href="%2$s">%1$s%3$s</a></li>', Kind_Taxonomy::get_icon( 'firehose' ), esc_url( get_post_type_archive_link( 'post' ) ), esc_html__( 'All Posts', 'indieweb-post-kinds' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The plugin's own SVG icon markup.
 		}
 		?>
 		</ul>
 		</div>
 
 		<?php
-		// phpcs:ignore
-		echo $args['after_widget'];
+		echo $args['after_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Widget wrapper markup registered by the theme.
 	}
 
 
@@ -119,9 +117,8 @@ class Kind_Menu_Widget extends WP_Widget {
 		$instance  = wp_parse_args( (array) $instance, $defaults );
 		$termslist = (array) $instance['termslist'];
 		?>
-				<p><label for="title"><?php esc_html_e( 'Title: ', 'indieweb-post-kinds' ); ?></label>
-				<input type="text" size="30" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?> id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" value="
-		<?php echo esc_html( ( $instance['title'] ?? '' ) ); ?>" /></p>
+				<p><label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php esc_html_e( 'Title: ', 'indieweb-post-kinds' ); ?></label>
+				<input type="text" size="30" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" value="<?php echo esc_attr( $instance['title'] ?? '' ); ?>" /></p>
 		<div id="kind-all">
 		<?php
 		foreach ( Kind_Config::get_termslist() as $term ) {
@@ -134,7 +131,7 @@ class Kind_Menu_Widget extends WP_Widget {
 					esc_attr( $term ),
 					checked( in_array( $term, $termslist, true ), true, false )
 				);
-				printf( '%1$s %2$s<br />', Kind_Taxonomy::get_icon( $term ), esc_html( $value->singular_name ) ); //phpcs:ignore
+				printf( '%1$s %2$s<br />', Kind_Taxonomy::get_icon( $term ), esc_html( $value->singular_name ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The plugin's own SVG icon markup.
 			}
 		}
 		?>
