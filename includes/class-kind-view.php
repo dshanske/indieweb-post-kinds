@@ -314,7 +314,7 @@ class Kind_View {
 		if ( is_array( $atr ) ) {
 				$atr = self::get_attributes( $atr );
 		}
-		$return = '<a ' . $atr . ' href="' . $url . '">' . $name . '</a>';
+		$return = '<a ' . $atr . ' href="' . esc_url( $url ) . '">' . esc_html( $name ) . '</a>';
 		return $return;
 	}
 
@@ -333,6 +333,7 @@ class Kind_View {
 		if ( ! isset( $field ) ) {
 			return '';
 		}
+		$type   = tag_escape( $type );
 		$string = '<' . $type . $attr . '>' . $field . '</' . $type . '>';
 		return $string;
 	}
@@ -394,7 +395,8 @@ class Kind_View {
 		if ( 0 === strcmp( $embed, $url ) ) {
 			$embed = '';
 		} else {
-			$embed = sprintf( '<div class="kind-embed">%1$s<a class="u-url" href="%2$s"></a></div>', $embed, $url );
+			// The embed is the oEmbed markup WordPress generated.
+			$embed = sprintf( '<div class="kind-embed">%1$s<a class="u-url" href="%2$s"></a></div>', $embed, esc_url( $url ) );
 		}
 			return $embed;
 	}
@@ -482,17 +484,20 @@ class Kind_View {
 			return $card;
 		}
 		// Temporarily drop multi-data on display
-		if ( ! empty( $author['url'] ) && is_array( $author['url'] ) ) {
-			$author['url'] = $author['url'][0];
+		foreach ( array( 'name', 'url', 'photo' ) as $key ) {
+			$value          = isset( $author[ $key ] ) ? $author[ $key ] : '';
+			$author[ $key ] = is_array( $value ) ? (string) reset( $value ) : (string) $value;
 		}
 
-		if ( is_array( $author['name'] ) ) {
-				$author['name'] = $author['name'][0];
-		}
-
-		if ( empty( $author['name'] ) && ! empty( $author['url'] ) ) {
+		// Escape everything here: author data often comes from other sites.
+		$author['url']   = esc_url( $author['url'] );
+		$author['photo'] = esc_url( $author['photo'] );
+		if ( '' === trim( wp_strip_all_tags( $author['name'] ) ) && ! empty( $author['url'] ) ) {
 			$author['name'] = __( 'an author', 'indieweb-post-kinds' );
 		}
+		$author['name']  = esc_html( wp_strip_all_tags( $author['name'] ) );
+		$args['width']   = absint( $args['width'] );
+		$args['height']  = absint( $args['height'] );
 
 		// If no filter generated the card, generate the card.
 		switch ( $args['display'] ) {
@@ -501,22 +506,22 @@ class Kind_View {
 					return false;
 				}
 				if ( empty( $author['url'] ) ) {
-					return sprintf( '<img src="%1s" class="h-card u-photo p-author" alt="%2s" width=%3s height=%4s />', $author['photo'], $author['name'], $args['width'], $args['height'] );
+					return sprintf( '<img src="%1$s" class="h-card u-photo p-author" alt="%2$s" width="%3$d" height="%4$d" />', $author['photo'], $author['name'], $args['width'], $args['height'] );
 				} else {
-					return sprintf( '<a class="h-card p-author" href="%1s"><img class="u-photo" src="%2s" alt="%3s" width=%4s height=%5s /></a>', $author['url'], $author['photo'], $author['name'], $args['width'], $args['height'] );
+					return sprintf( '<a class="h-card p-author" href="%1$s"><img class="u-photo" src="%2$s" alt="%3$s" width="%4$d" height="%5$d" /></a>', $author['url'], $author['photo'], $author['name'], $args['width'], $args['height'] );
 				}
 				break;
 			case 'name':
-				return sprintf( '<span class="h-card p-author">%1s</span>', $author['name'] );
+				return sprintf( '<span class="h-card p-author">%1$s</span>', $author['name'] );
 			case 'both':
 				if ( ! empty( $author['photo'] ) ) {
 					if ( empty( $author['url'] ) ) {
-						return sprintf( '<span class="h-card p-author"><img src="%1s" class="u-photo" alt="%2s" width=%3s height=%4s />%5s</span>', $author['photo'], $author['name'], $args['width'], $args['height'], $author['name'] );
+						return sprintf( '<span class="h-card p-author"><img src="%1$s" class="u-photo" alt="%2$s" width="%3$d" height="%4$d" />%5$s</span>', $author['photo'], $author['name'], $args['width'], $args['height'], $author['name'] );
 					} else {
-						return sprintf( '<a href="%1s" class="h-card p-author"><img class="u-photo" src="%2s" alt="%3s" width=%4s height=%5s />%6s</a>', $author['url'], $author['photo'], $author['name'], $args['width'], $args['height'], $author['name'] );
+						return sprintf( '<a href="%1$s" class="h-card p-author"><img class="u-photo" src="%2$s" alt="%3$s" width="%4$d" height="%5$d" />%6$s</a>', $author['url'], $author['photo'], $author['name'], $args['width'], $args['height'], $author['name'] );
 					}
 				} else {
-					return sprintf( '<span class="h-card p-author">%1s</span>', $author['name'] );
+					return sprintf( '<span class="h-card p-author">%1$s</span>', $author['name'] );
 				}
 				break;
 			default:
@@ -537,21 +542,21 @@ class Kind_View {
 		if ( ! $cite ) {
 			return false;
 		}
-		if ( empty( $cite['url'] ) ) {
-			if ( ! isset( $cite['name'] ) ) {
+		// FIXME: Temporary Fix for array functionality
+		$url  = isset( $cite['url'] ) ? $cite['url'] : '';
+		$url  = esc_url( is_array( $url ) ? (string) reset( $url ) : (string) $url );
+		$name = isset( $cite['name'] ) ? $cite['name'] : null;
+		$name = is_array( $name ) ? (string) reset( $name ) : $name;
+		if ( empty( $url ) ) {
+			if ( null === $name ) {
 				return '';
 			}
-			return sprintf( '<span class="p-name">%1s</span>', $cite['name'] );
+			return sprintf( '<span class="p-name">%1$s</span>', esc_html( wp_strip_all_tags( (string) $name ) ) );
 		}
-		// FIXME: Temporary Fix for array functionality
-		if ( is_array( $cite['url'] ) ) {
-			$cite['url'] = $cite['url'][0];
+		if ( null === $name || '' === $name ) {
+			$name = $url;
 		}
-		if ( ! array_key_exists( 'name', $cite ) ) {
-			// $cite['name'] = self::get_post_type_string( $cite['url'] );
-			$cite['name'] = $cite['url'];
-		}
-		return sprintf( '<a href="%1s" class="p-name u-url">%2s</a>', $cite['url'], $cite['name'] );
+		return sprintf( '<a href="%1$s" class="p-name u-url">%2$s</a>', $url, esc_html( wp_strip_all_tags( (string) $name ) ) );
 	}
 
 	/**
@@ -569,7 +574,40 @@ class Kind_View {
 		if ( ! array_key_exists( 'publication', $cite ) || empty( $cite['publication'] ) ) {
 			return false;
 		}
-		return sprintf( '<span class="p-publication">%1s</span>', $cite['publication'] );
+		$publication = is_array( $cite['publication'] ) ? (string) reset( $cite['publication'] ) : (string) $cite['publication'];
+		return sprintf( '<span class="p-publication">%1$s</span>', esc_html( wp_strip_all_tags( $publication ) ) );
+	}
+
+	/**
+	 * Returns the citation's summary as escaped plain text.
+	 *
+	 * Summaries are plain text: tags are stripped, and the text is marked up as
+	 * p-summary. Line breaks are kept.
+	 *
+	 * @access public
+	 *
+	 * @param array $cite Normalized citation (see Kind_Post::normalize_cite()).
+	 * @return string The summary markup, or an empty string if there is none.
+	 */
+	public static function get_summary( $cite ) {
+		if ( ! is_array( $cite ) || empty( $cite['summary'] ) ) {
+			return '';
+		}
+		$summary = $cite['summary'];
+		if ( is_array( $summary ) ) {
+			foreach ( array( 'value', 'text', 'html' ) as $key ) {
+				if ( isset( $summary[ $key ] ) ) {
+					$summary = $summary[ $key ];
+					break;
+				}
+			}
+			$summary = is_array( $summary ) ? (string) reset( $summary ) : $summary;
+		}
+		$summary = trim( wp_strip_all_tags( (string) $summary ) );
+		if ( '' === $summary ) {
+			return '';
+		}
+		return sprintf( '<blockquote class="p-summary">%1$s</blockquote>', nl2br( esc_html( $summary ) ) );
 	}
 
 	/**
