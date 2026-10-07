@@ -22,13 +22,13 @@ if ( is_array( $photos ) ) {
 <?php
 echo Kind_Taxonomy::get_before_kind( 'photo' );
 if ( ! empty( $cite['name'] ) ) {
-	echo sprintf( '<span>%1s</span>', $cite['name'] );
+	printf( '<span class="p-name">%1$s</span>', esc_html( $cite['name'] ) );
 }
 ?>
 </header>
 <?php
 if ( $embed ) {
-	printf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
+	printf( '<blockquote class="e-summary">%1$s</blockquote>', $embed );
 } elseif ( $photos ) {
 	$view = new Kind_Media_View( $photos, 'photo' );
 	echo $view->get();

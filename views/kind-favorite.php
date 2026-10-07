@@ -15,16 +15,13 @@ if ( ! $cite ) {
 <?php
 echo Kind_Taxonomy::get_before_kind( 'favorite' );
 if ( ! $embed ) {
-	if ( ! empty( $url ) ) {
-		echo sprintf( '<a href="%1s" class="p-name u-url">%2s</a>', $url, $cite['name'] );
-	} else {
-		echo sprintf( '<span class="p-name">%1s</span>', $cite['name'] );
-	}
+	echo Kind_View::get_cite_title( $cite );
 	if ( $author ) {
-		echo ' ' . __( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
+		echo ' ' . esc_html__( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
 	}
-	if ( ! empty( $cite['publication'] ) ) {
-		echo sprintf( ' <em>(<span class="p-publication">%1s</span>)</em>', $cite['publication'] );
+	$site_name = Kind_View::get_site_name( $cite );
+	if ( $site_name ) {
+		echo ' <em>(' . $site_name . ')</em>';
 	}
 }
 ?>
@@ -32,9 +29,9 @@ if ( ! $embed ) {
 <?php
 if ( $cite ) {
 	if ( $embed ) {
-		echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
-	} elseif ( array_key_exists( 'summary', $cite ) ) {
-		echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $cite['summary'] );
+		echo sprintf( '<blockquote class="e-summary">%1$s</blockquote>', $embed );
+	} else {
+		echo Kind_View::get_summary( $cite );
 	}
 }
 
