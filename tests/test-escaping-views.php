@@ -70,7 +70,8 @@ class EscapingViewsTest extends WP_UnitTestCase {
 			)
 		);
 		$this->assertStringNotContainsString( '<script', $html );
-		$this->assertStringNotContainsString( 'e-summary', $html );
+		// The summary is plain text (the e-summary class is still used for embeds).
+		$this->assertStringNotContainsString( '<p>Quoted', $html );
 	}
 
 	public function test_citation_markup_is_kept() {
