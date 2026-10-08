@@ -81,19 +81,25 @@ class Kind_Media_Metadata {
 	 * @param array   $attachment data.
 	 */
 	public static function attachment_fields_to_save( $post, $attachment ) {
-		$author = array();
-		if ( isset( $attachment['author_name'] ) && ! empty( $attachment['author_name'] ) ) {
-			$author['name'] = $attachment['author_name'];
+		// Core checks this before saving; check again as the filter can be applied elsewhere.
+		if ( empty( $post['ID'] ) || ! current_user_can( 'edit_post', $post['ID'] ) ) {
+			return $post;
 		}
-		if ( isset( $attachment['author_url'] ) && ! empty( $attachment['author_url'] ) ) {
-			$author['url'] = $attachment['author_url'];
+		// Core passes the request data slashed.
+		$author = array();
+		if ( isset( $attachment['author_name'] ) && is_string( $attachment['author_name'] ) ) {
+			$author['name'] = sanitize_text_field( wp_unslash( $attachment['author_name'] ) );
+		}
+		if ( isset( $attachment['author_url'] ) && is_string( $attachment['author_url'] ) ) {
+			$author['url'] = sanitize_url( trim( wp_unslash( $attachment['author_url'] ) ), array( 'http', 'https' ) );
 		}
 		$author = array_filter( $author );
 		if ( empty( $author ) ) {
 			delete_post_meta( $post['ID'], 'mf2_author' );
 		} else {
 			$author['type'] = 'card';
-			update_post_meta( $post['ID'], 'mf2_author', \ParseThis\jf2_to_mf2( $author ) );
+			// The metadata API unslashes, so slash the sanitized values.
+			update_post_meta( $post['ID'], 'mf2_author', wp_slash( \ParseThis\jf2_to_mf2( $author ) ) );
 		}
 		return $post;
 	}
