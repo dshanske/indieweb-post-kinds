@@ -255,12 +255,12 @@ class MF2_Post implements ArrayAccess {
 		if ( ! $meta ) {
 			return array();
 		}
-		if ( isset( $meta['response'] ) ) {
-			$response = maybe_unserialize( $meta['response'] );
-			// Retrieve from the old response array and store in new location.
-			if ( ! empty( $response ) ) {
+		// Very old versions stored the citation in the response meta. Read it as
+		// mf2_cite when there is no newer citation; the upgrade routine moves it.
+		if ( isset( $meta['response'] ) && ! isset( $meta['mf2_cite'] ) ) {
+			$response = maybe_unserialize( $meta['response'][0] );
+			if ( is_array( $response ) ) {
 				$new = array();
-				// Convert to new format and update.
 				if ( ! empty( $response['title'] ) ) {
 					$new['name'] = $response['title'];
 				}
@@ -274,18 +274,13 @@ class MF2_Post implements ArrayAccess {
 					$new['published'] = $response['published'];
 				}
 				if ( ! empty( $response['author'] ) ) {
-					$new['card']         = array();
-					$new['card']['name'] = $response['author'];
+					$new['card'] = array( 'name' => $response['author'] );
 					if ( ! empty( $response['icon'] ) ) {
 						$new['card']['photo'] = $response['icon'];
 					}
 				}
-				$new         = array_unique( $new );
-				$new['card'] = array_unique( $new['card'] );
-				if ( isset( $new ) ) {
-					update_post_meta( $this->uid, 'mf2_cite', $new );
-					delete_post_meta( $this->uid, 'response' );
-					$meta['cite'] = $new;
+				if ( $new ) {
+					$meta['mf2_cite'] = array( $new );
 				}
 			}
 		}
@@ -639,11 +634,8 @@ class MF2_Post implements ArrayAccess {
 		}
 		$post_content = $this->content['html'] ?? '';
 		if ( $post_content ) {
+			// Recorded when the post is saved; see Kind_Media_Metadata::save_post().
 			$att_ids = get_post_meta( $this->uid, '_content_img_ids', true );
-			if ( false === $att_ids ) {
-				$att_ids = Kind_Media_Metadata::get_img_from_content( $post_content );
-				update_post_meta( $this->uid, '_content_img_ids', $att_ids );
-			}
 			if ( $att_ids ) {
 				return $content_allow ? $att_ids : array();
 			}
@@ -658,85 +650,14 @@ class MF2_Post implements ArrayAccess {
 		}
 		$att_ids = $this->get_attached_media( 'image', $this->uid );
 		$photos  = $this->get( 'photo', false );
-		if ( is_array( $photos ) ) {
-			if ( ! wp_is_numeric_array( $photos ) ) {
-				$photos = array( $photos );
-			}
-
-			$photos = $this->sideload_images( $photos );
-			$this->set( 'photo', $photos );
+		if ( is_array( $photos ) && ! wp_is_numeric_array( $photos ) ) {
+			$photos = array( $photos );
 		}
 		$att_ids = array_merge( $att_ids, $this->get_attachments_from_urls( $photos ) );
 		if ( ! empty( $att_ids ) ) {
 			return array_filter( $att_ids );
 		}
 		return false;
-	}
-
-	private function media_sideload_image( $url, $post_id, $description = null ) {
-		// To prevent sideloading the same image multiple times check for the original URL which will now be stored
-		$ids = get_posts(
-			array(
-				'post_type'        => 'attachment',
-				'suppress_filters' => false,
-				'nopaging'         => true,
-				'meta_key'         => 'mf2_url',
-				'meta_value'       => $url,
-				'fields'           => 'ids',
-			)
-		);
-		if ( ! empty( $ids ) ) {
-			return $ids[0];
-		}
-		$id = media_sideload_image( $url, $post_id, $description, 'id' );
-		if ( $id ) {
-			update_post_meta( $id, 'mf2_url', $url );
-		}
-		return $id;
-	}
-
-
-	private function sideload_images( $photos ) {
-		require_once ABSPATH . 'wp-admin/includes/media.php';
-		require_once ABSPATH . 'wp-admin/includes/file.php';
-		require_once ABSPATH . 'wp-admin/includes/image.php';
-		foreach ( $photos as $key => $value ) {
-			if ( is_string( $value ) ) {
-				if ( ! wp_http_validate_url( $value ) ) {
-					continue;
-				} elseif ( ! attachment_url_to_postid( $value ) ) {
-					$id = self::media_sideload_image( $value, $this->uid );
-					if ( $id ) {
-						$photos[ $key ] = wp_get_attachment_url( $id );
-					}
-				}
-			}
-			// Attempt to normalize old data
-			if ( is_array( $value ) ) {
-				$value = mf2_to_jf2( $value );
-				$id    = attachment_url_to_postid( $value['url'] );
-				if ( ! $id ) {
-					$id = self::media_sideload_image( $value['url'], $this->uid );
-					if ( $id ) {
-						$value['url'] = wp_get_attachment_url( $id );
-					}
-				}
-				$args = array(
-					'ID'           => $id,
-					'post_title'   => $value['name'] ?? '',
-					'post_excerpt' => $value['summary'] ?? '',
-				);
-				$args = array_filter( $args );
-				wp_update_post( $args );
-				unset( $value['name'] );
-				unset( $value['summary'] );
-				foreach ( $value as $k => $v ) {
-					update_post_meta( $id, 'mf2_' . $k, $v );
-				}
-				$photos[ $key ] = $value['url'];
-			}
-		}
-		return $photos;
 	}
 
 	public function get_attachments_from_urls( $urls ) {
