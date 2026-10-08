@@ -5,6 +5,8 @@
  * Sets Up Tabbed Metabox in the Posting UI for Kind data.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 class Kind_Metabox {
 
 	/**

@@ -5,6 +5,8 @@
  * @package WordPress
  */
 
+defined( 'ABSPATH' ) || exit;
+
 header( 'Content-Type: ' . feed_content_type( 'atom' ) . '; charset=' . get_option( 'blog_charset' ), true );
 echo '<?xml version="1.0" encoding="' . get_option( 'blog_charset' ) . '" ?' . '>';
 

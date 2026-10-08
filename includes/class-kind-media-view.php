@@ -6,6 +6,8 @@
  * Used to Display Media
  */
 
+defined( 'ABSPATH' ) || exit;
+
 class Kind_Media_View {
 	private $ids;
 	private $type;

@@ -4,6 +4,8 @@
  *
  */
 
+defined( 'ABSPATH' ) || exit;
+
 if ( ! $cite ) {
 	return;
 }

@@ -4,6 +4,8 @@
  *
  */
 
+defined( 'ABSPATH' ) || exit;
+
 
 $itineraries = $kind_post->get( 'itinerary', false );
 $itineraries = is_array( $itineraries ) ? $itineraries : array();

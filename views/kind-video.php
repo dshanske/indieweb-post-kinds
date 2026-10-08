@@ -4,6 +4,8 @@
  *
  */
 
+defined( 'ABSPATH' ) || exit;
+
 $videos = $kind_post->get_video();
 $duration = null;
 if ( is_array( $videos ) ) {

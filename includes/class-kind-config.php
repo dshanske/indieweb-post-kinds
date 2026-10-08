@@ -6,6 +6,8 @@
  * Sets Up Configuration Options for the Plugin.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Static Class to Configure Admin Options.
  *

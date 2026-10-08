@@ -20,6 +20,8 @@
 * }
  */
 
+defined( 'ABSPATH' ) || exit;
+
 class Kind_Fields {
 
 	public static function timezone_list() {

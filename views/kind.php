@@ -4,6 +4,8 @@
  *	The Goal of this Template is to be a general all-purpose model that will be replaced by customization in other templates
  */
 
+defined( 'ABSPATH' ) || exit;
+
 $site_name = Kind_View::get_site_name( $cite );
 $title     = Kind_View::get_cite_title( $cite );
 $duration  = $kind_post->get( 'duration', true );

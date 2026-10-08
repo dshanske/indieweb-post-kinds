@@ -5,6 +5,8 @@
  * Global Scoped Functions for Handling Time.
  */
 
+defined( 'ABSPATH' ) || exit;
+
 if ( ! function_exists( 'kind_safe_datetime' ) ) {
 	/**
 	 * Creates a date from a value without throwing on invalid input.

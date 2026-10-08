@@ -6,6 +6,8 @@
  * Used to define a Post Kind object
  */
 
+defined( 'ABSPATH' ) || exit;
+
 final class Post_Kind implements JsonSerializable {
 	public $id; // Term ID
 	public $slug; // Kind Slug

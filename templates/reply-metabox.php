@@ -1,4 +1,6 @@
 <?php
+defined( 'ABSPATH' ) || exit;
+
 wp_nonce_field( 'replykind_metabox', 'replykind_metabox_nonce' );
 $kind_post = new Kind_Post( get_the_ID() );
 $kind      = $kind_post->get_kind();

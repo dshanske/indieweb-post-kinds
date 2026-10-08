@@ -2,6 +2,8 @@
 /* Registers built-in Post Kinds
  */
 
+defined( 'ABSPATH' ) || exit;
+
 register_post_kind(
 	'article',
 	array(

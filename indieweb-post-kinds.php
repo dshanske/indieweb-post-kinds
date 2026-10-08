@@ -18,6 +18,8 @@
  * Domain Path:  /languages
  */
 
+defined( 'ABSPATH' ) || exit;
+
 if ( ! defined( 'POST_KINDS_KSES' ) ) {
 	define( 'POST_KINDS_KSES', false );
 }
