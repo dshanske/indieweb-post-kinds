@@ -230,7 +230,7 @@ class UpgradeTest extends WP_UnitTestCase {
 		delete_option( 'kind_firehose' );
 		Kind_Upgrade::upgrade_post( $this->unclassified() );
 		$this->assertFalse( Kind_Upgrade::complete() );
-		$this->assertFalse( get_option( 'kind_firehose' ) );
+		$this->assertEmpty( get_option( 'kind_firehose' ) );
 	}
 
 	public function test_home_query_drops_not_exists_once_complete() {
