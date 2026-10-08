@@ -21,6 +21,7 @@ class FeedsTest extends WP_UnitTestCase {
 		$id = self::factory()->post->create(
 			array(
 				'post_title'   => '',
+				'post_excerpt' => '',
 				'post_content' => 'A short note about feeds',
 			)
 		);
