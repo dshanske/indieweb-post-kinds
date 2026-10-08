@@ -295,6 +295,13 @@ through future plugin updates.
 * Sanitize input from the editor, the media modal's artist fields, settings and widgets; citation summaries are saved as plain text
 * An RSVP can now be cleared in the editor
 * Require the edit_posts capability for the post-kinds/1.0/fields REST route; an unknown kind returns a 404
+* Add a background upgrade that moves and repairs stored citations and records the media in each post; `wp post-kinds upgrade` runs it on demand (`--dry-run`, `--post=<id>`)
+* Fix citations losing their type when viewed (a checkin lost its h-card, for example) and nesting inside themselves when saved again; the upgrade repairs existing posts
+* Fix old citations stored as a plain URL being lost when viewed, and a PHP 8 fatal error when MF2_Post read very old response data
+* Reading a post no longer writes to the database or downloads remote photos
+* Performance: the media scan on save covers posts only and reads the content once; attachment lookups are cached; the photos archive and the home page kind filter use simpler queries; the settings page only writes kind terms that changed; icons, time zone offsets and permalink kinds are cached; the media fragment script loads only where there is audio or video, deferred
+* The Kind Post widget prints nothing when it has no posts, instead of an unclosed wrapper
+* New kind terms are named after the kind rather than its slug
 * Display change: Custom views copied into a theme's `kind_views` folder keep their old code. Copy them again from the plugin's `views` folder, or escape their output.
 * Display change: Citation summaries are plain text, marked up as `p-summary` instead of `e-summary`. `Kind_View::get_summary()` returns the summary markup.
 * Display change: `Kind_View::get_hcard()`, `get_cite_title()`, `get_site_name()`, `get_embed()` and `get_url_link()` return escaped markup; HTML passed as a name is shown as text.
@@ -302,6 +309,9 @@ through future plugin updates.
 * Display change: `Kind_View::rsvp_text()` takes optional URL and name arguments and returns the full sentence. Called with only a type, it still returns a printf-ready string. The RSVP strings have changed, so translations need updating.
 * Display change: `Kind_View::rating_text()` ignores non-numeric ratings and shows at most 10 stars.
 * Upgrade change: Published posts with no kind are given one, based on their stored response properties, or Article. If the home page shows only selected kinds, Article is added to them so those posts stay; posts given another kind, such as Like, follow the selection.
+* Upgrade change: Until the background upgrade reaches them, older posts may be missing from the photos archive; `wp post-kinds upgrade` finishes it at once.
+* Removed: The `kind_photo_shortcode_exclude` filter, which never ran.
+* Behaviour change: `MF2_Post::get_images()` no longer imports remote photos into the media library; it returns media library attachments only.
 
 = 3.7.3 ( 2024-04-09 ) =
 * Ensure widget array is instantiated
