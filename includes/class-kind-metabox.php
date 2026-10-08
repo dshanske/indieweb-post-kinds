@@ -503,7 +503,7 @@ class Kind_Metabox {
 		}
 
 		if ( isset( $_POST['mf2_rsvp'] ) ) {
-			$rsvp = sanitize_key( self::posted_text( 'mf2_rsvp' ) );
+			$rsvp = self::posted_text( 'mf2_rsvp' );
 			if ( in_array( $rsvp, array( 'yes', 'no', 'maybe', 'interested', 'remote' ), true ) ) {
 				$kind_post->set( 'rsvp', $rsvp );
 			} else {
