@@ -299,7 +299,7 @@ through future plugin updates.
 * Display change: `Kind_View::rsvp_text()` takes optional URL and name arguments and returns the full sentence. Called with only a type, it still returns a printf-ready string. The RSVP strings have changed, so translations need updating.
 * Display change: `Kind_View::rating_text()` ignores non-numeric ratings and shows at most 10 stars.
 
-* 3.7.3 ( 2024-04-09 ) =
+= 3.7.3 ( 2024-04-09 ) =
 * Ensure widget array is instantiated
 
 
