@@ -1,3 +1,4 @@
+<?php defined( 'ABSPATH' ) || exit; ?>
 <div id="kind-details" class="hide-if-js">
         <h4><?php esc_html_e( 'Information on what you are responding to', 'indieweb-post-kinds' ); ?></h4>
 	<label for="cite_summary">

@@ -5,6 +5,8 @@
  * Includes Helper Functions to Set Up Display Behavior and Allows Calling of View Templates
  */
 
+defined( 'ABSPATH' ) || exit;
+
 // The Kind_View class sets up the kind display behavior for kinds
 class Kind_View {
 	public static function init() {

@@ -1,3 +1,4 @@
+<?php defined( 'ABSPATH' ) || exit; ?>
 	<div id="kind-author" class="hide-if-js">
 	<h4> <?php esc_html_e( 'Information on the Author or Artist of the Piece', 'indieweb-post-kinds' ); ?></h4>
 		<?php esc_html_e( '(Multiple Entries separated by semicolon)', 'indieweb-post-kinds' ); ?><BR />

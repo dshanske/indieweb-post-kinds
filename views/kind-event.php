@@ -4,6 +4,8 @@
  *
  */
 
+defined( 'ABSPATH' ) || exit;
+
 ?>
 
 <section class="response h-event">

@@ -1,4 +1,5 @@
 <?php
+defined( 'ABSPATH' ) || exit;
 
 class Kind_Post_Widget extends WP_Widget {
 	/**

@@ -7,6 +7,8 @@
  * @package Post Kinds
  */
 
+defined( 'ABSPATH' ) || exit;
+
 /**
  * Registers a post kind.
  *
