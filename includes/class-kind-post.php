@@ -334,32 +334,8 @@ class Kind_Post {
 			return array( $this->id );
 		}
 
+		// Recorded when the post is saved; see Kind_Media_Metadata::save_post().
 		$content_ids = get_post_meta( $this->id, '_content_img_ids', true );
-
-		if ( false === $content_ids ) {
-			// Check for a gallery first.
-			$gallery = get_post_gallery( $this->id, false );
-			if ( is_array( $gallery ) && array_key_exists( 'ids', $gallery ) ) {
-				$content_ids = explode( ',', $gallery['ids'] );
-			}
-			$content_ids = array();
-			$post        = $this->get_post();
-			$shortcode   = false;
-			$shortcodes  = apply_filters( 'kind_photo_shortcode_exclude', array( 'vr', '360' ) );
-			if ( $post->post_content ) {
-				foreach ( $shortcodes as $code ) {
-					if ( has_shortcode( $post->post_content, $code ) ) {
-						$shortcode = true;
-					}
-				}
-				if ( $shortcode ) {
-					$content_ids = array();
-				} else {
-					$content_ids = array_merge( $content_ids, Kind_Media_Metadata::get_img_from_content( $post->post_content ) );
-				}
-				update_post_meta( $this->id, '_content_img_ids', $content_ids );
-			}
-		}
 
 		// If there are photos in the content then end here if this is true.
 		if ( ! empty( $content_ids ) ) {
@@ -409,15 +385,8 @@ class Kind_Post {
 			return array( $this->id );
 		}
 
+		// Recorded when the post is saved; see Kind_Media_Metadata::save_post().
 		$content_ids = get_post_meta( $this->id, '_content_audio_ids', true );
-
-		if ( false === $content_ids ) {
-			$post = $this->get_post();
-			if ( $post->post_content ) {
-				$content_ids = Kind_Media_Metadata::get_audio_from_content( $post->post_content );
-				update_post_meta( $this->id, '_content_audio_ids', $content_ids );
-			}
-		}
 
 		// If there are ids in the content then end here if this is true.
 		if ( ! empty( $content_ids ) && $content ) {
@@ -459,15 +428,8 @@ class Kind_Post {
 		if ( wp_attachment_is( 'video', $this->id ) ) {
 			return array( $this->id );
 		}
+		// Recorded when the post is saved; see Kind_Media_Metadata::save_post().
 		$content_ids = get_post_meta( $this->id, '_content_video_ids', true );
-
-		if ( false === $content_ids ) {
-			$post = $this->get_post();
-			if ( $post->post_content ) {
-				$content_ids = Kind_Media_Metadata::get_video_from_content( $post->post_content );
-				update_post_meta( $this->id, '_content_video_ids', $content_ids );
-			}
-		}
 
 		// If there are ids in the content then end here if this is true.
 		if ( ! empty( $content_ids ) && $content ) {
@@ -631,16 +593,20 @@ class Kind_Post {
 				if ( wp_is_numeric_array( $cite ) && 1 === count( $cite ) ) {
 					$cite = $cite[0];
 				}
-				$this->delete( 'cite' );
 			}
-		}
 
-		// If this is formatted as JF2 try to convert it to MF2 and update.
-		if ( is_array( $cite ) && ! wp_is_numeric_array( $cite ) ) {
-			$cite['type'] = 'cite';
-			$cite         = \ParseThis\jf2_to_mf2( $cite );
-			$property     = Kind_Taxonomy::get_kind_info( $this->get_kind(), 'property' );
-			$this->set( $property, $cite );
+			// Citations stored as jf2 are returned as mf2.
+			if ( is_array( $cite ) && ! wp_is_numeric_array( $cite ) ) {
+				if ( ! isset( $cite['properties'] ) ) {
+					if ( empty( $cite['type'] ) ) {
+						$cite['type'] = $this->get_cite_type();
+					}
+					$cite = \ParseThis\jf2_to_mf2( $cite );
+				} elseif ( empty( $cite['type'] ) || ! is_array( $cite['type'] ) ) {
+					// Reads before 4.0.0 stored the type as 'cite'.
+					$cite['type'] = array( 'h-' . $this->get_cite_type() );
+				}
+			}
 		}
 
 		if ( ! $key ) {
@@ -674,6 +640,27 @@ class Kind_Post {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Returns the jf2 type of the post's citation, based on its kind.
+	 *
+	 * Matches the type Kind_Metabox::save_post() stores: a checkin cites a
+	 * place (card), eat and drink cite food, and every other kind a citation.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string The jf2 type: 'card', 'food' or 'cite'.
+	 */
+	public function get_cite_type() {
+		$kind = $this->get_kind();
+		if ( 'checkin' === $kind ) {
+			return 'card';
+		}
+		if ( in_array( $kind, array( 'drink', 'eat' ), true ) ) {
+			return 'food';
+		}
+		return 'cite';
 	}
 
 	/* Returns a normalized cite with all possible parameters present to reduce isset checks and to ensure everything is formatted correctly
