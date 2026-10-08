@@ -76,8 +76,13 @@ class Kind_Post_Widget extends WP_Widget {
 	 * @return array Updated safe values to be saved.
 	 */
 	public function update( $new_instance, $old_instance ) {
-		array_walk_recursive( $new_instance, 'sanitize_text_field' );
-		return $new_instance;
+		$kind   = isset( $new_instance['kind'] ) && is_string( $new_instance['kind'] ) ? sanitize_key( $new_instance['kind'] ) : '';
+		$number = isset( $new_instance['number'] ) ? absint( $new_instance['number'] ) : 0;
+		return array(
+			'title'  => isset( $new_instance['title'] ) && is_string( $new_instance['title'] ) ? sanitize_text_field( $new_instance['title'] ) : '',
+			'kind'   => in_array( $kind, Kind_Taxonomy::get_kind_list(), true ) ? $kind : 'note',
+			'number' => $number > 0 ? $number : 5,
+		);
 	}
 
 
