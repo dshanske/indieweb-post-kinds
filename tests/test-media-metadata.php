@@ -18,6 +18,8 @@ class MediaMetadataTest extends WP_UnitTestCase {
 	}
 
 	public function test_attachment_fields_round_trip_the_author() {
+		// Saving requires a user who can edit the attachment.
+		wp_set_current_user( self::factory()->user->create( array( 'role' => 'editor' ) ) );
 		$attachment = self::factory()->attachment->create(
 			array(
 				'post_mime_type' => 'image/jpeg',
