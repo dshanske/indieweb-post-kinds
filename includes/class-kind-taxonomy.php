@@ -814,9 +814,9 @@ final class Kind_Taxonomy {
 		if ( ! $post ) {
 			return $permalink; }
 
-		// Get taxonomy terms
-		$terms = wp_get_object_terms( $post->ID, 'kind' );
-		if ( ! is_wp_error( $terms ) && ! empty( $terms ) && is_object( $terms[0] ) ) {
+		// Get taxonomy terms; get_the_terms() uses the term cache the main query primes.
+		$terms = get_the_terms( $post, 'kind' );
+		if ( is_array( $terms ) && ! empty( $terms ) && is_object( $terms[0] ) ) {
 			$taxonomy_slug = $terms[0]->slug;
 		} else {
 			$taxonomy_slug = 'note'; }
