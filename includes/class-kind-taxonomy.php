@@ -735,13 +735,26 @@ final class Kind_Taxonomy {
 
 	/**
 	 * Sets up Default Terms for Kind Taxonomy.
+	 *
+	 * Creates a term for each registered kind that has none, and updates the
+	 * name and description of terms that differ from the kind's, for example
+	 * after a translation changes. Terms that already match are not written.
 	 */
 	public static function kind_defaultterms() {
-		$terms = self::get_kind_list();
-		foreach ( $terms as $term ) {
-			if ( ! get_term_by( 'slug', $term, 'kind' ) ) {
+		$existing = get_terms(
+			array(
+				'taxonomy'   => 'kind',
+				'hide_empty' => false,
+			)
+		);
+		$existing = is_wp_error( $existing ) ? array() : array_column( $existing, null, 'slug' );
+		foreach ( self::get_kind_list() as $term ) {
+			if ( ! isset( $existing[ $term ] ) ) {
 				self::create_post_kind( $term );
-			} else {
+				continue;
+			}
+			$kind = self::get_post_kind_info( $term );
+			if ( $kind && ( $existing[ $term ]->name !== $kind->singular_name || $existing[ $term ]->description !== $kind->description ) ) {
 				self::update_post_kind( $term );
 			}
 		}
