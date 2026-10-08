@@ -108,7 +108,7 @@ function get_kind_view_part( $slug, $name = null, $args = null ) {
 }
 
 function kind_display( $post_id = null ) {
-		echo Kind_View::get_display( $post_id ); // phpcs:ignore
+		echo Kind_View::get_display( $post_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The view escapes its output as it is built.
 }
 
 function kind_flatten_array( $a ) {

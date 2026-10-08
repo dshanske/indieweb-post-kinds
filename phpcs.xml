@@ -13,8 +13,6 @@
 	<config name="minimum_supported_wp_version" value="6.2"/>
 
 	<rule ref="WordPress">
-		<exclude name="WordPress.Security.ValidatedSanitizedInput" />
-		<exclude name="WordPress.Security.NonceVerification" />
 		<exclude name="Generic.CodeAnalysis.UnusedFunctionParameter"/>
 		<exclude name="Squiz.Commenting"/>
 		<exclude name="Universal.NamingConventions.NoReservedKeywordParameterNames"/>
