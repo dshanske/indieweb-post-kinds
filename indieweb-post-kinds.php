@@ -231,10 +231,15 @@ class Post_Kinds_Plugin {
 			'Config', // Configuration Menu
 			'Metabox', // Metabox for Classic Editor
 			'View', // Kind Display Functionality
+			'Upgrade', // One-time upgrade of stored data
 		);
 
 		foreach ( $class_load as $load ) {
 			add_action( 'init', array( 'Kind_' . $load, 'init' ) );
+		}
+
+		if ( defined( 'WP_CLI' ) && WP_CLI ) {
+			WP_CLI::add_command( 'post-kinds upgrade', array( 'Kind_Upgrade', 'cli' ) );
 		}
 
 		// Add a Settings Link to the Plugins Page.
