@@ -22,7 +22,7 @@ class Kind_Post {
 				$this->id = $id;
 				$post     = $id;
 			} else {
-				$id       = attachment_url_to_postid( $post );
+				$id       = self::get_attachment_id( $post );
 				$this->id = $id;
 				$post     = $id;
 			}
@@ -434,7 +434,7 @@ class Kind_Post {
 
 		// If there are ids found return them
 		if ( ! empty( $audio_ids ) || ! empty( $att_ids ) || ! empty( $content_ids ) ) {
-			return array_unique( array_merge( $att_ids, $this->get_attachments_from_urls( $audios ), $content_ids ) );
+			return array_unique( array_merge( $att_ids, $audio_ids, $content_ids ) );
 		}
 
 		// This means there are external URLs for audio provided.
@@ -489,9 +489,35 @@ class Kind_Post {
 		return false;
 	}
 
+	/**
+	 * Look up the attachment ID for a URL, with caching.
+	 *
+	 * Wraps attachment_url_to_postid(), which runs an uncached query, in the
+	 * object cache. The key includes the posts last_changed value, so adding,
+	 * changing or deleting any post or attachment invalidates it. Without a
+	 * persistent object cache this still avoids repeat lookups in a request.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $url Media URL.
+	 * @return int Attachment ID, or 0 if there is none.
+	 */
+	public static function get_attachment_id( $url ) {
+		if ( ! is_string( $url ) || '' === $url ) {
+			return 0;
+		}
+		$key = 'attachment_id:' . md5( $url ) . ':' . wp_cache_get_last_changed( 'posts' );
+		$id  = wp_cache_get( $key, 'post-kinds' );
+		if ( false === $id ) {
+			$id = attachment_url_to_postid( $url );
+			wp_cache_set( $key, $id, 'post-kinds' );
+		}
+		return (int) $id;
+	}
+
 	public function get_attachments_from_urls( $urls ) {
 		if ( is_string( $urls ) ) {
-			$attachment = attachment_url_to_postid( $urls );
+			$attachment = self::get_attachment_id( $urls );
 			if ( $attachment ) {
 				return array( $attachment );
 			} else {
@@ -503,12 +529,12 @@ class Kind_Post {
 			foreach ( $urls as $url ) {
 				if ( is_array( $url ) ) {
 					if ( isset( $url['url'] ) ) {
-						$att_ids[] = attachment_url_to_postid( $url['url'] );
+						$att_ids[] = self::get_attachment_id( $url['url'] );
 					}
 				} elseif ( is_numeric( $url ) ) {
 					$att_ids[] = $url;
 				} else {
-					$att_ids[] = attachment_url_to_postid( $url );
+					$att_ids[] = self::get_attachment_id( $url );
 				}
 			}
 		}
@@ -802,7 +828,7 @@ class Kind_Post {
 				return $this->set_author( $value );
 			case 'featured':
 				if ( wp_http_validate_url( $value ) ) {
-					$featured = attachment_url_to_postid( $value );
+					$featured = self::get_attachment_id( $value );
 					if ( $featured ) {
 						$value = $featured;
 					}
@@ -838,7 +864,7 @@ class Kind_Post {
 			case 'photo':
 				if ( \ParseThis\MF2_Utils::is_microformat( $value ) ) {
 					$url = \ParseThis\MF2_Utils::get_plaintext( $value, 'url' );
-					$id  = attachment_url_to_postid( $url );
+					$id  = self::get_attachment_id( $url );
 					if ( $id ) {
 						$value = \ParseThis\mf2_to_jf2( $value );
 						unset( $value['type'] );
