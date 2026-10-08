@@ -31,17 +31,17 @@ if ( is_array( $audios ) ) {
 <header>
 <?php echo Kind_Taxonomy::get_before_kind( 'audio' );
 if ( isset( $cite['name'] ) ) {
-	echo sprintf( '<span>%1s</a>', $cite['name'] );
+	printf( '<span class="p-name">%1$s</span>', esc_html( $cite['name'] ) );
 }
 if ( $duration ) {
-	printf( '(%1$s)', $duration );
+	printf( '(%1$s)', esc_html( $duration ) );
 }
 ?>
 </header>
 </section>
 <?php
 if ( $embed ) {
-	printf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
+	printf( '<blockquote class="e-summary">%1$s</blockquote>', $embed );
 } elseif ( $audios ) {
 	$view = new Kind_Media_View( $audios, 'audio' );
 	echo $view->get();

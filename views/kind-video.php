@@ -21,7 +21,7 @@ if ( is_array( $videos ) ) {
 	}
 }
 $first_photo = null;
-if ( is_countable( $photos ) ) {
+if ( is_array( $photos ) && ! empty( $photos ) ) {
 	$first_photo = $photos[0];
 }
 if ( is_array( $cite ) && ! $videos ) {
@@ -38,14 +38,14 @@ if ( is_array( $cite ) && ! $videos ) {
 <?php
 echo Kind_Taxonomy::get_before_kind( 'video' );
 if ( isset( $cite['name'] ) ) {
-	echo sprintf( '<span>%1s</a>', $cite['name'] );
+	printf( '<span class="p-name">%1$s</span>', esc_html( $cite['name'] ) );
 }
 
 if ( $author ) {
-	echo ' ' . __( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
+	echo ' ' . esc_html__( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
 }
 if ( $duration ) {
-	printf( '(%1$s)', $duration );
+	printf( '(%1$s)', esc_html( $duration ) );
 }
 
 ?>
@@ -53,7 +53,7 @@ if ( $duration ) {
 </section>
 <?php
 if ( $embed ) {
-	printf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
+	printf( '<blockquote class="e-summary">%1$s</blockquote>', $embed );
 } elseif ( $videos ) {
 
 	$poster = wp_get_attachment_image_url( $first_photo, 'full' );

@@ -26,13 +26,13 @@ if ( ! $embed ) {
 		echo $title;
 	}
 	if ( $author ) {
-		echo ' ' . __( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
+		echo ' ' . esc_html__( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
 	}
 	if ( $site_name ) {
-		echo __( ' from ', 'indieweb-post-kinds' ) . '<em>' . $site_name . '</em>';
+		echo esc_html__( ' from ', 'indieweb-post-kinds' ) . '<em>' . $site_name . '</em>';
 	}
 	if ( $duration ) {
-		echo Kind_View::display_duration( $duration );
+		echo esc_html( Kind_View::display_duration( $duration ) );
 	}
 }
 ?>
@@ -40,9 +40,9 @@ if ( ! $embed ) {
 <?php
 if ( $cite ) {
 	if ( $embed ) {
-		echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
-	} elseif ( array_key_exists( 'summary', $cite ) ) {
-		echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $cite['summary'] );
+		echo sprintf( '<blockquote class="e-summary">%1$s</blockquote>', $embed );
+	} else {
+		echo Kind_View::get_summary( $cite );
 	}
 }
 
@@ -51,7 +51,7 @@ if ( $cite ) {
 </section>
 
 <?php if ( $rating ) {
-	echo '<data class="p-rating" value="' . $rating . '">' . sprintf( Kind_View::rating_text( $rating ), $url, $title ) . '</data>';
+	echo '<data class="p-rating" value="' . esc_attr( $rating ) . '">' . esc_html( Kind_View::rating_text( $rating ) ) . '</data>';
 } ?>
 
 

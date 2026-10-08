@@ -19,9 +19,9 @@ if ( ! $embed ) {
 		$cite['name'] = $url;
 	}
 	if ( ! empty( $url ) ) {
-		echo sprintf( '<a href="%1s" class="u-checkin h-card">%2s</a>', $url, $cite['name'] );
+		printf( '<a href="%1$s" class="u-checkin h-card">%2$s</a>', esc_url( $url ), esc_html( $cite['name'] ) );
 	} else {
-		echo sprintf( '<span class="h-card p-checkin">%1s</span>', $cite['name'] );
+		printf( '<span class="h-card p-checkin">%1$s</span>', esc_html( $cite['name'] ) );
 	}
 }
 ?>
@@ -29,7 +29,7 @@ if ( ! $embed ) {
 <?php
 if ( $cite ) {
 	if ( $embed ) {
-		echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
+		echo sprintf( '<blockquote class="e-summary">%1$s</blockquote>', $embed );
 	}
 }
 

@@ -611,55 +611,64 @@ class Kind_View {
 	}
 
 	/**
-	 * Returns a requested Rating item.
+	 * Returns a rating as a row of stars.
 	 *
-	 * The returned value will be a printf-ready translated string.
+	 * @access public
 	 *
-	 * @access
-	 *
-	 * @param int $rating Rating Value.
-	 * @return mixed|string
+	 * @param int|string $rating Rating value. Values above 10 show 10 stars.
+	 * @return string Plain text: one star per point, or an empty string.
 	 */
 	public static function rating_text( $rating ) {
-		if ( ! $rating || 0 === $rating ) {
+		$rating = is_numeric( $rating ) ? (int) $rating : 0;
+		if ( $rating <= 0 ) {
 			return '';
 		}
-
-		$ret = '';
-		for ( $i = $rating; $i > 0; $i-- ) {
-			$ret .= '⭐';
-		}
-
-		return $ret;
+		return str_repeat( '⭐', min( $rating, 10 ) );
 	}
 
 	/**
-	 * Returns a requested RSVP option item.
+	 * Returns the text for an RSVP.
 	 *
-	 * The returned value will be a printf-ready translated string.
+	 * Called with only a type, it returns a printf-ready string whose
+	 * %1$s and %2$s are the event URL and name, as before 4.0.0; the caller
+	 * must escape both. With a URL or name, it returns the escaped sentence
+	 * with the event linked.
 	 *
-	 * @access
+	 * @access public
 	 *
-	 * @param string $type RSVP type to return.
-	 * @return mixed|string
+	 * @param string      $type RSVP value: yes, no, maybe, interested or remote.
+	 * @param string|null $url  Optional. Event URL.
+	 * @param string|null $name Optional. Event name. Defaults to the URL.
+	 * @return string The RSVP text, or an empty string for an unknown type.
 	 */
-	public static function rsvp_text( $type ) {
-		if ( ! $type ) {
+	public static function rsvp_text( $type, $url = null, $name = null ) {
+		$rsvp = array(
+			/* translators: %s: Link to the event */
+			'yes'        => __( 'Attending %s', 'indieweb-post-kinds' ),
+			/* translators: %s: Link to the event */
+			'maybe'      => __( 'Might be attending %s', 'indieweb-post-kinds' ),
+			/* translators: %s: Link to the event */
+			'no'         => __( 'Unable to Attend %s', 'indieweb-post-kinds' ),
+			/* translators: %s: Link to the event */
+			'interested' => __( 'Interested in Attending %s', 'indieweb-post-kinds' ),
+			/* translators: %s: Link to the event */
+			'remote'     => __( 'Attending %s remotely', 'indieweb-post-kinds' ),
+		);
+		if ( ! is_string( $type ) || ! array_key_exists( $type, $rsvp ) ) {
 			return '';
 		}
-		$rsvp = array(
-			/* translators: URL for link to event and name of event */
-			'yes'        => __( 'Attending <a href="%1$s" class="u-in-reply-to">%2$s</a>', 'indieweb-post-kinds' ),
-			/* translators: URL for link to event and name of event */
-			'maybe'      => __( 'Might be attending <a href="%1$s" class="u-in-reply-to">%2$s</a>', 'indieweb-post-kinds' ),
-			/* translators: URL for link to event and name of event */
-			'no'         => __( 'Unable to Attend <a href="%1$s" class="u-in-reply-to">%2$s</a>', 'indieweb-post-kinds' ),
-			/* translators: URL for link to event and name of event */
-			'interested' => __( 'Interested in Attending <a href="%1$s" class=u-in-reply-to">%2$s</a>', 'indieweb-post-kinds' ),
-			/* translators: URL for link to event and name of event */
-			'remote'     => __( 'Attending <a href="%1$s" class="u-in-reply-to">%2$s</a> remotely', 'indieweb-post-kinds' ),
-		);
-		return $rsvp[ $type ];
+		if ( null === $url && null === $name ) {
+			return sprintf( esc_html( $rsvp[ $type ] ), '<a href="%1$s" class="u-in-reply-to">%2$s</a>' );
+		}
+		$url  = esc_url( (string) $url );
+		$name = ( null === $name || '' === $name ) ? $url : $name;
+		$name = esc_html( wp_strip_all_tags( (string) $name ) );
+		if ( '' === $url ) {
+			$link = sprintf( '<span class="p-in-reply-to">%1$s</span>', $name );
+		} else {
+			$link = sprintf( '<a href="%1$s" class="u-in-reply-to">%2$s</a>', $url, $name );
+		}
+		return sprintf( esc_html( $rsvp[ $type ] ), $link );
 	}
 
 	/**
@@ -679,7 +688,7 @@ class Kind_View {
 			'reading'  => __( 'Reading: ', 'indieweb-post-kinds' ),
 			'finished' => __( 'Finished Reading: ', 'indieweb-post-kinds' ),
 		);
-		return $read[ $type ];
+		return ( is_string( $type ) && isset( $read[ $type ] ) ) ? $read[ $type ] : '';
 	}
 
 	/**

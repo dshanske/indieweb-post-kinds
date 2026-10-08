@@ -23,7 +23,7 @@ if ( ! empty( $type ) ) {
 }
 ?>
 
-<section class="h-cite response <?php echo $type; ?> ">
+<section class="h-cite response <?php echo esc_attr( $type ); ?>">
 <header>
 <?php
 echo Kind_Taxonomy::get_before_kind( $kind );
@@ -32,14 +32,14 @@ if ( ! $embed ) {
 		echo $title;
 	}
 	if ( ! empty( $author ) ) {
-		echo ' ' . __( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
+		echo ' ' . esc_html__( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
 	}
 	if ( $site_name ) {
 		echo '<em> (' . $site_name . ')</em>';
 	}
 	if ( in_array( $kind, array( 'jam', 'listen', 'play', 'read', 'watch', 'audio', 'video' ) ) ) {
 		if ( $duration ) {
-			echo ' ' . Kind_View::display_duration( $duration );
+			echo ' ' . esc_html( Kind_View::display_duration( $duration ) );
 		}
 	}
 }
@@ -48,9 +48,9 @@ if ( ! $embed ) {
 <?php
 if ( $cite && is_array( $cite ) ) {
 	if ( $embed ) {
-		echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $embed );
-	} elseif ( array_key_exists( 'summary', $cite ) ) {
-		echo sprintf( '<blockquote class="e-summary">%1s</blockquote>', $cite['summary'] );
+		echo sprintf( '<blockquote class="e-summary">%1$s</blockquote>', $embed );
+	} else {
+		echo Kind_View::get_summary( $cite );
 	}
 }
 
@@ -59,11 +59,11 @@ if ( $cite && is_array( $cite ) ) {
 </section>
 
 <?php if ( $rsvp && in_array( $kind, array( 'rsvp' ) ) ) {
-	echo 'RSVP <span class="p-rsvp">' . $rsvp . '</span>';
+	echo esc_html__( 'RSVP', 'indieweb-post-kinds' ) . ' <span class="p-rsvp">' . esc_html( $rsvp ) . '</span>';
 }
 
 if ( $rating ) {
-	echo '<data class="p-rating" value="' . $rating . '">' . sprintf( Kind_View::rating_text( $rating ), $url, $title ) . '</data>';
+	echo '<data class="p-rating" value="' . esc_attr( $rating ) . '">' . esc_html( Kind_View::rating_text( $rating ) ) . '</data>';
 } ?>
 
 <?php
