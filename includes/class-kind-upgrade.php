@@ -20,10 +20,13 @@ class Kind_Upgrade {
 	 *
 	 * Increase it when upgrade_post() gains a step that existing sites need.
 	 *
+	 * - 1: citations moved and repaired, media IDs recorded (4.0.0).
+	 * - 2: photo flag recorded for the photos archive (4.0.0).
+	 *
 	 * @since 4.0.0
 	 * @var int
 	 */
-	const VERSION = 1;
+	const VERSION = 2;
 
 	/**
 	 * Option holding the version the stored data was last upgraded to.
@@ -328,6 +331,7 @@ class Kind_Upgrade {
 		foreach ( array( 'img', 'audio', 'video' ) as $type ) {
 			$media[ $type ] = get_post_meta( $post_id, '_content_' . $type . '_ids', true );
 		}
+		$media['photo'] = get_post_meta( $post_id, '_kind_has_photo', true );
 		return $media;
 	}
 
