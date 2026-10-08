@@ -987,8 +987,10 @@ final class Kind_Taxonomy {
 		if ( ! in_array( 'note', $include, true ) ) {
 			$include[] = 'note';
 		}
-		if ( isset( $_GET['kind'] ) ) {
-			$default = get_term_by( 'slug', $_GET['kind'], 'kind' );
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Preselects the kind on the new post screen; nothing is saved.
+		$requested = ( isset( $_GET['kind'] ) && is_string( $_GET['kind'] ) ) ? sanitize_key( wp_unslash( $_GET['kind'] ) ) : '';
+		if ( '' !== $requested ) {
+			$default = get_term_by( 'slug', $requested, 'kind' );
 		} elseif ( 'publish' === get_post_status( $post ) ) {
 			// On existing published posts without a kind fall back on article which most closely mimics the behavior of an unclassified post
 			$default = get_term_by( 'slug', 'article', 'kind' );
@@ -1180,7 +1182,8 @@ final class Kind_Taxonomy {
 	public static function kind_dropdown( $post_type, $which ) {
 		if ( 'post' === $post_type ) {
 			$taxonomy      = 'kind';
-			$selected      = isset( $_GET[ $taxonomy ] ) ? $_GET[ $taxonomy ] : '';
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- A list-table filter; nothing is saved.
+			$selected      = ( isset( $_GET[ $taxonomy ] ) && is_string( $_GET[ $taxonomy ] ) ) ? sanitize_key( wp_unslash( $_GET[ $taxonomy ] ) ) : '';
 			$kind_taxonomy = get_taxonomy( $taxonomy );
 			wp_dropdown_categories(
 				array(
