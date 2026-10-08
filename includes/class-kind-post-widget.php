@@ -26,43 +26,41 @@ class Kind_Post_Widget extends WP_Widget {
 	 * @param array $instance Saved values from database.
 	 */
 	public function widget( $args, $instance ) {
-		/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
-		$title = apply_filters( 'widget_title', $instance['title'], $instance, $this->id_base );
-
-		$kind = $instance['kind'] ?? 'note';
-		echo $args['before_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Widget wrapper markup registered by the theme.
-		if ( ! empty( $instance['title'] ) ) {
-			echo $args['before_title'] . $title . $args['after_title']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Wrapper markup is the theme's; the title is escaped by core's widget_title filter.
-		}
-		$transient = get_transient( 'kind_post_widget' );
-		if ( false === $transient ) {
-				$query = array(
-					'tax_query'   => array(
-						array(
-							'taxonomy' => 'kind',
-							'field'    => 'slug',
-							'terms'    => $kind,
-						),
+		$kind   = $instance['kind'] ?? 'note';
+		$number = absint( $instance['number'] ?? 5 );
+		$posts  = get_posts(
+			array(
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Kinds are a taxonomy; this is the indexed way to select them.
+				'tax_query'           => array(
+					array(
+						'taxonomy' => 'kind',
+						'field'    => 'slug',
+						'terms'    => $kind,
 					),
-					'numberposts' => $instance['number'] ?? 5,
-				);
-				$posts = get_posts( $query );
-		}
-
-		if ( 0 === count( $posts ) ) {
+				),
+				'numberposts'         => $number ? $number : 5,
+				'no_found_rows'       => true,
+				'ignore_sticky_posts' => true,
+			)
+		);
+		// Like core's Recent Posts widget, show nothing when there are no posts.
+		// WP_Query caches the result in the object cache, so no transient is needed.
+		if ( empty( $posts ) ) {
 			return;
 		}
-		echo '<div id="kind-posts">';
-		if ( 0 !== count( $posts ) ) {
-			echo '<ul>';
-			foreach ( $posts as $post ) {
-				printf( '<li>%1$s</li>', kind_get_the_link( $post ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- kind_get_the_link() escapes its parts.
-			}
-			echo '</ul>';
-		} else {
-			esc_html_e( 'No Posts Found', 'indieweb-post-kinds' );
+
+		/** This filter is documented in wp-includes/widgets/class-wp-widget-pages.php */
+		$title = apply_filters( 'widget_title', $instance['title'] ?? '', $instance, $this->id_base );
+
+		echo $args['before_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Widget wrapper markup registered by the theme.
+		if ( $title ) {
+			echo $args['before_title'] . $title . $args['after_title']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Wrapper markup is the theme's; the title is escaped by core's widget_title filter.
 		}
-		echo '</div>';
+		echo '<div id="kind-posts"><ul>';
+		foreach ( $posts as $post ) {
+			printf( '<li>%1$s</li>', kind_get_the_link( $post ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- kind_get_the_link() escapes its parts.
+		}
+		echo '</ul></div>';
 		echo $args['after_widget']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Widget wrapper markup registered by the theme.
 	}
 
