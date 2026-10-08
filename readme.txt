@@ -48,7 +48,7 @@ responsibilities to responsibly use this data, and to remove information on requ
 
 This version requires PHP 7.4 and WordPress 6.2 or later, or ClassicPress 2.7.3 or later. Sites on older versions should stay on 3.7.x.
 
-Response data is now escaped when displayed, which changes some display helpers. If your theme has custom views or calls the helpers, see the 4.0.0 changelog.
+Response data is now escaped, which changes some display helpers, and stored post data is upgraded in the background. See the 4.0.0 changelog.
 
 = 3.7.0 =
 
@@ -301,6 +301,7 @@ through future plugin updates.
 * Display change: `kind_get_the_title()` escapes the content before the `kind_get_the_title_content` filter.
 * Display change: `Kind_View::rsvp_text()` takes optional URL and name arguments and returns the full sentence. Called with only a type, it still returns a printf-ready string. The RSVP strings have changed, so translations need updating.
 * Display change: `Kind_View::rating_text()` ignores non-numeric ratings and shows at most 10 stars.
+* Upgrade change: Published posts with no kind are given one, based on their stored response properties, or Article. If the home page shows only selected kinds, Article is added to them so those posts stay; posts given another kind, such as Like, follow the selection.
 
 = 3.7.3 ( 2024-04-09 ) =
 * Ensure widget array is instantiated
