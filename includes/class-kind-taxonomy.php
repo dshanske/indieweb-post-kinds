@@ -1470,14 +1470,19 @@ final class Kind_Taxonomy {
 	 * @return string
 	 */
 	public static function get_icon( $kind, $echo = false ) {
-		$name       = self::get_kind_info( $kind, 'singular_name' );
-		$svg        = sprintf( '%1$ssvgs/%2$s.svg', plugin_dir_path( __DIR__ ), $kind );
-		$attributes = apply_filters( 'post_kinds_icon_attributes', 'style="display: inline-block; max-height: 1rem; margin-right: 0.5rem"' );
-		if ( file_exists( $svg ) ) {
-			$return = sprintf( '<span class="svg-icon svg-%1$s" aria-label="%2$s" title="%2$s" %3$s><span aria-hidden="true">%4$s</span></span>', esc_attr( $kind ), esc_attr( $name ), $attributes, file_get_contents( $svg ) );
-		} else {
+		// Icons are shown per post, per widget item and per settings row; read each file once.
+		static $svgs = array();
+		$kind        = sanitize_key( $kind );
+		if ( ! isset( $svgs[ $kind ] ) ) {
+			$svg           = sprintf( '%1$ssvgs/%2$s.svg', plugin_dir_path( __DIR__ ), $kind );
+			$svgs[ $kind ] = file_exists( $svg ) ? (string) file_get_contents( $svg ) : '';
+		}
+		if ( '' === $svgs[ $kind ] ) {
 			return '';
 		}
+		$name       = self::get_kind_info( $kind, 'singular_name' );
+		$attributes = apply_filters( 'post_kinds_icon_attributes', 'style="display: inline-block; max-height: 1rem; margin-right: 0.5rem"' );
+		$return     = sprintf( '<span class="svg-icon svg-%1$s" aria-label="%2$s" title="%2$s" %3$s><span aria-hidden="true">%4$s</span></span>', esc_attr( $kind ), esc_attr( $name ), $attributes, $svgs[ $kind ] );
 		if ( $echo ) {
 			echo $return; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The plugin's own SVG icon; the kind and name are escaped, and the attributes come from the post_kinds_icon_attributes filter.
 		}
