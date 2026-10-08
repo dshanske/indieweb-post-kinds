@@ -362,7 +362,7 @@ final class Kind_Taxonomy {
 		// Only kick in if the permalink would be the post_id otherwise.
 		if ( is_numeric( $permalink[1] ) && $post_id === (int) $permalink[1] ) {
 			$excerpt = self::get_excerpt( $post );
-			$excerpt = sanitize_title( mb_strimwidth( wp_strip_all_tags( $excerpt ), 0, 40 ) ); // phpcs:ignore
+			$excerpt = sanitize_title( mb_strimwidth( wp_strip_all_tags( $excerpt ), 0, 40 ) );
 			if ( ! empty( $excerpt ) ) {
 				$permalink[1] = wp_unique_post_slug( $excerpt, $post_id, $post->post_status, $post->post_type, $post->post_parent );
 			}
@@ -401,7 +401,7 @@ final class Kind_Taxonomy {
 				}
 			}
 		}
-		return mb_strimwidth( $excerpt, 0, $length, '...' ); // phpcs:ignore
+		return mb_strimwidth( $excerpt, 0, $length, '...' );
 	}
 
 	/**
@@ -1481,7 +1481,7 @@ final class Kind_Taxonomy {
 			return '';
 		}
 		if ( $echo ) {
-			echo $return; // phpcs:ignore
+			echo $return; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The plugin's own SVG icon; the kind and name are escaped, and the attributes come from the post_kinds_icon_attributes filter.
 		}
 		return $return;
 	}

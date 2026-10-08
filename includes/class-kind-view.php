@@ -163,7 +163,7 @@ class Kind_View {
 	 * @param int|null $post_id Post ID.
 	 */
 	public static function display( $post_id = null ) {
-		echo self::get_display( $post_id ); // phpcs:ignore
+		echo self::get_display( $post_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The view escapes its output as it is built.
 	}
 
 	/**
