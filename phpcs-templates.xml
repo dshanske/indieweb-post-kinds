@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<ruleset name="Indieweb-Post-Kinds-Templates">
+	<description>Checks for the template files in templates/ and views/. They are included with variables already in scope and echo markup built by escaping helpers, so only the security, compatibility and translation sniffs apply. Escaping in the views is covered by tests/test-escaping-views.php.</description>
+
+	<file>./templates/</file>
+	<file>./views/</file>
+	<!-- Copies of core's feed templates; to be replaced by core's own (#430). -->
+	<exclude-pattern>*/templates/feed-*\.php</exclude-pattern>
+	<arg name="extensions" value="php"/>
+
+	<rule ref="PHPCompatibilityWP"/>
+	<config name="testVersion" value="7.4-"/>
+	<config name="minimum_supported_wp_version" value="6.2"/>
+
+	<rule ref="WordPress.Security.ValidatedSanitizedInput"/>
+	<rule ref="WordPress.Security.NonceVerification"/>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="indieweb-post-kinds"/>
+			</property>
+		</properties>
+	</rule>
+</ruleset>

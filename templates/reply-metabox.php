@@ -11,9 +11,11 @@ if ( is_string( $cite ) ) {
 	$cite = wp_http_validate_url( $cite ) ? array( 'url' => $cite ) : array( 'name' => $cite );
 }
 
+// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Prefills the URL on the new post screen; nothing is saved.
 if ( empty( $cite['url'] ) && isset( $_GET['kindurl'] ) && is_string( $_GET['kindurl'] ) ) {
 	$cite['url'] = sanitize_url( wp_unslash( $_GET['kindurl'] ) );
 }
+// phpcs:enable WordPress.Security.NonceVerification.Recommended
 
 $attachment = 0;
 
