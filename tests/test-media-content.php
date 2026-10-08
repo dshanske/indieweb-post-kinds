@@ -48,7 +48,8 @@ class MediaContentTest extends WP_UnitTestCase {
 	public function test_saving_a_post_records_and_clears_its_media() {
 		$post = self::factory()->post->create(
 			array(
-				'post_content' => '<img class="wp-image-' . $this->image . '" src="x.jpg"><audio><source src="' . wp_get_attachment_url( $this->audio ) . '?_=1"></audio>',
+				// The classic editor stores audio as the [audio] shortcode.
+				'post_content' => '<img class="wp-image-' . $this->image . '" src="x.jpg">[audio mp3="' . wp_get_attachment_url( $this->audio ) . '"]',
 			)
 		);
 		$this->assertSame( array( $this->image ), get_post_meta( $post, '_content_img_ids', true ) );
