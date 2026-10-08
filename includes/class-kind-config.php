@@ -25,62 +25,146 @@ class Kind_Config {
 		add_action( 'load-post.php', array( static::class, 'add_post_help_tab' ), 20 );
 
 		$args = array(
-			'type'         => 'array',
-			'description'  => 'Kinds Enabled on This Site',
-			'show_in_rest' => false,
-			'default'      => array( 'article', 'reply', 'bookmark' ),
+			'type'              => 'array',
+			'description'       => 'Kinds Enabled on This Site',
+			'show_in_rest'      => false,
+			'default'           => array( 'article', 'reply', 'bookmark' ),
+			'sanitize_callback' => array( static::class, 'sanitize_kind_list' ),
 		);
 		register_setting( 'iwt_options', 'kind_termslist', $args );
 		$args = array(
-			'type'         => 'string',
-			'description'  => 'Default Kind',
-			'show_in_rest' => false,
-			'default'      => 'note',
+			'type'              => 'string',
+			'description'       => 'Default Kind',
+			'show_in_rest'      => false,
+			'default'           => 'note',
+			'sanitize_callback' => array( static::class, 'sanitize_default_kind' ),
 		);
 		register_setting( 'iwt_options', 'kind_default', $args );
 		$args = array(
-			'type'         => 'boolean',
-			'description'  => 'Rich Embed Support for Whitelisted Sites',
-			'show_in_rest' => false,
-			'default'      => 1,
+			'type'              => 'boolean',
+			'description'       => 'Rich Embed Support for Whitelisted Sites',
+			'show_in_rest'      => false,
+			'default'           => 1,
+			'sanitize_callback' => array( static::class, 'sanitize_checkbox' ),
 		);
 		register_setting( 'iwt_options', 'kind_embeds', $args );
 		$args = array(
-			'type'         => 'array',
-			'description'  => 'Kinds Showing in Main Archive',
-			'show_in_rest' => false,
-			'default'      => array(),
+			'type'              => 'array',
+			'description'       => 'Kinds Showing in Main Archive',
+			'show_in_rest'      => false,
+			'default'           => array(),
+			'sanitize_callback' => array( static::class, 'sanitize_kind_list' ),
 		);
 		register_setting( 'iwt_options', 'kind_firehose', $args );
 
 		$args = array(
-			'type'         => 'boolean',
-			'description'  => 'Response Information Should Be After Content',
-			'show_in_rest' => false,
-			'default'      => 0,
+			'type'              => 'boolean',
+			'description'       => 'Response Information Should Be After Content',
+			'show_in_rest'      => false,
+			'default'           => 0,
+			'sanitize_callback' => array( static::class, 'sanitize_checkbox' ),
 		);
 		register_setting( 'iwt_options', 'kind_bottom', $args );
 		$args = array(
-			'type'         => 'string',
-			'description'  => 'Display Preferences for Before Kind',
-			'show_in_rest' => false,
-			'default'      => 'icon',
+			'type'              => 'string',
+			'description'       => 'Display Preferences for Before Kind',
+			'show_in_rest'      => false,
+			'default'           => 'icon',
+			'sanitize_callback' => array( static::class, 'sanitize_display' ),
 		);
 		register_setting( 'iwt_options', 'kind_display', $args );
 		$args = array(
-			'type'         => 'string',
-			'description'  => 'KSES Content Protection on Responses',
-			'show_in_rest' => false,
-			'default'      => str_replace( '},"', "},\r\n\"", wp_json_encode( wp_kses_allowed_html( 'post' ), 128 ) ),
+			'type'              => 'string',
+			'description'       => 'KSES Content Protection on Responses',
+			'show_in_rest'      => false,
+			'default'           => str_replace( '},"', "},\r\n\"", wp_json_encode( wp_kses_allowed_html( 'post' ), 128 ) ),
+			'sanitize_callback' => array( static::class, 'sanitize_kses' ),
 		);
 		register_setting( 'iwt_options', 'kind_kses', $args );
 		$args = array(
-			'type'         => 'boolean',
-			'description'  => 'Automatically add the Kind to the Title',
-			'show_in_rest' => false,
-			'default'      => 0,
+			'type'              => 'boolean',
+			'description'       => 'Automatically add the Kind to the Title',
+			'show_in_rest'      => false,
+			'default'           => 0,
+			'sanitize_callback' => array( static::class, 'sanitize_checkbox' ),
 		);
 		register_setting( 'iwt_options', 'kind_title', $args );
+	}
+
+	/**
+	 * Sanitizes a list of kinds: the kind_termslist and kind_firehose settings.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param mixed $value Submitted value.
+	 * @return string[] Registered kind slugs.
+	 */
+	public static function sanitize_kind_list( $value ) {
+		if ( ! is_array( $value ) ) {
+			return array();
+		}
+		$value = array_map( 'sanitize_key', array_filter( $value, 'is_string' ) );
+		return array_values( array_unique( array_intersect( $value, Kind_Taxonomy::get_kind_list() ) ) );
+	}
+
+	/**
+	 * Sanitizes the default kind setting.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param mixed $value Submitted value.
+	 * @return string A registered kind slug, or note.
+	 */
+	public static function sanitize_default_kind( $value ) {
+		$value = is_string( $value ) ? sanitize_key( $value ) : '';
+		return in_array( $value, Kind_Taxonomy::get_kind_list(), true ) ? $value : 'note';
+	}
+
+	/**
+	 * Sanitizes the display setting for the text before a kind.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param mixed $value Submitted value.
+	 * @return string icon, text, both or hide. Defaults to icon.
+	 */
+	public static function sanitize_display( $value ) {
+		return in_array( $value, array( 'icon', 'text', 'both', 'hide' ), true ) ? $value : 'icon';
+	}
+
+	/**
+	 * Sanitizes a checkbox setting.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param mixed $value Submitted value.
+	 * @return int 1 if checked, otherwise 0.
+	 */
+	public static function sanitize_checkbox( $value ) {
+		return empty( $value ) ? 0 : 1;
+	}
+
+	/**
+	 * Sanitizes the allowed HTML setting, a JSON object as wp_kses() expects.
+	 *
+	 * Invalid JSON is rejected and the previous value kept.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param mixed $value Submitted value.
+	 * @return string JSON-encoded allowed HTML.
+	 */
+	public static function sanitize_kses( $value ) {
+		$decoded = is_string( $value ) ? json_decode( $value, true ) : null;
+		if ( is_array( $decoded ) ) {
+			return $value;
+		}
+		// The settings error API is only loaded in the admin.
+		if ( function_exists( 'add_settings_error' ) ) {
+			add_settings_error( 'kind_kses', 'kind_kses_invalid', __( 'The allowed HTML must be a valid JSON object. The previous value has been kept.', 'indieweb-post-kinds' ) );
+		}
+		$previous = get_option( 'kind_kses' );
+		return is_string( $previous ) ? $previous : '';
 	}
 
 	/**
