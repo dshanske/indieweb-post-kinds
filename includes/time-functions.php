@@ -246,155 +246,74 @@ if ( ! function_exists( 'date_interval_to_iso8601' ) ) {
 	}
 }
 
-function display_formatted_datetime( $date ) {
-	$date = kind_safe_datetime( $date );
-	if ( ! $date ) {
-		return '';
+if ( ! function_exists( 'display_formatted_datetime' ) ) {
+	/**
+	 * Deprecated wrapper; see Kind_Time::display_formatted_datetime().
+	 *
+	 * @deprecated 4.0.0 Use Kind_Time::display_formatted_datetime().
+	 */
+	function display_formatted_datetime( $date ) {
+		_deprecated_function( __FUNCTION__, '4.0.0', 'Kind_Time::display_formatted_datetime()' );
+		return Kind_Time::display_formatted_datetime( $date );
 	}
-
-	return $date->format( get_option( 'date_format' ) ) . ' ' . $date->format( get_option( 'time_format' ) );
 }
 
-
-/**
- * Function to divide a datetime into an array for use in a field
- *
- * @access public
- *
- * @param DateTime $datetime
- * @return array {
- *  @type string $date Date in Y-m-d format.
- *  @type string $time Time in H:i:s format.
- *  @type DateTimeZone $timezone Timezone object.
- * }
- */
-function divide_datetime( $datetime ) {
-	if ( ! $datetime ) {
-		return false;
+if ( ! function_exists( 'divide_datetime' ) ) {
+	/**
+	 * Deprecated wrapper; see Kind_Time::divide_datetime().
+	 *
+	 * @deprecated 4.0.0 Use Kind_Time::divide_datetime().
+	 */
+	function divide_datetime( $datetime ) {
+		_deprecated_function( __FUNCTION__, '4.0.0', 'Kind_Time::divide_datetime()' );
+		return Kind_Time::divide_datetime( $datetime );
 	}
-
-	$datetime = kind_safe_datetime( $datetime );
-	if ( ! $datetime ) {
-		return false;
-	}
-
-	$time         = array();
-	$time['date'] = $datetime->format( 'Y-m-d' );
-	if ( '0000-01-01' === $time['date'] ) {
-		$time['date'] = '';
-	}
-	$time['time']   = $datetime->format( 'H:i:s' );
-	$time['offset'] = get_datetime_offset( $datetime );
-	$time['class']  = get_class( $datetime );
-	return array_filter( $time );
 }
 
-/**
- * Function to build a datetime from individual pieces
- *
- * @access public
- *
- * @param string $date Date in Y-m-d format.
- * @param string $time Time in H:i:s format.
- * @param DateTimeZone $timezone Timezone object.
- *
- * @return DateTimeImmutable|false DateTime object or false if not valid
- */
-function build_datetime( $date, $time, $offset = null ) {
-	if ( empty( $date ) || empty( $time ) ) {
-		return false;
+if ( ! function_exists( 'build_datetime' ) ) {
+	/**
+	 * Deprecated wrapper; see Kind_Time::build_datetime().
+	 *
+	 * @deprecated 4.0.0 Use Kind_Time::build_datetime().
+	 */
+	function build_datetime( $date, $time, $offset = null ) {
+		_deprecated_function( __FUNCTION__, '4.0.0', 'Kind_Time::build_datetime()' );
+		return Kind_Time::build_datetime( $date, $time, $offset );
 	}
-	$timezone = false;
-	if ( is_string( $offset ) && '' !== $offset ) {
-		// timezone_open() warns on invalid input; it then returns false.
-		$timezone = @timezone_open( $offset ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
-	} elseif ( $offset instanceof DateTimeZone ) {
-		$timezone = $offset;
-	}
-	if ( ! $timezone ) {
-		$timezone = wp_timezone();
-	}
-	// The time may be H:i or H:i:s; the offset is applied as the timezone.
-	return kind_safe_datetime( $date . 'T' . $time, $timezone );
 }
 
-/**
- * Return a formatted offset from a datetime object
- *
- * @access public
- *
- * @param DateTime $datetime DateTime object or if not passed set to now and site timezone
- *
- * @return string|false Formatted offset or false if not valid
- */
-function get_datetime_offset( $datetime = null ) {
-	if ( ! $datetime ) {
-		$datetime = new DateTimeImmutable( 'now', wp_timezone() );
+if ( ! function_exists( 'get_datetime_offset' ) ) {
+	/**
+	 * Deprecated wrapper; see Kind_Time::get_datetime_offset().
+	 *
+	 * @deprecated 4.0.0 Use Kind_Time::get_datetime_offset().
+	 */
+	function get_datetime_offset( $datetime = null ) {
+		_deprecated_function( __FUNCTION__, '4.0.0', 'Kind_Time::get_datetime_offset()' );
+		return Kind_Time::get_datetime_offset( $datetime );
 	}
-	$seconds = $datetime->getOffset();
-	if ( false === $seconds ) {
-		return false;
-	}
-	return ( $seconds < 0 ? '-' : '+' ) . sprintf( '%02d:%02d', abs( $seconds / 60 / 60 ), abs( $seconds / 60 ) % 60 );
 }
 
-
-// Given an ISO8601 duration return an array with the piece otherwise 0 duration.
-function divide_interval( $interval ) {
-	$default = array(
-		'Y' => 0,
-		'M' => 0,
-		'D' => 0,
-		'H' => 0,
-		'I' => 0,
-		'S' => 0,
-	);
-	if ( ! $interval ) {
-		return $default;
+if ( ! function_exists( 'divide_interval' ) ) {
+	/**
+	 * Deprecated wrapper; see Kind_Time::divide_interval().
+	 *
+	 * @deprecated 4.0.0 Use Kind_Time::divide_interval().
+	 */
+	function divide_interval( $interval ) {
+		_deprecated_function( __FUNCTION__, '4.0.0', 'Kind_Time::divide_interval()' );
+		return Kind_Time::divide_interval( $interval );
 	}
-	if ( is_string( $interval ) && ! empty( $interval ) ) {
-		try {
-			$interval = new DateInterval( $interval );
-		} catch ( \Exception $e ) {
-			return $default;
-		}
-	}
-	// Reading all non-zero date parts.
-	$return = array(
-		'Y' => $interval->y,
-		'M' => $interval->m,
-		'D' => $interval->d,
-		'H' => $interval->h,
-		'I' => $interval->i,
-		'S' => $interval->s,
-	);
-	return wp_parse_args( $return, $default );
 }
 
-
-// Given an array with the pieces of a duration build an ISO8601 duration
-function build_interval( $values ) {
-	$date = wp_array_slice_assoc( $values, array( 'Y', 'M', 'D' ) );
-	$time = wp_array_slice_assoc( $values, array( 'H', 'I', 'S' ) );
-	$date = array_filter( $date );
-	$time = array_filter( $time );
-	if ( ! $date && ! $time ) {
-		return '';
+if ( ! function_exists( 'build_interval' ) ) {
+	/**
+	 * Deprecated wrapper; see Kind_Time::build_interval().
+	 *
+	 * @deprecated 4.0.0 Use Kind_Time::build_interval().
+	 */
+	function build_interval( $values ) {
+		_deprecated_function( __FUNCTION__, '4.0.0', 'Kind_Time::build_interval()' );
+		return Kind_Time::build_interval( $values );
 	}
-	$spec = 'P';
-	// Adding each part to the spec-string.
-	foreach ( $date as $key => $value ) {
-		$spec .= $value . $key;
-	}
-	if ( count( $time ) > 0 ) {
-		$spec .= 'T';
-		foreach ( $time as $key => $value ) {
-			if ( 'I' === $key ) {
-				$spec .= $value . 'M';
-			} else {
-				$spec .= $value . $key;
-			}
-		}
-	}
-	return $spec;
 }

@@ -21,10 +21,10 @@ $end = $kind_post->get( 'end' );
 $timestring = '<p>%1$s: <time class="%2$s" datetime="%3$s">%4$s</time></p>';
 
 if ( $start ) {
-	printf( $timestring, esc_html__( 'Start', 'indieweb-post-kinds' ), 'dt-start', esc_attr( $start->format( DATE_W3C ) ), esc_html( display_formatted_datetime( $start ) ) );
+	printf( $timestring, esc_html__( 'Start', 'indieweb-post-kinds' ), 'dt-start', esc_attr( $start->format( DATE_W3C ) ), esc_html( Kind_Time::display_formatted_datetime( $start ) ) );
 } 
 if ( $end ) {
-	printf( $timestring, esc_html__( 'End', 'indieweb-post-kinds' ), 'dt-end', esc_attr( $end->format( DATE_W3C ) ), esc_html( display_formatted_datetime( $end ) ) );
+	printf( $timestring, esc_html__( 'End', 'indieweb-post-kinds' ), 'dt-end', esc_attr( $end->format( DATE_W3C ) ), esc_html( Kind_Time::display_formatted_datetime( $end ) ) );
 }	
 if ( $photos && ! has_post_thumbnail( get_the_ID() ) ) {
 	$view = new Kind_Media_View( $photos, 'photo' );
