@@ -9,8 +9,8 @@ if ( is_string( $cite ) ) {
 	$cite = wp_http_validate_url( $cite ) ? array( 'url' => $cite ) : array( 'name' => $cite );
 }
 
-if ( empty( $cite['url'] ) && array_key_exists( 'kindurl', $_GET ) ) {
-	$cite['url'] = esc_url_raw( $_GET['kindurl'] );
+if ( empty( $cite['url'] ) && isset( $_GET['kindurl'] ) && is_string( $_GET['kindurl'] ) ) {
+	$cite['url'] = sanitize_url( wp_unslash( $_GET['kindurl'] ) );
 }
 
 $attachment = 0;

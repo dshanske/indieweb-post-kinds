@@ -101,10 +101,11 @@ class Kind_Metabox {
 			return false;
 		}
 		// A new post from the metabox needs something to respond to.
-		$keys = array_flip( array( 'cite_url', 'cite_name', 'cite_summary' ) );
-		$diff = array_filter( array_intersect_key( $_POST, $keys ) );
-		if ( ! empty( $diff ) ) {
-			return false;
+		foreach ( array( 'cite_url', 'cite_name', 'cite_summary' ) as $key ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Only checks whether a field was filled in; save_post() verifies the nonce before saving.
+			if ( isset( $_POST[ $key ] ) && is_string( $_POST[ $key ] ) && '' !== sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) ) {
+				return false;
+			}
 		}
 		return $maybe_empty;
 	}
@@ -436,7 +437,7 @@ class Kind_Metabox {
 		}
 
 		// Verify that the nonce is valid.
-		if ( ! wp_verify_nonce( $_POST['replykind_metabox_nonce'], 'replykind_metabox' ) ) {
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['replykind_metabox_nonce'] ) ), 'replykind_metabox' ) ) {
 			return;
 		}
 
@@ -446,7 +447,7 @@ class Kind_Metabox {
 		}
 
 		// Check the user's permissions.
-		if ( isset( $_POST['post_type'] ) && 'page' === $_POST['post_type'] ) {
+		if ( 'page' === self::posted_text( 'post_type' ) ) {
 			if ( ! current_user_can( 'edit_page', $post_id ) ) {
 				return;
 			}
@@ -459,7 +460,7 @@ class Kind_Metabox {
 		$end       = '';
 
 		if ( isset( $_POST['mf2_start_date'] ) || isset( $_POST['mf2_start_time'] ) ) {
-			$start = build_iso8601_time( sanitize_text_field( $_POST['mf2_start_date'] ), sanitize_text_field( $_POST['mf2_start_time'] ), sanitize_text_field( $_POST['mf2_start_offset'] ) );
+			$start = build_iso8601_time( self::posted_text( 'mf2_start_date' ), self::posted_text( 'mf2_start_time' ), self::posted_text( 'mf2_start_offset' ) );
 			if ( ! $start ) {
 				$kind_post->delete( 'start' );
 			}
@@ -467,7 +468,7 @@ class Kind_Metabox {
 			$kind_post->delete( 'start' );
 		}
 		if ( isset( $_POST['mf2_end_date'] ) || isset( $_POST['mf2_end_time'] ) ) {
-			$end = build_iso8601_time( sanitize_text_field( $_POST['mf2_end_date'] ), sanitize_text_field( $_POST['mf2_end_time'] ), sanitize_text_field( $_POST['mf2_end_offset'] ) );
+			$end = build_iso8601_time( self::posted_text( 'mf2_end_date' ), self::posted_text( 'mf2_end_time' ), self::posted_text( 'mf2_end_offset' ) );
 			if ( ! $end ) {
 				$kind_post->delete( 'end' );
 			}
@@ -480,12 +481,12 @@ class Kind_Metabox {
 		}
 
 		$durations = array(
-			'Y' => intval( $_POST['duration_years'] ?? '' ),
-			'M' => intval( $_POST['duration_months'] ?? '' ),
-			'D' => intval( $_POST['duration_days'] ?? '' ),
-			'H' => intval( $_POST['duration_hours'] ?? '' ),
-			'I' => intval( $_POST['duration_minutes'] ?? '' ),
-			'S' => intval( $_POST['duration_seconds'] ?? '' ),
+			'Y' => absint( self::posted_text( 'duration_years' ) ),
+			'M' => absint( self::posted_text( 'duration_months' ) ),
+			'D' => absint( self::posted_text( 'duration_days' ) ),
+			'H' => absint( self::posted_text( 'duration_hours' ) ),
+			'I' => absint( self::posted_text( 'duration_minutes' ) ),
+			'S' => absint( self::posted_text( 'duration_seconds' ) ),
 		);
 		$duration  = build_iso8601_duration( $durations );
 
@@ -501,42 +502,39 @@ class Kind_Metabox {
 			$kind_post->delete( 'duration' );
 		}
 
-		$kind_post->set( 'rsvp', $_POST['mf2_rsvp'] );
-		if ( array_key_exists( 'mf2_rating', $_POST ) && is_numeric( $_POST['mf2_rating'] ) ) {
-			$kind_post->set( 'rating', intval( $_POST['mf2_rating'] ) );
+		if ( isset( $_POST['mf2_rsvp'] ) ) {
+			$rsvp = sanitize_key( self::posted_text( 'mf2_rsvp' ) );
+			if ( in_array( $rsvp, array( 'yes', 'no', 'maybe', 'interested', 'remote' ), true ) ) {
+				$kind_post->set( 'rsvp', $rsvp );
+			} else {
+				$kind_post->delete( 'rsvp' );
+			}
+		}
+		$rating = self::posted_text( 'mf2_rating' );
+		if ( is_numeric( $rating ) ) {
+			$kind_post->set( 'rating', intval( $rating ) );
 		}
 
 		if ( isset( $_POST['cite_published_date'] ) || isset( $_POST['cite_published_time'] ) ) {
-			$cite['published'] = build_iso8601_time( sanitize_text_field( $_POST['cite_published_date'] ), sanitize_text_field( $_POST['cite_published_time'] ), sanitize_text_field( $_POST['cite_published_offset'] ) );
+			$cite['published'] = build_iso8601_time( self::posted_text( 'cite_published_date' ), self::posted_text( 'cite_published_time' ), self::posted_text( 'cite_published_offset' ) );
 		}
 		if ( isset( $_POST['cite_updated_date'] ) || isset( $_POST['cite_updated_time'] ) ) {
-			$cite['updated'] = build_iso8601_time( sanitize_text_field( $_POST['cite_updated_date'] ), sanitize_text_field( $_POST['cite_updated_time'] ), sanitize_text_field( $_POST['cite_updated_offset'] ) );
+			$cite['updated'] = build_iso8601_time( self::posted_text( 'cite_updated_date' ), self::posted_text( 'cite_updated_time' ), self::posted_text( 'cite_updated_offset' ) );
 		}
-		$cite['summary'] = wp_kses_post( $_POST['cite_summary'] ?? '' );
-		$cite['name']    = sanitize_text_field( $_POST['cite_name'] ?? '' );
-		$cite['url']     = esc_url( $_POST['cite_url'] ?? '' );
+		// Summaries are plain text; line breaks are kept.
+		$cite['summary'] = isset( $_POST['cite_summary'] ) && is_string( $_POST['cite_summary'] ) ? sanitize_textarea_field( wp_unslash( $_POST['cite_summary'] ) ) : '';
+		$cite['name']    = self::posted_text( 'cite_name' );
+		$cite['url']     = self::posted_urls( 'cite_url' );
 		if ( isset( $_POST['cite_tags'] ) ) {
-			$cite['category'] = array_filter( explode( ';', sanitize_text_field( $_POST['cite_tags'] ) ) );
+			$cite['category'] = array_values( array_filter( array_map( 'trim', explode( ';', self::posted_text( 'cite_tags' ) ) ) ) );
 		}
-		$cite['publication'] = sanitize_text_field( $_POST['cite_publication'] ?? '' );
-		$cite['featured']    = esc_url( $_POST['cite_featured'] ?? '' );
+		$cite['publication'] = self::posted_text( 'cite_publication' );
+		$cite['featured']    = self::posted_urls( 'cite_featured' );
 
-		$author         = array();
-		$author['name'] = self::explode( sanitize_text_field( $_POST['cite_author_name'] ?? '' ) );
-		$author['url']  = self::explode( $_POST['cite_author_url'] ?? '' );
-		if ( is_array( $author['url'] ) ) {
-			$author['url'] = array_map( 'esc_url', $author['url'] );
-		} else {
-			$author['url'] = esc_url( $author['url'] );
-		}
-
-		$author['photo'] = self::explode( $_POST['cite_author_photo'] ?? '' );
-
-		if ( is_array( $author['photo'] ) ) {
-			$author['photo'] = array_map( 'esc_url', $author['photo'] );
-		} else {
-			$author['photo'] = esc_url( $author['photo'] );
-		}
+		$author          = array();
+		$author['name']  = self::explode( self::posted_text( 'cite_author_name' ) );
+		$author['url']   = self::posted_urls( 'cite_author_url', true );
+		$author['photo'] = self::posted_urls( 'cite_author_photo', true );
 
 		$author = array_filter( $author );
 		if ( ! empty( $author ) ) {
@@ -577,7 +575,52 @@ class Kind_Metabox {
 				}
 			}
 		}
-		$kind_post->set( $type, $cite );
+		// Values are unslashed for sanitizing; the metadata API expects them slashed.
+		$kind_post->set( $type, wp_slash( $cite ) );
+	}
+
+	/**
+	 * Returns a posted metabox field as sanitized text.
+	 *
+	 * Only called from save_post(), after the nonce is verified.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $key Field name.
+	 * @return string The unslashed, sanitized value, or an empty string if it is missing.
+	 */
+	private static function posted_text( $key ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified in save_post().
+		if ( ! isset( $_POST[ $key ] ) || ! is_string( $_POST[ $key ] ) ) {
+			return '';
+		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified in save_post().
+		return sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
+	}
+
+	/**
+	 * Returns a posted metabox URL field, sanitized.
+	 *
+	 * Only called from save_post(), after the nonce is verified.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $key      Field name.
+	 * @param bool   $multiple Optional. Whether the field holds several URLs separated by semicolons. Default false.
+	 * @return string|string[] The URL, or for multiple values a URL or list of URLs, as Kind_Metabox::explode() returns. Empty if none is valid.
+	 */
+	private static function posted_urls( $key, $multiple = false ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified in save_post().
+		if ( ! isset( $_POST[ $key ] ) || ! is_string( $_POST[ $key ] ) ) {
+			return '';
+		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Verified in save_post(); each URL is sanitized with sanitize_url() below (sanitize_text_field() would alter %-encoding).
+		$value = trim( wp_unslash( $_POST[ $key ] ) );
+		if ( ! $multiple ) {
+			return sanitize_url( $value );
+		}
+		$urls = array_filter( array_map( 'sanitize_url', array_map( 'trim', explode( ';', $value ) ) ) );
+		return kind_flatten_array( array_values( $urls ) );
 	}
 
 	/**
