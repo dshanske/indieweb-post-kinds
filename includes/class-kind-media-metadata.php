@@ -37,15 +37,45 @@ class Kind_Media_Metadata {
 	}
 
 	public static function enqueue() {
-		if ( ! is_front_page() && is_singular() && ! self::is_amp_endpoint() ) {
-			wp_enqueue_script(
-				'media-fragment',
-				plugins_url( 'js/clone-media-fragment.js', __DIR__ ),
-				array(),
-				'1.0',
-				true
-			);
+		if ( is_front_page() || ! is_singular() || self::is_amp_endpoint() || ! self::has_media( get_queried_object() ) ) {
+			return;
 		}
+		wp_enqueue_script(
+			'media-fragment',
+			plugins_url( 'js/clone-media-fragment.js', __DIR__ ),
+			array(),
+			'1.0',
+			// WordPress 6.2 reads the array as a true $in_footer; 6.3 and later also defer it.
+			array(
+				'in_footer' => true,
+				'strategy'  => 'defer',
+			)
+		);
+	}
+
+	/**
+	 * Returns whether a post may show audio or video, which the media
+	 * fragment script links to.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param mixed $post Post object, usually the queried object.
+	 * @return bool True if the post has an audio or video kind or property, or
+	 *              audio or video in its content.
+	 */
+	public static function has_media( $post ) {
+		if ( ! $post instanceof WP_Post ) {
+			return false;
+		}
+		if ( 'post' === $post->post_type ) {
+			if ( has_post_kind( array( 'audio', 'video', 'listen', 'watch', 'jam' ), $post ) ) {
+				return true;
+			}
+			if ( get_post_meta( $post->ID, 'mf2_audio', true ) || get_post_meta( $post->ID, 'mf2_video', true ) ) {
+				return true;
+			}
+		}
+		return (bool) preg_match( '/<(audio|video)[\s>]|\[(audio|video|playlist)[\s\]]/i', $post->post_content );
 	}
 
 
