@@ -306,6 +306,7 @@ through future plugin updates.
 * Performance: the media scan on save covers posts only and reads the content once; attachment lookups are cached; the photos archive and the home page kind filter use simpler queries; the settings page only writes kind terms that changed; icons, time zone offsets and permalink kinds are cached; the media fragment script loads only where there is audio or video, deferred
 * The Kind Post widget prints nothing when it has no posts, instead of an unclosed wrapper
 * New kind terms are named after the kind rather than its slug
+* Feed change: The RSS and Atom feeds use WordPress's own templates instead of copies, and other plugins' feed handlers are no longer removed. Posts without a title have an empty title element instead of none, so the Atom feed is valid; turn on "Automatically add the Kind to the Title" to fill it in. Dates are written in UTC. In comment feeds, comments on untitled posts name the post.
 * Display change: Custom views copied into a theme's `kind_views` folder keep their old code. Copy them again from the plugin's `views` folder, or escape their output.
 * Display change: Citation summaries are plain text, marked up as `p-summary` instead of `e-summary`. `Kind_View::get_summary()` returns the summary markup.
 * Display change: `Kind_View::get_hcard()`, `get_cite_title()`, `get_site_name()`, `get_embed()` and `get_url_link()` return escaped markup; HTML passed as a name is shown as text.

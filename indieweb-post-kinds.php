@@ -252,10 +252,6 @@ class Post_Kinds_Plugin {
 
 		// Load Privacy Declaration
 		add_action( 'admin_init', array( $cls, 'privacy_declaration' ) );
-		remove_all_actions( 'do_feed_rss2' );
-		remove_all_actions( 'do_feed_atom' );
-		add_action( 'do_feed_rss2', array( $cls, 'do_feed_rss2' ), 10, 1 );
-		add_action( 'do_feed_atom', array( $cls, 'do_feed_atom' ), 10, 1 );
 
 		// Register Widgets
 		add_action(
@@ -265,22 +261,6 @@ class Post_Kinds_Plugin {
 				register_widget( 'Kind_Post_Widget' );
 			}
 		);
-	}
-
-	public static function do_feed_atom( $for_comments ) {
-		if ( $for_comments ) {
-			load_template( plugin_dir_path( __FILE__ ) . 'templates/feed-atom-comments.php' );
-		} else {
-			load_template( plugin_dir_path( __FILE__ ) . 'templates/feed-atom.php' );
-		}
-	}
-
-	public static function do_feed_rss2( $for_comments ) {
-		if ( $for_comments ) {
-			load_template( plugin_dir_path( __FILE__ ) . 'templates/feed-rss2-comments.php' );
-		} else {
-			load_template( plugin_dir_path( __FILE__ ) . 'templates/feed-rss2.php' );
-		}
 	}
 
 	/**

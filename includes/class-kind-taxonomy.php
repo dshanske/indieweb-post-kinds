@@ -422,6 +422,9 @@ final class Kind_Taxonomy {
 			if ( is_feed() && empty( $title ) ) {
 				$title = sprintf( '[%1$s] %2$s', $post_kind, self::generate_title( $post_id, 60 ) );
 			}
+		} elseif ( empty( $title ) && is_comment_feed() ) {
+			// Comment feed items read "Comment on <title> by <author>"; name untitled posts.
+			$title = self::generate_title( $post_id, 60 );
 		}
 		return $title;
 	}
