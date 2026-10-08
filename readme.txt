@@ -48,6 +48,15 @@ responsibilities to responsibly use this data, and to remove information on requ
 
 This version requires PHP 7.4 and WordPress 6.2 or later, or ClassicPress 2.7.3 or later. Sites on older versions should stay on 3.7.x.
 
+Response data is now escaped when displayed. Themes and plugins that call the display helpers should note:
+
+* Custom views copied into a theme's `kind_views` folder keep their old code. Copy them again from the plugin's `views` folder, or escape their output.
+* Citation summaries are plain text, marked up as `p-summary` instead of `e-summary`. `Kind_View::get_summary()` returns the summary markup.
+* `Kind_View::get_hcard()`, `get_cite_title()`, `get_site_name()`, `get_embed()` and `get_url_link()` return escaped markup; HTML passed as a name is shown as text.
+* `kind_get_the_title()` escapes the content before the `kind_get_the_title_content` filter.
+* `Kind_View::rsvp_text()` takes optional URL and name arguments and returns the full sentence. Called with only a type, it still returns a printf-ready string. The RSVP strings have changed, so translations need updating.
+* `Kind_View::rating_text()` ignores non-numeric ratings and shows at most 10 stars.
+
 = 3.7.0 =
 
 This version introduces review posts, but they use an experimental review-of property as a h-entry, not an h-review.
@@ -289,6 +298,7 @@ through future plugin updates.
 
 = 4.0.0 ( unreleased ) =
 * Raise the minimum requirements to PHP 7.4 and WordPress 6.2, and declare ClassicPress 2.7.3 support
+* Escape response data in views, the editor, widgets and settings; summaries are displayed as plain text
 
 * 3.7.3 ( 2024-04-09 ) =
 * Ensure widget array is instantiated
