@@ -107,17 +107,30 @@ final class Kind_Taxonomy {
 							'sanitize_callback' => 'sanitize_text_field',
 						),
 					),
+					// For editor tools: only users who can write posts need it.
 					'permission_callback' => function () {
-						return current_user_can( 'read' );
+						return current_user_can( 'edit_posts' );
 					},
 				),
 			)
 		);
 	}
 
+	/**
+	 * Returns a kind's registration info for the post-kinds/1.0/fields route.
+	 *
+	 * @since 3.3.4
+	 *
+	 * @param WP_REST_Request $request Request, with the kind slug (or all) in kind.
+	 * @return Post_Kind|Post_Kind[]|WP_Error The kind, all kinds, or an error for an unknown kind.
+	 */
 	public static function read( $request ) {
 		$kind = $request->get_param( 'kind' );
-		return self::get_kind_info( $kind, 'all' );
+		$info = self::get_kind_info( $kind, 'all' );
+		if ( false === $info ) {
+			return new WP_Error( 'rest_post_kind_not_found', __( 'Unknown post kind.', 'indieweb-post-kinds' ), array( 'status' => 404 ) );
+		}
+		return $info;
 	}
 
 
