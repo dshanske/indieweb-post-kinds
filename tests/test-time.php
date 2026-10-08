@@ -75,6 +75,12 @@ class TimeTest extends WP_UnitTestCase {
 		$this->assertContains( '-05:00', $offsets );
 	}
 
+	public function test_gmt_offsets_are_cached_for_the_day() {
+		$offsets = get_gmt_offsets();
+		$this->assertSame( $offsets, wp_cache_get( 'gmt_offsets_' . gmdate( 'Y-m-d' ), 'post-kinds' ) );
+		$this->assertSame( $offsets, get_gmt_offsets() );
+	}
+
 	public function test_build_datetime() {
 		$this->assertSame( '2026-10-06T10:30:00+02:00', build_datetime( '2026-10-06', '10:30:00', '+02:00' )->format( DATE_W3C ) );
 		$this->assertSame( '2026-10-06T10:30:00+02:00', build_datetime( '2026-10-06', '10:30', '+02:00' )->format( DATE_W3C ) );
