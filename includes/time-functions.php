@@ -100,7 +100,21 @@ if ( ! function_exists( 'tz_timezone_to_seconds' ) ) {
 
 if ( ! function_exists( 'get_gmt_offsets' ) ) {
 
+	/**
+	 * Returns the UTC offsets currently in use by any time zone, sorted.
+	 *
+	 * The list is built from every time zone, so it is kept in the object
+	 * cache for the day: for the request, and across requests when the cache
+	 * is persistent. Daylight saving changes it at most a few times a year.
+	 *
+	 * @return string[] Offsets such as '-05:00'.
+	 */
 	function get_gmt_offsets() {
+		$key = 'gmt_offsets_' . gmdate( 'Y-m-d' );
+		$o   = wp_cache_get( $key, 'post-kinds' );
+		if ( is_array( $o ) ) {
+			return $o;
+		}
 		$o       = array();
 		$t_zones = timezone_identifiers_list();
 		foreach ( $t_zones as $a ) {
@@ -116,6 +130,7 @@ if ( ! function_exists( 'get_gmt_offsets' ) ) {
 		}
 		$o = array_unique( $o );
 		asort( $o );
+		wp_cache_set( $key, $o, 'post-kinds', DAY_IN_SECONDS );
 		return $o;
 	}
 }
