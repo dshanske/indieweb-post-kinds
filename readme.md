@@ -296,6 +296,9 @@ through future plugin updates.
 ### 4.0.0 ( unreleased ) ###
 * Raise the minimum requirements to PHP 7.4 and WordPress 6.2, and declare ClassicPress 2.7.3 support
 * Escape response data in views, the editor, widgets and settings; summaries are displayed as plain text
+* Sanitize input from the editor, the media modal's artist fields, settings and widgets; citation summaries are saved as plain text
+* An RSVP can now be cleared in the editor
+* Require the edit_posts capability for the post-kinds/1.0/fields REST route; an unknown kind returns a 404
 * Display change: Custom views copied into a theme's `kind_views` folder keep their old code. Copy them again from the plugin's `views` folder, or escape their output.
 * Display change: Citation summaries are plain text, marked up as `p-summary` instead of `e-summary`. `Kind_View::get_summary()` returns the summary markup.
 * Display change: `Kind_View::get_hcard()`, `get_cite_title()`, `get_site_name()`, `get_embed()` and `get_url_link()` return escaped markup; HTML passed as a name is shown as text.
