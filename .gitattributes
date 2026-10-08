@@ -16,6 +16,7 @@
 /package-lock.json export-ignore
 /readme.md export-ignore
 /phpcs.xml export-ignore
+/phpcs-templates.xml export-ignore
 /phpunit.xml export-ignore
 /Gruntfile.js export-ignore
 /gruntlint.js export-ignore

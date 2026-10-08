@@ -40,9 +40,15 @@
     },
     "scripts": {
 	"lint:phpcpd": "./vendor/bin/phpcpd --fuzzy --exclude .git --exclude vendor --exclude node_modules .",
-        "lint:wpcs": "./vendor/bin/phpcs -s --runtime-set ignore_warnings_on_exit 1",
+        "lint:wpcs": [
+			"./vendor/bin/phpcs -s --runtime-set ignore_warnings_on_exit 1",
+			"./vendor/bin/phpcs -s --runtime-set ignore_warnings_on_exit 1 --standard=phpcs-templates.xml"
+		],
         "lint:wpcs-fix": "./vendor/bin/phpcbf",
-	"lint": "./vendor/bin/phpcs -n -q",
+	"lint": [
+			"./vendor/bin/phpcs -n -q",
+			"./vendor/bin/phpcs -n -q --standard=phpcs-templates.xml"
+		],
 	"phpunit": "./vendor/bin/phpunit",
 	"setup-local-tests": "bash bin/install-wp-tests.sh wordpress_test root root 127.0.0.1 latest",
         "make-pot": "./vendor/bin/wp i18n make-pot . languages/indieweb-post-kinds.pot",
