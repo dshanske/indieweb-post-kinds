@@ -170,16 +170,12 @@ final class Kind_Taxonomy {
 			$query->is_archive      = true;
 			$query->is_comment_feed = false;
 			$query->is_home         = false;
+			// Set for posts with images in their content or a photo property; see Kind_Media_Metadata::update_photo_flag().
 			$query->set(
 				'meta_query',
 				array(
-					'relation' => 'OR',
 					array(
-						'key'     => '_content_img_ids',
-						'compare' => 'EXISTS',
-					),
-					array(
-						'key'     => 'mf2_photo',
+						'key'     => '_kind_has_photo',
 						'compare' => 'EXISTS',
 					),
 				)

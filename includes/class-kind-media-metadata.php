@@ -20,6 +20,11 @@ class Kind_Media_Metadata {
 		// Kinds apply to posts only; revisions and autosaves have their own post type.
 		add_action( 'save_post_post', array( static::class, 'save_post' ), 20 );
 
+		// The photo property can change outside a save, for example from Micropub.
+		foreach ( array( 'added_post_meta', 'updated_post_meta', 'deleted_post_meta' ) as $hook ) {
+			add_action( $hook, array( static::class, 'photo_meta_changed' ), 10, 3 );
+		}
+
 		add_filter( 'attachment_fields_to_edit', array( static::class, 'attachment_fields_to_edit' ), 10, 2 );
 		add_filter( 'attachment_fields_to_save', array( static::class, 'attachment_fields_to_save' ), 10, 2 );
 	}
@@ -252,6 +257,41 @@ class Kind_Media_Metadata {
 			} else {
 				update_post_meta( $post_id, $key, $ids );
 			}
+		}
+		self::update_photo_flag( $post_id );
+	}
+
+	/**
+	 * Updates the photo flag when a post's photo property changes.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param int|int[] $meta_id   Meta ID, or IDs when deleting.
+	 * @param int       $object_id Post ID.
+	 * @param string    $meta_key  Meta key.
+	 */
+	public static function photo_meta_changed( $meta_id, $object_id, $meta_key ) {
+		if ( 'mf2_photo' === $meta_key && 'post' === get_post_type( $object_id ) ) {
+			self::update_photo_flag( $object_id );
+		}
+	}
+
+	/**
+	 * Records whether a post has photos, for the photos archive.
+	 *
+	 * A post has photos when it has images in its content or a photo
+	 * property. The _kind_has_photo meta exists only for those posts, so the
+	 * archive can select them with one indexed meta key.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param int $post_id Post ID.
+	 */
+	public static function update_photo_flag( $post_id ) {
+		if ( get_post_meta( $post_id, '_content_img_ids', true ) || get_post_meta( $post_id, 'mf2_photo', true ) ) {
+			update_post_meta( $post_id, '_kind_has_photo', 1 );
+		} else {
+			delete_post_meta( $post_id, '_kind_has_photo' );
 		}
 	}
 
