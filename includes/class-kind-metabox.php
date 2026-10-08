@@ -616,19 +616,7 @@ class Kind_Metabox {
 		if ( ! is_array( $cite ) || empty( $cite['properties'] ) || ! is_array( $cite['properties'] ) ) {
 			return array();
 		}
-		$properties = $cite['properties'];
-		while ( isset( $properties['properties'] ) && is_array( $properties['properties'] ) ) {
-			$nested = $properties['properties'];
-			unset( $properties['properties'] );
-			$properties = array_merge( $nested, $properties );
-		}
-		unset( $properties['type'] );
-		foreach ( $properties as $key => $value ) {
-			if ( ! is_string( $key ) || ! is_array( $value ) ) {
-				unset( $properties[ $key ] );
-			}
-		}
-		return array_filter( $properties );
+		return array_filter( Kind_Upgrade::flatten_properties( $cite['properties'] ) );
 	}
 
 	/**
