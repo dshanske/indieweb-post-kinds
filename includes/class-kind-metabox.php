@@ -288,7 +288,7 @@ class Kind_Metabox {
 	public static function timezone_offset_choice( $select ) {
 		$tzlist = get_gmt_offsets();
 		$string = '';
-		foreach ( $tzlist as $key => $value ) {
+		foreach ( $tzlist as $value ) {
 			$string .= '<option value="' . esc_attr( $value ) . '"';
 			if ( $select === $value ) {
 				$string .= ' selected';

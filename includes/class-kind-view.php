@@ -228,8 +228,6 @@ class Kind_View {
 	public static function json_feed_item( $feed_item, $post ) {
 
 		$kind_post = new Kind_Post( $post );
-		$kind      = $kind_post->get_kind();
-		$type      = Kind_Taxonomy::get_kind_info( $kind, 'property' );
 		$cite      = \ParseThis\mf2_to_jf2( $kind_post->get_cite() );
 
 		if ( is_string( $cite ) ) {
