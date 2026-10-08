@@ -96,8 +96,14 @@ class Kind_Menu_Widget extends WP_Widget {
 	 * @return array Updated safe values to be saved.
 	 */
 	public function update( $new_instance, $old_instance ) {
-		array_walk_recursive( $new_instance, 'sanitize_text_field' );
-		return $new_instance;
+		$termslist = isset( $new_instance['termslist'] ) && is_array( $new_instance['termslist'] ) ? array_filter( $new_instance['termslist'], 'is_string' ) : array();
+		$termslist = array_values( array_unique( array_intersect( array_map( 'sanitize_key', $termslist ), Kind_Taxonomy::get_kind_list() ) ) );
+		return array(
+			'title'     => isset( $new_instance['title'] ) && is_string( $new_instance['title'] ) ? sanitize_text_field( $new_instance['title'] ) : '',
+			'termslist' => $termslist,
+			'count'     => empty( $new_instance['count'] ) ? 0 : 1,
+			'all'       => empty( $new_instance['all'] ) ? 0 : 1,
+		);
 	}
 
 
