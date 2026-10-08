@@ -547,12 +547,7 @@ class Kind_Metabox {
 		$kind = $kind_post->get_kind();
 		$type = Kind_Taxonomy::get_kind_info( $kind, 'property' );
 		// Make sure there is no overwrite of properties that might not be handled by the plugin
-		$fetch = $kind_post->get_cite();
-		if ( ! $fetch ) {
-			$fetch = array();
-		} else {
-			$fetch = array_filter( $fetch );
-		}
+		$fetch = self::stored_cite_properties( $kind_post->get_cite() );
 		if ( empty( $_POST['cite_media'] ) ) {
 			$cite = array_merge( $fetch, $cite );
 			$cite = array_filter( $cite );
@@ -598,6 +593,42 @@ class Kind_Metabox {
 		}
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified in save_post().
 		return sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
+	}
+
+	/**
+	 * Returns the properties of a stored citation, keyed by property name.
+	 *
+	 * Saving merges these with the posted fields, so properties the metabox
+	 * does not edit are kept. A citation stored as a plain URL has none.
+	 * Before 4.0.0, saving merged the whole stored microformat instead, nesting
+	 * it inside its own properties one level deeper on each save; those levels
+	 * are flattened here, newer values winning.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param mixed $cite Citation as returned by Kind_Post::get_cite().
+	 * @return array Property values, each a list.
+	 */
+	private static function stored_cite_properties( $cite ) {
+		if ( wp_is_numeric_array( $cite ) && 1 === count( $cite ) ) {
+			$cite = $cite[0];
+		}
+		if ( ! is_array( $cite ) || empty( $cite['properties'] ) || ! is_array( $cite['properties'] ) ) {
+			return array();
+		}
+		$properties = $cite['properties'];
+		while ( isset( $properties['properties'] ) && is_array( $properties['properties'] ) ) {
+			$nested = $properties['properties'];
+			unset( $properties['properties'] );
+			$properties = array_merge( $nested, $properties );
+		}
+		unset( $properties['type'] );
+		foreach ( $properties as $key => $value ) {
+			if ( ! is_string( $key ) || ! is_array( $value ) ) {
+				unset( $properties[ $key ] );
+			}
+		}
+		return array_filter( $properties );
 	}
 
 	/**

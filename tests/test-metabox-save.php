@@ -16,9 +16,11 @@ class MetaboxSaveTest extends WP_UnitTestCase {
 	 * Saves the metabox for a new post of the kind, posting the fields slashed
 	 * as WordPress does, and returns the saved post ID.
 	 */
-	private function save( $kind, $fields ) {
-		$id = self::factory()->post->create();
-		set_post_kind( $id, $kind );
+	private function save( $kind, $fields, $id = 0 ) {
+		if ( ! $id ) {
+			$id = self::factory()->post->create();
+			set_post_kind( $id, $kind );
+		}
 		$_POST = wp_slash( array_merge( array( 'replykind_metabox_nonce' => wp_create_nonce( 'replykind_metabox' ) ), $fields ) );
 		Kind_Metabox::save_post( $id, get_post( $id ) );
 		return $id;
@@ -112,5 +114,73 @@ class MetaboxSaveTest extends WP_UnitTestCase {
 		);
 		Kind_Metabox::save_post( $id, get_post( $id ) );
 		$this->assertSame( '', get_post_meta( $id, 'mf2_rsvp', true ) );
+	}
+
+	public function test_saving_again_does_not_nest_the_citation() {
+		$fields = array(
+			'cite_url'  => 'https://example.com/place',
+			'cite_name' => 'Cafe',
+		);
+		$id     = $this->save( 'checkin', $fields );
+		$this->save( 'checkin', $fields, $id );
+		$this->save( 'checkin', $fields, $id );
+		$cite = get_post_meta( $id, 'mf2_checkin', true );
+		$this->assertSame( array( 'h-card' ), $cite['type'] );
+		$this->assertEquals(
+			array(
+				'name' => array( 'Cafe' ),
+				'url'  => array( 'https://example.com/place' ),
+			),
+			$cite['properties']
+		);
+	}
+
+	public function test_nested_citation_is_flattened_keeping_other_properties() {
+		$id = self::factory()->post->create();
+		set_post_kind( $id, 'bookmark' );
+		// As repeated saves before 4.0.0 stored it.
+		update_post_meta(
+			$id,
+			'mf2_bookmark-of',
+			array(
+				'type'       => array( 'h-cite' ),
+				'properties' => array(
+					'properties' => array(
+						'name'     => array( 'Old' ),
+						'location' => array( 'Somewhere' ),
+					),
+					'type'       => array( 'cite' ),
+					'name'       => array( 'Newer' ),
+				),
+			)
+		);
+		$this->save( 'bookmark', array( 'cite_name' => 'Newest' ), $id );
+		$this->assertEquals(
+			array(
+				'location' => array( 'Somewhere' ),
+				'name'     => array( 'Newest' ),
+			),
+			$this->cite( $id, 'bookmark' )
+		);
+	}
+
+	public function test_naming_a_url_only_citation_adds_no_numeric_property() {
+		$id = $this->save( 'reply', array( 'cite_url' => 'https://example.com/post' ) );
+		$this->assertSame( 'https://example.com/post', get_post_meta( $id, 'mf2_in-reply-to', true ) );
+		$this->save(
+			'reply',
+			array(
+				'cite_url'  => 'https://example.com/post',
+				'cite_name' => 'Named',
+			),
+			$id
+		);
+		$this->assertEquals(
+			array(
+				'name' => array( 'Named' ),
+				'url'  => array( 'https://example.com/post' ),
+			),
+			$this->cite( $id, 'reply' )
+		);
 	}
 }
