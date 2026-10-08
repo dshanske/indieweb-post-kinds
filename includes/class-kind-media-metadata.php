@@ -17,7 +17,8 @@ class Kind_Media_Metadata {
 		add_filter( 'wp_update_attachment_metadata', array( static::class, 'wp_sanitize_media_metadata' ), 9, 2 );
 		add_action( 'wp_enqueue_scripts', array( static::class, 'enqueue' ) );
 
-		add_action( 'save_post', array( static::class, 'save_post' ), 20 );
+		// Kinds apply to posts only; revisions and autosaves have their own post type.
+		add_action( 'save_post_post', array( static::class, 'save_post' ), 20 );
 
 		add_filter( 'attachment_fields_to_edit', array( static::class, 'attachment_fields_to_edit' ), 10, 2 );
 		add_filter( 'attachment_fields_to_save', array( static::class, 'attachment_fields_to_save' ), 10, 2 );
@@ -106,6 +107,63 @@ class Kind_Media_Metadata {
 		return $post;
 	}
 
+	/**
+	 * Finds the media library attachments used in a content block.
+	 *
+	 * The content is parsed once for images, audio and video. An image's ID
+	 * is taken from its wp-image-{id} class when it has one; otherwise, and
+	 * for audio and video sources, the URL is looked up.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string $content Content.
+	 * @return array {
+	 *     Attachment IDs found, each list without duplicates or zeros.
+	 *
+	 *     @type int[] $img   Image attachment IDs.
+	 *     @type int[] $audio Audio attachment IDs.
+	 *     @type int[] $video Video attachment IDs.
+	 * }
+	 */
+	private static function get_media_from_content( $content ) {
+		$return = array(
+			'img'   => array(),
+			'audio' => array(),
+			'video' => array(),
+		);
+		$content = wp_unslash( (string) $content );
+		// Most content has no media; skip parsing it.
+		if ( false === stripos( $content, '<img' ) && false === stripos( $content, '<audio' ) && false === stripos( $content, '<video' ) ) {
+			return $return;
+		}
+		$doc = \ParseThis\pt_load_domdocument( $content );
+
+		foreach ( $doc->getElementsByTagName( 'img' ) as $image ) {
+			$id = 0;
+			foreach ( explode( ' ', $image->getAttribute( 'class' ) ) as $class ) {
+				if ( 0 === strpos( $class, 'wp-image-' ) ) {
+					$id = (int) substr( $class, strlen( 'wp-image-' ) );
+					break;
+				}
+			}
+			if ( ! $id ) {
+				$id = attachment_url_to_postid( $image->getAttribute( 'src' ) );
+			}
+			$return['img'][] = $id;
+		}
+		foreach ( array( 'audio', 'video' ) as $tag ) {
+			foreach ( $doc->getElementsByTagName( $tag ) as $media ) {
+				foreach ( $media->getElementsByTagName( 'source' ) as $source ) {
+					$return[ $tag ][] = attachment_url_to_postid( remove_query_arg( '_', $source->getAttribute( 'src' ) ) );
+				}
+			}
+		}
+		foreach ( $return as $type => $ids ) {
+			$return[ $type ] = array_values( array_unique( array_filter( array_map( 'intval', $ids ) ) ) );
+		}
+		return $return;
+	}
+
 	/*
 	 * Determine Attached Images from a Content Block.
 	 *
@@ -113,29 +171,7 @@ class Kind_Media_Metadata {
 	 * @return array Array of Attachment IDs.
 	*/
 	public static function get_img_from_content( $content ) {
-		$content = wp_unslash( $content );
-		$return  = array();
-		$doc     = \ParseThis\pt_load_domdocument( $content );
-		$images  = $doc->getElementsByTagName( 'img' );
-		foreach ( $images as $image ) {
-			$classes = $image->getAttribute( 'class' );
-			$classes = explode( ' ', $classes );
-			foreach ( $classes as $class ) {
-				if ( 0 === strpos( $class, 'wp-image-' ) ) {
-					$id = (int) str_replace( 'wp-image-', '', $class );
-					if ( 0 !== $id ) {
-						$return[] = $id;
-					}
-					break;
-				}
-			}
-			$url = $image->getAttribute( 'src' );
-			$id  = attachment_url_to_postid( $url );
-			if ( 0 !== $id ) {
-				$return[] = $id;
-			}
-		}
-		return array_unique( $return );
+		return self::get_media_from_content( $content )['img'];
 	}
 
 	/*
@@ -145,19 +181,7 @@ class Kind_Media_Metadata {
 	 * @return array Array of Attachment IDs.
 	*/
 	public static function get_audio_from_content( $content ) {
-		$content = wp_unslash( $content );
-		$return  = array();
-		$doc     = \ParseThis\pt_load_domdocument( $content );
-		$audios  = $doc->getElementsByTagName( 'audio' );
-		foreach ( $audios as $audio ) {
-			$sources = $audio->getElementsByTagName( 'source' );
-			foreach ( $sources as $source ) {
-				$url      = remove_query_arg( '_', $source->getAttribute( 'src' ) );
-				$id       = attachment_url_to_postid( $url );
-				$return[] = $id;
-			}
-		}
-		return array_unique( $return );
+		return self::get_media_from_content( $content )['audio'];
 	}
 
 	/*
@@ -167,19 +191,7 @@ class Kind_Media_Metadata {
 	 * @return array Array of Attachment IDs.
 	*/
 	public static function get_video_from_content( $content ) {
-		$content = wp_unslash( $content );
-		$return  = array();
-		$doc     = \ParseThis\pt_load_domdocument( $content );
-		$videos  = $doc->getElementsByTagName( 'video' );
-		foreach ( $videos as $video ) {
-			$sources = $video->getElementsByTagName( 'source' );
-			foreach ( $sources as $source ) {
-				$url      = remove_query_arg( '_', $source->getAttribute( 'src' ) );
-				$id       = attachment_url_to_postid( $url );
-				$return[] = $id;
-			}
-		}
-		return array_unique( $return );
+		return self::get_media_from_content( $content )['video'];
 	}
 
 	private function media_sideload_image( $url, $post_id, $description = null ) {
@@ -204,41 +216,42 @@ class Kind_Media_Metadata {
 
 
 	/**
-	 * Every time the post is saved check for media embedded in content and save a list of attachment IDs.
-	*/
+	 * Every time a post is saved, stores the attachment IDs of the media in its content.
+	 *
+	 * The lists are kept in the _content_img_ids, _content_audio_ids and
+	 * _content_video_ids meta; a key is deleted when there is no media of that
+	 * type, so the photos archive can select posts by whether the key exists.
+	 *
+	 * @param int $post_id Post ID.
+	 */
 	public static function save_post( $post_id ) {
-		$post    = get_post( $post_id );
-		$content = do_shortcode( $post->post_content );
+		// The classic editor's draft autosave; the next save will record the media.
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return;
+		}
+		$post = get_post( $post_id );
+		if ( ! $post ) {
+			return;
+		}
+		$content = $post->post_content;
+		// Shortcodes such as [gallery], [audio] and [video] produce the media markup.
+		if ( false !== strpos( $content, '[' ) ) {
+			$content = do_shortcode( $content );
+		}
+		$media = self::get_media_from_content( $content );
 
-		$gallery_ids = array();
-		$gallery     = get_post_gallery( $post_id, false );
+		$gallery = get_post_gallery( $post_id, false );
+		if ( is_array( $gallery ) && ! empty( $gallery['ids'] ) ) {
+			$media['img'] = array_values( array_unique( array_merge( $media['img'], array_filter( array_map( 'intval', explode( ',', $gallery['ids'] ) ) ) ) ) );
+		}
 
-		if ( is_array( $gallery ) ) {
-			if ( array_key_exists( 'ids', $gallery ) ) {
-				$gallery_ids = explode( ',', $gallery['ids'] );
+		foreach ( $media as $type => $ids ) {
+			$key = '_content_' . $type . '_ids';
+			if ( empty( $ids ) ) {
+				delete_post_meta( $post_id, $key );
+			} else {
+				update_post_meta( $post_id, $key, $ids );
 			}
-		}
-		$ids = self::get_img_from_content( $content );
-		if ( is_array( $ids ) && is_array( $gallery_ids ) ) {
-			$ids = array_merge( $ids, $gallery_ids );
-		}
-
-		if ( ! $ids ) {
-			delete_post_meta( $post_id, '_content_img_ids' );
-		} else {
-			update_post_meta( $post_id, '_content_img_ids', $ids );
-		}
-		$ids = self::get_video_from_content( $content );
-		if ( ! $ids ) {
-			delete_post_meta( $post_id, '_content_video_ids' );
-		} else {
-			update_post_meta( $post_id, '_content_video_ids', $ids );
-		}
-		$ids = self::get_audio_from_content( $content );
-		if ( ! $ids ) {
-			delete_post_meta( $post_id, '_content_audio_ids' );
-		} else {
-			update_post_meta( $post_id, '_content_audio_ids', $ids );
 		}
 	}
 
