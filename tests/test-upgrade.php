@@ -6,6 +6,8 @@ class UpgradeTest extends WP_UnitTestCase {
 		Kind_Taxonomy::kind_defaultterms();
 		delete_option( Kind_Upgrade::VERSION_OPTION );
 		delete_option( Kind_Upgrade::PROGRESS_OPTION );
+		delete_option( Kind_Upgrade::ARTICLE_OPTION );
+		delete_option( 'kind_firehose' );
 		wp_clear_scheduled_hook( Kind_Upgrade::CRON_HOOK );
 	}
 
@@ -161,5 +163,83 @@ class UpgradeTest extends WP_UnitTestCase {
 		foreach ( $ids as $i => $id ) {
 			$this->assertSame( 'https://example.com/' . $i, get_post_meta( $id, 'mf2_in-reply-to', true ) );
 		}
+	}
+
+	private function unclassified( $meta = array(), $status = 'publish' ) {
+		$id = self::factory()->post->create( array( 'post_status' => $status ) );
+		wp_delete_object_term_relationships( $id, 'kind' );
+		foreach ( $meta as $key => $value ) {
+			update_post_meta( $id, $key, $value );
+		}
+		return $id;
+	}
+
+	public function test_kind_is_discovered_from_stored_properties() {
+		$rsvp = $this->unclassified(
+			array(
+				'mf2_in-reply-to' => array( 'https://example.com/event' ),
+				'mf2_rsvp'        => 'yes',
+			)
+		);
+		$like = $this->unclassified( array( 'mf2_like-of' => array( 'https://example.com/liked' ) ) );
+		$this->assertSame( array( 'assigned kind rsvp from its properties' ), Kind_Upgrade::upgrade_post( $rsvp ) );
+		$this->assertSame( 'rsvp', get_post_kind_slug( $rsvp ) );
+		Kind_Upgrade::upgrade_post( $like );
+		$this->assertSame( 'like', get_post_kind_slug( $like ) );
+		$this->assertFalse( get_option( Kind_Upgrade::ARTICLE_OPTION ) );
+	}
+
+	public function test_post_without_properties_becomes_an_article() {
+		$id = $this->unclassified();
+		$this->assertSame( array( 'assigned kind article' ), Kind_Upgrade::upgrade_post( $id ) );
+		$this->assertSame( 'article', get_post_kind_slug( $id ) );
+		$this->assertSame( '1', (string) get_option( Kind_Upgrade::ARTICLE_OPTION ) );
+	}
+
+	public function test_drafts_and_classified_posts_keep_their_kind() {
+		$draft = $this->unclassified( array(), 'draft' );
+		$note  = $this->post( 'note' );
+		$this->assertSame( array(), Kind_Upgrade::upgrade_post( $draft ) );
+		$this->assertSame( array(), Kind_Upgrade::upgrade_post( $note ) );
+		$this->assertFalse( get_post_kind_slug( $draft ) );
+		$this->assertSame( 'note', get_post_kind_slug( $note ) );
+	}
+
+	public function test_dry_run_assigns_no_kind() {
+		$id = $this->unclassified();
+		$this->assertSame( array( 'assigned kind article' ), Kind_Upgrade::upgrade_post( $id, true ) );
+		$this->assertFalse( get_post_kind_slug( $id ) );
+		$this->assertFalse( get_option( Kind_Upgrade::ARTICLE_OPTION ) );
+	}
+
+	public function test_article_is_added_to_a_limited_home_page() {
+		update_option( 'kind_firehose', array( 'note' ) );
+		Kind_Upgrade::upgrade_post( $this->unclassified() );
+		$this->assertTrue( Kind_Upgrade::complete() );
+		$this->assertSame( array( 'note', 'article' ), get_option( 'kind_firehose' ) );
+		$this->assertFalse( get_option( Kind_Upgrade::ARTICLE_OPTION ) );
+	}
+
+	public function test_home_page_selection_is_kept_when_not_needed() {
+		// No posts became articles.
+		update_option( 'kind_firehose', array( 'note' ) );
+		$this->assertFalse( Kind_Upgrade::complete() );
+		$this->assertSame( array( 'note' ), get_option( 'kind_firehose' ) );
+
+		// The home page shows every kind.
+		delete_option( 'kind_firehose' );
+		Kind_Upgrade::upgrade_post( $this->unclassified() );
+		$this->assertFalse( Kind_Upgrade::complete() );
+		$this->assertEmpty( get_option( 'kind_firehose' ) );
+	}
+
+	public function test_home_query_drops_not_exists_once_complete() {
+		update_option( 'kind_firehose', array( 'note' ) );
+		$this->go_to( home_url( '/' ) );
+		$this->assertStringContainsString( 'NOT EXISTS', $GLOBALS['wp_query']->request );
+
+		Kind_Upgrade::complete();
+		$this->go_to( home_url( '/' ) );
+		$this->assertStringNotContainsString( 'NOT EXISTS', $GLOBALS['wp_query']->request );
 	}
 }

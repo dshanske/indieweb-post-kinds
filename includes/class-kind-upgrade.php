@@ -4,9 +4,9 @@ defined( 'ABSPATH' ) || exit;
 /**
  * One-time upgrade of stored post data.
  *
- * Moves citations out of older storage locations, repairs citations that
- * earlier versions damaged, and records the media IDs of posts saved before
- * they were tracked. It runs in batches through WP-Cron whenever the stored
+ * Gives published posts without a kind one, moves citations out of older
+ * storage locations, repairs citations that earlier versions damaged, and
+ * records the media IDs of posts saved before they were tracked. It runs in batches through WP-Cron whenever the stored
  * upgrade version is behind Kind_Upgrade::VERSION, and can be rerun with
  * `wp post-kinds upgrade`.
  *
@@ -22,11 +22,12 @@ class Kind_Upgrade {
 	 *
 	 * - 1: citations moved and repaired, media IDs recorded (4.0.0).
 	 * - 2: photo flag recorded for the photos archive (4.0.0).
+	 * - 3: kinds assigned to published posts without one (4.0.0).
 	 *
 	 * @since 4.0.0
 	 * @var int
 	 */
-	const VERSION = 2;
+	const VERSION = 3;
 
 	/**
 	 * Option holding the version the stored data was last upgraded to.
@@ -43,6 +44,15 @@ class Kind_Upgrade {
 	 * @var string
 	 */
 	const PROGRESS_OPTION = 'kind_upgrade_last_id';
+
+	/**
+	 * Option set while an upgrade has given posts the article kind, so
+	 * complete() can keep them on the home page.
+	 *
+	 * @since 4.0.0
+	 * @var string
+	 */
+	const ARTICLE_OPTION = 'kind_upgrade_assigned_article';
 
 	/**
 	 * Cron hook that runs one batch.
@@ -119,12 +129,28 @@ class Kind_Upgrade {
 	/**
 	 * Records the upgrade as complete.
 	 *
+	 * Posts without a kind were always shown on the home page, even when it
+	 * is limited to selected kinds. If the upgrade gave posts the article
+	 * kind, article is added to that selection so they stay there.
+	 *
 	 * @since 4.0.0
+	 *
+	 * @return bool True if article was added to the home page kinds.
 	 */
 	public static function complete() {
+		$added = false;
+		if ( get_option( self::ARTICLE_OPTION ) ) {
+			$firehose = get_option( 'kind_firehose' );
+			if ( ! empty( $firehose ) && is_array( $firehose ) && ! in_array( 'article', $firehose, true ) ) {
+				$firehose[] = 'article';
+				$added      = update_option( 'kind_firehose', $firehose );
+			}
+			delete_option( self::ARTICLE_OPTION );
+		}
 		update_option( self::VERSION_OPTION, self::VERSION );
 		delete_option( self::PROGRESS_OPTION );
 		wp_clear_scheduled_hook( self::CRON_HOOK );
+		return $added;
 	}
 
 	/**
@@ -157,7 +183,8 @@ class Kind_Upgrade {
 		if ( 'post' !== get_post_type( $post_id ) ) {
 			return array();
 		}
-		$changes = self::upgrade_citation( $post_id, $dry_run );
+		// The kind comes first: the citation step uses its property.
+		$changes = array_merge( self::assign_kind( $post_id, $dry_run ), self::upgrade_citation( $post_id, $dry_run ) );
 		if ( ! $dry_run ) {
 			$before = self::get_media_meta( $post_id );
 			Kind_Media_Metadata::save_post( $post_id );
@@ -166,6 +193,70 @@ class Kind_Upgrade {
 			}
 		}
 		return $changes;
+	}
+
+	/**
+	 * Gives a published post without a kind one.
+	 *
+	 * The kind comes from the post's stored properties, using Post Type
+	 * Discovery (for example in-reply-to makes a reply, and rsvp an RSVP).
+	 * Posts with none get article, which the editor already selects for them.
+	 * Drafts get the default kind when they are published.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param int  $post_id Post ID.
+	 * @param bool $dry_run Report the change without saving it.
+	 * @return string[] Description of the change, if any.
+	 */
+	private static function assign_kind( $post_id, $dry_run ) {
+		if ( 'publish' !== get_post_status( $post_id ) ) {
+			return array();
+		}
+		$terms = wp_get_object_terms( $post_id, 'kind', array( 'fields' => 'ids' ) );
+		if ( is_wp_error( $terms ) || ! empty( $terms ) ) {
+			return array();
+		}
+		$kind = Kind_Plugins::discover_kind( self::get_stored_mf2( $post_id ) );
+		if ( in_array( $kind, array( '', 'note', 'article' ), true ) ) {
+			$kind   = 'article';
+			$change = 'assigned kind article';
+		} else {
+			$change = 'assigned kind ' . $kind . ' from its properties';
+		}
+		if ( ! $dry_run ) {
+			set_post_kind( $post_id, $kind );
+			if ( 'article' === $kind ) {
+				update_option( self::ARTICLE_OPTION, 1, false );
+			}
+		}
+		return array( $change );
+	}
+
+	/**
+	 * Returns a post's stored mf2_ properties as an h-entry.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param int $post_id Post ID.
+	 * @return array mf2 object.
+	 */
+	private static function get_stored_mf2( $post_id ) {
+		$properties = array();
+		foreach ( get_post_meta( $post_id ) as $key => $values ) {
+			if ( 0 !== strpos( $key, 'mf2_' ) ) {
+				continue;
+			}
+			$value = maybe_unserialize( $values[0] );
+			if ( empty( $value ) ) {
+				continue;
+			}
+			$properties[ substr( $key, 4 ) ] = wp_is_numeric_array( $value ) ? $value : array( $value );
+		}
+		return array(
+			'type'       => array( 'h-entry' ),
+			'properties' => $properties,
+		);
 	}
 
 	/**
@@ -338,8 +429,9 @@ class Kind_Upgrade {
 	/**
 	 * Upgrades stored post kind data now.
 	 *
-	 * Moves citations out of older storage locations, repairs citations that
-	 * earlier versions damaged, and records the media in each post's content.
+	 * Gives published posts without a kind one, moves citations out of older
+	 * storage locations, repairs citations that earlier versions damaged, and
+	 * records the media in each post's content.
 	 * It is safe to run more than once. Without --post, it also marks the
 	 * upgrade complete, so the background upgrade stops.
 	 *
@@ -388,8 +480,8 @@ class Kind_Upgrade {
 			}
 		}
 
-		if ( ! $dry_run && ! isset( $assoc_args['post'] ) ) {
-			self::complete();
+		if ( ! $dry_run && ! isset( $assoc_args['post'] ) && self::complete() ) {
+			WP_CLI::log( 'Added Article to the kinds shown on the home page, so posts that had no kind stay there.' );
 		}
 		$message = $dry_run ? '%d of %d posts would change.' : '%d of %d posts changed.';
 		WP_CLI::success( sprintf( $message, $changed, $checked ) );

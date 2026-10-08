@@ -256,22 +256,24 @@ final class Kind_Taxonomy {
 			return $query;
 		}
 
-		$query->set(
-			'tax_query',
+		$tax_query = array(
 			array(
-				'relation' => 'OR',
-				array(
-					'taxonomy' => 'kind',
-					'field'    => 'slug',
-					'terms'    => $firehose,
-					'operator' => 'IN',
-				),
-				array(
-					'taxonomy' => 'kind',
-					'operator' => 'NOT EXISTS',
-				),
-			)
+				'taxonomy' => 'kind',
+				'field'    => 'slug',
+				'terms'    => $firehose,
+				'operator' => 'IN',
+			),
 		);
+		// Posts without a kind are shown too. The upgrade routine gives them one,
+		// so the costly NOT EXISTS clause is only needed until it completes.
+		if ( Kind_Upgrade::is_pending() ) {
+			$tax_query['relation'] = 'OR';
+			$tax_query[]           = array(
+				'taxonomy' => 'kind',
+				'operator' => 'NOT EXISTS',
+			);
+		}
+		$query->set( 'tax_query', $tax_query );
 		return $query;
 	}
 
