@@ -18,12 +18,14 @@ class Kind_Config {
 	/**
 	 * Function to Initialize the Configuration.
 	 *
+	 * @since 2.0.2
+	 *
 	 * @access public
 	 */
 	public static function init() {
 		add_action( 'admin_init', array( static::class, 'admin_init' ) );
 		add_action( 'admin_menu', array( static::class, 'admin_menu' ), 11 );
-		// Add post help tab
+		// Add post help tab.
 		add_action( 'load-post.php', array( static::class, 'add_post_help_tab' ), 20 );
 
 		$args = array(
@@ -176,6 +178,8 @@ class Kind_Config {
 	 * option can be missing, false or hold kinds that are no longer registered.
 	 * Note, which is always available, is not included unless it was saved.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @return string[] Kind slugs.
 	 */
 	public static function get_termslist() {
@@ -188,6 +192,8 @@ class Kind_Config {
 
 	/**
 	 * Function to Set up Settings.
+	 *
+	 * @since 2.0.2
 	 *
 	 * @access public
 	 */
@@ -291,12 +297,14 @@ class Kind_Config {
 				'name' => 'kind_title',
 			)
 		);
-		// Add Query Var to Admin
+		// Add Query Var to Admin.
 		add_filter( 'query_vars', array( static::class, 'query_var' ) );
 	}
 
 	/**
 	 * Function to add our kindurl query var.
+	 *
+	 * @since 2.3.3
 	 *
 	 * @access public
 	 *
@@ -311,9 +319,11 @@ class Kind_Config {
 	/**
 	 * Function to remove "post" from the "New" admin bar section.
 	 *
+	 * @since 3.0.7
+	 *
 	 * @access public
 	 *
-	 * @param WP_Admin_Bar $wp_admin_bar
+	 * @param WP_Admin_Bar $wp_admin_bar The admin bar.
 	 */
 	public static function remove_dashbar_post( $wp_admin_bar ) {
 		$wp_admin_bar->remove_menu( 'new-post' );
@@ -322,12 +332,15 @@ class Kind_Config {
 	/**
 	 * Function to add our Post Kind post links to the "New" admin bar section.
 	 *
+	 * @since 3.0.7
+	 *
 	 * @access public
-	 * @param WP_Admin_Bar $wp_admin_bar
+	 *
+	 * @param WP_Admin_Bar $wp_admin_bar The admin bar.
 	 */
 	public static function dashbar_links( $wp_admin_bar ) {
 		$termslist = self::get_termslist();
-		// Note can never be removed
+		// Note can never be removed.
 		array_unshift( $termslist, 'note' );
 		foreach ( array_unique( $termslist ) as $term ) {
 			$wp_admin_bar->add_menu(
@@ -344,6 +357,8 @@ class Kind_Config {
 	/**
 	 * Adds Options Page for Plugin Options.
 	 *
+	 * @since 2.0.2
+	 *
 	 * @access public
 	 */
 	public static function admin_menu() {
@@ -351,9 +366,9 @@ class Kind_Config {
 		if ( class_exists( 'IndieWeb_Plugin' ) ) {
 			add_submenu_page(
 				'indieweb',
-				__( 'Post Kinds', 'indieweb-post-kinds' ), // page title
-				__( 'Post Kinds', 'indieweb-post-kinds' ), // menu title
-				'manage_options', // access capability
+				__( 'Post Kinds', 'indieweb-post-kinds' ), // page title.
+				__( 'Post Kinds', 'indieweb-post-kinds' ), // menu title.
+				'manage_options', // access capability.
 				'kind_options',
 				array( static::class, 'options_form' )
 			);
@@ -365,6 +380,8 @@ class Kind_Config {
 	/**
 	 * Callback for Options on Options Page.
 	 *
+	 * @since 2.0.2
+	 *
 	 * @access public
 	 */
 	public static function options_callback() {
@@ -372,6 +389,8 @@ class Kind_Config {
 
 	/**
 	 * Generate a Checkbox.
+	 *
+	 * @since 2.0.2
 	 *
 	 * @access public
 	 * @param array $args {
@@ -389,6 +408,8 @@ class Kind_Config {
 	/**
 	 * Generate a Textbox.
 	 *
+	 * @since 2.0.2
+	 *
 	 * @access public
 	 * @param array $args {
 	 *    Arguments.
@@ -405,6 +426,8 @@ class Kind_Config {
 
 	/**
 	 * Generate a Term List.
+	 *
+	 * @since 2.5.0
 	 *
 	 * @access public
 	 */
@@ -424,9 +447,13 @@ class Kind_Config {
 	}
 
 	/**
-	 * Generate a Term List.
+	 * Outputs a multiple select of kinds for a setting.
+	 *
+	 * @since 3.6.0
 	 *
 	 * @access public
+	 *
+	 * @param array $args Field arguments. 'name' is the option name.
 	 */
 	public static function kindmultiselect_callback( array $args ) {
 		$terms   = self::get_termslist();
@@ -452,6 +479,8 @@ class Kind_Config {
 	/**
 	 * Generate a Kind Select List.
 	 *
+	 * @since 2.3.3
+	 *
 	 * @access public
 	 */
 	public static function defaultkind_callback() {
@@ -473,6 +502,8 @@ class Kind_Config {
 	/**
 	 * Generate Radio Options.
 	 *
+	 * @since 2.6.6
+	 *
 	 * @access public
 	 *
 	 * @param array $args array of radio option field args.
@@ -486,6 +517,8 @@ class Kind_Config {
 
 	/**
 	 * Generate Options Form.
+	 *
+	 * @since 2.0.2
 	 *
 	 * @access public
 	 */
@@ -510,6 +543,8 @@ class Kind_Config {
 
 	/**
 	 * Function to generate a help tab in the WordPress admin help tab.
+	 *
+	 * @since 2.3.0
 	 *
 	 * @access public
 	 */

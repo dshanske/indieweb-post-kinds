@@ -57,8 +57,19 @@ add_action( 'init', array( 'Post_Kinds_Plugin', 'init' ) );
  * Loads the plugin, its assets and its global functions.
  */
 class Post_Kinds_Plugin {
+	/**
+	 * Plugin version, read from the plugin header on init.
+	 *
+	 * @since 2.4.0
+	 * @var string
+	 */
 	public static $version;
 
+	/**
+	 * Sets the version and registers the kind taxonomy.
+	 *
+	 * @since 2.4.0
+	 */
 	public static function init() {
 		self::$version = get_file_data( __FILE__, array( 'Version' => 'Version' ) )['Version'];
 		// Add Kind Taxonomy.
@@ -68,6 +79,8 @@ class Post_Kinds_Plugin {
 
 	/**
 	 * Outputs an admin notice when Parse This is not available at all.
+	 *
+	 * @since 3.1.0
 	 */
 	public static function parse_this_error() {
 		wp_admin_notice(
@@ -83,6 +96,8 @@ class Post_Kinds_Plugin {
 	 * Post Kinds still works, because its bundled 2.0 API is loaded alongside the
 	 * older copy, but the older copy serves the parse-this REST route used by the
 	 * reply metabox.
+	 *
+	 * @since 4.0.0
 	 */
 	public static function parse_this_outdated_notice() {
 		if ( ! current_user_can( 'activate_plugins' ) ) {
@@ -103,6 +118,8 @@ class Post_Kinds_Plugin {
 	 *
 	 * Copies older than 2.0.0 do not define PARSE_THIS_VERSION.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @return bool
 	 */
 	public static function parse_this_is_current() {
@@ -112,6 +129,8 @@ class Post_Kinds_Plugin {
 	/**
 	 * Returns a name for whatever loaded Parse This: the plugin's name, or the
 	 * file's path relative to the content directory if it isn't a plugin.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @return string
 	 */
@@ -136,8 +155,17 @@ class Post_Kinds_Plugin {
 		return str_replace( trailingslashit( wp_normalize_path( WP_CONTENT_DIR ) ), '', $file );
 	}
 
+	/**
+	 * Whether to check for the block editor and warn about it.
+	 *
+	 * Not on ClassicPress, or when the Classic Editor plugin is active.
+	 *
+	 * @since 3.3.4
+	 *
+	 * @return bool
+	 */
 	public static function show_editor_error() {
-		// Do not show this error in ClassicPress
+		// Do not show this error in ClassicPress.
 		if ( self::is_classicpress() ) {
 			return false;
 		}
@@ -147,10 +175,27 @@ class Post_Kinds_Plugin {
 		return true;
 	}
 
+	/**
+	 * Whether the site runs ClassicPress.
+	 *
+	 * @since 3.6.0
+	 *
+	 * @return bool
+	 */
 	public static function is_classicpress() {
 		return function_exists( 'classicpress_version' );
 	}
 
+	/**
+	 * Outputs an admin notice on screens that use the block editor.
+	 *
+	 * Post Kinds works only with the Classic Editor. The notice is not shown
+	 * if the Classic Editor or Disable Gutenberg plugin is active.
+	 *
+	 * @since 3.2.6
+	 *
+	 * @return string|void An empty string if no notice is needed.
+	 */
 	public static function classic_editor_error() {
 		if ( ! self::post_uses_gutenberg() ) {
 			return '';
@@ -166,6 +211,14 @@ class Post_Kinds_Plugin {
 	}
 
 
+	/**
+	 * Flushes the rewrite rules after Post Kinds is updated.
+	 *
+	 * @since 3.4.19
+	 *
+	 * @param WP_Upgrader $upgrade_object The upgrader.
+	 * @param array       $options        Details of the update.
+	 */
 	public static function upgrader_process_complete( $upgrade_object, $options ) {
 		$current_plugin_path_name = plugin_basename( __FILE__ );
 		if ( ( 'update' === $options['action'] ) && ( 'plugin' === $options['type'] ) && array_key_exists( 'plugins', $options ) ) {
@@ -177,15 +230,30 @@ class Post_Kinds_Plugin {
 		}
 	}
 
+	/**
+	 * Creates the kind terms and flushes the rewrite rules on activation.
+	 *
+	 * @since 3.3.0
+	 */
 	public static function activate() {
 		Kind_Taxonomy::activate_kinds();
 		flush_rewrite_rules();
 	}
 
+	/**
+	 * Flushes the rewrite rules on deactivation.
+	 *
+	 * @since 3.3.0
+	 */
 	public static function deactivate() {
 		flush_rewrite_rules();
 	}
 
+	/**
+	 * Loads the translations, global functions and Parse This, and adds the hooks.
+	 *
+	 * @since 2.5.2
+	 */
 	public static function plugins_loaded() {
 		$cls = get_called_class();
 		load_plugin_textdomain( 'indieweb-post-kinds', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
@@ -229,12 +297,12 @@ class Post_Kinds_Plugin {
 			add_action( 'admin_notices', array( $cls, 'parse_this_outdated_notice' ) );
 		}
 		$class_load = array(
-			'Plugins', // Plugin Specific Customization
-			'Media_Metadata', // Media Metadata Enhancements
-			'Config', // Configuration Menu
-			'Metabox', // Metabox for Classic Editor
-			'View', // Kind Display Functionality
-			'Upgrade', // One-time upgrade of stored data
+			'Plugins', // Plugin Specific Customization.
+			'Media_Metadata', // Media Metadata Enhancements.
+			'Config', // Configuration Menu.
+			'Metabox', // Metabox for Classic Editor.
+			'View', // Kind Display Functionality.
+			'Upgrade', // One-time upgrade of stored data.
 		);
 
 		foreach ( $class_load as $load ) {
@@ -253,10 +321,10 @@ class Post_Kinds_Plugin {
 		add_action( 'wp_enqueue_scripts', array( $cls, 'style_load' ) );
 		add_action( 'admin_enqueue_scripts', array( $cls, 'admin_style_load' ) );
 
-		// Load Privacy Declaration
+		// Load Privacy Declaration.
 		add_action( 'admin_init', array( $cls, 'privacy_declaration' ) );
 
-		// Register Widgets
+		// Register Widgets.
 		add_action(
 			'widgets_init',
 			function () {
@@ -268,6 +336,8 @@ class Post_Kinds_Plugin {
 
 	/**
 	 * Adds link to Plugin Page for Options Page.
+	 *
+	 * @since 2.4.0
 	 *
 	 * @access public
 	 * @param array $links Array of Existing Links.
@@ -288,6 +358,8 @@ class Post_Kinds_Plugin {
 
 	/**
 	 * Loads the Stylesheet for the Plugin.
+	 *
+	 * @since 2.4.0
 	 */
 	public static function style_load() {
 		wp_enqueue_style( 'kind', plugin_dir_url( __FILE__ ) . 'css/kind.min.css', array(), self::$version );
@@ -295,11 +367,18 @@ class Post_Kinds_Plugin {
 
 	/**
 	 * Loads the Admin Stylesheet for the Plugin.
+	 *
+	 * @since 2.4.0
 	 */
 	public static function admin_style_load() {
 		wp_enqueue_style( 'kind-admin', plugin_dir_url( __FILE__ ) . 'css/kind.admin.min.css', array(), self::$version );
 	}
 
+	/**
+	 * Adds suggested text to the privacy policy guide.
+	 *
+	 * @since 3.0.5
+	 */
 	public static function privacy_declaration() {
 		if ( function_exists( 'wp_add_privacy_policy_content' ) ) {
 			$content = __(
@@ -313,6 +392,15 @@ class Post_Kinds_Plugin {
 		}
 	}
 
+	/**
+	 * Whether the current screen uses the block editor.
+	 *
+	 * Screens other than the post editor count as using it.
+	 *
+	 * @since 3.3.2
+	 *
+	 * @return bool
+	 */
 	public static function post_uses_gutenberg() {
 		$screen = get_current_screen();
 		if ( ! is_object( $screen ) || 'post' !== $screen->base ) {

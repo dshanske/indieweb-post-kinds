@@ -25,12 +25,14 @@ class Kind_Metabox {
 	/**
 	 * Function to initiate our metabox.
 	 *
+	 * @since 2.2.0
+	 *
 	 * @access public
 	 */
 	public static function init() {
 		self::$version = Post_Kinds_Plugin::$version;
 		add_action( 'edit_form_after_title', array( static::class, 'after_title_metabox' ) );
-		// Add meta box to new post/post pages only
+		// Add meta box to new post/post pages only.
 		add_action( 'load-post.php', array( static::class, 'kindbox_setup' ) );
 		add_action( 'load-post-new.php', array( static::class, 'kindbox_setup' ) );
 		add_action( 'save_post', array( static::class, 'save_post' ), 8, 2 );
@@ -41,6 +43,8 @@ class Kind_Metabox {
 
 	/**
 	 * Function to change our post kind.
+	 *
+	 * @since 3.1.0
 	 *
 	 * @access public
 	 *
@@ -81,6 +85,8 @@ class Kind_Metabox {
 	 *
 	 * Many kinds (likes, bookmarks, reposts, and so on) legitimately have no
 	 * content, title or excerpt, which core would otherwise reject as empty.
+	 *
+	 * @since 3.0.0
 	 *
 	 * @access public
 	 *
@@ -124,6 +130,8 @@ class Kind_Metabox {
 	 * The kind comes from tax_input, which the kind metabox submits as a slug and
 	 * other callers may pass as term IDs, or failing that from the existing post.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @access public
 	 *
 	 * @param array $postarr Data for the post to be inserted or updated.
@@ -148,6 +156,8 @@ class Kind_Metabox {
 	/**
 	 * Execute metaboxes for the current screen, after the post title.
 	 *
+	 * @since 3.0.0
+	 *
 	 * @access public
 	 * @param WP_Post $post Post object for the current screen.
 	 */
@@ -158,6 +168,8 @@ class Kind_Metabox {
 
 	/**
 	 * Metabox setup.
+	 *
+	 * @since 2.2.0
 	 *
 	 * @access public
 	 */
@@ -170,6 +182,8 @@ class Kind_Metabox {
 
 	/**
 	 * Enqueue our needed assets.
+	 *
+	 * @since 2.2.0
 	 *
 	 * @access public
 	 */
@@ -186,7 +200,7 @@ class Kind_Metabox {
 			);
 
 			// Provide a global object to our JS file containing our REST API endpoint, and API nonce
-			// Nonce must be 'wp_rest'
+			// Nonce must be 'wp_rest'.
 			wp_localize_script(
 				'kindmeta',
 				'PKAPI',
@@ -209,6 +223,8 @@ class Kind_Metabox {
 	/**
 	 * Utility function to concatenate a list of post kinds.
 	 *
+	 * @since 2.7.5
+	 *
 	 * @access public
 	 *
 	 * @param array $array Selected post kinds.
@@ -225,6 +241,8 @@ class Kind_Metabox {
 	/**
 	 * Utility function to separate out a list of post kinds.
 	 *
+	 * @since 2.7.5
+	 *
 	 * @access public
 	 *
 	 * @param string $string Selected post kinds.
@@ -239,6 +257,8 @@ class Kind_Metabox {
 
 	/**
 	 * Function to render date/time field inputs.
+	 *
+	 * @since 2.5.0
 	 *
 	 * @access public
 	 *
@@ -270,6 +290,8 @@ class Kind_Metabox {
 	/**
 	 * Function to render our timezone choices.
 	 *
+	 * @since 2.5.0
+	 *
 	 * @access public
 	 *
 	 * @param string $prefix Field prefix.
@@ -285,6 +307,8 @@ class Kind_Metabox {
 
 	/**
 	 * Function to render options for a chosen timezone select field.
+	 *
+	 * @since 3.0.0
 	 *
 	 * @access public
 	 *
@@ -307,9 +331,11 @@ class Kind_Metabox {
 	/**
 	 * Render the options for the rating select field.
 	 *
+	 * @since 3.7.0
+	 *
 	 * @access public
 	 *
-	 * @param string $selected Selected Rating choice
+	 * @param string $selected Selected Rating choice.
 	 * @return string
 	 */
 	public static function rating_choice( $selected ) {
@@ -336,9 +362,11 @@ class Kind_Metabox {
 	/**
 	 * Render the options for the RSVP select field.
 	 *
+	 * @since 3.0.0
+	 *
 	 * @access public
 	 *
-	 * @param string $selected Selected RSVP choice
+	 * @param string $selected Selected RSVP choice.
 	 * @return string
 	 */
 	public static function rsvp_choice( $selected ) {
@@ -364,6 +392,8 @@ class Kind_Metabox {
 	/**
 	 * Render our RSVP select input.
 	 *
+	 * @since 2.5.0
+	 *
 	 * @access public
 	 *
 	 * @param string $selected Selected RSVP option.
@@ -379,6 +409,8 @@ class Kind_Metabox {
 
 	/**
 	 * Render our rating select input.
+	 *
+	 * @since 3.7.0
 	 *
 	 * @access public
 	 *
@@ -396,16 +428,18 @@ class Kind_Metabox {
 	/**
 	 * Create one or more meta boxes to be displayed on the post editor screen.
 	 *
+	 * @since 2.2.0
+	 *
 	 * @access public
 	 */
 	public static function add_meta_boxes() {
 		add_meta_box(
-			'replybox-meta', // Unique ID
-			esc_html__( 'Response Properties', 'indieweb-post-kinds' ), // Title
-			array( static::class, 'reply_metabox' ), // Callback function
+			'replybox-meta', // Unique ID.
+			esc_html__( 'Response Properties', 'indieweb-post-kinds' ), // Title.
+			array( static::class, 'reply_metabox' ), // Callback function.
 			'post',
-			'kind_after_title', // Context
-			'default', // Priority
+			'kind_after_title', // Context.
+			'default', // Priority.
 			array(
 				'__block_editor_compatible_meta_box' => false,
 				'__back_compat_meta_box'             => true,
@@ -415,6 +449,8 @@ class Kind_Metabox {
 
 	/**
 	 * Render our reply meta box.
+	 *
+	 * @since 3.0.0
 	 *
 	 * @access public
 	 *
@@ -428,10 +464,12 @@ class Kind_Metabox {
 	/**
 	 * Process and save meta box data.
 	 *
+	 * @since 2.2.0
+	 *
 	 * @access public
 	 *
-	 * @param int    $post_id Saved post ID.
-	 * @param WP_Pos $post    Saved post object.
+	 * @param int     $post_id Saved post ID.
+	 * @param WP_Post $post    Saved post object.
 	 */
 	public static function save_post( $post_id, $post ) {
 		/*
@@ -552,7 +590,7 @@ class Kind_Metabox {
 		}
 		$kind = $kind_post->get_kind();
 		$type = Kind_Taxonomy::get_kind_info( $kind, 'property' );
-		// Make sure there is no overwrite of properties that might not be handled by the plugin
+		// Make sure there is no overwrite of properties that might not be handled by the plugin.
 		$fetch = self::stored_cite_properties( $kind_post->get_cite() );
 		if ( empty( $_POST['cite_media'] ) ) {
 			$cite = array_merge( $fetch, $cite );
@@ -568,7 +606,7 @@ class Kind_Metabox {
 					$build[ $key ] = is_array( $value ) ? $value : array( $value );
 				}
 				$cite = array( 'properties' => $build );
-				// Temporary code which assumes everything except a checkin is a citation
+				// Temporary code which assumes everything except a checkin is a citation.
 				if ( 'checkin' === $kind ) {
 					$cite['type'] = array( 'h-card' );
 				} elseif ( in_array( $kind, array( 'drink', 'eat' ), true ) ) {
@@ -652,6 +690,8 @@ class Kind_Metabox {
 
 	/**
 	 * Function to handle saving our kind data upon post status transition.
+	 *
+	 * @since 2.2.0
 	 *
 	 * @access public
 	 *

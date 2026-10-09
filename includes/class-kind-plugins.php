@@ -63,6 +63,8 @@ class Kind_Plugins {
 	/**
 	 * Initialize our plugin integrations.
 	 *
+	 * @since 2.5.2
+	 *
 	 * @access public
 	 */
 	public static function init() {
@@ -84,11 +86,11 @@ class Kind_Plugins {
 		// rendering of Micropub posts (Micropub 2.4.0 and later).
 		add_filter( 'micropub_dynamic_render', '__return_false' );
 
-		// Hum Compatibility Filters
+		// Hum Compatibility Filters.
 		add_action( 'hum_local_types', array( static::class, 'hum_local_types' ), 11 );
 		add_action( 'hum_type_prefix', array( static::class, 'hum_type_prefix' ), 11, 2 );
 
-		// ActivityPub Filters
+		// ActivityPub Filters.
 		add_filter( 'activitypub_post', array( static::class, 'activitypub_post' ), 12 );
 	}
 
@@ -96,10 +98,12 @@ class Kind_Plugins {
 	/**
 	 * Construct a title for the Tempus Widget link.
 	 *
+	 * @since 3.5.4
+	 *
 	 * @access public
 	 *
-	 * @param string $title The Original Title.
-	 * @param WP_Post $post Post object.
+	 * @param string  $title The Original Title.
+	 * @param WP_Post $post  Post object.
 	 * @return string
 	 */
 	public static function tempus_widget_post_title( $title, $post ) {
@@ -108,6 +112,8 @@ class Kind_Plugins {
 
 	/**
 	 * Sets the ActivityPub object type based on the post kind.
+	 *
+	 * @since 3.6.2
 	 *
 	 * @param array $post_array ActivityPub object array.
 	 *
@@ -143,20 +149,37 @@ class Kind_Plugins {
 		return $post_array;
 	}
 
+	/**
+	 * Adds the kinds' shortlink type codes to the Hum plugin.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @param string[] $types Local type codes.
+	 * @return string[] Local type codes.
+	 */
 	public static function hum_local_types( $types ) {
 		// http://tantek.pbworks.com/w/page/21743973/Whistle#design - Some of the uses are modified based on design considerations noted.
-		$types[] = 'f'; // Favorited, Likes, etc
-		$types[] = 'e'; // Events
-		$types[] = 'g'; // Geo Checkin
-		$types[] = 'h'; // Link
-		$types[] = 'm'; // Metric
-		$types[] = 'q'; // Question
-		$types[] = 'r'; // Review
-		$types[] = 'x'; // Experience
-		$types[] = 'u'; // Status Update
+		$types[] = 'f'; // Favorited, Likes, etc.
+		$types[] = 'e'; // Events.
+		$types[] = 'g'; // Geo Checkin.
+		$types[] = 'h'; // Link.
+		$types[] = 'm'; // Metric.
+		$types[] = 'q'; // Question.
+		$types[] = 'r'; // Review.
+		$types[] = 'x'; // Experience.
+		$types[] = 'u'; // Status Update.
 		return $types;
 	}
 
+	/**
+	 * Uses the kind's shortlink code as a post's Hum type prefix.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @param string $prefix  Type prefix.
+	 * @param int    $post_id Post ID.
+	 * @return string The kind's shortlink code, or the prefix if it has none.
+	 */
 	public static function hum_type_prefix( $prefix, $post_id ) {
 		$post_type = get_post_type( $post_id );
 		if ( 'post' !== $post_type ) {
@@ -174,6 +197,8 @@ class Kind_Plugins {
 	/**
 	 * Replaces need for replacing the entire excerpt.
 	 *
+	 * @since 2.5.2
+	 *
 	 * @access public
 	 *
 	 * @param string $post_type Post type slug.
@@ -187,6 +212,8 @@ class Kind_Plugins {
 	/**
 	 * Returns the post kind for an mf2 object, using Post Type Discovery.
 	 * Implements https://www.w3.org/TR/post-type-discovery/ via Parse This.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @param array $mf2 mf2 object, such as a Micropub request.
 	 * @return string Registered kind slug, or an empty string if none applies.
@@ -207,6 +234,8 @@ class Kind_Plugins {
 	 *
 	 * Hooked to Micropub's micropub_tax_input filter (Micropub 2.1.0 and later),
 	 * which is applied when a post is created.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @param array|null $tax_input Taxonomy input for the new post.
 	 * @param array      $input     Micropub request.
@@ -233,6 +262,8 @@ class Kind_Plugins {
 	 * The kind is normally set before the insert (see micropub_tax_input()). This
 	 * covers Micropub versions before 2.1.0, and users who cannot assign kind
 	 * terms, for whom WordPress ignores the taxonomy input.
+	 *
+	 * @since 2.5.2
 	 *
 	 * @param array      $input   Micropub request.
 	 * @param array|null $wp_args Arguments of the created or updated post; null for queries.
@@ -261,6 +292,8 @@ class Kind_Plugins {
 	 * Returns the properties that decide a post's kind: each registered kind's
 	 * property, plus rsvp, which Post Type Discovery checks first.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @return string[] Property names.
 	 */
 	public static function kind_properties() {
@@ -277,6 +310,8 @@ class Kind_Plugins {
 	/**
 	 * Whether a Micropub update request replaces, adds or deletes a property
 	 * that decides the kind.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @param array $input Micropub update request.
 	 * @return bool
@@ -298,6 +333,8 @@ class Kind_Plugins {
 	/**
 	 * Builds the mf2 for a post from what is stored: the mf2_ post meta, plus the
 	 * title and content, which Post Type Discovery uses to tell articles from notes.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @param int $post_id Post ID.
 	 * @return array mf2 object.
@@ -335,6 +372,8 @@ class Kind_Plugins {
 	 * example). After a Micropub update the properties are already where the
 	 * client put them, so that is suspended here.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param int    $post_id Post ID.
 	 * @param string $kind    Kind slug.
 	 */
@@ -350,12 +389,14 @@ class Kind_Plugins {
 	}
 
 	/**
-	 * Set our post formats.
+	 * Sets the post format of a post created or updated by Micropub to match its kind.
+	 *
+	 * @since 2.5.2
 	 *
 	 * @access public
 	 *
-	 * @param $input
-	 * @param $wp_args
+	 * @param array $input   The Micropub request.
+	 * @param array $wp_args Arguments passed to wp_insert_post() or wp_update_post().
 	 */
 	public static function post_formats( $input, $wp_args ) {
 		if ( empty( $wp_args ) || empty( $input ) ) {
@@ -367,6 +408,8 @@ class Kind_Plugins {
 
 	/**
 	 * Returns the Micropub properties whose URL values are enriched into citations.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @return string[] Property names.
 	 */
@@ -383,6 +426,8 @@ class Kind_Plugins {
 	 * value is not an array is left for Micropub to handle, and only string URLs
 	 * inside the array are enriched. Values the client already sent as objects,
 	 * such as an h-cite, are kept as sent.
+	 *
+	 * @since 2.7.5
 	 *
 	 * @access public
 	 *
@@ -411,6 +456,8 @@ class Kind_Plugins {
 
 	/**
 	 * Enriches the citation URLs in a set of Micropub properties.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @param array $properties Properties, keyed by name, each an array of values.
 	 * @return array The properties, with citation URLs enriched where possible.
@@ -441,6 +488,8 @@ class Kind_Plugins {
 
 	/**
 	 * Fetches and parses a URL into an mf2 citation.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @access public
 	 *
@@ -503,6 +552,8 @@ class Kind_Plugins {
 	/**
 	 * Whether to enrich citation URLs in Micropub requests.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param array|null $input Micropub request, or null outside a request.
 	 * @return bool
 	 */
@@ -523,6 +574,8 @@ class Kind_Plugins {
 
 	/**
 	 * Returns the limits for parsing citations during a Micropub request.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @return array Arguments for parse_citation().
 	 */
@@ -545,6 +598,8 @@ class Kind_Plugins {
 
 	/**
 	 * Classifies a parse failure to decide whether to retry it.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @param WP_Error $error Parse failure.
 	 * @return string One of:
@@ -570,6 +625,8 @@ class Kind_Plugins {
 	/**
 	 * Returns the HTTP status code of a parse failure, if there was one.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param WP_Error $error Parse failure.
 	 * @return int HTTP status code, or 0.
 	 */
@@ -585,6 +642,8 @@ class Kind_Plugins {
 	 * to ENRICH_ATTEMPTS attempts in all. A missing or refused page is retried
 	 * once, after some hours, in case the cited site was down or misconfigured.
 	 * Other failures are not retried.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @param int      $post_id Post ID.
 	 * @param string   $url     Cited URL.
@@ -625,6 +684,8 @@ class Kind_Plugins {
 	/**
 	 * Reports a citation that could not be parsed. Only shown when WP_DEBUG is on.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string   $url   Cited URL.
 	 * @param WP_Error $error Parse failure.
 	 */
@@ -638,6 +699,8 @@ class Kind_Plugins {
 	/**
 	 * Logs and, where worthwhile, schedules a retry for citations that could not
 	 * be parsed during a Micropub create or update request, once the post ID is known.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @param array      $input   Micropub request.
 	 * @param array|null $wp_args Arguments of the created or updated post.
@@ -655,6 +718,8 @@ class Kind_Plugins {
 
 	/**
 	 * Logs a failed attempt and schedules a retry if one is worthwhile.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @param int      $post_id  Post ID.
 	 * @param string   $property Micropub property, such as in-reply-to.
@@ -680,6 +745,8 @@ class Kind_Plugins {
 	 *
 	 * The citation is only replaced if the post still holds the URL as it was
 	 * stored, so later edits are not overwritten.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @param int    $post_id  Post ID.
 	 * @param string $property Micropub property, such as in-reply-to.
@@ -723,6 +790,8 @@ class Kind_Plugins {
 	 * - message       For failures: the error message. Otherwise empty.
 	 * - retry         Unix timestamp of the scheduled retry, or 0 if none.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param int $post_id Post ID.
 	 * @return array[] Log entries.
 	 */
@@ -733,6 +802,8 @@ class Kind_Plugins {
 
 	/**
 	 * Adds an outcome to a post's citation log and updates its citation status.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @param int             $post_id  Post ID.
 	 * @param string          $property Micropub property.
@@ -801,6 +872,8 @@ class Kind_Plugins {
 	 * and would otherwise be stored in post meta and returned by Micropub's
 	 * q=source.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @access public
 	 *
 	 * @param mixed $jf2 Parsed jf2, or any value within it.
@@ -823,6 +896,8 @@ class Kind_Plugins {
 	 * Adds the enabled kinds to Micropub's configuration query, using the
 	 * post-types extension (Query for Supported Vocabulary), so clients only
 	 * offer the kinds this site uses.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @see https://indieweb.org/Micropub-extensions#Query_for_Supported_Vocabulary
 	 *
@@ -847,6 +922,8 @@ class Kind_Plugins {
 
 	/**
 	 * Returns the enabled kinds as Micropub post types.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @return array[] Arrays with the keys type (the kind slug, which is its Post
 	 *                 Type Discovery type) and name (the kind's singular name).
