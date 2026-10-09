@@ -1,12 +1,17 @@
 <?php
+/**
+ * Kind_Taxonomy class.
+ *
+ * @package Post_Kinds
+ * @since   2.0.2
+ */
+
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Post Kind Taxonomy Class
+ * Registers the kind taxonomy and sets its behavior.
  *
- * Registers the taxonomy and sets its behavior.
- *
- * @package Post Kinds
+ * @since 2.0.2
  */
 final class Kind_Taxonomy {
 	private static $kinds = array(); // Store a Post_Kind class which is a definition of a specific kind

@@ -1,13 +1,18 @@
 <?php
 /**
- * Kind Media View Class
+ * Kind_Media_View class.
  *
- * @package Post Kind
- * Used to Display Media
+ * @package Post_Kinds
+ * @since   3.3.0
  */
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Builds the markup for images, audio and video in kind views.
+ *
+ * @since 3.3.0
+ */
 class Kind_Media_View {
 	private $ids;
 	private $type;

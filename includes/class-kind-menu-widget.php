@@ -1,6 +1,18 @@
 <?php
+/**
+ * Kind_Menu_Widget class.
+ *
+ * @package Post_Kinds
+ * @since   3.1.3
+ */
+
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Widget that lists links to the archive of each kind.
+ *
+ * @since 3.1.3
+ */
 class Kind_Menu_Widget extends WP_Widget {
 	/**
 	 * Register widget with WordPress.

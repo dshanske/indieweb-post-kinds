@@ -1,12 +1,18 @@
 <?php
 /**
- * Post Kind Post MetaBox Class
+ * Kind_Metabox class.
  *
- * Sets Up Tabbed Metabox in the Posting UI for Kind data.
+ * @package Post_Kinds
+ * @since   2.2.0
  */
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Adds the tabbed Post Kinds metabox to the Classic Editor and saves its fields.
+ *
+ * @since 2.2.0
+ */
 class Kind_Metabox {
 
 	/**

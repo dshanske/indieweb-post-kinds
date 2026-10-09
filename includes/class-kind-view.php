@@ -1,13 +1,18 @@
 <?php
 /**
- * Post Kind View Class
+ * Kind_View class.
  *
- * Includes Helper Functions to Set Up Display Behavior and Allows Calling of View Templates
+ * @package Post_Kinds
+ * @since   2.0.2
  */
 
 defined( 'ABSPATH' ) || exit;
 
-// The Kind_View class sets up the kind display behavior for kinds
+/**
+ * Sets up how kinds are displayed, and locates and renders the view templates.
+ *
+ * @since 2.0.2
+ */
 class Kind_View {
 	public static function init() {
 

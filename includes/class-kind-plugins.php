@@ -1,12 +1,17 @@
 <?php
+/**
+ * Kind_Plugins class.
+ *
+ * @package Post_Kinds
+ * @since   2.5.2
+ */
+
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Post Kind Plugins Class
+ * Integrations with other plugins, such as Micropub and ActivityPub.
  *
- * Custom Functions for Specific Other Pugins
- *
- * @package Post Kinds
+ * @since 2.5.2
  */
 class Kind_Plugins {
 

@@ -1,4 +1,11 @@
 <?php
+/**
+ * Kind_Time class.
+ *
+ * @package Post_Kinds
+ * @since   4.0.0
+ */
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -8,7 +15,6 @@ defined( 'ABSPATH' ) || exit;
  * that could collide with other plugins. The global names remain as
  * deprecated wrappers in time-functions.php.
  *
- * @package Post_Kinds
  * @since 4.0.0
  */
 class Kind_Time {

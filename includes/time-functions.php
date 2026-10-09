@@ -1,8 +1,12 @@
 <?php
 /**
- * Time Functions
+ * Global date and time functions.
  *
- * Global Scoped Functions for Handling Time.
+ * The generic helpers moved to Kind_Time in 4.0.0; their global names remain
+ * here as deprecated wrappers.
+ *
+ * @package Post_Kinds
+ * @since   3.0.0
  */
 
 defined( 'ABSPATH' ) || exit;
