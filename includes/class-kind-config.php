@@ -1,17 +1,17 @@
 <?php
 /**
- * Post Kind Configuration Class
+ * Kind_Config class.
  *
- * @package Post Kinds
- * Sets Up Configuration Options for the Plugin.
+ * @package Post_Kinds
+ * @since   2.0.2
  */
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Static Class to Configure Admin Options.
+ * Registers the plugin settings and builds the settings page.
  *
- * @package Post Kinds
+ * @since 2.0.2
  */
 class Kind_Config {
 

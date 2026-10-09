@@ -1,5 +1,9 @@
 <?php
-/* Registers built-in Post Kinds
+/**
+ * Registers the built-in kinds.
+ *
+ * @package Post_Kinds
+ * @since   3.3.4
  */
 
 defined( 'ABSPATH' ) || exit;

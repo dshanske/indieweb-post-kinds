@@ -1,9 +1,17 @@
 <?php
+/**
+ * Kind_Media_Metadata class.
+ *
+ * @package Post_Kinds
+ * @since   3.1.0
+ */
+
 defined( 'ABSPATH' ) || exit;
 
 /**
+ * Enhances the metadata stored for media attachments, and records the media a post uses.
  *
- * Enhances Metadata for Media
+ * @since 3.1.0
  */
 class Kind_Media_Metadata {
 

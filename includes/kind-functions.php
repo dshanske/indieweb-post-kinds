@@ -1,10 +1,9 @@
 <?php
 /**
- * Kind Functions
+ * Global functions for registering, reading and displaying kinds.
  *
- * Global Scoped Functions for Handling Kinds.
- *
- * @package Post Kinds
+ * @package Post_Kinds
+ * @since   2.0.2
  */
 
 defined( 'ABSPATH' ) || exit;

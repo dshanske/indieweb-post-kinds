@@ -1,27 +1,30 @@
 <?php
 /**
- * Kind Fields Class
+ * Kind_Fields class.
  *
- * @package Post Kind
- * Used to Generate Form Fields for a Post UI
- *
- * Fields currently supported and their options{
-	* datetime
-	* duration
-	* author - is a representation of an author and consists of name, url, and photo by default
-	* select
-		* options - associative array of values for the select. Key being the value and the value being the description
-	* url
-	* text
-	* list
-	* textarea
-	* number
-	* cite - is a representation of an h-cite object
-* }
+ * @package Post_Kinds
+ * @since   3.3.4
  */
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Generates form fields for the posting UI from a kind's property schema.
+ *
+ * Supported field types and their options:
+ * - datetime
+ * - duration
+ * - author: a name, URL and photo by default.
+ * - select: `options` is an associative array of value => label.
+ * - url
+ * - text
+ * - list
+ * - textarea
+ * - number
+ * - cite: an h-cite object.
+ *
+ * @since 3.3.4
+ */
 class Kind_Fields {
 
 	public static function timezone_list() {

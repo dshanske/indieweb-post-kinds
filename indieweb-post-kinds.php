@@ -3,7 +3,7 @@
  * Post Kinds
  *
  * @link    http://indieweb.org/Post_Kinds_Plugin
- * @package Post Kinds
+ * @package Post_Kinds
  * Plugin Name: Post Kinds
  * Plugin URI: https://wordpress.org/plugins/indieweb-post-kinds/
  * Description: Ever want to reply to someone else's post with a post on your own site? Or to "like" someone else's post, but with your own site?
@@ -53,6 +53,9 @@ if ( Post_Kinds_Plugin::show_editor_error() ) {
 add_action( 'plugins_loaded', array( 'Post_Kinds_Plugin', 'plugins_loaded' ), 11 );
 add_action( 'init', array( 'Post_Kinds_Plugin', 'init' ) );
 
+/**
+ * Loads the plugin, its assets and its global functions.
+ */
 class Post_Kinds_Plugin {
 	public static $version;
 

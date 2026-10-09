@@ -1,11 +1,20 @@
 <?php
+/**
+ * Kind_Post class.
+ *
+ * @package Post_Kinds
+ * @since   3.4.0
+ */
+
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Kind Post Class
+ * Reads and writes the kind properties of a post.
  *
- * @package Post Kinds
- * Assists in retrieving/saving properties from a Post. Replaces MF2_Post by only looking for Items on Demand instead of Parsing Them initially.
+ * Replaces MF2_Post by looking up each property on demand instead of parsing
+ * all of them up front.
+ *
+ * @since 3.4.0
  */
 class Kind_Post {
 

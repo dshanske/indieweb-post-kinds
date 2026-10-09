@@ -1,6 +1,18 @@
 <?php
+/**
+ * Kind_Post_Widget class.
+ *
+ * @package Post_Kinds
+ * @since   3.1.5
+ */
+
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Widget that lists recent posts of selected kinds.
+ *
+ * @since 3.1.5
+ */
 class Kind_Post_Widget extends WP_Widget {
 	/**
 	 * Register widget with WordPress.

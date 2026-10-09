@@ -1,13 +1,18 @@
 <?php
 /**
- * Post Kind Class
+ * Post_Kind class.
  *
- * @package Post Kind
- * Used to define a Post Kind object
+ * @package Post_Kinds
+ * @since   3.1.0
  */
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Defines a single post kind, as registered with register_post_kind().
+ *
+ * @since 3.1.0
+ */
 final class Post_Kind implements JsonSerializable {
 	public $id; // Term ID
 	public $slug; // Kind Slug

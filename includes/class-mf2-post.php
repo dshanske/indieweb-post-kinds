@@ -1,4 +1,11 @@
 <?php
+/**
+ * MF2_Post class.
+ *
+ * @package Post_Kinds
+ * @since   3.1.0
+ */
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -6,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * Assists in retrieving/saving microformats 2 properties from a post.
  *
- * @package Post Kinds
+ * @since 3.1.0
  * @deprecated 4.0.0 Use Kind_Post. MF2_Post will be removed in a future major version.
  */
 class MF2_Post implements ArrayAccess {

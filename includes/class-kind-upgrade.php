@@ -1,4 +1,11 @@
 <?php
+/**
+ * Kind_Upgrade class.
+ *
+ * @package Post_Kinds
+ * @since   4.0.0
+ */
+
 defined( 'ABSPATH' ) || exit;
 
 /**
@@ -10,7 +17,6 @@ defined( 'ABSPATH' ) || exit;
  * upgrade version is behind Kind_Upgrade::VERSION, and can be rerun with
  * `wp post-kinds upgrade`.
  *
- * @package Post_Kinds
  * @since 4.0.0
  */
 class Kind_Upgrade {
