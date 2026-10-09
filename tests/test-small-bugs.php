@@ -65,4 +65,10 @@ class SmallBugsTest extends WP_UnitTestCase {
 		$this->assertStringContainsString( 'https://example.com/song.mp3', $audio );
 		$this->assertStringContainsString( 'u-audio', $audio );
 	}
+
+	public function test_global_functions_can_be_declared_first() {
+		// Another plugin or theme may declare these first; loading them again must not fatal.
+		require dirname( __DIR__ ) . '/includes/kind-functions.php';
+		$this->assertTrue( function_exists( 'kind_get_the_title' ) );
+	}
 }
