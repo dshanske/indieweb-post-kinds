@@ -14,15 +14,27 @@ defined( 'ABSPATH' ) || exit;
  * @since 2.0.2
  */
 final class Kind_Taxonomy {
-	private static $kinds = array(); // Store a Post_Kind class which is a definition of a specific kind
+	/**
+	 * Registered kinds, keyed by slug.
+	 *
+	 * @since 3.1.0
+	 * @var Post_Kind[]
+	 */
+	private static $kinds = array();
 
 	/**
 	 * Whether the built-in kinds have been registered.
 	 *
+	 * @since 4.0.0
 	 * @var bool
 	 */
 	private static $builtins_loaded = false;
 
+	/**
+	 * Loads the built-in kinds and adds the taxonomy's hooks.
+	 *
+	 * @since 2.0.2
+	 */
 	public static function init() {
 		self::load_kinds();
 
@@ -37,20 +49,20 @@ final class Kind_Taxonomy {
 		add_filter( 'post_link', array( self::class, 'kind_permalink' ), 10, 3 );
 		add_filter( 'post_type_link', array( self::class, 'kind_permalink' ), 10, 3 );
 
-		// Query Variable to Exclude Kinds from Feed
+		// Query Variable to Exclude Kinds from Feed.
 		add_filter( 'query_vars', array( self::class, 'query_vars' ) );
 		add_action( 'pre_get_posts', array( self::class, 'kind_filter_query' ) );
 		add_action( 'pre_get_posts', array( self::class, 'kind_photo_filter' ) );
 		add_action( 'pre_get_posts', array( self::class, 'kind_alias_filter' ) );
 		add_action( 'pre_get_posts', array( self::class, 'kind_firehose_query' ), 99 );
 
-		// Add Dropdown
+		// Add Dropdown.
 		add_action( 'restrict_manage_posts', array( self::class, 'kind_dropdown' ), 10, 2 );
 
 		// Add Links to Ping to the Webmention Sender.
 		add_filter( 'webmention_links', array( self::class, 'webmention_links' ), 11, 2 );
 
-		// Add Links to Enclosures if Appropriate
+		// Add Links to Enclosures if Appropriate.
 		add_filter( 'enclosure_links', array( self::class, 'enclosure_links' ), 11, 2 );
 
 		// Add Classes to Post.
@@ -58,10 +70,10 @@ final class Kind_Taxonomy {
 
 		// Trigger Webmention on Change in Post Status.
 		add_filter( 'transition_post_status', array( self::class, 'transition' ), 10, 3 );
-		// On Post Save Set Post Format
+		// On Post Save Set Post Format.
 		add_action( 'save_post', array( self::class, 'post_formats' ), 99, 3 );
 
-		// Create hook triggered by change of kind
+		// Create hook triggered by change of kind.
 		add_action( 'set_object_terms', array( self::class, 'set_object_terms' ), 10, 6 );
 
 		add_filter( 'single_post_title', array( self::class, 'single_post_title' ), 9, 2 );
@@ -76,12 +88,18 @@ final class Kind_Taxonomy {
 		add_action( 'rest_api_init', array( self::class, 'register_routes' ) );
 	}
 
-	/** Template Redirect
+	/**
+	 * Uses the kind photos template for photo archives, if the theme has one.
+	 *
+	 * @since 3.4.14
+	 *
+	 * @param string $template Path of the template to include.
+	 * @return string Path of the template to include.
 	 */
 	public static function template_include( $template ) {
 		global $wp_query;
 
-		// Only use this template for archive pages
+		// Only use this template for archive pages.
 		if ( is_singular() ) {
 			return $template;
 		}
@@ -98,6 +116,8 @@ final class Kind_Taxonomy {
 
 	/**
 	 * Register the Route.
+	 *
+	 * @since 3.3.4
 	 */
 	public static function register_routes() {
 		register_rest_route(
@@ -143,6 +163,8 @@ final class Kind_Taxonomy {
 	/**
 	 * Add our query variables to query_vars list.
 	 *
+	 * @since 3.2.4
+	 *
 	 * @access public
 	 *
 	 * @param array $qvars Current query_vars.
@@ -159,17 +181,20 @@ final class Kind_Taxonomy {
 	/**
 	 * Filter the query for our post kinds.
 	 *
+	 * @since 3.4.14
+	 *
 	 * @access public
 	 *
-	 * @param $query
+	 * @param WP_Query $query The query.
+	 * @return WP_Query The query.
 	 */
 	public static function kind_photo_filter( $query ) {
-		// check if the user is requesting an admin page
+		// check if the user is requesting an admin page.
 		if ( is_admin() || ! $query->is_main_query() ) {
 			return $query;
 		}
 		$photos = get_query_var( 'kind_photos' );
-		// Return if  not set
+		// Return if  not set.
 		if ( $photos ) {
 			$query->set( 'posts_per_page', 30 );
 			$query->is_archive      = true;
@@ -192,17 +217,20 @@ final class Kind_Taxonomy {
 	/**
 	 * Filter the query for our post kinds.
 	 *
+	 * @since 3.2.4
+	 *
 	 * @access public
 	 *
-	 * @param $query
+	 * @param WP_Query $query The query.
+	 * @return WP_Query The query.
 	 */
 	public static function kind_filter_query( $query ) {
-		// check if the user is requesting an admin page
+		// check if the user is requesting an admin page.
 		if ( is_admin() || ! $query->is_main_query() ) {
 			return $query;
 		}
 		$exclude = get_query_var( 'exclude' );
-		// Return if both are not set
+		// Return if both are not set.
 		if ( ! taxonomy_exists( $exclude ) ) {
 			return $query;
 		}
@@ -229,13 +257,16 @@ final class Kind_Taxonomy {
 	/**
 	 * Filter the main query for post kinds.
 	 *
+	 * @since 3.6.0
+	 *
 	 * @access public
 	 *
-	 * @param $query
+	 * @param WP_Query $query The query.
+	 * @return WP_Query The query.
 	 */
 	public static function kind_firehose_query( $query ) {
 
-		// check if the user is requesting an admin page
+		// check if the user is requesting an admin page.
 		if ( is_admin() || ! $query->is_main_query() ) {
 			return $query;
 		}
@@ -285,9 +316,12 @@ final class Kind_Taxonomy {
 	/**
 	 * Allows for some pre-defined aliases
 	 *
+	 * @since 3.4.19
+	 *
 	 * @access public
 	 *
-	 * @param $query
+	 * @param WP_Query $query The query.
+	 * @return WP_Query The query.
 	 */
 	public static function kind_alias_filter( $query ) {
 		if ( empty( get_query_var( 'kind' ) ) ) {
@@ -310,6 +344,8 @@ final class Kind_Taxonomy {
 	/**
 	 * Register our REST API endpoint for post kinds.
 	 *
+	 * @since 3.1.0
+	 *
 	 * @access public
 	 */
 	public static function rest_kind() {
@@ -330,6 +366,8 @@ final class Kind_Taxonomy {
 	/**
 	 * Filter template hierarchy to include our template files.
 	 *
+	 * @since 3.1.2
+	 *
 	 * @access public
 	 *
 	 * @param array $templates Array of template file names.
@@ -348,6 +386,8 @@ final class Kind_Taxonomy {
 
 	/**
 	 * Generate a sample permalink for a post.
+	 *
+	 * @since 3.2.2
 	 *
 	 * @access public
 	 *
@@ -376,10 +416,13 @@ final class Kind_Taxonomy {
 	/**
 	 * Generate a post title.
 	 *
+	 * @since 3.3.3
+	 *
 	 * @access public
 	 *
-	 * @param int!WP_Post    $post Post ID or Post Object.
-	 * @return string
+	 * @param int|WP_Post $post   Post ID or post object.
+	 * @param int         $length Optional. Maximum length of the title. Default 40.
+	 * @return string|null The title, or null if the post does not exist.
 	 */
 	public static function generate_title( $post, $length = 40 ) {
 		$post = get_post( $post );
@@ -410,10 +453,12 @@ final class Kind_Taxonomy {
 	/**
 	 * Filter the post title. Add a symbol at the end if generated title.
 	 *
+	 * @since 3.0.9
+	 *
 	 * @access public
 	 *
-	 * @param string $title   Current post title
-	 * @param int    $post_id Post ID
+	 * @param string $title   Current post title.
+	 * @param int    $post_id Post ID.
 	 * @return string
 	 */
 	public static function the_title( $title, $post_id ) {
@@ -437,10 +482,12 @@ final class Kind_Taxonomy {
 	/**
 	 * Filter the single post title.
 	 *
+	 * @since 3.3.3
+	 *
 	 * @access public
 	 *
-	 * @param string $title   Current post title
-	 * @param WP_Post    $post Post object
+	 * @param string  $title Current post title.
+	 * @param WP_Post $post  Post object.
 	 * @return string
 	 */
 	public static function single_post_title( $title, $post ) {
@@ -462,6 +509,8 @@ final class Kind_Taxonomy {
 	/**
 	 * Filter the post excerpt.
 	 *
+	 * @since 3.2.0
+	 *
 	 * @access public
 	 *
 	 * @param WP_Post $post Post object.
@@ -480,12 +529,14 @@ final class Kind_Taxonomy {
 	/**
 	 * Set our post object terms.
 	 *
+	 * @since 3.0.8
+	 *
 	 * @access public
 	 *
 	 * @param object $object_id  Current object ID.
 	 * @param array  $terms      Array of object terms.
 	 * @param array  $tt_ids     Array of term taxonomy IDs.
-	 * @param string $taxonomy   Taxonomy slug
+	 * @param string $taxonomy   Taxonomy slug.
 	 * @param bool   $append     If terms should be appended or overwrite.
 	 * @param array  $old_tt_ids Array of original trem taxonomy IDs.
 	 */
@@ -523,6 +574,8 @@ final class Kind_Taxonomy {
 	 * plugins_loaded and init have run for the request, so neither the kinds
 	 * nor the register_post_kind() function (kind-functions.php) would
 	 * otherwise be loaded when the kind terms are created.
+	 *
+	 * @since 4.0.0
 	 */
 	public static function load_kinds() {
 		if ( self::$builtins_loaded ) {
@@ -535,6 +588,14 @@ final class Kind_Taxonomy {
 		require plugin_dir_path( __FILE__ ) . 'register-kinds.php';
 	}
 
+	/**
+	 * Creates the kind terms on activation.
+	 *
+	 * Stops with an error if the IndieWeb Taxonomy plugin, which Post Kinds
+	 * replaces, is active.
+	 *
+	 * @since 2.0.2
+	 */
 	public static function activate_kinds() {
 		if ( function_exists( 'iwt_plugin_notice' ) ) {
 			deactivate_plugins( plugin_basename( __FILE__ ) );
@@ -546,14 +607,29 @@ final class Kind_Taxonomy {
 		flush_rewrite_rules();
 	}
 
+	/**
+	 * Returns the rewrite regex for the pagination part of a URL.
+	 *
+	 * @since 3.5.0
+	 *
+	 * @return string The regex, such as 'page/?([0-9]{1,})'.
+	 */
 	public static function get_pagination_regex() {
 		global $wp_rewrite;
 		return $wp_rewrite->pagination_base . '/?([0-9]{1,})';
 	}
 
+	/**
+	 * Returns the rewrite regex for the feed part of a URL.
+	 *
+	 * @since 3.5.0
+	 *
+	 * @param bool $with_base Optional. Whether to start with the feed base ('feed/'). Default true.
+	 * @return string The regex, such as 'feed/(feed|rdf|rss|rss2|atom)'.
+	 */
 	public static function get_feed_regex( $with_base = true ) {
 		global $wp_rewrite;
-		// Build a regex to match the feed section of URLs, something like (feed|atom|rss|rss2)/?
+		// Build a regex to match the feed section of URLs, something like (feed|atom|rss|rss2)/?.
 		$feedregex2 = '';
 		foreach ( (array) $wp_rewrite->feeds as $feed_name ) {
 			$feedregex2 .= $feed_name . '|';
@@ -563,6 +639,14 @@ final class Kind_Taxonomy {
 		return ( $with_base ) ? $wp_rewrite->feed_base . '/' . $feedregex2 : $feedregex2;
 	}
 
+	/**
+	 * Joins regex parts into a rewrite rule pattern.
+	 *
+	 * @since 3.5.0
+	 *
+	 * @param string[] $elements Parts of the pattern, in order.
+	 * @return string The parts joined by slashes and ending in '?$', or an empty string if there are none.
+	 */
 	public static function generate_permastruct( $elements ) {
 		if ( empty( $elements ) || ! is_array( $elements ) ) {
 			return '';
@@ -573,6 +657,8 @@ final class Kind_Taxonomy {
 
 	/**
 	 * Register the custom taxonomy for kinds.
+	 *
+	 * @since 2.0.2
 	 */
 	public static function register() {
 		$labels = array(
@@ -684,7 +770,7 @@ final class Kind_Taxonomy {
 		$feed_regex       = self::get_feed_regex();
 		$feed_regex2      = self::get_feed_regex( false );
 
-		// Year Archives for Photos
+		// Year Archives for Photos.
 		add_rewrite_rule(
 			self::generate_permastruct( array( $kind_photos_slug, $year_regex, $pagination_regex ) ),
 			'index.php?year=$matches[1]&paged=$matches[2]&kind_photos=1',
@@ -696,7 +782,7 @@ final class Kind_Taxonomy {
 			'top'
 		);
 
-		// Year and Month Archive for Photos
+		// Year and Month Archive for Photos.
 		add_rewrite_rule(
 			self::generate_permastruct( array( $kind_photos_slug, $year_regex, $month_regex, $pagination_regex ) ),
 			'index.php?year=$matches[1]&monthnum=$matches[2]&paged=$matches[3]&kind_photos=1',
@@ -708,7 +794,7 @@ final class Kind_Taxonomy {
 			'top'
 		);
 
-		// Year and Month And Day Archive for Photos
+		// Year and Month And Day Archive for Photos.
 		add_rewrite_rule(
 			self::generate_permastruct( array( $kind_photos_slug, $year_regex, $month_regex, $day_regex, $pagination_regex ) ),
 			'index.php?year=$matches[1]&monthnum=$matches[2]&day=$matches[3]&paged=$matches[4]&kind_photos=1',
@@ -720,7 +806,7 @@ final class Kind_Taxonomy {
 			'top'
 		);
 
-		// Month And Day Archive for Photos
+		// Month And Day Archive for Photos.
 		add_rewrite_rule(
 			self::generate_permastruct( array( $kind_photos_slug, $month_regex, $day_regex, $pagination_regex ) ),
 			'index.php?monthnum=$matches[1]&day=$matches[2]&paged=$matches[3]&kind_photos=1',
@@ -791,6 +877,8 @@ final class Kind_Taxonomy {
 	 * Creates a term for each registered kind that has none, and updates the
 	 * name and description of terms that differ from the kind's, for example
 	 * after a translation changes. Terms that already match are not written.
+	 *
+	 * @since 2.0.2
 	 */
 	public static function kind_defaultterms() {
 		$existing = get_terms(
@@ -815,9 +903,11 @@ final class Kind_Taxonomy {
 	/**
 	 * Update our post kind if the term already exists.
 	 *
+	 * @since 3.1.0
+	 *
 	 * @access private
 	 *
-	 * @param $term
+	 * @param string $term Post kind slug.
 	 */
 	private static function update_post_kind( $term ) {
 		$t = get_term_by( 'slug', $term, 'kind' );
@@ -841,11 +931,14 @@ final class Kind_Taxonomy {
 	/**
 	 * Create our post kind term.
 	 *
+	 * @since 3.1.0
+	 *
 	 * @access private
 	 *
-	 * @param $term
+	 * @param string $term Post kind slug.
 	 */
 	private static function create_post_kind( $term ) {
+
 		$kind = self::get_post_kind_info( $term );
 		if ( $kind ) {
 			// The first argument is the term name; wp_insert_term() has no 'name' argument.
@@ -863,6 +956,8 @@ final class Kind_Taxonomy {
 	/**
 	 * Filter our post kind permalink.
 	 *
+	 * @since 2.0.2
+	 *
 	 * @access public
 	 *
 	 * @param string $permalink Permalink string to filter.
@@ -874,7 +969,7 @@ final class Kind_Taxonomy {
 		if ( false === strpos( $permalink, '%kind%' ) ) {
 			return $permalink; }
 
-		// Get post
+		// Get post.
 		$post = get_post( $post_id );
 		if ( ! $post ) {
 			return $permalink; }
@@ -890,6 +985,8 @@ final class Kind_Taxonomy {
 
 	/**
 	 * Fetch the current post kind terms from the current query.
+	 *
+	 * @since 3.0.3
 	 *
 	 * @access public
 	 *
@@ -913,6 +1010,8 @@ final class Kind_Taxonomy {
 	 * Filters the post kind archive prefix.
 	 * Prefix Introduced in WP5.5
 	 *
+	 * @since 3.5.0
+	 *
 	 * @access public
 	 *
 	 * @param string $prefix Archive title prefix.
@@ -931,6 +1030,8 @@ final class Kind_Taxonomy {
 	/**
 	 * Filters the post kind archive title.
 	 * Original Title and Prefix introduced in WP5.5.
+	 *
+	 * @since 2.0.2
 	 *
 	 * @access public
 	 *
@@ -988,6 +1089,8 @@ final class Kind_Taxonomy {
 	/**
 	 * Filters the post kind archive description.
 	 *
+	 * @since 2.5.2
+	 *
 	 * @access public
 	 *
 	 * @param string $title Current archive description.
@@ -1014,9 +1117,11 @@ final class Kind_Taxonomy {
 	/**
 	 * Sets Post Format for Post Kind.
 	 *
-	 * @param int     $post_id Post ID
-	 * @param WP_Post $post Post Object
-	 * @param boolean $update,
+	 * @since 2.5.0
+	 *
+	 * @param int     $post_id Post ID.
+	 * @param WP_Post $post    Post object.
+	 * @param bool    $update  Whether this is an existing post being updated.
 	 */
 	public static function post_formats( $post_id, $post, $update ) {
 		$kind = get_post_kind_slug( $post_id );
@@ -1027,6 +1132,8 @@ final class Kind_Taxonomy {
 
 	/**
 	 * Fiters the `<title>` tag parts for the post kind.
+	 *
+	 * @since 3.1.3
 	 *
 	 * @access public
 	 *
@@ -1054,6 +1161,8 @@ final class Kind_Taxonomy {
 	/**
 	 * Callback for the taxonomy meta box for our post kinds taxonomy.
 	 *
+	 * @since 2.0.2
+	 *
 	 * @access public
 	 *
 	 * @param WP_Post $post Post object.
@@ -1070,7 +1179,7 @@ final class Kind_Taxonomy {
 		 * @param string[] $include Kind slugs.
 		 */
 		$include = array_unique( apply_filters( 'kind_include', $include ) );
-		// Note cannot be removed or disabled without hacking the code
+		// Note cannot be removed or disabled without hacking the code.
 		if ( ! in_array( 'note', $include, true ) ) {
 			$include[] = 'note';
 		}
@@ -1079,7 +1188,7 @@ final class Kind_Taxonomy {
 		if ( '' !== $requested ) {
 			$default = get_term_by( 'slug', $requested, 'kind' );
 		} elseif ( 'publish' === get_post_status( $post ) ) {
-			// On existing published posts without a kind fall back on article which most closely mimics the behavior of an unclassified post
+			// On existing published posts without a kind fall back on article which most closely mimics the behavior of an unclassified post.
 			$default = get_term_by( 'slug', 'article', 'kind' );
 		} else {
 			$default = get_term_by( 'slug', get_option( 'kind_default' ), 'kind' );
@@ -1115,26 +1224,33 @@ final class Kind_Taxonomy {
 	/**
 	 * Register our post kinds.
 	 *
+	 * @since 3.1.0
+	 *
 	 * @access public
 	 *
 	 * @param string $slug Post kind slug.
-	 * @param array  $args Post kind arguments {
-		 * @param string $singular_name  Name for one instance of the kind.
-		 * @param string $name   General name for the kind plural.
-		 * @param string $verb The string for the verb or action (liked this).
-		 * @param string $property Microformats 2 property, superseded by properties
-		 * @param array $properties Properties is an array outlining the fields for the particular kind. See Kind Fields class for more details
-		 * @param string $format Post Format that maps to this.
-		 * @param string $description Description of the Kind
-		 * @param url $description-url Link to more information
-		 * @param string $title Should this kind have an explicit title.
-		 * @param boolean $show Show in Settings.
+	 * @param array  $args {
+	 *     Post kind arguments. Arguments that are not listed are kept and can
+	 *     be read as properties of the Post_Kind.
+	 *
+	 *     @type string $singular_name   Name for one instance of the kind. Default the slug.
+	 *     @type string $name            General name for the kind, plural. Default the slug.
+	 *     @type string $verb            The verb or action, such as 'Liked'. Default the slug.
+	 *     @type string $property        Microformats 2 property, such as 'like-of'. Default empty.
+	 *     @type array  $properties      The fields for the kind. See Kind_Fields.
+	 *     @type string $format          Post format that maps to this kind. Default 'standard'.
+	 *     @type string $icon            Icon name. Default the slug.
+	 *     @type string $description     Description of the kind.
+	 *     @type string $description_url Link to more information.
+	 *     @type string $shortlink       Shortlink code for the kind.
+	 *     @type bool   $title           Whether the kind should have an explicit title.
+	 *     @type bool   $show            Whether to show the kind in Settings. Default false.
 	 * }
-	 * @return bool
+	 * @return bool True if the kind was registered, false if it already exists.
 	 */
 	public static function register_post_kind( $slug, $args ) {
 		$kind = new Post_Kind( $slug, $args );
-		// Do not allow reregistering existing kinds
+		// Do not allow reregistering existing kinds.
 		if ( isset( self::$kinds[ $slug ] ) ) {
 			return false;
 		}
@@ -1144,6 +1260,8 @@ final class Kind_Taxonomy {
 
 	/**
 	 * Retrieve info on a provided post kind.
+	 *
+	 * @since 3.1.0
 	 *
 	 * @access public
 	 *
@@ -1157,10 +1275,11 @@ final class Kind_Taxonomy {
 		return false;
 	}
 
-	// Enable a hidden post kind
-
 	/**
+
 	 * Enables a hidden post kind.
+	 *
+	 * @since 3.1.0
 	 *
 	 * @access public
 	 *
@@ -1179,6 +1298,8 @@ final class Kind_Taxonomy {
 	/**
 	 * Retrieve list of registered post kinds.
 	 *
+	 * @since 3.1.0
+	 *
 	 * @access public
 	 * @return array
 	 */
@@ -1189,8 +1310,10 @@ final class Kind_Taxonomy {
 	/**
 	 * Returns all translated strings.
 	 *
+	 * @since 2.5.2
+	 *
 	 * @param string $kind     Post Kind to return.
-	 * @param string $property The individual property
+	 * @param string $property The individual property.
 	 * @return string|array Return kind-property. If either is set to all, return all.
 	 */
 	public static function get_kind_info( $kind, $property ) {
@@ -1216,6 +1339,8 @@ final class Kind_Taxonomy {
 	/**
 	 * Add available webmention links.
 	 *
+	 * @since 2.3.5
+	 *
 	 * @access public
 	 *
 	 * @param array $links   Array of existing webmention links.
@@ -1237,6 +1362,8 @@ final class Kind_Taxonomy {
 
 	/**
 	 * Add available enclosure links.
+	 *
+	 * @since 3.0.4
 	 *
 	 * @access public
 	 *
@@ -1261,6 +1388,8 @@ final class Kind_Taxonomy {
 
 	/**
 	 * Generate a dropdown of our post kinds for the post list table view.
+	 *
+	 * @since 2.5.2
 	 *
 	 * @access public
 	 * @param string $post_type Current post type being listed.
@@ -1292,8 +1421,11 @@ final class Kind_Taxonomy {
 	/**
 	 * Set our post kind terms upon publish transition status.
 	 *
+	 * @since 2.0.2
+	 *
 	 * @access public
-	 * @param int          $post_id Current post ID
+	 *
+	 * @param int          $post_id Current post ID.
 	 * @param WP_Post|null $post    Current post object.
 	 */
 	public static function publish( $post_id, $post = null ) {
@@ -1309,6 +1441,8 @@ final class Kind_Taxonomy {
 	/**
 	 * Maybe set our post kind terms upon post status transition.
 	 *
+	 * @since 2.0.2
+	 *
 	 * @access public
 	 *
 	 * @param string  $new  New post status.
@@ -1323,6 +1457,8 @@ final class Kind_Taxonomy {
 
 	/**
 	 * Filter the classes on a post's markup.
+	 *
+	 * @since 2.0.2
 	 *
 	 * @access public
 	 *
@@ -1340,6 +1476,8 @@ final class Kind_Taxonomy {
 	/**
 	 * Returns a pretty, translated version of a post kind slug.
 	 *
+	 * @since 2.1.1
+	 *
 	 * @param string $slug A post format slug.
 	 * @return string The translated post format name.
 	 */
@@ -1350,6 +1488,8 @@ final class Kind_Taxonomy {
 
 	/**
 	 * Returns a link to a post kind index.
+	 *
+	 * @since 2.1.1
 	 *
 	 * @param string $kind The post kind slug.
 	 * @return string The post kind term link.
@@ -1364,6 +1504,8 @@ final class Kind_Taxonomy {
 
 	/**
 	 * Retrieve a total count statistic for a given post kind.
+	 *
+	 * @since 3.1.3
 	 *
 	 * @access public
 	 *
@@ -1380,6 +1522,8 @@ final class Kind_Taxonomy {
 
 	/**
 	 * Returns the post kind slug for the current post.
+	 *
+	 * @since 2.1.1
 	 *
 	 * @access public
 	 *
@@ -1401,10 +1545,12 @@ final class Kind_Taxonomy {
 	/**
 	 * Returns the post kind name for the current post.
 	 *
+	 * @since 2.1.1
+	 *
 	 * @access public
 	 *
-	 * @param WP_Post|int|null $post
-	 * @return array|bool|string
+	 * @param WP_Post|int|null $post Optional. Post ID or post object. Default the current post.
+	 * @return string|false The kind's translated name, or false if the post has no kind.
 	 */
 	public static function get_post_kind( $post = null ) {
 		$kind = get_post_kind_slug( $post );
@@ -1418,6 +1564,8 @@ final class Kind_Taxonomy {
 
 	/**
 	 * Check if a post has any of the given kinds, or any kind.
+	 *
+	 * @since 2.1.1
 	 *
 	 * @uses has_term()
 	 *
@@ -1438,8 +1586,10 @@ final class Kind_Taxonomy {
 	/**
 	 * Assign a kind to a post.
 	 *
+	 * @since 2.1.1
+	 *
 	 * @param int|WP_Post $post The post for which to assign a kind.
-	 * @param string     $kind A kind to assign. Using an empty string or array will default to article.
+	 * @param string      $kind A kind to assign. Using an empty string or array will default to article.
 	 * @return mixed WP_Error on error. Array of affected term IDs on success.
 	 */
 	public static function set_post_kind( $post, $kind = 'article' ) {
@@ -1455,6 +1605,8 @@ final class Kind_Taxonomy {
 
 	/**
 	 * Update callback for the kind REST field.
+	 *
+	 * @since 3.1.0
 	 *
 	 * @access public
 	 *
@@ -1482,6 +1634,8 @@ final class Kind_Taxonomy {
 	/**
 	 * Get callback for the kind REST field.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @access public
 	 *
 	 * @param array $post Prepared post data, as an array with an id key.
@@ -1495,6 +1649,8 @@ final class Kind_Taxonomy {
 
 	/**
 	 * Whether or not to display the before kind content.
+	 *
+	 * @since 2.6.6
 	 *
 	 * @access public
 	 * @return mixed|void
@@ -1515,8 +1671,10 @@ final class Kind_Taxonomy {
 	/**
 	 * Display before Kind - either icon text or no display.
 	 *
+	 * @since 2.6.6
+	 *
 	 * @param string $kind    The slug for the kind of the current post.
-	 * @param string $display Override display;
+	 * @param string $display Override display.
 	 * @return string Marked up kind information.
 	 */
 	public static function get_before_kind( $kind, $display = null ) {
@@ -1528,7 +1686,7 @@ final class Kind_Taxonomy {
 		}
 		$text = '<span class="kind-display-text">' . esc_html( self::get_kind_info( $kind, 'verb' ) ) . '</span> ';
 		$icon = self::get_icon( $kind );
-		// Hide Icon in Feed View
+		// Hide Icon in Feed View.
 		if ( 'text' !== $display && is_feed() ) {
 			$icon = '';
 		}
@@ -1546,6 +1704,8 @@ final class Kind_Taxonomy {
 
 	/**
 	 * Retrieve the icon SVG for a provided post kind.
+	 *
+	 * @since 2.4.0
 	 *
 	 * @access public
 	 *
