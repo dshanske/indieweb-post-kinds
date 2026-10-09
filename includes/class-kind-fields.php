@@ -289,7 +289,7 @@ class Kind_Fields {
 		$t_zones = timezone_identifiers_list();
 		foreach ( $t_zones as $a ) {
 			$datetime = new DateTime( 'now', new DateTimeZone( $a ) );
-			$o[]      = get_datetime_offset( $datetime );
+			$o[]      = Kind_Time::get_datetime_offset( $datetime );
 		}
 		$o = array_unique( $o );
 		asort( $o );
@@ -316,7 +316,7 @@ class Kind_Fields {
 			$datetime = new DateTime( 'now', wp_timezone() );
 		}
 		$return   = array();
-		$time     = divide_datetime( $datetime );
+		$time     = Kind_Time::divide_datetime( $datetime );
 		$return[] = sprintf( '<label for="mf2_%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
 		$return[] = sprintf( '<input type="date" name="mf2_%1$s_date" id="mf2_%1$s_date" value="%2$s"/>', $args['name'], ( $time['date'] ?? '' ) );
 		$return[] = sprintf( '<input type="time" name="mf2_%1$s_time" id="mf2_%1$s_time" step="1" value="%2$s"/>', $args['name'], ( $time['time'] ?? '' ) );
@@ -347,7 +347,7 @@ class Kind_Fields {
 			$interval = new DateInterval( 'PT0S' );
 		}
 		$return   = array();
-		$duration = divide_interval( $interval );
+		$duration = Kind_Time::divide_interval( $interval );
 		$max      = array(
 			'Y' => 1000,
 			'M' => 11,
@@ -671,12 +671,12 @@ class Kind_Fields {
 				unset( $raw[ $key ] );
 				// If this has the elements of a duration
 				if ( ! empty( array_intersect( array( 'Y', 'M', 'D', 'H', 'I', 'S' ), $raw[ $pieces[0] ] ) ) ) {
-					$interval          = build_interval( $raw[ $pieces[0] ] );
+					$interval          = Kind_Time::build_interval( $raw[ $pieces[0] ] );
 					$raw[ $pieces[0] ] = date_interval_to_iso8601( $interval );
 				}
 				// If this has the elements of a datetime
 				if ( ! empty( array_intersect( array( 'date', 'time', 'offset' ), $raw[ $pieces[0] ] ) ) ) {
-					$datetime          = build_datetime( $raw[ $pieces[0] ] );
+					$datetime          = Kind_Time::build_datetime( $raw[ $pieces[0] ] );
 					$raw[ $pieces[0] ] = $datetime->format( DATE_W3C );
 				}
 			}
