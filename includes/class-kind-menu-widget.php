@@ -47,7 +47,9 @@ class Kind_Menu_Widget extends WP_Widget {
 			$include = array();
 		}
 		$include = array_merge( $include, array( 'note', 'reply', 'article' ) );
-		// Filter Kinds
+		/**
+		 * This filter is documented in includes/class-kind-taxonomy.php
+		 */
 		$include = array_unique( apply_filters( 'kind_include', $include ) );
 		// Note cannot be removed or disabled without hacking the code
 		if ( ! in_array( 'note', $include, true ) ) {

@@ -16,6 +16,16 @@ defined( 'ABSPATH' ) || exit;
 class Kind_View {
 	public static function init() {
 
+		/**
+		 * Filters whether to add response markup to post content, excerpts and feeds automatically.
+		 *
+		 * Return false to place it in the theme instead, for example with
+		 * Kind_View::get_display().
+		 *
+		 * @since 3.6.0
+		 *
+		 * @param bool $display Whether to add it. Default true.
+		 */
 		if ( apply_filters( 'kind_content_display', true ) ) {
 			add_filter( 'the_content', array( static::class, 'content_response' ), 9 );
 			add_filter( 'the_content_feed', array( static::class, 'content_feed_response' ), 9, 2 );
@@ -74,6 +84,13 @@ class Kind_View {
 			return '';
 		}
 		$templates   = array( "{$slug}-{$name}.php", "{$slug}.php" );
+		/**
+		 * Filters the folders searched for view files before the plugin's own views folder.
+		 *
+		 * @since 3.3.0
+		 *
+		 * @param string[] $paths Folder paths, each with a trailing slash. Default the theme's kind_views folder.
+		 */
 		$look        = apply_filters( 'kind_view_paths', array( get_theme_file_path( 'kind_views/' ) ) );
 		$look[]      = plugin_dir_path( __DIR__ ) . 'views/';
 		$located     = null;
@@ -157,6 +174,14 @@ class Kind_View {
 		if ( 'post' === get_post_type( $post_id ) ) {
 			$kind    = get_post_kind_slug( $post_id );
 			$content = self::get_view_part( 'kind', $kind, array( 'post_id' => $post_id ) );
+			/**
+			 * Filters the response markup for a post.
+			 *
+			 * @since 2.0.2
+			 *
+			 * @param string $content Rendered view markup.
+			 * @param int    $post_id Post ID.
+			 */
 			return apply_filters( 'kind_response_display', $content, $post_id );
 		}
 	}
@@ -389,6 +414,13 @@ class Kind_View {
 			'wordpress.tv',
 			'youtube.com',
 		);
+		/**
+		 * Filters the domains whose cited URLs are embedded with oEmbed.
+		 *
+		 * @since 3.3.6
+		 *
+		 * @param string[] $approvelist Domain names.
+		 */
 		$approvelist = apply_filters( 'post_kind_embed_approvelist', $approvelist );
 		if ( ! in_array( $host, $approvelist, true ) ) {
 			return '';
@@ -429,6 +461,15 @@ class Kind_View {
 		);
 		$domain  = self::extract_domain_name( $url );
 		if ( array_key_exists( $domain, $strings ) ) {
+			/**
+			 * Filters the phrase for what a known site's URL points to, such as 'a video' for YouTube.
+			 *
+			 * It runs only for the sites listed above; other URLs get "a post".
+			 *
+			 * @since 2.0.2
+			 *
+			 * @param string $string Translated phrase.
+			 */
 			return apply_filters( 'kind_post_type_string', $strings[ $domain ] );
 		} else {
 			return _x( 'a post', 'singular post', 'indieweb-post-kinds' );
@@ -457,13 +498,15 @@ class Kind_View {
 		$args    = wp_parse_args( $args, $default );
 
 		/**
-		 * Filter for alternate retrieval types
+		 * Filters the author data before it is turned into an h-card.
 		 *
-		 * This could be using WordPress's gravatar system, retrieval by pure URL, etc.
+		 * Use it to look up author details another way, for example from a URL
+		 * or Gravatar.
 		 *
-		 * @param string|boolean $author Defaults to false, but may return string.
-		 * @param mixed  $author Data on the author, type optional. Defaults to array.
-		 * @param array  $args        Arguments passed to get_hcard.
+		 * @since 2.3.0
+		 *
+		 * @param mixed $author Author data, usually an array with name, url and photo.
+		 * @param array $args   Arguments passed to Kind_View::get_hcard().
 		 */
 		$author = apply_filters( 'get_hcard_data', $author, $args );
 		// If it didn't return an array as expected, then there is no valid author data.
@@ -478,11 +521,16 @@ class Kind_View {
 		}
 
 		/**
-		 * Filter for alternate presentation
+		 * Filters the h-card markup for an author.
 		 *
-		 * @param string|boolean $card Defaults to false, but may return string.
-		 * @param mixed  $author Data on the author, type optional. Defaults to array.
-		 * @param array  $args        Arguments passed to get_hcard.
+		 * Return non-empty markup to replace the plugin's own h-card. The markup is
+		 * output as-is, so it must be escaped.
+		 *
+		 * @since 2.3.0
+		 *
+		 * @param string $card   H-card markup. Default empty, which uses the plugin's markup.
+		 * @param array  $author Author data, with name, url and photo.
+		 * @param array  $args   Arguments passed to Kind_View::get_hcard().
 		 */
 		$card = apply_filters( 'get_hcard', '', $author, $args );
 		if ( ! empty( $card ) ) {
