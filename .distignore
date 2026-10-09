@@ -6,12 +6,12 @@
 /sass
 /vendor
 /tests
-.eslintrc.js
+eslint.config.js
 readme.md
 package.json
 composer.json
 composer.lock
-Gruntfile.js
+package-lock.json
 push.sh
 phpunit.xml
 phpcs.xml

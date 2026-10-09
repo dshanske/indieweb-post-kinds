@@ -36,7 +36,8 @@
         "wp-cli/i18n-command": "^2.3",
         "sebastian/phpcpd": "^3.0 || ^5.0 || ^6.0",
         "yoast/phpunit-polyfills": "^1.1",
-      "sirbrillig/phpcs-variable-analysis": "^2.11"
+      "sirbrillig/phpcs-variable-analysis": "^2.11",
+        "scssphp/scssphp": "^1.13 || ^2.1"
     },
     "scripts": {
 	"lint:phpcpd": "./vendor/bin/phpcpd --fuzzy --exclude .git --exclude vendor --exclude node_modules .",
@@ -50,6 +51,12 @@
 			"./vendor/bin/phpcs -n -q --standard=phpcs-templates.xml"
 		],
 	"phpunit": "./vendor/bin/phpunit",
+	"build": [
+		"@build:css",
+		"@build:readme"
+	],
+	"build:css": "@php bin/build-css.php",
+	"build:readme": "@php bin/readme-to-markdown.php",
 	"setup-local-tests": "bash bin/install-wp-tests.sh wordpress_test root root 127.0.0.1 latest",
         "make-pot": "./vendor/bin/wp i18n make-pot . languages/indieweb-post-kinds.pot",
 	"lint:php": "@php ./vendor/bin/parallel-lint --exclude .git --exclude vendor --exclude node_modules .",
