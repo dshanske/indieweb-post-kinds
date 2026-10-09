@@ -1,4 +1,14 @@
 <?php
+/**
+ * Post Kinds metabox for the Classic Editor.
+ *
+ * Loaded by Kind_Metabox::reply_metabox(). It sets up $kind_post, $kind, $type
+ * and $cite, then includes reply-details.php and reply-author.php, which use them.
+ *
+ * @package Post_Kinds
+ * @since   3.0.0
+ */
+
 defined( 'ABSPATH' ) || exit;
 
 wp_nonce_field( 'replykind_metabox', 'replykind_metabox_nonce' );

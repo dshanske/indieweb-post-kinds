@@ -1,4 +1,18 @@
-<?php defined( 'ABSPATH' ) || exit; ?>
+<?php
+/**
+ * Details tab of the Post Kinds metabox.
+ *
+ * Included by reply-metabox.php; includes reply-time.php.
+ *
+ * @package Post_Kinds
+ * @since   3.0.0
+ *
+ * @var Kind_Post $kind_post The post being edited.
+ * @var array     $cite      The citation, normalized by Kind_Post::normalize_cite().
+ */
+
+defined( 'ABSPATH' ) || exit;
+?>
 <div id="kind-details" class="hide-if-js">
         <h4><?php esc_html_e( 'Information on what you are responding to', 'indieweb-post-kinds' ); ?></h4>
 	<label for="cite_summary">

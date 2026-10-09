@@ -1,4 +1,17 @@
-<?php defined( 'ABSPATH' ) || exit; ?>
+<?php
+/**
+ * Author tab of the Post Kinds metabox.
+ *
+ * Included by reply-metabox.php.
+ *
+ * @package Post_Kinds
+ * @since   3.0.0
+ *
+ * @var array $cite The citation, normalized by Kind_Post::normalize_cite().
+ */
+
+defined( 'ABSPATH' ) || exit;
+?>
 	<div id="kind-author" class="hide-if-js">
 	<h4> <?php esc_html_e( 'Information on the Author or Artist of the Piece', 'indieweb-post-kinds' ); ?></h4>
 		<?php esc_html_e( '(Multiple Entries separated by semicolon)', 'indieweb-post-kinds' ); ?><BR />

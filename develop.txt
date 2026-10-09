@@ -20,3 +20,23 @@
 `kind_verb` - Filter get_kind_verbs
 
 `kind-response-display` - Filters the output being added to the_content or to custom location in theme
+
+== Overriding views ==
+
+The markup added to each post comes from a view file in the plugin's `views` folder: `kind-{slug}.php` for a kind (for example `kind-like.php`), or `kind.php` for a kind without its own view.
+
+To change a view, copy it into a `kind_views` folder in your theme and edit the copy. If a child theme has a `kind_views` folder, it is used instead of the parent theme's; the two aren't combined. For each post, the plugin looks for `kind-{slug}.php` in your theme and then in the plugin, and only then for `kind.php` in the same order. So a theme `kind.php` replaces only the kinds that have no view of their own. The `kind_view_paths` filter changes which folders are searched before the plugin's.
+
+Copies don't receive updates. After upgrading, compare them with the plugin's views. Since 4.0.0, views escape everything they print, and the `Kind_View` helpers return escaped markup.
+
+Each view is rendered by `Kind_View::get_view_part()` with these variables in scope:
+
+* `$kind_post` (Kind_Post) - the post being displayed.
+* `$kind` (string) - the kind's slug, such as `like`.
+* `$type` (string) - the kind's microformats property, such as `like-of`.
+* `$cite` (array) - the citation, normalized by `Kind_Post::normalize_cite()`, so every key is present. `name` falls back to the URL.
+* `$url` (string) - the cited URL.
+* `$author` (string|false) - the cited author as h-card markup, or false if there is none.
+* `$embed` (string) - embed markup for the cited URL, or an empty string.
+* `$photos` (int[]|false) - attachment IDs of the post's photos, from `Kind_Post::get_photo()`.
+* `$args` (array) - the arguments passed to `Kind_View::get_view_part()`; `post_id` is the post's ID.
