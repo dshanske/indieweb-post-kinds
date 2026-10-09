@@ -307,6 +307,7 @@ through future plugin updates.
 * The Kind Post widget prints nothing when it has no posts, instead of an unclosed wrapper
 * New kind terms are named after the kind rather than its slug
 * Feed change: The RSS and Atom feeds use WordPress's own templates instead of copies, and other plugins' feed handlers are no longer removed. Posts without a title have an empty title element instead of none, so the Atom feed is valid; turn on "Automatically add the Kind to the Title" to fill it in. Dates are written in UTC. In comment feeds, comments on untitled posts name the post.
+* Deprecated: The global functions `display_formatted_datetime()`, `divide_datetime()`, `build_datetime()`, `get_datetime_offset()`, `divide_interval()` and `build_interval()`. Use the `Kind_Time` methods of the same names. The global names still work but report a deprecation notice when debugging is on, and they will be removed in the next major release (5.0.0). Custom views copied into a theme may call them, so update those to the `Kind_Time` methods.
 * Display change: Custom views copied into a theme's `kind_views` folder keep their old code. Copy them again from the plugin's `views` folder, or escape their output.
 * Display change: Citation summaries are plain text, marked up as `p-summary` instead of `e-summary`. `Kind_View::get_summary()` returns the summary markup.
 * Display change: `Kind_View::get_hcard()`, `get_cite_title()`, `get_site_name()`, `get_embed()` and `get_url_link()` return escaped markup; HTML passed as a name is shown as text.
@@ -317,6 +318,7 @@ through future plugin updates.
 * Upgrade change: Until the background upgrade reaches them, older posts may be missing from the photos archive; `wp post-kinds upgrade` finishes it at once.
 * Removed: The `kind_photo_shortcode_exclude` filter, which never ran.
 * Behaviour change: `MF2_Post::get_images()` no longer imports remote photos into the media library; it returns media library attachments only.
+* Deprecated: The `MF2_Post` class. Use `Kind_Post`. Creating an `MF2_Post` reports a deprecation notice when debugging is on; the class will be removed in a future major version.
 
 ### 3.7.3 ( 2024-04-09 ) ###
 * Ensure widget array is instantiated

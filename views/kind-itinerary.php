@@ -40,12 +40,12 @@ foreach( $itineraries as $itinerary ) {
 	<li> 
 		<?php esc_html_e( 'Departs: ', 'indieweb-post-kinds' ); ?>
 		<span class="p-origin"><?php echo esc_html( $itinerary['origin'] ); ?></span>
-		<time class="dt-departure" datetime="<?php echo esc_attr( $itinerary['departure'] ); ?>"><?php echo esc_html( display_formatted_datetime( $itinerary['departure'] ) ); ?></time>
+		<time class="dt-departure" datetime="<?php echo esc_attr( $itinerary['departure'] ); ?>"><?php echo esc_html( Kind_Time::display_formatted_datetime( $itinerary['departure'] ) ); ?></time>
 	</li>
 	<li>
 		<?php esc_html_e( 'Arrives: ', 'indieweb-post-kinds' ); ?>
 		<span class="p-destination"><?php echo esc_html( $itinerary['destination'] ); ?></span>
-		<time class="dt-arrival" datetime="<?php echo esc_attr( $itinerary['arrival'] ); ?>"><?php echo esc_html( display_formatted_datetime( $itinerary['arrival'] ) ); ?></time>
+		<time class="dt-arrival" datetime="<?php echo esc_attr( $itinerary['arrival'] ); ?>"><?php echo esc_html( Kind_Time::display_formatted_datetime( $itinerary['arrival'] ) ); ?></time>
 	</li>
    </ul>
    </div>

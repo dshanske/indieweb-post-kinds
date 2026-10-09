@@ -56,9 +56,9 @@ class TimeTest extends WP_UnitTestCase {
 
 	public function test_display_helpers_with_malformed_input() {
 		$this->assertSame( '', Kind_View::display_duration( 'three minutes' ) );
-		$this->assertSame( '', display_formatted_datetime( 'not a date' ) );
-		$this->assertFalse( divide_datetime( 'not a date' ) );
-		$this->assertSame( array( 'Y' => 0, 'M' => 0, 'D' => 0, 'H' => 0, 'I' => 0, 'S' => 0 ), divide_interval( 'three minutes' ) );
+		$this->assertSame( '', Kind_Time::display_formatted_datetime( 'not a date' ) );
+		$this->assertFalse( Kind_Time::divide_datetime( 'not a date' ) );
+		$this->assertSame( array( 'Y' => 0, 'M' => 0, 'D' => 0, 'H' => 0, 'I' => 0, 'S' => 0 ), Kind_Time::divide_interval( 'three minutes' ) );
 		$this->assertNotSame( '', Kind_View::display_duration( 'PT3M30S' ) );
 	}
 
@@ -82,17 +82,30 @@ class TimeTest extends WP_UnitTestCase {
 	}
 
 	public function test_build_datetime() {
-		$this->assertSame( '2026-10-06T10:30:00+02:00', build_datetime( '2026-10-06', '10:30:00', '+02:00' )->format( DATE_W3C ) );
-		$this->assertSame( '2026-10-06T10:30:00+02:00', build_datetime( '2026-10-06', '10:30', '+02:00' )->format( DATE_W3C ) );
-		$this->assertSame( '2026-10-06T10:30:00-05:00', build_datetime( '2026-10-06', '10:30:00', new DateTimeZone( '-05:00' ) )->format( DATE_W3C ) );
-		$this->assertFalse( build_datetime( '', '10:30:00', '+02:00' ) );
-		$this->assertFalse( build_datetime( 'not-a-date', '10:30:00', '+02:00' ) );
+		$this->assertSame( '2026-10-06T10:30:00+02:00', Kind_Time::build_datetime( '2026-10-06', '10:30:00', '+02:00' )->format( DATE_W3C ) );
+		$this->assertSame( '2026-10-06T10:30:00+02:00', Kind_Time::build_datetime( '2026-10-06', '10:30', '+02:00' )->format( DATE_W3C ) );
+		$this->assertSame( '2026-10-06T10:30:00-05:00', Kind_Time::build_datetime( '2026-10-06', '10:30:00', new DateTimeZone( '-05:00' ) )->format( DATE_W3C ) );
+		$this->assertFalse( Kind_Time::build_datetime( '', '10:30:00', '+02:00' ) );
+		$this->assertFalse( Kind_Time::build_datetime( 'not-a-date', '10:30:00', '+02:00' ) );
 	}
 
 	public function test_build_interval() {
-		$this->assertSame( 'P1DT2H', build_interval( array( 'Y' => 0, 'M' => 0, 'D' => 1, 'H' => 2, 'I' => 0, 'S' => 0 ) ) );
-		$this->assertSame( 'P1Y2M', build_interval( array( 'Y' => 1, 'M' => 2 ) ) );
-		$this->assertSame( 'PT3M30S', build_interval( array( 'I' => 3, 'S' => 30 ) ) );
-		$this->assertSame( '', build_interval( array( 'H' => 0 ) ) );
+		$this->assertSame( 'P1DT2H', Kind_Time::build_interval( array( 'Y' => 0, 'M' => 0, 'D' => 1, 'H' => 2, 'I' => 0, 'S' => 0 ) ) );
+		$this->assertSame( 'P1Y2M', Kind_Time::build_interval( array( 'Y' => 1, 'M' => 2 ) ) );
+		$this->assertSame( 'PT3M30S', Kind_Time::build_interval( array( 'I' => 3, 'S' => 30 ) ) );
+		$this->assertSame( '', Kind_Time::build_interval( array( 'H' => 0 ) ) );
+	}
+
+	public function test_deprecated_global_wrappers() {
+		foreach ( array( 'display_formatted_datetime', 'divide_datetime', 'build_datetime', 'get_datetime_offset', 'divide_interval', 'build_interval' ) as $name ) {
+			$this->setExpectedDeprecated( $name );
+		}
+		$date = new DateTimeImmutable( '2026-10-06T10:30:00+02:00' );
+		$this->assertSame( Kind_Time::display_formatted_datetime( $date ), display_formatted_datetime( $date ) );
+		$this->assertSame( Kind_Time::divide_datetime( $date ), divide_datetime( $date ) );
+		$this->assertEquals( Kind_Time::build_datetime( '2026-10-06', '10:30', '+02:00' ), build_datetime( '2026-10-06', '10:30', '+02:00' ) );
+		$this->assertSame( '+02:00', get_datetime_offset( $date ) );
+		$this->assertSame( Kind_Time::divide_interval( 'PT3M' ), divide_interval( 'PT3M' ) );
+		$this->assertSame( 'PT3M', build_interval( array( 'I' => 3 ) ) );
 	}
 }

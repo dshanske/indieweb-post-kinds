@@ -245,7 +245,7 @@ class Kind_Metabox {
 	public static function kind_the_time( $prefix, $label, $datetime, $class ) {
 		$tz_seconds = get_option( 'gmt_offset' ) * 3600;
 		$offset     = tz_seconds_to_offset( $tz_seconds );
-		$time       = divide_datetime( $datetime );
+		$time       = Kind_Time::divide_datetime( $datetime );
 		if ( ! is_array( $time ) ) {
 			$time = array();
 		}
@@ -288,7 +288,7 @@ class Kind_Metabox {
 	public static function timezone_offset_choice( $select ) {
 		$tzlist = get_gmt_offsets();
 		$string = '';
-		foreach ( $tzlist as $key => $value ) {
+		foreach ( $tzlist as $value ) {
 			$string .= '<option value="' . esc_attr( $value ) . '"';
 			if ( $select === $value ) {
 				$string .= ' selected';

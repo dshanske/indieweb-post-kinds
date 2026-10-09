@@ -80,6 +80,7 @@ class DeprecationsTest extends WP_UnitTestCase {
 	}
 
 	public function test_mf2_post_reads_attachment_metadata() {
+		$this->setExpectedDeprecated( 'MF2_Post::__construct' );
 		$attachment = self::factory()->attachment->create( array( 'post_mime_type' => 'image/jpeg' ) );
 		update_post_meta( $attachment, 'mf2_published', array( '2026-01-01T10:00:00+00:00' ) );
 		update_post_meta( $attachment, 'mf2_publication', array( 'An Album' ) );
@@ -108,5 +109,10 @@ class DeprecationsTest extends WP_UnitTestCase {
 		} finally {
 			$GLOBALS['wp_embed'] = $saved;
 		}
+	}
+
+	public function test_mf2_post_is_deprecated() {
+		$this->setExpectedDeprecated( 'MF2_Post::__construct' );
+		new MF2_Post( self::factory()->post->create() );
 	}
 }

@@ -1,7 +1,7 @@
 <?php
 defined( 'ABSPATH' ) || exit;
 
-$duration = divide_interval( $kind_post->get_duration() ); ?>
+$duration = Kind_Time::divide_interval( $kind_post->get_duration() ); ?>
 
 <div id="kind-time" class="hide-if-js">
 	<h4><?php esc_html_e( 'Duration', 'indieweb-post-kinds' ); ?></h4>

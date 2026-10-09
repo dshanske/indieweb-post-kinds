@@ -97,6 +97,7 @@ class ReadOnlyGettersTest extends WP_UnitTestCase {
 	}
 
 	public function test_mf2_post_reads_old_response_meta_without_moving_it() {
+		$this->setExpectedDeprecated( 'MF2_Post::__construct' );
 		$this->store(
 			'reply',
 			'response',
@@ -114,6 +115,7 @@ class ReadOnlyGettersTest extends WP_UnitTestCase {
 	}
 
 	public function test_mf2_post_images_do_not_sideload() {
+		$this->setExpectedDeprecated( 'MF2_Post::__construct' );
 		$this->store( 'photo', 'mf2_photo', array( 'https://example.com/remote.jpg' ) );
 		add_filter( 'pre_http_request', array( $this, 'fail_request' ) );
 		$images = ( new MF2_Post( $this->post ) )->get_images();
