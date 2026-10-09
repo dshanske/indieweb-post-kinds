@@ -317,6 +317,7 @@ through future plugin updates.
 * Upgrade change: Until the background upgrade reaches them, older posts may be missing from the photos archive; `wp post-kinds upgrade` finishes it at once.
 * Removed: The `kind_photo_shortcode_exclude` filter, which never ran.
 * Behaviour change: `MF2_Post::get_images()` no longer imports remote photos into the media library; it returns media library attachments only.
+* Deprecated: The `MF2_Post` class. Use `Kind_Post`. Creating an `MF2_Post` reports a deprecation notice when debugging is on; the class will be removed in a future major version.
 
 ### 3.7.3 ( 2024-04-09 ) ###
 * Ensure widget array is instantiated

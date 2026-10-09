@@ -4,8 +4,10 @@ defined( 'ABSPATH' ) || exit;
 /**
  * MF2 Post Class
  *
+ * Assists in retrieving/saving microformats 2 properties from a post.
+ *
  * @package Post Kinds
- * Assists in retrieving/saving microformats 2 properties from a post
+ * @deprecated 4.0.0 Use Kind_Post. MF2_Post will be removed in a future major version.
  */
 class MF2_Post implements ArrayAccess {
 	public $uid;
@@ -26,6 +28,7 @@ class MF2_Post implements ArrayAccess {
 	private $mf2 = array();
 
 	public function __construct( $post ) {
+		_deprecated_function( __METHOD__, '4.0.0', 'Kind_Post' );
 		if ( is_numeric( $post ) ) {
 			$this->uid = (int) $post;
 		} elseif ( $post instanceof WP_Post ) {
