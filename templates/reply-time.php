@@ -1,4 +1,15 @@
 <?php
+/**
+ * Duration fields of the Post Kinds metabox.
+ *
+ * Included by reply-details.php.
+ *
+ * @package Post_Kinds
+ * @since   3.0.0
+ *
+ * @var Kind_Post $kind_post The post being edited.
+ */
+
 defined( 'ABSPATH' ) || exit;
 
 $duration = Kind_Time::divide_interval( $kind_post->get_duration() ); ?>
