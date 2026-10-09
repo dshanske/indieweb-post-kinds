@@ -629,8 +629,6 @@ final class Kind_Taxonomy {
 		$pagination_regex = self::get_pagination_regex();
 		$feed_regex       = self::get_feed_regex();
 		$feed_regex2      = self::get_feed_regex( false );
-		$tax_regex        = '([^/]*)';
-		$term_regex       = '([^/]*)';
 
 		// Year Archives for Photos
 		add_rewrite_rule(

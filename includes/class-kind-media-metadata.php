@@ -229,27 +229,6 @@ class Kind_Media_Metadata {
 		return self::get_media_from_content( $content )['video'];
 	}
 
-	private function media_sideload_image( $url, $post_id, $description = null ) {
-		// To prevent sideloading the same URL multiple times check for the original URL which will now be stored
-		$ids = get_posts(
-			array(
-				'post_type'        => 'attachment',
-				'suppress_filters' => false,
-				'nopaging'         => true,
-				'meta_key'         => '_source_url',
-				'meta_value'       => $url,
-				'fields'           => 'ids',
-			)
-		);
-		if ( ! empty( $ids ) ) {
-			return $ids[0];
-		}
-		// Since WordPress 5.4, media_sideload_image() stores _source_url itself.
-		return media_sideload_image( $url, $post_id, $description, 'id' );
-	}
-
-
-
 	/**
 	 * Every time a post is saved, stores the attachment IDs of the media in its content.
 	 *
@@ -358,8 +337,7 @@ class Kind_Media_Metadata {
 		if ( ! is_array( $data ) ) {
 			return $data;
 		}
-		$data       = array_filter( $data );
-		$attachment = get_post( $attachment_id, ARRAY_A );
+		$data = array_filter( $data );
 		if ( isset( $data['image_meta'] ) ) {
 			$meta = $data['image_meta'];
 			if ( ! empty( $meta['credit'] ) ) {
