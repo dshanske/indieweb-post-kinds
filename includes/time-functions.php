@@ -250,7 +250,7 @@ if ( ! function_exists( 'display_formatted_datetime' ) ) {
 	/**
 	 * Deprecated wrapper; see Kind_Time::display_formatted_datetime().
 	 *
-	 * @deprecated 4.0.0 Use Kind_Time::display_formatted_datetime().
+	 * @deprecated 4.0.0 Use Kind_Time::display_formatted_datetime(). Will be removed in 5.0.0.
 	 */
 	function display_formatted_datetime( $date ) {
 		_deprecated_function( __FUNCTION__, '4.0.0', 'Kind_Time::display_formatted_datetime()' );
@@ -262,7 +262,7 @@ if ( ! function_exists( 'divide_datetime' ) ) {
 	/**
 	 * Deprecated wrapper; see Kind_Time::divide_datetime().
 	 *
-	 * @deprecated 4.0.0 Use Kind_Time::divide_datetime().
+	 * @deprecated 4.0.0 Use Kind_Time::divide_datetime(). Will be removed in 5.0.0.
 	 */
 	function divide_datetime( $datetime ) {
 		_deprecated_function( __FUNCTION__, '4.0.0', 'Kind_Time::divide_datetime()' );
@@ -274,7 +274,7 @@ if ( ! function_exists( 'build_datetime' ) ) {
 	/**
 	 * Deprecated wrapper; see Kind_Time::build_datetime().
 	 *
-	 * @deprecated 4.0.0 Use Kind_Time::build_datetime().
+	 * @deprecated 4.0.0 Use Kind_Time::build_datetime(). Will be removed in 5.0.0.
 	 */
 	function build_datetime( $date, $time, $offset = null ) {
 		_deprecated_function( __FUNCTION__, '4.0.0', 'Kind_Time::build_datetime()' );
@@ -286,7 +286,7 @@ if ( ! function_exists( 'get_datetime_offset' ) ) {
 	/**
 	 * Deprecated wrapper; see Kind_Time::get_datetime_offset().
 	 *
-	 * @deprecated 4.0.0 Use Kind_Time::get_datetime_offset().
+	 * @deprecated 4.0.0 Use Kind_Time::get_datetime_offset(). Will be removed in 5.0.0.
 	 */
 	function get_datetime_offset( $datetime = null ) {
 		_deprecated_function( __FUNCTION__, '4.0.0', 'Kind_Time::get_datetime_offset()' );
@@ -298,7 +298,7 @@ if ( ! function_exists( 'divide_interval' ) ) {
 	/**
 	 * Deprecated wrapper; see Kind_Time::divide_interval().
 	 *
-	 * @deprecated 4.0.0 Use Kind_Time::divide_interval().
+	 * @deprecated 4.0.0 Use Kind_Time::divide_interval(). Will be removed in 5.0.0.
 	 */
 	function divide_interval( $interval ) {
 		_deprecated_function( __FUNCTION__, '4.0.0', 'Kind_Time::divide_interval()' );
@@ -310,7 +310,7 @@ if ( ! function_exists( 'build_interval' ) ) {
 	/**
 	 * Deprecated wrapper; see Kind_Time::build_interval().
 	 *
-	 * @deprecated 4.0.0 Use Kind_Time::build_interval().
+	 * @deprecated 4.0.0 Use Kind_Time::build_interval(). Will be removed in 5.0.0.
 	 */
 	function build_interval( $values ) {
 		_deprecated_function( __FUNCTION__, '4.0.0', 'Kind_Time::build_interval()' );
