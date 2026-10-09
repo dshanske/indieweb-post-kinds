@@ -4,8 +4,6 @@
 
 	<file>./templates/</file>
 	<file>./views/</file>
-	<!-- Copies of core's feed templates; to be replaced by core's own (#430). -->
-	<exclude-pattern>*/templates/feed-*\.php</exclude-pattern>
 	<arg name="extensions" value="php"/>
 
 	<rule ref="PHPCompatibilityWP"/>
