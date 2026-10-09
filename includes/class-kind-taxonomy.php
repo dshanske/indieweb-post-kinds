@@ -794,11 +794,11 @@ final class Kind_Taxonomy {
 	private static function create_post_kind( $term ) {
 		$kind = self::get_post_kind_info( $term );
 		if ( $kind ) {
+			// The first argument is the term name; wp_insert_term() has no 'name' argument.
 			wp_insert_term(
-				$kind->slug,
+				$kind->singular_name,
 				'kind',
 				array(
-					'name'        => $kind->singular_name,
 					'description' => $kind->description,
 					'slug'        => $term,
 				)
