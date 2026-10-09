@@ -1,13 +1,14 @@
 {
+  "private": true,
   "engines": {
-    "node": ">= 0.10.0"
+    "node": ">=18.12.0"
+  },
+  "scripts": {
+    "lint:js": "eslint js/kind.js"
   },
   "devDependencies": {
-    "@wordpress/eslint-plugin": "^9.0",
-    "grunt": "^1.5.3",
-    "grunt-contrib-copy": "~1.0.0",
-    "grunt-contrib-sass": "^2.0.0",
-    "grunt-eslint": "^24.0.0",
-    "grunt-wp-readme-to-markdown": "~2.0.0"
+    "@wordpress/eslint-plugin": "^27.1.0",
+    "eslint": "^9.39.0",
+    "globals": "^16.0.0"
   }
 }
