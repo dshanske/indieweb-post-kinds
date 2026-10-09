@@ -494,7 +494,15 @@ final class Kind_Taxonomy {
 			$new_term = get_term_by( 'term_taxonomy_id', array_pop( $tt_ids ), 'kind' );
 			$new_term = $new_term instanceof WP_Term ? $new_term->slug : '';
 			if ( $old_term !== $new_term ) {
-				// Trigger a hook on a changed kind identifying old and new so actions can be performed
+				/**
+				 * Fires when a post's kind changes.
+				 *
+				 * @since 3.0.8
+				 *
+				 * @param int    $object_id Post ID.
+				 * @param string $old_term  Slug of the previous kind, or an empty string if there was none.
+				 * @param string $new_term  Slug of the new kind, or an empty string if the kind was removed.
+				 */
 				do_action( 'change_kind', $object_id, $old_term, $new_term );
 			}
 		}
@@ -610,6 +618,17 @@ final class Kind_Taxonomy {
 		register_taxonomy( 'kind', array( 'post' ), $args );
 		add_permastruct( 'kind_date', 'kind/%kind%/%year%/%monthnum%/' );
 
+		/**
+		 * Filters the taxonomies that get kind archive rewrite rules.
+		 *
+		 * Each taxonomy gets rules for /kind/{kind}/{taxonomy}/{term}/. Rewrite rules
+		 * are flushed when the plugin is activated or updated; flush them yourself
+		 * (Settings > Permalinks > Save) after changing this.
+		 *
+		 * @since 3.4.15
+		 *
+		 * @param string[] $taxonomies Taxonomy names. Default 'post_tag', 'category' and 'series'.
+		 */
 		$kind_rewrite_taxonomies = apply_filters( 'kind_rewrite_taxonomies', array( 'post_tag', 'category', 'series' ) );
 
 		// For each kind, support filtering by other taxonomies.
@@ -617,13 +636,40 @@ final class Kind_Taxonomy {
 			add_permastruct( 'kind_' . $taxonomy, 'kind/%kind%/' . $taxonomy . '/%' . $taxonomy . '%' );
 		}
 
+		/**
+		 * Filters the URL slug for archives that exclude kinds, as in /exclude/kind/{kinds}/.
+		 *
+		 * Flush rewrite rules after changing this.
+		 *
+		 * @since 3.4.15
+		 *
+		 * @param string $slug Slug. Default 'exclude'.
+		 */
 		$kind_exclude_slug = apply_filters( 'kind_exclude_slug', 'exclude' );
 
 		add_rewrite_tag( '%kind_exclude%', '([^/]*)', 'exclude=' );
 		add_rewrite_tag( '%kind_exclude_terms%', '([a-z,]+)', 'exclude_terms=' );
 		add_permastruct( 'kind_excludes', $kind_exclude_slug . '/%kind_exclude%/%kind_exclude_terms%' );
 
+		/**
+		 * Filters the URL slug for the archive of posts with photos.
+		 *
+		 * Flush rewrite rules after changing this.
+		 *
+		 * @since 3.4.15
+		 *
+		 * @param string $slug Slug. Default 'photos'.
+		 */
 		$kind_photos_slug   = apply_filters( 'kind_photos_slug', 'photos' );
+		/**
+		 * Filters the URL slug for the firehose feed, which includes every kind.
+		 *
+		 * Flush rewrite rules after changing this.
+		 *
+		 * @since 3.6.0
+		 *
+		 * @param string $slug Slug. Default 'firehose'.
+		 */
 		$kind_firehose_slug = apply_filters( 'kind_firehose_slug', 'firehose' );
 
 		$year_regex       = '([0-9]{4})';
@@ -891,6 +937,9 @@ final class Kind_Taxonomy {
 	public static function kind_archive_title( $title, $original_title = null, $prefix = null ) {
 		$return = array();
 
+		/**
+		 * This filter is documented in wp-includes/general-template.php
+		 */
 		$prefix = apply_filters( 'get_the_archive_title_prefix', $prefix );
 
 		if ( is_tax() || is_category() || is_tag() ) {
@@ -1006,8 +1055,15 @@ final class Kind_Taxonomy {
 	 */
 	public static function select_metabox( $post ) {
 		$include = array_merge( Kind_Config::get_termslist(), array( 'note', 'reply', 'article' ) );
-		// If Simple Location is Enabled, include the check-in type
-		// Filter Kinds
+		/**
+		 * Filters the kinds offered in the editor and listed by the Kind Menu widget.
+		 *
+		 * By default these are the kinds selected in the settings, plus note, reply and article.
+		 *
+		 * @since 2.0.2
+		 *
+		 * @param string[] $include Kind slugs.
+		 */
 		$include = array_unique( apply_filters( 'kind_include', $include ) );
 		// Note cannot be removed or disabled without hacking the code
 		if ( ! in_array( 'note', $include, true ) ) {
@@ -1439,6 +1495,15 @@ final class Kind_Taxonomy {
 	 * @return mixed|void
 	 */
 	public static function before_kind() {
+		/**
+		 * Filters whether to show the kind's icon or name before the response.
+		 *
+		 * Return false to hide it everywhere and remove the display option from the settings page.
+		 *
+		 * @since 2.6.6
+		 *
+		 * @param bool $display Whether to show it. Default true.
+		 */
 		return apply_filters( 'kind_icon_display', true );
 	}
 
@@ -1495,6 +1560,15 @@ final class Kind_Taxonomy {
 			return '';
 		}
 		$name       = self::get_kind_info( $kind, 'singular_name' );
+		/**
+		 * Filters the HTML attributes added to the span that wraps a kind icon.
+		 *
+		 * The string is output as-is, so it must be safe, escaped markup.
+		 *
+		 * @since 3.5.8
+		 *
+		 * @param string $attributes HTML attributes. Default an inline style that sizes the icon.
+		 */
 		$attributes = apply_filters( 'post_kinds_icon_attributes', 'style="display: inline-block; max-height: 1rem; margin-right: 0.5rem"' );
 		$return     = sprintf( '<span class="svg-icon svg-%1$s" aria-label="%2$s" title="%2$s" %3$s><span aria-hidden="true">%4$s</span></span>', esc_attr( $kind ), esc_attr( $name ), $attributes, $svgs[ $kind ] );
 		if ( $echo ) {

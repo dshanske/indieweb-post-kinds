@@ -262,7 +262,28 @@ if ( ! function_exists( 'kind_get_the_title' ) ) {
 		// The content is text (a cited name or an excerpt), often from another site.
 		$content = esc_html( wp_strip_all_tags( (string) $content ) );
 
+		/**
+		 * Filters the text of a generated post title.
+		 *
+		 * The text is a cited name, an excerpt or similar, already escaped. A callback
+		 * that adds markup must escape what it adds.
+		 *
+		 * @since 3.5.9
+		 *
+		 * @param string  $content Escaped title text.
+		 * @param WP_Post $post    The post.
+		 */
 		$content = apply_filters( 'kind_get_the_title_content', $content, $post );
+		/**
+		 * Filters the markup shown before a generated post title.
+		 *
+		 * The markup is output as-is, so it must be escaped.
+		 *
+		 * @since 3.5.9
+		 *
+		 * @param string  $before The kind's icon or name, from Kind_Taxonomy::get_before_kind().
+		 * @param WP_Post $post   The post.
+		 */
 		$before  = apply_filters( 'kind_get_the_title_before', $before, $post );
 
 		return trim( sprintf( '%1$s %2$s', $before, $content ) );
