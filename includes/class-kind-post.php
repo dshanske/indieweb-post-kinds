@@ -1024,7 +1024,6 @@ class Kind_Post {
 	 * @return bool True on success, false on failure.
 	 */
 	public function delete( $key ) {
-
 		return delete_post_meta( $this->id, 'mf2_' . $key );
 	}
 }

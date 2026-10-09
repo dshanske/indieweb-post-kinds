@@ -938,7 +938,6 @@ final class Kind_Taxonomy {
 	 * @param string $term Post kind slug.
 	 */
 	private static function create_post_kind( $term ) {
-
 		$kind = self::get_post_kind_info( $term );
 		if ( $kind ) {
 			// The first argument is the term name; wp_insert_term() has no 'name' argument.
@@ -1276,7 +1275,6 @@ final class Kind_Taxonomy {
 	}
 
 	/**
-
 	 * Enables a hidden post kind.
 	 *
 	 * @since 3.1.0
@@ -1589,8 +1587,9 @@ final class Kind_Taxonomy {
 	 * @since 2.1.1
 	 *
 	 * @param int|WP_Post $post The post for which to assign a kind.
-	 * @param string      $kind A kind to assign. Using an empty string or array will default to article.
-	 * @return mixed WP_Error on error. Array of affected term IDs on success.
+	 * @param string      $kind Optional. A registered kind's slug. Default 'article'.
+	 * @return array|false|WP_Error Array of affected term IDs on success. WP_Error if the post
+	 *                              or the kind is not valid, or false on failure.
 	 */
 	public static function set_post_kind( $post, $kind = 'article' ) {
 		$post = get_post( $post );
