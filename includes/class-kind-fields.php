@@ -27,6 +27,13 @@ defined( 'ABSPATH' ) || exit;
  */
 class Kind_Fields {
 
+	/**
+	 * Returns a list of time zones with translated labels.
+	 *
+	 * @since 3.3.4
+	 *
+	 * @return string[] Labels, keyed by time zone identifier.
+	 */
 	public static function timezone_list() {
 		return array(
 			'Pacific/Niue'                   => __( '(GMT-11:00) Niue', 'indieweb-post-kinds' ),
@@ -283,6 +290,13 @@ class Kind_Fields {
 		);
 	}
 
+	/**
+	 * Returns the UTC offsets in use by any time zone, sorted.
+	 *
+	 * @since 3.3.4
+	 *
+	 * @return string[] Offsets such as '-05:00'.
+	 */
 	public static function get_offset_list() {
 		$o = wp_cache_get( 'kind_offset_list' );
 		if ( false !== $o ) {
@@ -301,15 +315,13 @@ class Kind_Fields {
 	}
 
 	/**
-	 * Function to render date/time field inputs.
+	 * Renders date, time and offset inputs.
 	 *
-	 * @access public
+	 * @since 3.3.4
 	 *
-	 * @param string|DateTime $time   Date/time value.
-	 * @param string $name Property name
-	 * @param array $args
-	 * @param string|array $class  Class to use for fields.
-	 * @return string
+	 * @param array                 $args     Field arguments, as returned by validate(): 'name', 'label' and 'class'.
+	 * @param DateTime|string|false $datetime Date, or a date string. Default now.
+	 * @return string The inputs.
 	 */
 	public static function field_datetime( $args, $datetime ) {
 		if ( is_string( $datetime ) ) {
@@ -332,15 +344,13 @@ class Kind_Fields {
 	}
 
 	/**
-	 * Function to render dateinterval field inputs.
+	 * Renders duration inputs.
 	 *
-	 * @access public
+	 * @since 3.3.4
 	 *
-	 * @param string|Kind_DateTime $time   Date/time value.
-	 * @param string $name Property name
-	 * @param array $args
-	 * @param string|array $class  Class to use for fields.
-	 * @return string
+	 * @param array               $args     Field arguments, as returned by validate(), including 'pieces'.
+	 * @param DateInterval|string $interval Duration, or an ISO 8601 duration. Default 0.
+	 * @return string The inputs.
 	 */
 	public static function field_duration( $args, $interval ) {
 		if ( is_string( $interval ) ) {
@@ -368,17 +378,13 @@ class Kind_Fields {
 	}
 
 	/**
-	 * Function to render author inputs.
+	 * Renders author name, URL and photo inputs.
 	 *
-	 * @access public
+	 * @since 3.3.4
 	 *
-	 * @param string $prefix Field prefix.
-	 * @param string|array $author Defautl values. If string, considered to be the name property below. {
-		 * @param string $name Author Name
-		 * @param string $url Author URL
-		 * @param string $photo Author Photo
-	 * }
-	 * @return string
+	 * @param array       $args   Field arguments, as returned by validate().
+	 * @param array|false $author Values, with 'name', 'url' and 'photo' keys.
+	 * @return string The inputs.
 	 */
 	public static function field_author( $args, $author ) {
 		if ( ! $author ) {
@@ -398,7 +404,7 @@ class Kind_Fields {
 				'label' => __( 'Author Photo', 'indieweb-post-kinds' ),
 			),
 		);
-		// Ensure all props are set for values
+		// Ensure all props are set for values.
 		foreach ( array_keys( $props ) as $prop ) {
 			if ( ! array_key_exists( $prop, $author ) ) {
 				$author[ $prop ] = '';
@@ -409,13 +415,13 @@ class Kind_Fields {
 
 
 	/**
-	 * Function to render a select.
+	 * Renders a select. The options are in $args['options'].
 	 *
-	 * @access public
+	 * @since 3.3.4
 	 *
-	 * @param string $name
-	 * @param string $selected Selected field type.
-	 * @return string
+	 * @param array  $args     Field arguments, as returned by validate().
+	 * @param string $selected Value of the selected option.
+	 * @return string The input.
 	 */
 	public static function field_select( $args, $selected ) {
 		$return = array();
@@ -430,13 +436,13 @@ class Kind_Fields {
 	}
 
 	/**
-	 * Function to render a url.
+	 * Renders a URL input.
 	 *
-	 * @access public
+	 * @since 3.3.4
 	 *
-	 * @param string $name
-	 * @param string $url
-	 * @return string
+	 * @param array  $args Field arguments, as returned by validate().
+	 * @param string $url  Value.
+	 * @return string The input.
 	 */
 	public static function field_url( $args, $url ) {
 		$return   = array();
@@ -447,13 +453,13 @@ class Kind_Fields {
 	}
 
 	/**
-	 * Function to render a number.
+	 * Renders a number input. The step is in $args['step'].
 	 *
-	 * @access public
+	 * @since 3.3.4
 	 *
-	 * @param string $name
-	 * @param string $value
-	 * @return string
+	 * @param array  $args  Field arguments, as returned by validate().
+	 * @param string $value Value.
+	 * @return string The input.
 	 */
 	public static function field_number( $args, $value ) {
 		$return   = array();
@@ -464,13 +470,13 @@ class Kind_Fields {
 	}
 
 	/**
-	 * Function to render a text.
+	 * Renders a text input.
 	 *
-	 * @access public
+	 * @since 3.3.4
 	 *
-	 * @param string $name
-	 * @param string $value
-	 * @return string
+	 * @param array  $args  Field arguments, as returned by validate().
+	 * @param string $value Value.
+	 * @return string The input.
 	 */
 	public static function field_text( $args, $value ) {
 		$return   = array();
@@ -481,13 +487,13 @@ class Kind_Fields {
 	}
 
 	/**
-	 * Function to render a textarea.
+	 * Renders a textarea.
 	 *
-	 * @access public
+	 * @since 3.3.4
 	 *
-	 * @param string $name
-	 * @param string $value
-	 * @return string
+	 * @param array  $args  Field arguments, as returned by validate().
+	 * @param string $value Value.
+	 * @return string The input.
 	 */
 	public static function field_textarea( $args, $value ) {
 		$return   = array();
@@ -497,6 +503,15 @@ class Kind_Fields {
 		return implode( PHP_EOL, $return );
 	}
 
+	/**
+	 * Renders a textarea for a list, with items separated by semicolons.
+	 *
+	 * @since 3.3.4
+	 *
+	 * @param array        $args  Field arguments, as returned by validate().
+	 * @param string|array $value Value, or a list of values.
+	 * @return string The input.
+	 */
 	public static function field_list( $args, $value ) {
 		if ( is_array( $value ) ) {
 			$value = implode( ';', $value );
@@ -504,18 +519,54 @@ class Kind_Fields {
 		return self::field_textarea( $args, $value );
 	}
 
+	/**
+	 * Renders the inputs for a venue's properties.
+	 *
+	 * @since 3.3.4
+	 *
+	 * @param array $args  Field arguments, as returned by validate(), including 'properties'.
+	 * @param array $value Values, keyed by property.
+	 * @return string The inputs.
+	 */
 	public static function field_venue( $args, $value ) {
 		return self::render( $args['properties'], $value );
 	}
 
+	/**
+	 * Renders the inputs for a citation's properties.
+	 *
+	 * @since 3.3.4
+	 *
+	 * @param array $args  Field arguments, as returned by validate(), including 'properties'.
+	 * @param array $value Values, keyed by property.
+	 * @return string The inputs.
+	 */
 	public static function field_cite( $args, $value ) {
 		return self::render( $args['properties'], $value );
 	}
 
+	/**
+	 * Checks whether a string starts with a prefix.
+	 *
+	 * @since 3.3.4
+	 *
+	 * @param string $source The source string.
+	 * @param string $prefix The prefix to look for.
+	 * @return bool True if the source starts with the prefix.
+	 */
 	public static function str_prefix( $source, $prefix ) {
 		return strncmp( $source, $prefix, strlen( $prefix ) ) === 0;
 	}
 
+	/**
+	 * Returns a value from an array.
+	 *
+	 * @since 3.3.4
+	 *
+	 * @param string $key   Key.
+	 * @param array  $array The array.
+	 * @return mixed The value, or false if it is not set.
+	 */
 	private static function get( $key, $array ) {
 		if ( ! is_array( $array ) ) {
 			return false;
@@ -526,37 +577,45 @@ class Kind_Fields {
 		return false;
 	}
 
+	/**
+	 * Checks a field definition and fills in defaults.
+	 *
+	 * @since 3.3.4
+	 *
+	 * @param array $element Field definition.
+	 * @return array|false The field definition, or false if it is not valid.
+	 */
 	private static function validate( $element ) {
-		// Everything must have a type
+		// Everything must have a type.
 		if ( ! self::get( 'type', $element ) ) {
 			return false;
 		}
-		// Everything must have a label
+		// Everything must have a label.
 		if ( ! self::get( 'label', $element ) ) {
 			return false;
 		}
-		// If no name property then the label property copies over
+		// If no name property then the label property copies over.
 		if ( ! self::get( 'name', $element ) ) {
 			$element['name'] = sanitize_title( $element['label'] );
 		}
-		// If no label property then the name property copies over
+		// If no label property then the name property copies over.
 		if ( ! self::get( 'label', $element ) ) {
 			$element['label'] = $element['name'];
 		}
-		// If no class property then the class property is set to empty
+		// If no class property then the class property is set to empty.
 		if ( ! self::get( 'class', $element ) ) {
 			$element['class'] = '';
 		}
-		// Class can be an array
+		// Class can be an array.
 		if ( is_array( $element['class'] ) ) {
 			$element['class'] = implode( ' ', $element['class'] );
 		}
 		$type = self::get( 'type', $element );
-		// Any non supported type should be considered to be text
+		// Any non supported type should be considered to be text.
 		if ( ! self::supported_type( $type ) ) {
 			$type = 'text';
 		}
-		// Type Specific Conditions
+		// Type Specific Conditions.
 		switch ( $type ) {
 			case 'cite':
 			case 'venue':
@@ -566,7 +625,7 @@ class Kind_Fields {
 				break;
 			case 'number':
 				if ( ! array_key_exists( 'step', $element ) ) {
-					$element['step'] = 1; // Defaults to Even Numbers
+					$element['step'] = 1; // Defaults to Even Numbers.
 				}
 				break;
 			case 'select':
@@ -576,23 +635,39 @@ class Kind_Fields {
 				break;
 			case 'duration':
 				if ( array_key_exists( 'pieces', $element ) ) {
-					// Ensure only valid options
+					// Ensure only valid options.
 					$element['pieces'] = array_intersect( array( 'Y', 'M', 'D', 'H', 'I', 'S' ), $element['pieces'] );
 				} else {
-					// By default only show hours, minutes, seconds
+					// By default only show hours, minutes, seconds.
 					$element['pieces'] = array( 'H', 'I', 'S' );
 				}
 				break;
 		}
 		return $element;
 	}
+
+	/**
+	 * Whether a field type is supported.
+	 *
+	 * @since 3.3.4
+	 *
+	 * @param string $type Field type.
+	 * @return bool
+	 */
 	public static function supported_type( $type ) {
 		return in_array( $type, array( 'cite', 'venue', 'coordinate', 'author', 'datetime', 'duration', 'text', 'url', 'textarea', 'list', 'section' ), true );
 	}
 
 
 	/**
-	 * Sets an array with only the mf2 prefixed meta.
+	 * Returns the properties stored in mf2_ prefixed post meta, without the prefix.
+	 *
+	 * Reads the current post; the $post argument is not used.
+	 *
+	 * @since 3.3.4
+	 *
+	 * @param int|WP_Post $post Not used.
+	 * @return array|false The properties, or false if there is no current post.
 	 */
 	private function get_mf2meta( $post ) {
 		$post = get_post();
@@ -609,7 +684,7 @@ class Kind_Fields {
 			} else {
 				unset( $meta[ $key ] );
 				$key = str_replace( 'mf2_', '', $key );
-				// Do not save microput prefixed instructions
+				// Do not save microput prefixed instructions.
 				if ( self::str_prefix( $key, 'mp-' ) ) {
 					continue;
 				}
@@ -628,13 +703,13 @@ class Kind_Fields {
 	}
 
 	/**
-	 * Function to render a form from a schema array
+	 * Renders a form from a field schema.
 	 *
-	 * @access public
+	 * @since 3.3.4
 	 *
-	 * @param array $schema
-	 *
-	 * @return string Form
+	 * @param array $schema Field definitions, keyed by property.
+	 * @param array $values Optional. Values, keyed by property. Default empty array.
+	 * @return string The form.
 	 */
 	public static function render( $schema, $values = array() ) {
 		$return = array();
@@ -652,10 +727,17 @@ class Kind_Fields {
 		return implode( '<br />', $return );
 	}
 
-	/* Extracts microformats elements from post data.
-	 * Microformats elements are prefixed by mf2_
-	 * After that, underscore would indicate properties that need to be reconstituted
-	*/
+	/**
+	 * Extracts microformats properties from submitted form data.
+	 *
+	 * Properties are prefixed by mf2_. After that, an underscore marks the
+	 * pieces of a property that need to be put back together.
+	 *
+	 * @since 3.3.4
+	 *
+	 * @param array $data Form data, such as $_POST.
+	 * @return array The properties.
+	 */
 	public static function rebuild_data( $data ) {
 		$raw = array();
 		foreach ( $data as $key => $value ) {
@@ -672,12 +754,12 @@ class Kind_Fields {
 				}
 				$raw[ $pieces[0] ] = $pieces[1];
 				unset( $raw[ $key ] );
-				// If this has the elements of a duration
+				// If this has the elements of a duration.
 				if ( ! empty( array_intersect( array( 'Y', 'M', 'D', 'H', 'I', 'S' ), $raw[ $pieces[0] ] ) ) ) {
 					$interval          = Kind_Time::build_interval( $raw[ $pieces[0] ] );
 					$raw[ $pieces[0] ] = date_interval_to_iso8601( $interval );
 				}
-				// If this has the elements of a datetime
+				// If this has the elements of a datetime.
 				if ( ! empty( array_intersect( array( 'date', 'time', 'offset' ), $raw[ $pieces[0] ] ) ) ) {
 					$datetime          = Kind_Time::build_datetime( $raw[ $pieces[0] ] );
 					$raw[ $pieces[0] ] = $datetime->format( DATE_W3C );
