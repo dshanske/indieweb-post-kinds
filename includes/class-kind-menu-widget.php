@@ -16,11 +16,13 @@ defined( 'ABSPATH' ) || exit;
 class Kind_Menu_Widget extends WP_Widget {
 	/**
 	 * Register widget with WordPress.
+	 *
+	 * @since 3.1.3
 	 */
 	public function __construct() {
 		parent::__construct(
-			'Kind_Menu_Widget',                // Base ID
-			__( 'Kind Menu Widget', 'indieweb-post-kinds' ),        // Name
+			'Kind_Menu_Widget',                // Base ID.
+			__( 'Kind Menu Widget', 'indieweb-post-kinds' ),        // Name.
 			array(
 				'classname'             => 'kind_menu_widget',
 				'description'           => __( 'A widget that allows you to display a menu of kind archives', 'indieweb-post-kinds' ),
@@ -31,6 +33,8 @@ class Kind_Menu_Widget extends WP_Widget {
 
 	/**
 	 * Front-end display of widget.
+	 *
+	 * @since 3.1.3
 	 *
 	 * @see WP_Widget::widget()
 	 *
@@ -51,7 +55,7 @@ class Kind_Menu_Widget extends WP_Widget {
 		 * This filter is documented in includes/class-kind-taxonomy.php
 		 */
 		$include = array_unique( apply_filters( 'kind_include', $include ) );
-		// Note cannot be removed or disabled without hacking the code
+		// Note cannot be removed or disabled without hacking the code.
 		if ( ! in_array( 'note', $include, true ) ) {
 			$include[] = 'note';
 		}
@@ -103,6 +107,8 @@ class Kind_Menu_Widget extends WP_Widget {
 	/**
 	 * Sanitize widget form values as they are saved.
 	 *
+	 * @since 3.1.3
+	 *
 	 * @see WP_Widget::update()
 	 *
 	 * @param array $new_instance Values just sent to be saved.
@@ -124,6 +130,8 @@ class Kind_Menu_Widget extends WP_Widget {
 
 	/**
 	 * Create the form for the Widget admin
+	 *
+	 * @since 3.1.3
 	 *
 	 * @see WP_Widget::form()
 	 *

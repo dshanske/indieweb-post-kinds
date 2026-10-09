@@ -16,11 +16,13 @@ defined( 'ABSPATH' ) || exit;
 class Kind_Post_Widget extends WP_Widget {
 	/**
 	 * Register widget with WordPress.
+	 *
+	 * @since 3.1.5
 	 */
 	public function __construct() {
 		parent::__construct(
-			'Kind_Post_Widget',                // Base ID
-			__( 'Kind Post Widget', 'indieweb-post-kinds' ),        // Name
+			'Kind_Post_Widget',                // Base ID.
+			__( 'Kind Post Widget', 'indieweb-post-kinds' ),        // Name.
 			array(
 				'classname'             => 'kind_post_widget',
 				'description'           => __( 'A widget that allows you to display a list of posts by type', 'indieweb-post-kinds' ),
@@ -31,6 +33,8 @@ class Kind_Post_Widget extends WP_Widget {
 
 	/**
 	 * Front-end display of widget.
+	 *
+	 * @since 3.1.5
 	 *
 	 * @see WP_Widget::widget()
 	 *
@@ -79,6 +83,8 @@ class Kind_Post_Widget extends WP_Widget {
 	/**
 	 * Sanitize widget form values as they are saved.
 	 *
+	 * @since 3.1.5
+	 *
 	 * @see WP_Widget::update()
 	 *
 	 * @param array $new_instance Values just sent to be saved.
@@ -99,6 +105,8 @@ class Kind_Post_Widget extends WP_Widget {
 
 	/**
 	 * Create the form for the Widget admin
+	 *
+	 * @since 3.1.5
 	 *
 	 * @see WP_Widget::form()
 	 *

@@ -18,6 +18,8 @@ class Kind_Media_Metadata {
 	/**
 	 * Function to Initialize the Configuration.
 	 *
+	 * @since 3.1.0
+	 *
 	 * @access public
 	 */
 	public static function init() {
@@ -37,6 +39,13 @@ class Kind_Media_Metadata {
 		add_filter( 'attachment_fields_to_save', array( static::class, 'attachment_fields_to_save' ), 10, 2 );
 	}
 
+	/**
+	 * Whether the request is for an AMP page, according to the AMP plugin.
+	 *
+	 * @since 3.5.1
+	 *
+	 * @return bool
+	 */
 	public static function is_amp_endpoint() {
 		if ( function_exists( 'is_amp_endpoint' ) ) {
 			return is_amp_endpoint();
@@ -44,6 +53,11 @@ class Kind_Media_Metadata {
 		return false;
 	}
 
+	/**
+	 * Enqueues the media fragment script on single posts that have media.
+	 *
+	 * @since 3.3.0
+	 */
 	public static function enqueue() {
 		if ( is_front_page() || ! is_singular() || self::is_amp_endpoint() || ! self::has_media( get_queried_object() ) ) {
 			return;
@@ -90,6 +104,8 @@ class Kind_Media_Metadata {
 	/**
 	 * Displays the Media Creator Description on the Attachment Page.
 	 *
+	 * @since 3.4.0
+	 *
 	 * @param array   $form_fields See attachment_fields_to_edit filter in WordPress.
 	 * @param WP_Post $post Attachment post object.
 	 * @return array $form_fields Updated with extra fields.
@@ -123,8 +139,10 @@ class Kind_Media_Metadata {
 	/**
 	 * Saves Extra Fields.
 	 *
-	 * @param array $post Attachment post data.
-	 * @param array   $attachment data.
+	 * @since 3.4.0
+	 *
+	 * @param array $post       Attachment post data.
+	 * @param array $attachment Attachment fields submitted.
 	 */
 	public static function attachment_fields_to_save( $post, $attachment ) {
 		// Core checks this before saving; check again as the filter can be applied elsewhere.
@@ -207,32 +225,38 @@ class Kind_Media_Metadata {
 		return $return;
 	}
 
-	/*
+	/**
 	 * Determine Attached Images from a Content Block.
+	 *
+	 * @since 3.4.0
 	 *
 	 * @param string $content Content.
 	 * @return array Array of Attachment IDs.
-	*/
+	 */
 	public static function get_img_from_content( $content ) {
 		return self::get_media_from_content( $content )['img'];
 	}
 
-	/*
+	/**
 	 * Determine Attached Audio from a Content Block.
+	 *
+	 * @since 3.4.0
 	 *
 	 * @param string $content Content.
 	 * @return array Array of Attachment IDs.
-	*/
+	 */
 	public static function get_audio_from_content( $content ) {
 		return self::get_media_from_content( $content )['audio'];
 	}
 
-	/*
+	/**
 	 * Determine Attached Videos from a Content Block.
+	 *
+	 * @since 3.4.0
 	 *
 	 * @param string $content Content.
 	 * @return array Array of Attachment IDs.
-	*/
+	 */
 	public static function get_video_from_content( $content ) {
 		return self::get_media_from_content( $content )['video'];
 	}
@@ -243,6 +267,8 @@ class Kind_Media_Metadata {
 	 * The lists are kept in the _content_img_ids, _content_audio_ids and
 	 * _content_video_ids meta; a key is deleted when there is no media of that
 	 * type, so the photos archive can select posts by whether the key exists.
+	 *
+	 * @since 3.4.0
 	 *
 	 * @param int $post_id Post ID.
 	 */
@@ -318,7 +344,9 @@ class Kind_Media_Metadata {
 	 * Currently only binary strings are sanitized with focus on preventing propagation of
 	 * bad character encodings from causing database calls and API endpoints to fail.
 	 *
-	 * @param array $metadata An existing array with data
+	 * @since 3.3.0
+	 *
+	 * @param array $metadata An existing array with data.
 	 *
 	 * @return array Returns array of sanitized metadata.
 	 */
@@ -341,6 +369,18 @@ class Kind_Media_Metadata {
 		return $metadata;
 	}
 
+	/**
+	 * Stores an attachment's author, album and duration from its file metadata.
+	 *
+	 * The image credit, or the artist of audio or video, becomes the author;
+	 * the album becomes the publication.
+	 *
+	 * @since 3.3.4
+	 *
+	 * @param array|mixed $data          Attachment metadata.
+	 * @param int         $attachment_id Attachment ID.
+	 * @return array|mixed The metadata, with empty values removed.
+	 */
 	public static function wp_generate_attachment_metadata( $data, $attachment_id ) {
 		if ( ! is_array( $data ) ) {
 			return $data;
