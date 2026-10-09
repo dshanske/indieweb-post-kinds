@@ -180,6 +180,8 @@ if ( ! function_exists( 'wp_trigger_error' ) ) {
 	 *                              before passing to this function to avoid being stripped {@see wp_kses()}.
 	 * @param int    $error_level   Optional. The designated error type for this error.
 	 *                              Only works with E_USER family of constants. Default E_USER_NOTICE.
+	 *
+	 * @throws WP_Exception If the error level is E_USER_ERROR. Exception where WP_Exception does not exist.
 	 */
 	function wp_trigger_error( $function_name, $message, $error_level = E_USER_NOTICE ) {
 
