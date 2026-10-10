@@ -76,7 +76,7 @@ Display:
 `kind_response_display` - The response markup for a post. Receives the markup and the post ID.
 `kind_view_paths` - The folders searched for views before the plugin's `views` folder. Default the theme's `kind_views` folder.
 `kind_icon_display` - Whether to show the kind's icon or name before the response. Return false to hide it and remove the option from Settings.
-`post_kinds_icon_attributes` - The HTML attributes on the span that wraps a kind icon. Output as-is, so it must be escaped.
+`post_kinds_icon_attributes` - The HTML attributes on the span that wraps a kind icon. Output as-is, so it must be escaped. Default empty since 4.0.0; before that, an inline style.
 `kind_get_the_title_content` - The text of a generated title. Receives escaped text and the post.
 `kind_get_the_title_before` - The markup before a generated title, the kind's icon or name by default. Output as-is, so it must be escaped.
 `get_hcard_data` - The author data before it becomes an h-card.
@@ -116,6 +116,10 @@ These still work, but report a deprecation notice when WP_DEBUG is on.
 
 * Since 4.0.0, the global functions `display_formatted_datetime()`, `divide_datetime()`, `build_datetime()`, `get_datetime_offset()`, `divide_interval()` and `build_interval()`. Use the Kind_Time methods of the same names. They will be removed in 5.0.0.
 * Since 4.0.0, the `MF2_Post` class. Use Kind_Post. It will be removed in a future major version.
+
+== Styling icons ==
+
+Kind icons are `<span class="svg-icon svg-{kind}">` elements wrapping an SVG. The plugin's stylesheet sizes the span, and the SVG fills it. Its rules use `:where()`, so they have no specificity and any theme rule wins. For example, `.svg-icon { width: 1rem; height: 1rem; }` resizes every icon, and `#kind-menu .svg-icon` only those in the Kind Menu widget. Icons take their colour from the `color` property.
 
 == Overriding views ==
 
