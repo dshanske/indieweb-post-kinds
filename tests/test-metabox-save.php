@@ -129,25 +129,48 @@ class MetaboxSaveTest extends WP_UnitTestCase {
 		$this->assertSame( array( 'name' => array( 'Ann' ) ), $author['properties'] );
 	}
 
-	public function test_clearing_the_author_fields_removes_the_authors() {
+	public static function clearing_authors_cases() {
+		return array(
+			'with a name' => array( array( 'cite_name' => 'A book' ) ),
+			'URL only'    => array( array() ),
+		);
+	}
+
+	/**
+	 * @dataProvider clearing_authors_cases
+	 */
+	public function test_clearing_the_author_fields_removes_the_authors( $fields ) {
 		$id = $this->save(
 			'read',
-			array(
-				'cite_url'         => 'https://example.com/book',
-				'cite_author_name' => 'Ann; Bob',
+			array_merge(
+				array(
+					'cite_url'         => 'https://example.com/book',
+					'cite_author_name' => 'Ann; Bob',
+				),
+				$fields
 			)
 		);
 		$this->save(
 			'read',
-			array(
-				'cite_url'          => 'https://example.com/book',
-				'cite_author_name'  => '',
-				'cite_author_url'   => '',
-				'cite_author_photo' => '',
+			array_merge(
+				array(
+					'cite_url'          => 'https://example.com/book',
+					'cite_author_name'  => '',
+					'cite_author_url'   => '',
+					'cite_author_photo' => '',
+				),
+				$fields
 			),
 			$id
 		);
-		$this->assertArrayNotHasKey( 'author', $this->cite( $id, 'read' ) );
+		$stored = get_post_meta( $id, 'mf2_read-of', true );
+		if ( empty( $fields ) ) {
+			// A citation left with only a URL is stored as the URL.
+			$this->assertSame( 'https://example.com/book', $stored );
+		} else {
+			$this->assertArrayNotHasKey( 'author', $stored['properties'] );
+			$this->assertSame( array( 'A book' ), $stored['properties']['name'] );
+		}
 	}
 
 	public function test_summary_is_saved_as_plain_text() {
