@@ -45,6 +45,10 @@ final class Kind_Taxonomy {
 		add_filter( 'get_the_archive_description', array( self::class, 'kind_archive_description' ), 10 );
 		add_filter( 'document_title_parts', array( self::class, 'document_title_parts' ), 10 );
 
+		// Keep the taxonomy's default term in step with the Default Kind setting.
+		add_action( 'add_option_kind_default', array( self::class, 'sync_default_term' ) );
+		add_action( 'update_option_kind_default', array( self::class, 'sync_default_term' ) );
+
 		// Add Kind Permalinks.
 		add_filter( 'post_link', array( self::class, 'kind_permalink' ), 10, 3 );
 		add_filter( 'post_type_link', array( self::class, 'kind_permalink' ), 10, 3 );
@@ -710,6 +714,9 @@ final class Kind_Taxonomy {
 			'item_link_description'      => __( 'A link to a kind', 'indieweb-post-kinds' ),
 		);
 
+		// The slug is used as the name too: core finds the default term by name, and a translated name would not match.
+		$default_kind = get_option( 'kind_default', 'note' );
+
 		$args = array(
 			'labels'             => $labels,
 			'public'             => true,
@@ -726,8 +733,8 @@ final class Kind_Taxonomy {
 			'rewrite'            => array( 'slug' => self::get_kind_base() ),
 			'query_var'          => true,
 			'default_term'       => array(
-				'name' => __( 'Article', 'indieweb-post-kinds' ),
-				'slug' => 'article',
+				'name' => $default_kind,
+				'slug' => $default_kind,
 			),
 
 		);
@@ -894,6 +901,21 @@ final class Kind_Taxonomy {
 			'index.php?kind_firehose=1',
 			'top'
 		);
+	}
+
+	/**
+	 * Points the kind taxonomy's default term at the Default Kind setting.
+	 *
+	 * Core sets the default term when the taxonomy is registered; this applies a
+	 * change to the setting within the same request.
+	 *
+	 * @since 4.0.0
+	 */
+	public static function sync_default_term() {
+		$term = get_term_by( 'slug', get_option( 'kind_default', 'note' ), 'kind' );
+		if ( $term ) {
+			update_option( 'default_term_kind', $term->term_id );
+		}
 	}
 
 	/**
