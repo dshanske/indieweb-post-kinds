@@ -259,27 +259,29 @@ if ( ! function_exists( 'calculate_duration' ) ) {
 	 * Returns the duration between two dates.
 	 *
 	 * @since 2.5.0
+	 * @since 4.0.0 Also accepts DateTimeInterface objects, such as Kind_Post::get( 'start' ) returns.
 	 *
-	 * @param string $start_string Start, in Y-m-d\TH:i:sP format.
-	 * @param string $end_string   End, in Y-m-d\TH:i:sP format.
+	 * @param DateTimeInterface|string $start_string Start, as a date or a string in Y-m-d\TH:i:sP format.
+	 * @param DateTimeInterface|string $end_string   End, as a date or a string in Y-m-d\TH:i:sP format.
 	 * @return DateInterval|false The duration, or false if either date is not valid or they are the same.
 	 */
 	function calculate_duration( $start_string, $end_string ) {
-		$start = array();
-		$end   = array();
-		if ( ! is_string( $start_string ) || ! is_string( $end_string ) ) {
+		$dates = array();
+		foreach ( array( $start_string, $end_string ) as $value ) {
+			if ( is_string( $value ) ) {
+				// Only the full format: looser parsing reads stray text, such as a single letter, as a date.
+				$value = date_create_immutable_from_format( 'Y-m-d\TH:i:sP', $value );
+			}
+			if ( ! $value instanceof DateTimeInterface ) {
+				return false;
+			}
+			$dates[] = $value;
+		}
+		list( $start, $end ) = $dates;
+		if ( $start == $end ) { // phpcs:ignore Universal.Operators.StrictComparisons.LooseEqual -- Compares the moments, not the objects.
 			return false;
 		}
-		if ( $start_string === $end_string ) {
-			return false;
-		}
-		$start = date_create_from_format( 'Y-m-d\TH:i:sP', $start_string );
-		$end   = date_create_from_format( 'Y-m-d\TH:i:sP', $end_string );
-		if ( ( $start instanceof DateTime ) && ( $end instanceof DateTime ) ) {
-			$duration = $start->diff( $end );
-			return $duration;
-		}
-		return false;
+		return $start->diff( $end );
 	}
 }
 

@@ -49,7 +49,7 @@ if ( ! $embed ) {
 		echo esc_html__( ' from ', 'indieweb-post-kinds' ) . '<em>' . $site_name . '</em>';
 	}
 	if ( $duration ) {
-		echo esc_html( Kind_View::display_duration( $duration ) );
+		echo Kind_View::display_duration( $duration );
 	}
 }
 ?>

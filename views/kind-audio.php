@@ -53,7 +53,7 @@ if ( isset( $cite['name'] ) ) {
 	printf( '<span class="p-name">%1$s</span>', esc_html( $cite['name'] ) );
 }
 if ( $duration ) {
-	printf( '(%1$s)', esc_html( $duration ) );
+	printf( '(%1$s)', $duration );
 }
 ?>
 </header>
