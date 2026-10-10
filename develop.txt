@@ -136,7 +136,7 @@ Each view is rendered by `Kind_View::get_view_part()` with these variables in sc
 * `$type` (string) - the kind's microformats property, such as `like-of`.
 * `$cite` (array) - the citation, normalized by `Kind_Post::normalize_cite()`, so every key is present. `name` falls back to the URL.
 * `$url` (string) - the cited URL.
-* `$author` (string|false) - the cited author as h-card markup, or false if there is none.
+* `$author` (string|false) - the cited authors as h-card markup, listed as in "Ann, Bob and Cat", or false if there are none. `$cite['authors']` lists each author as a card with `name`, `url` and `photo`.
 * `$embed` (string) - embed markup for the cited URL, or an empty string.
 * `$photos` (int[]|false) - attachment IDs of the post's photos, from `Kind_Post::get_photo()`.
 * `$args` (array) - the arguments passed to `Kind_View::get_view_part()`; `post_id` is the post's ID.

@@ -49,6 +49,18 @@ class EscapingHelpersTest extends WP_UnitTestCase {
 		$this->assertSame( '<span class="h-card p-author">Bob</span>', $card );
 	}
 
+	public function test_hcard_links_a_name_without_a_photo() {
+		$this->assertSame(
+			'<a href="https://example.com/bob" class="h-card p-author">Bob</a>',
+			Kind_View::get_hcard(
+				array(
+					'name' => 'Bob',
+					'url'  => 'https://example.com/bob',
+				)
+			)
+		);
+	}
+
 	public function test_hcard_with_list_values() {
 		$card = Kind_View::get_hcard(
 			array(

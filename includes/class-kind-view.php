@@ -158,7 +158,9 @@ class Kind_View {
 			$cite['name'] = $cite['url'];
 		}
 
-		$author = self::get_hcard( $cite['author'] );
+		// Every author's h-card, as a list such as "Ann, Bob and Cat".
+		$author = array_filter( array_map( array( static::class, 'get_hcard' ), $cite['authors'] ) );
+		$author = empty( $author ) ? false : wp_sprintf( '%l', $author );
 
 		$url   = $cite['url'];
 		$embed = self::get_embed( $cite['url'] );
@@ -574,7 +576,7 @@ class Kind_View {
 		if ( ! empty( $card ) ) {
 			return $card;
 		}
-		// Temporarily drop multi-data on display.
+		// One card is one author: use the first of any list. Kind_Post::normalize_authors() splits lists into cards.
 		foreach ( array( 'name', 'url', 'photo' ) as $key ) {
 			$value          = isset( $author[ $key ] ) ? $author[ $key ] : '';
 			$author[ $key ] = is_array( $value ) ? (string) reset( $value ) : (string) $value;
@@ -611,6 +613,8 @@ class Kind_View {
 					} else {
 						return sprintf( '<a href="%1$s" class="h-card p-author"><img class="u-photo" src="%2$s" alt="%3$s" width="%4$d" height="%5$d" />%6$s</a>', $author['url'], $author['photo'], $author['name'], $args['width'], $args['height'], $author['name'] );
 					}
+				} elseif ( ! empty( $author['url'] ) ) {
+					return sprintf( '<a href="%1$s" class="h-card p-author">%2$s</a>', $author['url'], $author['name'] );
 				} else {
 					return sprintf( '<span class="h-card p-author">%1$s</span>', $author['name'] );
 				}

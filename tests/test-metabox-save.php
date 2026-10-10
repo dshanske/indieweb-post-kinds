@@ -51,9 +51,103 @@ class MetaboxSaveTest extends WP_UnitTestCase {
 		$this->assertSame( array( 'Pub & Co' ), $cite['publication'] );
 		$this->assertSame( array( 'one', 'two', 'three' ), $cite['category'] );
 		$this->assertArrayNotHasKey( 'featured', $cite );
-		$author = $cite['author'][0]['properties'] ?? $cite['author']['properties'];
-		$this->assertSame( array( 'Ann', 'Bob' ), $author['name'] );
-		$this->assertSame( array( 'https://example.com/ann?a=1&b=2' ), $author['url'] );
+		// Ann keeps her URL and photo; Bob's unsafe URL is dropped.
+		$this->assertSame( array( 'Ann' ), $cite['author'][0]['properties']['name'] );
+		$this->assertSame( array( 'https://example.com/ann?a=1&b=2' ), $cite['author'][0]['properties']['url'] );
+		$this->assertSame( array( 'https://example.com/p.jpg' ), $cite['author'][0]['properties']['photo'] );
+		$this->assertSame( array( 'name' => array( 'Bob' ) ), $cite['author'][1]['properties'] );
+	}
+
+	/**
+	 * Several authors are saved as one h-card each, paired by position (#132, #156).
+	 */
+	public function test_several_authors_are_separate_hcards() {
+		$id     = $this->save(
+			'read',
+			array(
+				'cite_url'          => 'https://example.com/book',
+				'cite_author_name'  => 'Ann; Bob; Cat',
+				'cite_author_url'   => 'https://example.com/ann; ; https://example.com/cat',
+				'cite_author_photo' => '; https://example.com/bob.jpg',
+			)
+		);
+		$author = $this->cite( $id, 'read' )['author'];
+		$this->assertCount( 3, $author );
+		$this->assertSame( array( 'h-card' ), $author[0]['type'] );
+		$this->assertSame(
+			array(
+				'name' => array( 'Ann' ),
+				'url'  => array( 'https://example.com/ann' ),
+			),
+			$author[0]['properties']
+		);
+		$this->assertSame(
+			array(
+				'name'  => array( 'Bob' ),
+				'photo' => array( 'https://example.com/bob.jpg' ),
+			),
+			$author[1]['properties']
+		);
+		$this->assertSame(
+			array(
+				'name' => array( 'Cat' ),
+				'url'  => array( 'https://example.com/cat' ),
+			),
+			$author[2]['properties']
+		);
+
+		// The metabox shows them as it took them, so saving again changes nothing.
+		$kind_post = new Kind_Post( $id );
+		$fields    = $kind_post->normalize_cite( $kind_post->get_cite() )['author'];
+		$this->assertSame( 'Ann; Bob; Cat', $fields['name'] );
+		$this->assertSame( 'https://example.com/ann; ; https://example.com/cat', $fields['url'] );
+		$this->assertSame( '; https://example.com/bob.jpg; ', $fields['photo'] );
+		$stored = get_post_meta( $id, 'mf2_read-of', true );
+		$this->save(
+			'read',
+			array(
+				'cite_url'          => 'https://example.com/book',
+				'cite_author_name'  => $fields['name'],
+				'cite_author_url'   => $fields['url'],
+				'cite_author_photo' => $fields['photo'],
+			),
+			$id
+		);
+		$this->assertEquals( $stored, get_post_meta( $id, 'mf2_read-of', true ) );
+	}
+
+	public function test_one_author_is_a_single_hcard() {
+		$id     = $this->save(
+			'read',
+			array(
+				'cite_url'         => 'https://example.com/book',
+				'cite_author_name' => 'Ann',
+			)
+		);
+		$author = $this->cite( $id, 'read' )['author'];
+		$this->assertSame( array( 'h-card' ), $author['type'] );
+		$this->assertSame( array( 'name' => array( 'Ann' ) ), $author['properties'] );
+	}
+
+	public function test_clearing_the_author_fields_removes_the_authors() {
+		$id = $this->save(
+			'read',
+			array(
+				'cite_url'         => 'https://example.com/book',
+				'cite_author_name' => 'Ann; Bob',
+			)
+		);
+		$this->save(
+			'read',
+			array(
+				'cite_url'          => 'https://example.com/book',
+				'cite_author_name'  => '',
+				'cite_author_url'   => '',
+				'cite_author_photo' => '',
+			),
+			$id
+		);
+		$this->assertArrayNotHasKey( 'author', $this->cite( $id, 'read' ) );
 	}
 
 	public function test_summary_is_saved_as_plain_text() {
