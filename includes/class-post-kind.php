@@ -14,35 +14,150 @@ defined( 'ABSPATH' ) || exit;
  * @since 3.1.0
  */
 final class Post_Kind implements JsonSerializable {
-	public $id; // Term ID
-	public $slug; // Kind Slug
-	public $name; // Name of Kind - Plural
-	public $singular_name; // Name of Kind - Singular
-	public $verb; // The string for the verb or action (liked this)
-	public $format; // Post Format that Maps to This
-	public $icon; // Icon
+	/**
+	 * Term ID.
+	 *
+	 * @since 3.1.0
+	 * @var int
+	 */
+	public $id;
+
+	/**
+	 * Kind slug.
+	 *
+	 * @since 3.1.0
+	 * @var string
+	 */
+	public $slug;
+
+	/**
+	 * General name for the kind, plural.
+	 *
+	 * @since 3.1.0
+	 * @var string
+	 */
+	public $name;
+
+	/**
+	 * Name for one instance of the kind.
+	 *
+	 * @since 3.1.0
+	 * @var string
+	 */
+	public $singular_name;
+
+	/**
+	 * The verb or action, such as 'Liked'.
+	 *
+	 * @since 3.1.0
+	 * @var string
+	 */
+	public $verb;
+
+	/**
+	 * Post format that maps to this kind.
+	 *
+	 * @since 3.1.0
+	 * @var string
+	 */
+	public $format;
+
+	/**
+	 * Icon name.
+	 *
+	 * @since 3.1.0
+	 * @var string
+	 */
+	public $icon;
+
+	/**
+	 * Description of the kind.
+	 *
+	 * @since 3.1.0
+	 * @var string
+	 */
 	public $description;
+
+	/**
+	 * Link to more information about the kind.
+	 *
+	 * @since 3.1.0
+	 * @var string
+	 */
 	public $description_url;
-	public $title; // Should this Kind Have an Explicit Title
-	public $show; // Show in Settings
-	public $property; // Primary Property
-	public $properties; // Array of Properties
-	public $shortlink; // Shortlink Coding per http://tantek.pbworks.com/w/page/21743973/Whistle#design
+
+	/**
+	 * Whether the kind should have an explicit title.
+	 *
+	 * @since 3.1.0
+	 * @var bool
+	 */
+	public $title;
+
+	/**
+	 * Whether to show the kind in Settings.
+	 *
+	 * @since 3.1.0
+	 * @var bool
+	 */
+	public $show;
+
+	/**
+	 * Primary microformats 2 property, such as 'like-of'.
+	 *
+	 * @since 3.1.0
+	 * @var string
+	 */
+	public $property;
+
+	/**
+	 * The fields for the kind. See Kind_Fields.
+	 *
+	 * @since 3.1.0
+	 * @var array
+	 */
+	public $properties;
+
+	/**
+	 * Shortlink code, per http://tantek.pbworks.com/w/page/21743973/Whistle#design.
+	 *
+	 * @since 3.4.0
+	 * @var string
+	 */
+	public $shortlink;
 
 	/**
 	 * Arguments given at registration that are not declared properties, such as
 	 * those a custom kind adds. Kept here rather than as dynamic properties,
 	 * which are deprecated in PHP 8.2, and still readable as $kind->name.
 	 *
+	 * @since 4.0.0
 	 * @var array
 	 */
 	private $extra = array();
 
+	/**
+	 * Defines a kind.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param string $slug Kind slug.
+	 * @param array  $args Optional. Kind arguments. See Kind_Taxonomy::register_post_kind().
+	 */
 	public function __construct( $slug, $args = array() ) {
 		$this->slug = $slug;
 		$this->set_props( $args );
 	}
 
+	/**
+	 * Sets the kind's properties from its arguments, filling in defaults.
+	 *
+	 * Arguments that are not declared properties are kept as extra arguments.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param array $args Kind arguments. See Kind_Taxonomy::register_post_kind().
+	 */
 	public function set_props( $args ) {
 		$defaults = array(
 			'name'          => $this->slug,
@@ -66,6 +181,8 @@ final class Post_Kind implements JsonSerializable {
 	/**
 	 * Reads an extra argument given at registration.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $name Argument name.
 	 * @return mixed The value, or null if it was not given.
 	 */
@@ -75,6 +192,8 @@ final class Post_Kind implements JsonSerializable {
 
 	/**
 	 * Whether an extra argument was given at registration.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @param string $name Argument name.
 	 * @return bool
@@ -86,6 +205,8 @@ final class Post_Kind implements JsonSerializable {
 	/**
 	 * Sets an extra argument, without creating a dynamic property.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $name  Argument name.
 	 * @param mixed  $value Value.
 	 */
@@ -96,6 +217,8 @@ final class Post_Kind implements JsonSerializable {
 	/**
 	 * Whether the kind has a declared property or an extra argument of this name.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param string $name Property or argument name.
 	 * @return bool
 	 */
@@ -105,6 +228,8 @@ final class Post_Kind implements JsonSerializable {
 
 	/**
 	 * Returns the kind's declared properties and extra arguments, for JSON.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @return array
 	 */

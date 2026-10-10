@@ -17,23 +17,142 @@ defined( 'ABSPATH' ) || exit;
  * @deprecated 4.0.0 Use Kind_Post. MF2_Post will be removed in a future major version.
  */
 class MF2_Post implements ArrayAccess {
+	/**
+	 * Post ID.
+	 *
+	 * @since 3.1.0
+	 * @var int
+	 */
 	public $uid;
+
+	/**
+	 * ID of the post author.
+	 *
+	 * @since 3.1.0
+	 * @var int|string
+	 */
 	public $post_author;
+
+	/**
+	 * Post type.
+	 *
+	 * @since 3.3.0
+	 * @var string
+	 */
 	public $post_type;
+
+	/**
+	 * Author, as an h-card.
+	 *
+	 * @since 3.1.0
+	 * @var array|string|false
+	 */
 	public $author;
+
+	/**
+	 * Publication the post appeared in.
+	 *
+	 * @since 3.1.0
+	 * @var string
+	 */
 	public $publication;
+
+	/**
+	 * Published date, in DATE_W3C format.
+	 *
+	 * @since 3.1.0
+	 * @var string
+	 */
 	public $published;
+
+	/**
+	 * Updated date, in DATE_W3C format.
+	 *
+	 * @since 3.1.0
+	 * @var string
+	 */
 	public $updated;
+
+	/**
+	 * Content, with 'html' and 'value' versions.
+	 *
+	 * @since 3.1.0
+	 * @var array
+	 */
 	public $content;
+
+	/**
+	 * Summary (excerpt).
+	 *
+	 * @since 3.1.0
+	 * @var string
+	 */
 	public $summary;
+
+	/**
+	 * ID of the parent post.
+	 *
+	 * @since 3.1.0
+	 * @var int
+	 */
 	public $post_parent;
+
+	/**
+	 * Post kind slug, or media type for an attachment.
+	 *
+	 * @since 3.1.0
+	 * @var string|false|null
+	 */
 	public $kind;
+
+	/**
+	 * Permalink, or file URL for an attachment.
+	 *
+	 * @since 3.1.0
+	 * @var string|false
+	 */
 	public $url;
+
+	/**
+	 * Post title.
+	 *
+	 * @since 3.1.0
+	 * @var string
+	 */
 	public $name;
+
+	/**
+	 * Category and tag names.
+	 *
+	 * @since 3.1.0
+	 * @var string[]
+	 */
 	public $category = array();
+
+	/**
+	 * URL of the featured image.
+	 *
+	 * @since 3.1.0
+	 * @var string
+	 */
 	public $featured;
+
+	/**
+	 * Properties stored in mf2_ prefixed post meta, without the prefix.
+	 *
+	 * @since 3.1.0
+	 * @var array
+	 */
 	private $mf2 = array();
 
+	/**
+	 * Reads a post's properties.
+	 *
+	 * @since 3.1.0
+	 * @deprecated 4.0.0 Use Kind_Post.
+	 *
+	 * @param int|WP_Post|string $post Post ID, post object, or the URL of a post or attachment.
+	 */
 	public function __construct( $post ) {
 		_deprecated_function( __METHOD__, '4.0.0', 'Kind_Post' );
 		if ( is_numeric( $post ) ) {
@@ -86,6 +205,15 @@ class MF2_Post implements ArrayAccess {
 		$this->kind = self::get_post_kind();
 	}
 
+	/**
+	 * Returns the published date.
+	 *
+	 * For an attachment, this is the date stored in post meta.
+	 *
+	 * @since 3.3.0
+	 *
+	 * @return string|false The date, or false if there is none.
+	 */
 	public function get_published() {
 		if ( 'attachment' === $this->post_type ) {
 			return $this->get_single( $this->mf2['published'] ?? '' );
@@ -93,6 +221,15 @@ class MF2_Post implements ArrayAccess {
 		return get_the_date( DATE_W3C, $this->uid );
 	}
 
+	/**
+	 * Returns the updated date.
+	 *
+	 * For an attachment, this is the date stored in post meta.
+	 *
+	 * @since 3.3.0
+	 *
+	 * @return string|false The date, or false if there is none.
+	 */
 	public function get_updated() {
 		if ( 'attachment' === $this->post_type ) {
 			return $this->get_single( $this->mf2['updated'] ?? '' );
@@ -100,6 +237,15 @@ class MF2_Post implements ArrayAccess {
 		return get_the_modified_date( DATE_W3C, $this->uid );
 	}
 
+	/**
+	 * Returns the publication the post appeared in.
+	 *
+	 * For posts other than attachments, this is the site title.
+	 *
+	 * @since 3.3.0
+	 *
+	 * @return string The publication, or an empty string if an attachment has none.
+	 */
 	public function get_publication() {
 		if ( 'attachment' !== $this->post_type ) {
 			return get_bloginfo( 'title' );
@@ -107,6 +253,14 @@ class MF2_Post implements ArrayAccess {
 		return $this->get_single( $this->mf2['publication'] ?? '' );
 	}
 
+	/**
+	 * Whether a property exists, for ArrayAccess.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @param string $offset Property name.
+	 * @return bool
+	 */
 	#[\ReturnTypeWillChange]
 	public function offsetExists( $offset ) {
 		$vars = get_object_vars( $this );
@@ -116,6 +270,14 @@ class MF2_Post implements ArrayAccess {
 		return array_key_exists( $offset, $this->mf2 );
 	}
 
+	/**
+	 * Returns a property, for ArrayAccess.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @param string $offset Property name.
+	 * @return mixed The value, or null if it does not exist.
+	 */
 	#[\ReturnTypeWillChange]
 	public function offsetGet( $offset ) {
 		$vars = get_object_vars( $this );
@@ -128,25 +290,50 @@ class MF2_Post implements ArrayAccess {
 		return null;
 	}
 
+	/**
+	 * Sets a property, for ArrayAccess.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @param string $offset Property name.
+	 * @param mixed  $value  The value.
+	 */
 	#[\ReturnTypeWillChange]
 	public function offsetSet( $offset, $value ) {
 		$this->set( $offset, $value );
 	}
 
+	/**
+	 * Deletes a property stored in post meta, for ArrayAccess.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @param string $offset Property name.
+	 */
 	#[\ReturnTypeWillChange]
 	public function offsetUnset( $offset ) {
 		$this->delete( $offset );
 	}
 
+	/**
+	 * Returns the names of a post's categories and tags.
+	 *
+	 * 'Uncategorized' is left out.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @param int $post_id Post ID.
+	 * @return string[] Category and tag names.
+	 */
 	public function get_categories( $post_id ) {
 		$category = array();
-		// Get a list of categories and extract their names
+		// Get a list of categories and extract their names.
 		$post_categories = get_the_terms( $post_id, 'category' );
 		if ( ! empty( $post_categories ) && ! is_wp_error( $post_categories ) ) {
 			$category = wp_list_pluck( $post_categories, 'name' );
 		}
 
-		// Get a list of tags and extract their names
+		// Get a list of tags and extract their names.
 		$post_tags = get_the_terms( $post_id, 'post_tag' );
 		if ( ! empty( $post_tags ) && ! is_wp_error( $post_tags ) ) {
 			$category = array_merge( $this->category, wp_list_pluck( $post_tags, 'name' ) );
@@ -157,6 +344,13 @@ class MF2_Post implements ArrayAccess {
 		return $category;
 	}
 
+	/**
+	 * Returns the post kind, or the media type of an attachment.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @return string|false|null The kind slug, or null for an attachment that is not image, video or audio.
+	 */
 	private function get_post_kind() {
 		if ( is_attachment( $this->uid ) ) {
 			if ( wp_attachment_is( 'image', $this->uid ) ) {
@@ -181,12 +375,21 @@ class MF2_Post implements ArrayAccess {
 		}
 	}
 
+	/**
+	 * Returns the post object.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @return WP_Post|null The post, or null if it does not exist.
+	 */
 	public function get_post() {
 		return get_post( $this->uid );
 	}
 
 	/**
 	 * Is prefix in string.
+	 *
+	 * @since 3.1.0
 	 *
 	 * @param  string $source The source string.
 	 * @param  string $prefix The prefix you wish to check for in source.
@@ -198,6 +401,8 @@ class MF2_Post implements ArrayAccess {
 
 	/**
 	 * Returns True if Array is Multidimensional.
+	 *
+	 * @since 3.1.0
 	 *
 	 * @param array $arr array.
 	 *
@@ -211,6 +416,14 @@ class MF2_Post implements ArrayAccess {
 		}
 	}
 
+	/**
+	 * Sanitizes HTML with the allowed tags from the plugin settings.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param mixed $value The value. Anything but a string is returned unchanged.
+	 * @return mixed The sanitized value.
+	 */
 	public static function sanitize_content( $value ) {
 		if ( ! is_string( $value ) ) {
 			return $value;
@@ -222,6 +435,14 @@ class MF2_Post implements ArrayAccess {
 		return wp_kses( $value, $allowed );
 	}
 
+	/**
+	 * Sanitizes a URL or text, recursively.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param string|array $value The value.
+	 * @return string|array The sanitized value.
+	 */
 	public function sanitize_text( $value ) {
 		if ( is_array( $value ) ) {
 			return array_map( array( $this, 'sanitize_text' ), $value );
@@ -237,13 +458,15 @@ class MF2_Post implements ArrayAccess {
 	/**
 	 * Retrieve author
 	 *
+	 * @since 3.1.0
+	 *
 	 * @return boolean|array The result or false if does not exist.
 	 */
 	public function get_author() {
 		if ( ! $this->post_author ) {
 			return $this->get_single( $this->mf2['author'] ?? false );
 		}
-		// Attachments may have been uploaded by a user but may have metadata for original author
+		// Attachments may have been uploaded by a user but may have metadata for original author.
 		if ( 'attachment' === $this->post_type ) {
 			return $this->get_single( $this->mf2['author'] ?? '' );
 		}
@@ -258,7 +481,9 @@ class MF2_Post implements ArrayAccess {
 	}
 
 	/**
-	 * Sets an array with only the mf2 prefixed meta.
+	 * Returns the properties stored in mf2_ prefixed post meta, without the prefix.
+	 *
+	 * @since 3.1.0
 	 */
 	private function get_mf2meta() {
 		$meta = get_post_meta( $this->uid );
@@ -300,7 +525,7 @@ class MF2_Post implements ArrayAccess {
 			} else {
 				unset( $meta[ $key ] );
 				$key = str_replace( 'mf2_', '', $key );
-				// Do not save microput prefixed instructions
+				// Do not save microput prefixed instructions.
 				if ( self::str_prefix( $key, 'mp-' ) ) {
 					continue;
 				}
@@ -320,6 +545,8 @@ class MF2_Post implements ArrayAccess {
 
 	/**
 	 * Map Properties Based on Post Type
+	 *
+	 * @since 3.3.0
 	 */
 	private function get_post_type_properties() {
 		$properties = array_keys( get_object_vars( $this ) );
@@ -333,8 +560,10 @@ class MF2_Post implements ArrayAccess {
 	/**
 	 * Retrieve value
 	 *
-	 * @param  string $key The key to retrieve.
-	 * @param  boolean $single Whether to return a a single value or array if there is only one value.
+	 * @since 3.1.0
+	 *
+	 * @param string|null $key    Optional. The key to retrieve. Default null, for every property.
+	 * @param bool        $single Optional. Whether to unwrap a single value from its array. Default true.
 	 * @return boolean|string|array The result or false if does not exist.
 	 */
 	public function get( $key = null, $single = true ) {
@@ -382,11 +611,29 @@ class MF2_Post implements ArrayAccess {
 		}
 	}
 
+	/**
+	 * Whether the post has a property.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param string $key Property name.
+	 * @return bool
+	 */
 	public function has_key( $key ) {
 		$keys = array_merge( get_object_vars( $this ), $this->mf2 );
 		return isset( $keys[ $key ] );
 	}
 
+	/**
+	 * Unwraps single-item arrays, recursively.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param mixed $value   The value to unwrap.
+	 * @param bool  $discard Optional. Whether to keep only the first item of a list
+	 *                       with more than one item. Default false.
+	 * @return mixed The value, with single-item arrays replaced by their item.
+	 */
 	private function single_array( $value, $discard = false ) {
 		if ( ! is_array( $value ) ) {
 			return $value;
@@ -403,6 +650,15 @@ class MF2_Post implements ArrayAccess {
 		return $value;
 	}
 
+	/**
+	 * Stores a property, or several.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param string|array $key   Property name, an array of property => value pairs, or an mf2 item.
+	 * @param mixed        $value Optional. The value. Default null.
+	 * @return mixed The result of storing the value, or false or null if nothing was stored.
+	 */
 	public function set( $key, $value = null ) {
 		if ( ! $key ) {
 			return;
@@ -550,14 +806,38 @@ class MF2_Post implements ArrayAccess {
 		}
 	}
 
+	/**
+	 * Deletes a property stored in post meta.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param string $key Property name.
+	 * @return bool True on success, false on failure.
+	 */
 	public function delete( $key ) {
 		return delete_post_meta( $this->uid, 'mf2_' . $key );
 	}
 
+	/**
+	 * Converts mf2 to jf2.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param array $cite The mf2 item.
+	 * @return array The jf2 item.
+	 */
 	public function mf2_to_jf2( $cite ) {
 		return mf2_to_jf2( $cite );
 	}
 
+	/**
+	 * Returns the first item of an array.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param mixed $value The value.
+	 * @return mixed The first item, or the value if it is not an array.
+	 */
 	public function get_single( $value ) {
 		if ( is_array( $value ) ) {
 			return array_shift( $value );
@@ -565,6 +845,15 @@ class MF2_Post implements ArrayAccess {
 		return $value;
 	}
 
+	/**
+	 * Converts jf2 to mf2.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param array  $item The jf2 item.
+	 * @param string $type Optional. jf2 type to use if the item has none. Default 'cite'.
+	 * @return array The mf2 item.
+	 */
 	public function jf2_to_mf2( $item, $type = 'cite' ) {
 		if ( is_array( $item ) && isset( $item['type'] ) && ! isset( $item['properties'] ) ) {
 			return jf2_to_mf2( $item );
@@ -573,12 +862,19 @@ class MF2_Post implements ArrayAccess {
 		return jf2_to_mf2( $item );
 	}
 
-	// Retrieve the right property to use for the link preview based on the kind.
-	// It will return an array of properties or false if it cannot find what it needs.
-	// Also will update old posts with new settings
+	/**
+	 * Returns a property for the link preview, as jf2.
+	 *
+	 * Updates a property stored in the format used before 2.7.0.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param string $property Property name.
+	 * @return array|false The property, or false if there is none.
+	 */
 	public function fetch( $property ) {
 
-		// If the property is not set then exit
+		// If the property is not set then exit.
 		if ( ! $property || ! $this->has_key( $property ) ) {
 			return false;
 		}
@@ -586,7 +882,7 @@ class MF2_Post implements ArrayAccess {
 		if ( wp_is_numeric_array( $return ) ) {
 			$return = array_shift( $return );
 		}
-		// If it is in fact a string it is the pre 2.7.0 format and should be updated
+		// If it is in fact a string it is the pre 2.7.0 format and should be updated.
 		if ( is_string( $return ) ) {
 			if ( $this->has_key( 'cite' ) ) {
 				$cite        = array_filter( $this->get( 'cite' ) );
@@ -604,11 +900,27 @@ class MF2_Post implements ArrayAccess {
 		return false;
 	}
 
+	/**
+	 * Returns the IDs of media attached to a post.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param string      $type MIME type, such as 'image'.
+	 * @param int|WP_Post $post Post ID or post object.
+	 * @return int[] Attachment IDs.
+	 */
 	public function get_attached_media( $type, $post ) {
 		$posts = get_attached_media( $type, $post );
 		return wp_list_pluck( $posts, 'ID' );
 	}
 
+	/**
+	 * Returns the post's audio.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @return int[]|false Attachment IDs, or false if there are none.
+	 */
 	public function get_audios() {
 		// Check if the post itself if an audio attachment.
 		if ( wp_attachment_is( 'audio', $this->uid ) ) {
@@ -623,6 +935,13 @@ class MF2_Post implements ArrayAccess {
 		return false;
 	}
 
+	/**
+	 * Returns the post's videos.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @return int[]|false Attachment IDs, or false if there are none.
+	 */
 	public function get_videos() {
 		// Check if the post itself if an audio attachment.
 		if ( wp_attachment_is( 'video', $this->uid ) ) {
@@ -637,6 +956,14 @@ class MF2_Post implements ArrayAccess {
 		return false;
 	}
 
+	/**
+	 * Returns the post's images.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param bool $content_allow Optional. Whether to return images in the content. Default false.
+	 * @return int[]|false Attachment IDs, or false if there are none.
+	 */
 	public function get_images( $content_allow = false ) {
 		// Check if the post itself is an image attachment.
 		if ( wp_attachment_is( 'image', $this->uid ) ) {
@@ -653,7 +980,7 @@ class MF2_Post implements ArrayAccess {
 				return $content_allow ? array_unique( $att_ids ) : array();
 			}
 		}
-		// If there is a featured image return only that. Otherwise return all images
+		// If there is a featured image return only that. Otherwise return all images.
 		$featured = get_post_thumbnail_id( $this->uid );
 		if ( $featured ) {
 			return array( $featured );
@@ -670,6 +997,14 @@ class MF2_Post implements ArrayAccess {
 		return false;
 	}
 
+	/**
+	 * Looks up the attachment IDs for media URLs.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param string|array $urls A URL, or a list of URLs or arrays with a 'url' key.
+	 * @return int[] Attachment IDs found.
+	 */
 	public function get_attachments_from_urls( $urls ) {
 		if ( is_string( $urls ) ) {
 			$attachment = attachment_url_to_postid( $urls );
