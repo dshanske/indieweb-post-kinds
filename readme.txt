@@ -126,6 +126,18 @@ on you classifying it that way, displays it appropriately and marks it up accord
 either a response to something, such as a URL, or a more passive type of post where you are recording/logging something you did, for
 example, watched a movie.
 
+When you write a post in the Classic Editor, choose its kind in the Kind box. For kinds that respond to something, fill in the Response Properties box:
+
+ * **URL** - the page you are responding to. When you leave this field, the plugin fetches the page and fills in the other fields from it where it can. You can edit or clear anything it fills in.
+ * **Name** - the title of what you are responding to.
+ * **RSVP** and **Rating** - shown only for the kinds that use them: RSVP for RSVPs, and a rating for reviews, listens, watches, reads, plays and similar.
+ * **Details** - more about what you are responding to: a summary, quote or caption (plain text), the site name, publication or album, when it was published and updated, its tags (separated by semicolons) and a featured image URL. For listens, watches, photos and similar, it also has the duration, or a start and end time.
+ * **Author** - the name, URL and photo of the author or artist. Separate several authors with semicolons.
+ * **Upload or Attach Media** - for photo, video and audio posts, attaches a file from the media library.
+ * **Clear** - empties every field.
+
+The plugin uses these fields to display the response above your post's content, marked up with [microformats](https://microformats.org/wiki/h-entry) so other sites can read it.
+
 = How do I interact with other sites? =
 
 This is added by webmention support.
@@ -210,38 +222,37 @@ interface at this time.
 I would prefer if something is popular enough to merge it into the plugin. Feel free to ask for a term to be reserved by filing an issue.
 However if you are interested in creating your own there is functionality around it.
 
-register_post_kind(
-	'reply',
+	register_post_kind(
+		'reply',
 		array(
-			'singular_name'   => __( 'Reply', 'indieweb-post-kinds' ), // Name for one instance of the kind
-			'name'            => __( 'Replies', 'indieweb-post-kinds' ), // General name for the kind plural
-		       	'verb'            => __( 'Replied to', 'indieweb-post-kinds' ), // The string for the verb or action (liked this)
-			'property'        => 'in-reply-to', // microformats 2 property
-                        'format'          => 'link', // Post Format that maps to this
-                        'description'     => __( 'a reply to content typically on another site', 'indieweb-post-kinds' ),
-                        'description-url' => 'http://indieweb.org/reply',
-                        'title'           => false, // Should this kind have an explicit title
-                        'show'            => true, // Show in Settings
-                        )
+			'singular_name'   => __( 'Reply', 'indieweb-post-kinds' ), // Name for one instance of the kind.
+			'name'            => __( 'Replies', 'indieweb-post-kinds' ), // General name for the kind, plural.
+			'verb'            => __( 'Replied to', 'indieweb-post-kinds' ), // The verb or action, such as "Liked".
+			'property'        => 'in-reply-to', // Microformats 2 property.
+			'format'          => 'link', // Post format that maps to this kind.
+			'description'     => __( 'a reply to content typically on another site', 'indieweb-post-kinds' ),
+			'description_url' => 'http://indieweb.org/reply',
+			'title'           => false, // Whether this kind should have an explicit title.
+			'show'            => true, // Whether to show the kind in Settings.
 		)
-);
+	);
 
-Add a function with your kind in the above format, hooking it in the init hook and it will add the Kind to the system.
+Call it from a function hooked to `init` and it will add the Kind to the system. The [developer notes](https://github.com/dshanske/indieweb-post-kinds/blob/trunk/develop.txt) list the other arguments.
 
 = Can I enable one of the Kinds you plan to offer in future? =
 
 `set_post_kind_visibility( $slug, $show = true )` - If you add this function in early on, it will change the visibility of a kind.
 
-= Can I create archives for each kind? ==
+= Can I create archives for each kind? =
 
 Post Kinds automatically handles the display of archives of individual types. So to view all the posts marked as "note", for example, one could visit the URL http://www.YOURSITE.COM/kind/note/.
 Simply replace YOURSITE.COM with your particular site name and the particular post kind name to access the others.
 
 You can also add the date /kind/note/2018/12/24 to see date-based archives.
 
-For archives if you add exclude_kind as a query variable it will exclude specific kinds from the query `?exclude=kind&exclude_terms=note`. You can also do this as /exclude/kind/note,checkin as it accepts multiple values
+To leave specific kinds out of an archive, use `?exclude=kind&exclude_terms=note` or /exclude/kind/note,checkin, which accepts several kinds.
 
-There is also a special photo photo included, using ?kind_photos=1 or /photos or /photos/yyyy or /photos/yyyy/mm or /photos/kind/note or any other taxonomy. This will use the photo enhancements introduced in 3.4.0 to only show photos from
+There is also a special photo archive, using ?kind_photos=1 or /photos or /photos/yyyy or /photos/yyyy/mm or /photos/kind/note or any other taxonomy. This will use the photo enhancements introduced in 3.4.0 to only show photos from
 all types of posts.
 
 = Do you have RSS feeds for each kind? =
@@ -277,14 +288,19 @@ The Development version of the plugin is hosted at [Github](https://github.com/d
 
 == Theme Support ==
 
-Post Kinds automatically adds information to `the_content` and `the_excerpt` filter. Being as this is inside the content block, which may or may not be desirable, you may remove these filters as noted
-below and call `kind_display` directly. This will allow it to appear outside the content block. To remove the automatic display, add the following to your theme.
-	* `add_filter( 'kind_content_display', '__return_false' );`
+Post Kinds works with most themes without changes. It adds the response (what you replied to, liked, listened to and so on) to the post's content and excerpt, and to feeds.
 
-The functions `has_post_kind`, `set_post_kind`, and `set_post_kind` will allow you to manipulate the kind settings in a post. `get_post_kind_string` will return the display name of a kind.
+To place the response somewhere else in your theme, turn off the automatic display and call `kind_display()` in your template where you want it:
 
-If you want to customize the look of the display, you can create a directory in your theme called `kind_views`, copy the file from the views directory of the plugin, and modify it. This will persist
-through future plugin updates.
+	add_filter( 'kind_content_display', '__return_false' );
+
+Many kinds have no title. In templates that list posts, `kind_get_the_title()` returns the post's title, or generates one from the kind and what it responds to.
+
+To change how a kind looks, create a `kind_views` folder in your theme, copy the view from the plugin's `views` folder into it, and edit the copy. It persists through plugin updates, but it doesn't receive fixes: compare it with the plugin's views after upgrading.
+
+To style responses, target the `.response` wrapper that each view uses, and `.kind-embed` around embedded content.
+
+The template functions, hooks and view variables are listed in the [developer notes](https://github.com/dshanske/indieweb-post-kinds/blob/trunk/develop.txt).
 
 
 == Changelog ==
