@@ -54,6 +54,8 @@ This version requires PHP 7.4 and WordPress 6.2 or later, or ClassicPress 2.7.3 
 
 Response data is now escaped, which changes some display helpers, and stored post data is upgraded in the background. See the 4.0.0 changelog.
 
+Posts created outside the editor, such as from apps, the REST API or Quick Draft, now get the Default Kind setting (Note unless changed) instead of Article. To keep the old behaviour, set Default Kind to Article.
+
 ### 3.7.0 ###
 
 This version introduces review posts, but they use an experimental review-of property as a h-entry, not an h-review.
@@ -313,6 +315,7 @@ The template functions, hooks and view variables are listed in the [developer no
 
 ### 4.0.0 ( unreleased ) ###
 * Raise the minimum requirements to PHP 7.4 and WordPress 6.2, and declare ClassicPress 2.7.3 support
+* The Default Kind setting applies to every new post without a kind, including posts from apps, the REST API, Quick Draft and scheduled drafts, which used to get Article. A translated site no longer gets a stray copy of the Article kind
 * Escape response data in views, the editor, widgets and settings; summaries are displayed as plain text
 * Sanitize input from the editor, the media modal's artist fields, settings and widgets; citation summaries are saved as plain text
 * An RSVP can now be cleared in the editor
