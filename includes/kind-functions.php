@@ -12,6 +12,8 @@ if ( ! function_exists( 'register_post_kind' ) ) {
 	/**
 	 * Registers a post kind.
 	 *
+	 * @since 3.1.0
+	 *
 	 * @param string $slug Post kind slug.
 	 * @param array  $args Post kind arguments. See Kind_Taxonomy::register_post_kind().
 	 */
@@ -21,6 +23,14 @@ if ( ! function_exists( 'register_post_kind' ) ) {
 }
 
 if ( ! function_exists( 'set_post_kind_visibility' ) ) {
+	/**
+	 * Shows or hides a post kind in Settings.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @param string $slug Post kind slug.
+	 * @param bool   $show Optional. Whether to show the kind. Default true.
+	 */
 	function set_post_kind_visibility( $slug, $show = true ) {
 		Kind_Taxonomy::set_post_kind_visibility( $slug, $show );
 	}
@@ -29,6 +39,8 @@ if ( ! function_exists( 'set_post_kind_visibility' ) ) {
 if ( ! function_exists( 'get_post_kind_slugs' ) ) {
 	/**
 	 * Retrieves an array of post kind slugs.
+	 *
+	 * @since 0.30
 	 *
 	 * @return array The array of post kind slugs.
 	 */
@@ -39,10 +51,12 @@ if ( ! function_exists( 'get_post_kind_slugs' ) ) {
 
 if ( ! function_exists( 'get_post_kind_string' ) ) {
 	/**
-	 * Returns a pretty, translated version of a post kind slug
+	 * Returns a pretty, translated version of a post kind slug.
 	 *
-	 * @param string $slug A post format slug.
-	 * @return string The translated post format name.
+	 * @since 0.30
+	 *
+	 * @param string $slug A post kind slug.
+	 * @return string The translated post kind name, or an empty string if the kind is not registered.
 	 */
 	function get_post_kind_string( $slug ) {
 		return Kind_Taxonomy::get_post_kind_string( $slug );
@@ -53,8 +67,11 @@ if ( ! function_exists( 'get_post_kind_link' ) ) {
 	/**
 	 * Returns a link to a post kind index.
 	 *
+	 * @since 0.30
+	 *
 	 * @param string $kind The post kind slug.
-	 * @return string The post kind term link.
+	 * @return string|WP_Error|false The post kind term link, a WP_Error from get_term_link(),
+	 *                               or false if the kind has no term.
 	 */
 	function get_post_kind_link( $kind ) {
 		return Kind_Taxonomy::get_post_kind_link( $kind );
@@ -65,8 +82,10 @@ if ( ! function_exists( 'get_post_kind_slug' ) ) {
 	/**
 	 * Returns the post kind slug for the current post.
 	 *
+	 * @since 0.30
+	 *
 	 * @param int|WP_Post $post Optional. Post ID or post object. Defaults to global $post.
-	 * @return string The post kind slug.
+	 * @return string|false The post kind slug, or false if the post has no kind.
 	 */
 	function get_post_kind_slug( $post = null ) {
 		return Kind_Taxonomy::get_post_kind_slug( $post );
@@ -77,8 +96,10 @@ if ( ! function_exists( 'get_post_kind' ) ) {
 	/**
 	 * Returns the post kind name for the current post.
 	 *
+	 * @since 0.30
+	 *
 	 * @param int|WP_Post $post Optional. Post ID or post object. Defaults to global $post.
-	 * @return string The post kind name.
+	 * @return string|false The translated post kind name, or false if the post has no kind.
 	 */
 	function get_post_kind( $post = null ) {
 		return Kind_Taxonomy::get_post_kind( $post );
@@ -89,10 +110,12 @@ if ( ! function_exists( 'has_post_kind' ) ) {
 	/**
 	 * Check if a post has any of the given kinds, or any kind.
 	 *
+	 * @since 0.30
+	 *
 	 * @uses has_term()
 	 *
 	 * @param string|array $kinds Optional. The kind to check.
-	 * @param object|int   $post Optional. The post to check. If not supplied, defaults to the current post if used in the loop.
+	 * @param WP_Post|int  $post  Optional. The post to check. If not supplied, defaults to the current post if used in the loop.
 	 * @return bool True if the post has any of the given kinds (or any kind, if no kind specified), false otherwise.
 	 */
 	function has_post_kind( $kinds = array(), $post = null ) {
@@ -102,11 +125,14 @@ if ( ! function_exists( 'has_post_kind' ) ) {
 
 if ( ! function_exists( 'set_post_kind' ) ) {
 	/**
-	 * Assign a kind to a post
+	 * Assign a kind to a post.
 	 *
-	 * @param int|object $post The post for which to assign a kind.
-	 * @param string     $kind A kind to assign. Using an empty string or array will default to note.
-	 * @return mixed WP_Error on error. Array of affected term IDs on success.
+	 * @since 0.30
+	 *
+	 * @param int|WP_Post $post The post for which to assign a kind.
+	 * @param string      $kind A registered kind's slug.
+	 * @return array|false|WP_Error Array of affected term IDs on success. WP_Error if the post
+	 *                              or the kind is not valid, or false on failure.
 	 */
 	function set_post_kind( $post, $kind ) {
 		return Kind_Taxonomy::set_post_kind( $post, $kind );
@@ -115,12 +141,14 @@ if ( ! function_exists( 'set_post_kind' ) ) {
 
 if ( ! function_exists( 'get_kind_view_part' ) ) {
 	/**
-	 * Return the Displayed Response for a Specific Kind
+	 * Returns the rendered view for a kind.
 	 *
-	 * @param $slug
-	 * @param $name
-	 * @param $args
-	 * @return string
+	 * @since 2.5.0
+	 *
+	 * @param string     $slug View slug, such as 'kind'.
+	 * @param string     $name Optional. Kind slug, such as 'like'. Default null.
+	 * @param array|null $args Optional. Arguments for the view. See Kind_View::get_view_part(). Default null.
+	 * @return string The view's markup.
 	 */
 	function get_kind_view_part( $slug, $name = null, $args = null ) {
 		return Kind_View::get_view_part( $slug, $name, $args );
@@ -128,12 +156,29 @@ if ( ! function_exists( 'get_kind_view_part' ) ) {
 }
 
 if ( ! function_exists( 'kind_display' ) ) {
+	/**
+	 * Outputs the kind markup for a post.
+	 *
+	 * For themes that place the markup themselves instead of adding it to the content.
+	 *
+	 * @since 2.6.1
+	 *
+	 * @param int|null $post_id Optional. Post ID. Default the current post.
+	 */
 	function kind_display( $post_id = null ) {
 			echo Kind_View::get_display( $post_id ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The view escapes its output as it is built.
 	}
 }
 
 if ( ! function_exists( 'kind_flatten_array' ) ) {
+	/**
+	 * Removes empty values from an array and unwraps single-item lists, recursively.
+	 *
+	 * @since 2.7.5
+	 *
+	 * @param mixed $a The value to flatten.
+	 * @return mixed The flattened value. An empty string if nothing is left.
+	 */
 	function kind_flatten_array( $a ) {
 		if ( ! is_array( $a ) ) {
 			return $a;
@@ -154,7 +199,14 @@ if ( ! function_exists( 'kind_flatten_array' ) ) {
 }
 
 if ( ! function_exists( 'kind_src_url_in_content' ) ) {
-	// Return any sort of src urls in content
+	/**
+	 * Returns every src attribute value in some markup.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string $content The markup.
+	 * @return string[]|int The src URLs, or 0 if there are none.
+	 */
 	function kind_src_url_in_content( $content ) {
 		if ( ! $content ) {
 			return 0;
@@ -168,13 +220,15 @@ if ( ! function_exists( 'kind_src_url_in_content' ) ) {
 
 if ( ! function_exists( 'kind_get_the_link' ) ) {
 	/**
-	 * Get a Marketed Up Link to the Post.
+	 * Returns a marked up link to a post, followed by its date.
 	 *
-	 * @param WP_Post|null Post to Display.
-	 * @param string|array Classes to add to link
-	 * @param string|array Classes to add to the date
+	 * @since 3.5.9
+	 *
+	 * @param WP_Post|int|null  $post     Optional. Post to display. Default the current post.
+	 * @param string|array|null $cls      Optional. Classes to add to the link. Default null.
+	 * @param string|array|null $date_cls Optional. Classes to add to the date. Default null.
 	 * @return string Marked up link to a post.
-	 **/
+	 */
 	function kind_get_the_link( $post = null, $cls = null, $date_cls = null ) {
 		$post = get_post( $post );
 		$kind = get_post_kind_slug( $post );
@@ -200,12 +254,20 @@ if ( ! function_exists( 'kind_get_the_link' ) ) {
 
 if ( ! function_exists( 'kind_get_the_title' ) ) {
 	/**
-	 * Get a Generated Title for a Post as Most Post Kinds do Not Have an Explicit Title.
+	 * Returns a post's title, generating one if the post has none.
 	 *
-	 * @param WP_Post|null Post to Display.
-	 * @param array $args Arguments.
-	 * @return string Marked up link to a post.
-	 **/
+	 * Most post kinds do not have an explicit title.
+	 *
+	 * @since 3.5.9
+	 *
+	 * @param WP_Post|int|null $post Optional. Post to display. Default the current post.
+	 * @param array            $args {
+	 *     Optional. Arguments.
+	 *
+	 *     @type int[]|string $photo_size Image size for a photo post's thumbnail. Default array( 32, 32 ).
+	 * }
+	 * @return string The title, or the kind's icon or name and generated text.
+	 */
 	function kind_get_the_title( $post = null, $args = array() ) {
 		$defaults = array(
 			'photo_size' => array( 32, 32 ),
@@ -246,11 +308,11 @@ if ( ! function_exists( 'kind_get_the_title' ) ) {
 			}
 		} else {
 			$content = $post->post_excerpt;
-			// If no excerpt use content
+			// If no excerpt use content.
 			if ( ! $content ) {
 				$content = $post->post_content;
 			}
-			// If no content use date
+			// If no content use date.
 			if ( $content ) {
 				$content = mb_strimwidth( wp_strip_all_tags( $content ), 0, 40, '...' );
 			}

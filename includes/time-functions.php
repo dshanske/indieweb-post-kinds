@@ -18,6 +18,8 @@ if ( ! function_exists( 'kind_safe_datetime' ) ) {
 	 * Dates come from post meta and Micropub requests, where a malformed value
 	 * would otherwise throw an uncaught exception and break the page.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param DateTimeInterface|string $value     Date, or a date string.
 	 * @param DateTimeZone|null        $timezone  Optional. Timezone for strings without one.
 	 * @param bool                     $immutable Optional. Whether to return a DateTimeImmutable. Default true.
@@ -45,6 +47,8 @@ if ( ! function_exists( 'kind_safe_interval' ) ) {
 	/**
 	 * Creates a duration from an ISO 8601 duration without throwing on invalid input.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param DateInterval|string $value Duration, or an ISO 8601 duration such as PT3M30S.
 	 * @return DateInterval|false The duration, or false if the value is not a valid duration.
 	 */
@@ -64,12 +68,28 @@ if ( ! function_exists( 'kind_safe_interval' ) ) {
 }
 
 if ( ! function_exists( 'tz_seconds_to_offset' ) ) {
+	/**
+	 * Converts a UTC offset in seconds to an offset string.
+	 *
+	 * @since 2.3.0
+	 *
+	 * @param int $seconds Offset in seconds.
+	 * @return string Offset such as '-05:00'.
+	 */
 	function tz_seconds_to_offset( $seconds ) {
 		return ( $seconds < 0 ? '-' : '+' ) . sprintf( '%02d:%02d', abs( $seconds / 60 / 60 ), abs( $seconds / 60 ) % 60 );
 	}
 }
 
 if ( ! function_exists( 'tz_offset_to_seconds' ) ) {
+	/**
+	 * Converts an offset string to a UTC offset in seconds.
+	 *
+	 * @since 2.3.0
+	 *
+	 * @param string $offset Offset such as '-05:00' or '-0500'.
+	 * @return int Offset in seconds, or 0 if the string is not an offset.
+	 */
 	function tz_offset_to_seconds( $offset ) {
 		if ( preg_match( '/([+-])(\d{2}):?(\d{2})/', $offset, $match ) ) {
 			$sign = ( '-' === $match[1] ) ? -1 : 1;
@@ -81,6 +101,14 @@ if ( ! function_exists( 'tz_offset_to_seconds' ) ) {
 }
 
 if ( ! function_exists( 'tz_seconds_to_timezone' ) ) {
+	/**
+	 * Converts a UTC offset in seconds to a time zone.
+	 *
+	 * @since 3.2.2
+	 *
+	 * @param int $seconds Offset in seconds.
+	 * @return DateTimeZone|false The time zone, or false if it cannot be created.
+	 */
 	function tz_seconds_to_timezone( $seconds ) {
 		if ( 0 !== $seconds ) {
 			$tz = timezone_open( tz_seconds_to_offset( $seconds ) );
@@ -93,6 +121,14 @@ if ( ! function_exists( 'tz_seconds_to_timezone' ) ) {
 
 
 if ( ! function_exists( 'tz_timezone_to_seconds' ) ) {
+	/**
+	 * Returns a time zone's UTC offset in seconds.
+	 *
+	 * @since 3.2.2
+	 *
+	 * @param string $timezone Time zone name or offset string.
+	 * @return int|false Offset in seconds, or false if the time zone is not valid.
+	 */
 	function tz_timezone_to_seconds( $timezone ) {
 		$tz = timezone_open( $timezone );
 		if ( $tz ) {
@@ -110,6 +146,8 @@ if ( ! function_exists( 'get_gmt_offsets' ) ) {
 	 * The list is built from every time zone, so it is kept in the object
 	 * cache for the day: for the request, and across requests when the cache
 	 * is persistent. Daylight saving changes it at most a few times a year.
+	 *
+	 * @since 3.0.0
 	 *
 	 * @return string[] Offsets such as '-05:00'.
 	 */
@@ -140,7 +178,13 @@ if ( ! function_exists( 'get_gmt_offsets' ) ) {
 }
 
 if ( ! function_exists( 'get_default_offset' ) ) {
-	// Gets the default offset
+	/**
+	 * Returns the site's UTC offset, from its gmt_offset option.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return string Offset such as '-05:00'.
+	 */
 	function get_default_offset() {
 		$tz_seconds = get_option( 'gmt_offset' ) * 3600;
 		return tz_seconds_to_offset( $tz_seconds );
@@ -148,7 +192,16 @@ if ( ! function_exists( 'get_default_offset' ) ) {
 }
 
 if ( ! function_exists( 'build_iso8601_time' ) ) {
-	// Turns individual pieces of a date and time into a single ISO8601 string
+	/**
+	 * Joins a date, time and offset into an ISO 8601 string.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string $date   Date in Y-m-d format.
+	 * @param string $time   Time in H:i:s format.
+	 * @param string $offset Offset such as '-05:00'. Empty for the site's offset.
+	 * @return string The date and time, or an empty string if both are empty.
+	 */
 	function build_iso8601_time( $date, $time, $offset ) {
 		if ( empty( $date ) && empty( $time ) ) {
 			return '';
@@ -161,7 +214,14 @@ if ( ! function_exists( 'build_iso8601_time' ) ) {
 }
 
 if ( ! function_exists( 'build_iso8601_duration' ) ) {
-	// Given an array with the pieces of a duration build an ISO8601 duration
+	/**
+	 * Builds an ISO 8601 duration from its pieces.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param int[] $values Years (Y), months (M), days (D), hours (H), minutes (I) and seconds (S).
+	 * @return string The duration, or an empty string if every piece is empty.
+	 */
 	function build_iso8601_duration( $values ) {
 		$values = array_filter( $values );
 		if ( empty( $values ) ) {
@@ -195,7 +255,15 @@ if ( ! function_exists( 'build_iso8601_duration' ) ) {
 }
 
 if ( ! function_exists( 'calculate_duration' ) ) {
-	// Given two ISO8601 time strings return a DateInterval Object
+	/**
+	 * Returns the duration between two dates.
+	 *
+	 * @since 2.5.0
+	 *
+	 * @param string $start_string Start, in Y-m-d\TH:i:sP format.
+	 * @param string $end_string   End, in Y-m-d\TH:i:sP format.
+	 * @return DateInterval|false The duration, or false if either date is not valid or they are the same.
+	 */
 	function calculate_duration( $start_string, $end_string ) {
 		$start = array();
 		$end   = array();
@@ -216,8 +284,14 @@ if ( ! function_exists( 'calculate_duration' ) ) {
 }
 
 if ( ! function_exists( 'date_interval_to_iso8601' ) ) {
-
-	// Return a date interval as an ISO8601 string
+	/**
+	 * Converts a duration to an ISO 8601 duration string.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param \DateInterval $interval The duration.
+	 * @return string The duration, such as 'PT3M30S'.
+	 */
 	function date_interval_to_iso8601( \DateInterval $interval ) {
 		// Reading all non-zero date parts.
 		$date = array_filter(
@@ -254,7 +328,11 @@ if ( ! function_exists( 'display_formatted_datetime' ) ) {
 	/**
 	 * Deprecated wrapper; see Kind_Time::display_formatted_datetime().
 	 *
+	 * @since 3.2.0
 	 * @deprecated 4.0.0 Use Kind_Time::display_formatted_datetime(). Will be removed in 5.0.0.
+	 *
+	 * @param DateTimeInterface|string $date Date, or a string kind_safe_datetime() accepts.
+	 * @return string The formatted date and time, or an empty string if the date is not valid.
 	 */
 	function display_formatted_datetime( $date ) {
 		_deprecated_function( __FUNCTION__, '4.0.0', 'Kind_Time::display_formatted_datetime()' );
@@ -266,7 +344,11 @@ if ( ! function_exists( 'divide_datetime' ) ) {
 	/**
 	 * Deprecated wrapper; see Kind_Time::divide_datetime().
 	 *
+	 * @since 3.3.4
 	 * @deprecated 4.0.0 Use Kind_Time::divide_datetime(). Will be removed in 5.0.0.
+	 *
+	 * @param DateTimeInterface|string $datetime Date, or a string kind_safe_datetime() accepts.
+	 * @return array|false The date's parts. See Kind_Time::divide_datetime().
 	 */
 	function divide_datetime( $datetime ) {
 		_deprecated_function( __FUNCTION__, '4.0.0', 'Kind_Time::divide_datetime()' );
@@ -278,7 +360,13 @@ if ( ! function_exists( 'build_datetime' ) ) {
 	/**
 	 * Deprecated wrapper; see Kind_Time::build_datetime().
 	 *
+	 * @since 3.3.4
 	 * @deprecated 4.0.0 Use Kind_Time::build_datetime(). Will be removed in 5.0.0.
+	 *
+	 * @param string                   $date   Date in Y-m-d format.
+	 * @param string                   $time   Time in H:i or H:i:s format.
+	 * @param string|DateTimeZone|null $offset Optional. Offset or time zone. Default the site's time zone.
+	 * @return DateTimeImmutable|false The date, or false if it is not valid.
 	 */
 	function build_datetime( $date, $time, $offset = null ) {
 		_deprecated_function( __FUNCTION__, '4.0.0', 'Kind_Time::build_datetime()' );
@@ -290,7 +378,11 @@ if ( ! function_exists( 'get_datetime_offset' ) ) {
 	/**
 	 * Deprecated wrapper; see Kind_Time::get_datetime_offset().
 	 *
+	 * @since 3.3.4
 	 * @deprecated 4.0.0 Use Kind_Time::get_datetime_offset(). Will be removed in 5.0.0.
+	 *
+	 * @param DateTimeInterface|null $datetime Optional. Date. Default now, in the site's time zone.
+	 * @return string|false The offset, or false if it cannot be read.
 	 */
 	function get_datetime_offset( $datetime = null ) {
 		_deprecated_function( __FUNCTION__, '4.0.0', 'Kind_Time::get_datetime_offset()' );
@@ -302,7 +394,11 @@ if ( ! function_exists( 'divide_interval' ) ) {
 	/**
 	 * Deprecated wrapper; see Kind_Time::divide_interval().
 	 *
+	 * @since 3.3.4
 	 * @deprecated 4.0.0 Use Kind_Time::divide_interval(). Will be removed in 5.0.0.
+	 *
+	 * @param DateInterval|string|null $interval Duration, or an ISO 8601 duration string.
+	 * @return int[] The duration's parts. See Kind_Time::divide_interval().
 	 */
 	function divide_interval( $interval ) {
 		_deprecated_function( __FUNCTION__, '4.0.0', 'Kind_Time::divide_interval()' );
@@ -314,7 +410,11 @@ if ( ! function_exists( 'build_interval' ) ) {
 	/**
 	 * Deprecated wrapper; see Kind_Time::build_interval().
 	 *
+	 * @since 3.3.4
 	 * @deprecated 4.0.0 Use Kind_Time::build_interval(). Will be removed in 5.0.0.
+	 *
+	 * @param int[] $values Years (Y), months (M), days (D), hours (H), minutes (I) and seconds (S).
+	 * @return string The duration, or an empty string if every piece is 0.
 	 */
 	function build_interval( $values ) {
 		_deprecated_function( __FUNCTION__, '4.0.0', 'Kind_Time::build_interval()' );
