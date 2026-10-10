@@ -27,6 +27,7 @@ function post_kinds_uninstall_site() {
 		'kind_display',
 		'kind_kses',
 		'kind_title',
+		'kind_base',
 		// Upgrade state (Kind_Upgrade).
 		'kind_upgrade_version',
 		'kind_upgrade_last_id',

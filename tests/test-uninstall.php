@@ -12,6 +12,7 @@ class UninstallTest extends WP_UnitTestCase {
 
 		update_option( 'kind_termslist', array( 'like' ) );
 		update_option( 'kind_default', 'like' );
+		update_option( 'kind_base', 'sorte' );
 		update_option( 'kind_upgrade_version', Kind_Upgrade::VERSION );
 		update_option( 'iwt_options', array( 'legacy' => 1 ) );
 		update_option( 'unrelated_option', 'kept' );
@@ -23,7 +24,7 @@ class UninstallTest extends WP_UnitTestCase {
 		}
 		require dirname( __DIR__ ) . '/uninstall.php';
 
-		foreach ( array( 'kind_termslist', 'kind_default', 'kind_upgrade_version', 'iwt_options' ) as $option ) {
+		foreach ( array( 'kind_termslist', 'kind_default', 'kind_base', 'kind_upgrade_version', 'iwt_options' ) as $option ) {
 			$this->assertFalse( get_option( $option ), $option );
 		}
 		$this->assertSame( 'kept', get_option( 'unrelated_option' ) );
