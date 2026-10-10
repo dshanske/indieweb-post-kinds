@@ -25,7 +25,8 @@ class UninstallTest extends WP_UnitTestCase {
 		require dirname( __DIR__ ) . '/uninstall.php';
 
 		foreach ( array( 'kind_termslist', 'kind_default', 'kind_base', 'kind_upgrade_version', 'iwt_options' ) as $option ) {
-			$this->assertFalse( get_option( $option ), $option );
+			// Registered settings return their default when missing, unless a default is passed.
+			$this->assertSame( 'deleted', get_option( $option, 'deleted' ), $option );
 		}
 		$this->assertSame( 'kept', get_option( 'unrelated_option' ) );
 		$this->assertFalse( wp_next_scheduled( 'post_kinds_enrich_citation', array( $post, 1 ) ) );
