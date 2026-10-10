@@ -1,25 +1,121 @@
-== Functions ==
+Developer notes for Post Kinds 4.0.0. Every function, method and hook listed here has a docblock in the code with its full parameters and return values.
 
-`get_post_kind_slug($id)` - Return the kind slug for a given post. If `$id` is not specified, use current post.
-`get_post_kind($id)` - Return the kind string for a given post. If `$id` is not specified, use current post.
+== Template functions ==
 
-`has_post_kind($kind, $post)` - Returns true/false if kind is in post. If post is empty, then use current post
+These global functions are loaded on `plugins_loaded`, from `includes/kind-functions.php`.
 
-`get_kind_context_class( $class, $classtype )` - Returns the CSS class to be applied to the response/context if the kind is one for which there is context. Classtype defaults to u, other option is usually p. Sets the class to the kind slug and for specially specified slugs, sets appropriate mf2 classes as well. $class specifies any additional classes to be added.
+`get_post_kind_slug( $post = null )` - Returns the kind slug of a post, or false if it has no kind. Defaults to the current post.
+`get_post_kind( $post = null )` - Returns the translated kind name of a post, or false if it has no kind. Defaults to the current post.
+`has_post_kind( $kinds = array(), $post = null )` - Returns whether a post has any of the given kinds, or any kind at all if `$kinds` is empty.
+`set_post_kind( $post, $kind )` - Gives a post a kind. Returns a WP_Error if the post or the kind is not valid.
+`get_post_kind_slugs()` - Returns the slugs of every registered kind.
+`get_post_kind_string( $slug )` - Returns the translated name of a kind, or an empty string if it is not registered.
+`get_post_kind_link( $kind )` - Returns the URL of a kind's archive.
+`kind_display( $post_id = null )` - Prints the response markup for a post. Use it with the `kind_content_display` filter to place the markup in the theme.
+`get_kind_view_part( $slug, $name = null, $args = null )` - Returns a rendered view. See Kind_View::get_view_part().
+`kind_get_the_title( $post = null, $args = array() )` - Returns a post's title, or a generated one (the kind's icon or name and a cited name or excerpt) for a post without one.
+`kind_get_the_link( $post = null, $cls = null, $date_cls = null )` - Returns a link to a post, using kind_get_the_title(), followed by its date.
+`kind_flatten_array( $a )` - Removes empty values from an array and unwraps single-item lists, recursively.
+`kind_src_url_in_content( $content )` - Returns every src attribute value in some markup, or 0 if there are none.
 
+== Registering kinds ==
 
+`register_post_kind( $slug, $args )` - Registers a kind. Call it on `init`. `includes/register-kinds.php` registers the built-in kinds the same way, and Kind_Taxonomy::register_post_kind() documents every argument.
+`set_post_kind_visibility( $slug, $show = true )` - Shows or hides a kind in Settings, including the kinds reserved for future use.
 
-==  Filters == 
+== Time functions ==
 
-`get_the_kind` - Filter get_the_kinds
+Also global, from `includes/time-functions.php`.
 
-`the_kinds` - Filter get_the_kinds_list
+`kind_safe_datetime( $value, $timezone = null, $immutable = true )` - Since 4.0.0. Creates a date from a value, returning false instead of throwing on invalid input.
+`kind_safe_interval( $value )` - Since 4.0.0. Creates a DateInterval from an ISO 8601 duration such as `PT3M30S`, returning false instead of throwing on invalid input.
+`calculate_duration( $start_string, $end_string )` - Returns the DateInterval between two dates, or false.
+`date_interval_to_iso8601( $interval )` - Converts a DateInterval to an ISO 8601 duration string.
+`build_iso8601_time( $date, $time, $offset )` - Joins a date, time and offset into an ISO 8601 string.
+`build_iso8601_duration( $values )` - Builds an ISO 8601 duration from its pieces (Y, M, D, H, I, S).
+`get_gmt_offsets()` - Returns the UTC offsets in use by any time zone, sorted.
+`get_default_offset()` - Returns the site's UTC offset, such as `-05:00`.
+`tz_seconds_to_offset( $seconds )`, `tz_offset_to_seconds( $offset )` - Convert between a UTC offset in seconds and an offset string.
+`tz_seconds_to_timezone( $seconds )`, `tz_timezone_to_seconds( $timezone )` - Convert between a UTC offset in seconds and a DateTimeZone.
 
-`kind_classes` - Filter get_kind_class
+== Classes ==
 
-`kind_verb` - Filter get_kind_verbs
+`Kind_Post` reads and writes a post's response data. Create one with a post ID or WP_Post. Its main methods:
 
-`kind-response-display` - Filters the output being added to the_content or to custom location in theme
+* `get_kind()`, `get_cite( $key = null )`, `get_author()`, `get_photo()`, `get_audio()`, `get_video()`, `get_duration()`, `get_datetime_property( $property )` and `get( $key )` read data.
+* `set( $key, $value )`, `set_duration( $value )`, `set_datetime_property( $key, $value )` and `delete( $key )` write it. Response data is stored as post meta prefixed `mf2_`.
+* `get_cite_type()` - Since 4.0.0. Returns the jf2 type of the post's citation: `card` for a checkin, `food` for eat and drink, and `cite` for every other kind.
+* `Kind_Post::get_attachment_id( $url )` - Since 4.0.0. Static. A cached wrapper for attachment_url_to_postid().
+
+`Kind_Time` - Since 4.0.0. Static helpers for the editor's date, time and duration fields: `display_formatted_datetime()`, `divide_datetime()`, `build_datetime()`, `get_datetime_offset()`, `divide_interval()` and `build_interval()`.
+
+`Kind_View` builds the response markup. `Kind_View::get_display( $post_id = null )` returns it for a post, `Kind_View::get_view_part( $slug, $name, $args = null )` renders one view, and `Kind_View::get_hcard( $author, $args = null )` returns an author's h-card. Since 4.0.0, its helpers return escaped markup; the 4.0.0 changelog lists the ones that changed.
+
+`Kind_Media_Metadata::has_media( $post )` - Since 4.0.0. Returns whether a post may show audio or video. The media fragment script loads only for these posts.
+
+`Kind_Upgrade` - Since 4.0.0. Upgrades stored post data in the background, in batches, after the plugin is updated. It gives published posts without a kind one, moves citations out of older storage locations, repairs citations that earlier versions damaged, and records the media in each post.
+
+== WP-CLI ==
+
+`wp post-kinds upgrade` - Since 4.0.0. Runs the upgrade now instead of in the background. It is safe to run more than once.
+
+* `--dry-run` - Report what would change without saving.
+* `--post=<id>` - Upgrade only this post.
+
+== REST API ==
+
+* The `kind` field on posts reads and sets a post's kind slug.
+* `GET /wp-json/post-kinds/1.0/fields?kind={slug}` returns a kind's registration, including its field schema. An unknown kind returns a 404. It requires the `edit_posts` capability.
+* The editor fetches details for a cited URL from the bundled Parse This library's `parse-this/1.0/parse` route.
+
+== Filters ==
+
+Display:
+
+`kind_content_display` - Whether to add response markup to post content, excerpts and feeds automatically. Return false to place it with kind_display() instead. Default true.
+`kind_response_display` - The response markup for a post. Receives the markup and the post ID.
+`kind_view_paths` - The folders searched for views before the plugin's `views` folder. Default the theme's `kind_views` folder.
+`kind_icon_display` - Whether to show the kind's icon or name before the response. Return false to hide it and remove the option from Settings.
+`post_kinds_icon_attributes` - The HTML attributes on the span that wraps a kind icon. Output as-is, so it must be escaped.
+`kind_get_the_title_content` - The text of a generated title. Receives escaped text and the post.
+`kind_get_the_title_before` - The markup before a generated title, the kind's icon or name by default. Output as-is, so it must be escaped.
+`get_hcard_data` - The author data before it becomes an h-card.
+`get_hcard` - The h-card markup for an author. Return non-empty, escaped markup to replace the plugin's own.
+`post_kind_embed_approvelist` - The domains whose cited URLs are embedded with oEmbed.
+`kind_post_type_string` - The phrase for what a known site's URL points to, such as "a video" for YouTube.
+
+Kinds and archives:
+
+`kind_include` - The kinds offered in the editor and listed by the Kind Menu widget. Default the kinds selected in Settings, plus note, reply and article.
+`kind_rewrite_taxonomies` - The taxonomies that get `/kind/{kind}/{taxonomy}/{term}/` archives. Default post_tag, category and series.
+`kind_exclude_slug` - The slug for archives that exclude kinds, as in `/exclude/kind/note,like/`. Default `exclude`.
+`kind_photos_slug` - The slug for the archive of posts with photos. Default `photos`.
+`kind_firehose_slug` - The slug for the feed that includes every kind. Default `firehose`.
+
+After changing a slug or the rewrite taxonomies, flush rewrite rules: visit Settings > Permalinks and save.
+
+Upgrade:
+
+`kind_upgrade_batch_size` - Since 4.0.0. The number of posts the background upgrade processes per batch. Default 50.
+
+Micropub (these run only when the Micropub plugin is active):
+
+`post_kinds_micropub_enrich` - Since 4.0.0. Whether to fill in citation URLs from Micropub requests with data parsed from the cited page. Return false to store citations exactly as the client sent them. Default true.
+`post_kinds_micropub_parse_timeout` - Since 4.0.0. The timeout, in seconds, for parsing a citation while the client waits. Citations that time out are retried in the background. Default 5.
+`post_kinds_micropub_unavailable_retry_delay` - Since 4.0.0. How long to wait before retrying, once, a citation whose page returned 404, 401 or 403. Default 6 hours.
+`post_kinds_micropub_post_types` - Since 4.0.0. The post types advertised to Micropub clients in `q=config`.
+
+== Actions ==
+
+`change_kind` - Fires when a post's kind changes. Receives the post ID and the old and new kind slugs; either slug can be an empty string.
+`post_kinds_citation_enrichment` - Since 4.0.0. Fires after each attempt to parse a Micropub citation. Receives the log entry and the post ID.
+
+== Deprecated ==
+
+These still work, but report a deprecation notice when WP_DEBUG is on.
+
+* Since 4.0.0, the global functions `display_formatted_datetime()`, `divide_datetime()`, `build_datetime()`, `get_datetime_offset()`, `divide_interval()` and `build_interval()`. Use the Kind_Time methods of the same names. They will be removed in 5.0.0.
+* Since 4.0.0, the `MF2_Post` class. Use Kind_Post. It will be removed in a future major version.
 
 == Overriding views ==
 
