@@ -1,7 +1,7 @@
 === Post Kinds ===
 Contributors: dshanske
 Tags: indieweb, interaction, posts, webmention, share, like, scrobble
-Stable tag: 3.7.3
+Stable tag: 4.0.0
 Requires at least: 6.2
 Requires PHP: 7.4
 Tested up to: 7.1
@@ -46,11 +46,7 @@ responsibilities to responsibly use this data, and to remove information on requ
 
 = 4.0.0 =
 
-This version requires PHP 7.4 and WordPress 6.2 or later, or ClassicPress 2.7.3 or later. Sites on older versions should stay on 3.7.x.
-
-Response data is now escaped, which changes some display helpers, and stored post data is upgraded in the background. See the 4.0.0 changelog.
-
-Posts created outside the editor, such as from apps, the REST API or Quick Draft, now get the Default Kind setting (Note unless changed) instead of Article. To keep the old behaviour, set Default Kind to Article.
+Requires PHP 7.4 and WordPress 6.2 or ClassicPress 2.7.3. Response data is now escaped, changing some display helpers; stored post data upgrades in the background. Posts from apps and the REST API now get the Default Kind (Note unless changed), not Article. See the changelog.
 
 = 3.7.0 =
 
@@ -309,11 +305,11 @@ The template functions, hooks and view variables are listed in the [developer no
 
 == Changelog ==
 
-= 4.0.0 ( unreleased ) =
+= 4.0.0 ( 2026-10-10 ) =
 * Raise the minimum requirements to PHP 7.4 and WordPress 6.2, and declare ClassicPress 2.7.3 support
 * The `kind` field in the REST API now has a description and lists the valid kinds; an unknown kind is rejected with `rest_invalid_param`
 * When the old IndieWeb Taxonomy plugin is active, activation now stops with a translatable message and deactivates Post Kinds itself, instead of a file that isn't a plugin
-* The Default Kind setting applies to every new post without a kind, including posts from apps, the REST API, Quick Draft and scheduled drafts, which used to get Article. A translated site no longer gets a stray copy of the Article kind
+* The Default Kind setting applies to every new post without a kind, including posts from apps, the REST API, Quick Draft and scheduled drafts, which used to get Article. Set Default Kind to Article to keep the old behaviour. A translated site no longer gets a stray copy of the Article kind
 * Escape response data in views, the editor, widgets and settings; summaries are displayed as plain text
 * Sanitize input from the editor, the media modal's artist fields, settings and widgets; citation summaries are saved as plain text
 * An RSVP can now be cleared in the editor
