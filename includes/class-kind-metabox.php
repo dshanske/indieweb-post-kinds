@@ -600,17 +600,14 @@ class Kind_Metabox {
 		$cite['publication'] = self::posted_text( 'cite_publication' );
 		$cite['featured']    = self::posted_urls( 'cite_featured' );
 
-		$author          = array();
-		$author['name']  = self::explode( self::posted_text( 'cite_author_name' ) );
-		$author['url']   = self::posted_urls( 'cite_author_url', true );
-		$author['photo'] = self::posted_urls( 'cite_author_photo', true );
-
-		$author = array_filter( $author );
-		if ( ! empty( $author ) ) {
-
-			$author['type'] = 'card';
-			$cite['author'] = \ParseThis\jf2_to_mf2( $author );
+		// One h-card per author. Like the other fields, an empty value clears what was stored.
+		$authors = array_map( '\ParseThis\jf2_to_mf2', self::posted_authors() );
+		if ( empty( $authors ) ) {
+			$cite['author'] = '';
+		} else {
+			$cite['author'] = 1 === count( $authors ) ? $authors[0] : $authors;
 		}
+
 		$kind = $kind_post->get_kind();
 		$type = Kind_Taxonomy::get_kind_info( $kind, 'property' );
 		// Make sure there is no overwrite of properties that might not be handled by the plugin.
@@ -693,22 +690,60 @@ class Kind_Metabox {
 	 *
 	 * @since 4.0.0
 	 *
-	 * @param string $key      Field name.
-	 * @param bool   $multiple Optional. Whether the field holds several URLs separated by semicolons. Default false.
-	 * @return string|string[] The URL, or for multiple values a URL or list of URLs, as Kind_Metabox::explode() returns. Empty if none is valid.
+	 * @param string $key Field name.
+	 * @return string The URL, or an empty string if it is not valid.
 	 */
-	private static function posted_urls( $key, $multiple = false ) {
+	private static function posted_urls( $key ) {
 		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified in save_post().
 		if ( ! isset( $_POST[ $key ] ) || ! is_string( $_POST[ $key ] ) ) {
 			return '';
 		}
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Verified in save_post(); each URL is sanitized with sanitize_url() below (sanitize_text_field() would alter %-encoding).
-		$value = trim( wp_unslash( $_POST[ $key ] ) );
-		if ( ! $multiple ) {
-			return sanitize_url( $value );
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Verified in save_post(); sanitized with sanitize_url() (sanitize_text_field() would alter %-encoding).
+		return sanitize_url( trim( wp_unslash( $_POST[ $key ] ) ) );
+	}
+
+	/**
+	 * Returns the authors posted in the metabox's Author tab, as jf2 h-cards.
+	 *
+	 * Each field holds one value per author, separated by semicolons, so the
+	 * first name goes with the first URL and the first photo, and so on. An
+	 * author without a URL leaves that position empty, as in "Ann; Bob" and
+	 * "; https://example.com/bob".
+	 *
+	 * Only called from save_post(), after the nonce is verified.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return array[] The authors, each with type 'card' and any of name, url and photo.
+	 */
+	private static function posted_authors() {
+		$fields = array();
+		foreach ( array(
+			'name'  => 'cite_author_name',
+			'url'   => 'cite_author_url',
+			'photo' => 'cite_author_photo',
+		) as $property => $key ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Verified in save_post(); each value is sanitized below.
+			$value  = isset( $_POST[ $key ] ) && is_string( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : '';
+			$values = array_map( 'trim', explode( ';', $value ) );
+
+			$fields[ $property ] = array_map( 'name' === $property ? 'sanitize_text_field' : 'sanitize_url', $values );
 		}
-		$urls = array_filter( array_map( 'sanitize_url', array_map( 'trim', explode( ';', $value ) ) ) );
-		return kind_flatten_array( array_values( $urls ) );
+
+		$authors = array();
+		$count   = max( array_map( 'count', $fields ) );
+		for ( $i = 0; $i < $count; $i++ ) {
+			$author = array();
+			foreach ( $fields as $property => $values ) {
+				if ( isset( $values[ $i ] ) && '' !== $values[ $i ] ) {
+					$author[ $property ] = $values[ $i ];
+				}
+			}
+			if ( $author ) {
+				$authors[] = array_merge( array( 'type' => 'card' ), $author );
+			}
+		}
+		return $authors;
 	}
 
 	/**
