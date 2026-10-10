@@ -774,7 +774,13 @@ class Kind_Post {
 	 * Missing keys are set to empty strings, which saves isset checks. For
 	 * display and the metabox only.
 	 *
+	 * 'authors' lists every author as a card with name, url and photo. 'author'
+	 * is the single author, or for several authors one card whose fields hold
+	 * each author's value in turn, separated by semicolons, as the metabox
+	 * shows them.
+	 *
 	 * @since 3.4.9
+	 * @since 4.0.0 Added 'authors'. 'author' joins several authors' photos too.
 	 *
 	 * @param array|string|false $cite The citation, as mf2, jf2 or a URL or name.
 	 * @return array The normalized citation.
@@ -797,6 +803,7 @@ class Kind_Post {
 			'updated'     => '',
 			'summary'     => '',
 			'author'      => $author_defaults,
+			'authors'     => array(),
 			'category'    => '',
 		);
 
@@ -825,27 +832,21 @@ class Kind_Post {
 			$cite['category'] = implode( ';', $cite['category'] );
 		}
 
-		if ( wp_is_numeric_array( $cite['author'] ) ) {
-			if ( 1 === count( $cite['author'] ) ) {
-				$cite['author'] = array_pop( $cite['author'] );
+		$cite['authors'] = self::normalize_authors( $cite['author'] );
+		if ( 1 === count( $cite['authors'] ) ) {
+			$cite['author'] = $cite['authors'][0];
+		} else {
+			$cite['author'] = $author_defaults;
+			foreach ( array( 'name', 'url', 'photo' ) as $key ) {
+				$values = wp_list_pluck( $cite['authors'], $key );
+				if ( array_filter( $values ) ) {
+					$cite['author'][ $key ] = implode( '; ', $values );
+				}
 			}
 		}
 
-		if ( is_string( $cite['author'] ) ) {
-			$cite['author'] = wp_http_validate_url( $cite['author'] ) ? array( 'url' => $cite['author'] ) : array( 'name' => $cite['author'] );
-		}
-
-		$cite['author'] = wp_parse_args( $cite['author'], $author_defaults );
-
 		if ( is_array( $cite['publication'] ) ) {
 			$cite['publication'] = $cite['publication']['name'];
-		}
-
-		if ( is_array( $cite['author']['name'] ) ) {
-			$cite['author']['name'] = implode( ';', $cite['author']['name'] );
-		}
-		if ( is_array( $cite['author']['url'] ) ) {
-			$cite['author']['url'] = implode( ';', $cite['author']['url'] );
 		}
 
 		// FIXME: Discards extra URLs as currently unsupported. This would be for multi-replies in theory.
@@ -860,6 +861,60 @@ class Kind_Post {
 		return $cite;
 	}
 
+
+	/**
+	 * Returns a citation's authors as a list of cards.
+	 *
+	 * Accepts one author or a list, each as a jf2 or mf2 h-card, a URL or a
+	 * name. Before 4.0.0 the metabox saved several authors as one card whose
+	 * name, url and photo were lists; the values are paired up by position.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param mixed $author The author or authors.
+	 * @return array[] Cards with string type, name, url and photo, leaving out empty ones.
+	 */
+	public static function normalize_authors( $author ) {
+		if ( wp_is_numeric_array( $author ) ) {
+			$authors = array();
+			foreach ( $author as $item ) {
+				$authors = array_merge( $authors, self::normalize_authors( $item ) );
+			}
+			return $authors;
+		}
+		if ( is_string( $author ) ) {
+			$author = wp_http_validate_url( $author ) ? array( 'url' => $author ) : array( 'name' => $author );
+		}
+		if ( ! is_array( $author ) ) {
+			return array();
+		}
+		if ( \ParseThis\MF2_Utils::is_microformat( $author ) ) {
+			$author = \ParseThis\mf2_to_jf2( $author );
+		}
+
+		$fields = array();
+		foreach ( array( 'name', 'url', 'photo' ) as $key ) {
+			$value = isset( $author[ $key ] ) ? $author[ $key ] : '';
+			if ( is_array( $value ) && isset( $value['value'] ) ) {
+				// A jf2 photo with alt text.
+				$value = $value['value'];
+			}
+			$fields[ $key ] = array_values( array_filter( (array) $value, 'is_scalar' ) );
+		}
+
+		$authors = array();
+		$count   = max( array_map( 'count', $fields ) );
+		for ( $i = 0; $i < $count; $i++ ) {
+			$card = array( 'type' => 'card' );
+			foreach ( $fields as $key => $values ) {
+				$card[ $key ] = isset( $values[ $i ] ) ? trim( (string) $values[ $i ] ) : '';
+			}
+			if ( '' !== $card['name'] . $card['url'] . $card['photo'] ) {
+				$authors[] = $card;
+			}
+		}
+		return $authors;
+	}
 	/**
 	 * Stores a date property.
 	 *

@@ -61,6 +61,35 @@ jQuery( document ).ready( function( $ ) {
 		return pattern.test( url );
 	}
 
+	// Fills the Author tab from one author or a list. Each field holds one value
+	// per author, separated by semicolons, so the values stay paired by position.
+	function fillAuthors( authors ) {
+		var fields = { name: [], url: [], photo: [] };
+		if ( ! Array.isArray( authors ) ) {
+			authors = [ authors ];
+		}
+		$.each( authors, function( index, author ) {
+			if ( 'string' === typeof author ) {
+				author = checkUrl( author ) ? { url: author } : { name: author };
+			}
+			if ( ! author || 'object' !== typeof author ) {
+				return;
+			}
+			$.each( fields, function( key, values ) {
+				var value = author[ key ];
+				if ( Array.isArray( value ) ) {
+					value = value.join( '; ' );
+				} else if ( value && 'object' === typeof value ) {
+					value = value.value;
+				}
+				values.push( 'string' === typeof value ? value : '' );
+			} );
+		} );
+		$.each( fields, function( key, values ) {
+			$( '#cite_author_' + key ).val( values.join( '' ) ? values.join( '; ' ) : '' );
+		} );
+	}
+
 	function getLinkPreview() {
 		if ( '' === $( '#cite_url' ).val() ) {
 			return;
@@ -119,28 +148,8 @@ jQuery( document ).ready( function( $ ) {
 				if ( 'featured' in response ) {
 					$( '#cite_featured' ).val( response.featured );
 				}
-				if ( ( 'author' in response ) && ( 'string' !== typeof response.author ) ) {
-					if ( 'name' in response.author ) {
-						if ( 'string' === typeof response.author.name ) {
-							$( '#cite_author_name' ).val( response.author.name );
-						} else {
-							$( '#cite_author_name' ).val( response.author.name.join( ';' ) );
-						}
-					}
-					if ( 'photo' in response.author ) {
-						if ( 'string' === typeof response.author.photo ) {
-							$( '#cite_author_photo' ).val( response.author.photo );
-						} else {
-							$( '#cite_author_photo' ).val( response.author.photo.join( ';' ) );
-						}
-					}
-					if ( 'url' in response.author ) {
-						if ( 'string' === typeof response.author.url ) {
-							$( '#cite_author_url' ).val( response.author.url );
-						} else {
-							$( '#cite_author_url' ).val( response.author.url.join( ';' ) );
-						}
-					}
+				if ( 'author' in response ) {
+					fillAuthors( response.author );
 				}
 				if ( 'publication' in response && ( 'string' !== typeof response.publication ) ) {
 					if ( 'name' in response.publication ) {
