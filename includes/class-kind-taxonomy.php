@@ -360,8 +360,11 @@ final class Kind_Taxonomy {
 				'get_callback'    => array( self::class, 'get_rest_post_kind' ),
 				'update_callback' => array( self::class, 'set_rest_post_kind' ),
 				'schema'          => array(
-					'kind' => __( 'Post Kind', 'indieweb-post-kinds' ),
-					'type' => 'string',
+					'description' => __( 'The post kind, or false if the post has none.', 'indieweb-post-kinds' ),
+					// False is only returned, never accepted: the enum allows kind slugs alone.
+					'type'        => array( 'string', 'boolean' ),
+					'enum'        => self::get_kind_list(),
+					'context'     => array( 'view', 'edit' ),
 				),
 			)
 		);
