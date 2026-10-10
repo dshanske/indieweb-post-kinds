@@ -177,6 +177,7 @@ class Kind_Metabox {
 		$cls = get_called_class();
 		/* Add meta boxes on the 'add_meta_boxes' hook. */
 		add_action( 'add_meta_boxes', array( $cls, 'add_meta_boxes' ) );
+		add_filter( 'hidden_meta_boxes', array( $cls, 'hidden_meta_boxes' ), 10, 2 );
 		add_action( 'admin_enqueue_scripts', array( $cls, 'enqueue_admin_scripts' ) );
 	}
 
@@ -423,6 +424,28 @@ class Kind_Metabox {
 		$string .= self::rating_choice( $selected );
 		$string .= '</select>';
 		return $string;
+	}
+
+	/**
+	 * Keeps the Response Properties box from being saved as hidden.
+	 *
+	 * The editor script hides the box for kinds without a response, such as
+	 * note. WordPress saves every hidden box as unticked in Screen Options
+	 * whenever any box is collapsed or any Screen Options box is toggled, so
+	 * the box would stay hidden for every kind afterwards. The script shows
+	 * and hides it by kind instead.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param string[]  $hidden IDs of the hidden meta boxes.
+	 * @param WP_Screen $screen The current screen.
+	 * @return string[] IDs of the hidden meta boxes.
+	 */
+	public static function hidden_meta_boxes( $hidden, $screen ) {
+		if ( ! is_array( $hidden ) || ! $screen instanceof WP_Screen || 'post' !== $screen->id ) {
+			return $hidden;
+		}
+		return array_values( array_diff( $hidden, array( 'replybox-meta' ) ) );
 	}
 
 	/**
