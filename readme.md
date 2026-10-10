@@ -316,6 +316,7 @@ The template functions, hooks and view variables are listed in the [developer no
 ### 4.0.0 ( unreleased ) ###
 * Raise the minimum requirements to PHP 7.4 and WordPress 6.2, and declare ClassicPress 2.7.3 support
 * The `kind` field in the REST API now has a description and lists the valid kinds; an unknown kind is rejected with `rest_invalid_param`
+* When the old IndieWeb Taxonomy plugin is active, activation now stops with a translatable message and deactivates Post Kinds itself, instead of a file that isn't a plugin
 * The Default Kind setting applies to every new post without a kind, including posts from apps, the REST API, Quick Draft and scheduled drafts, which used to get Article. A translated site no longer gets a stray copy of the Article kind
 * Escape response data in views, the editor, widgets and settings; summaries are displayed as plain text
 * Sanitize input from the editor, the media modal's artist fields, settings and widgets; citation summaries are saved as plain text

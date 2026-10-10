@@ -605,8 +605,8 @@ final class Kind_Taxonomy {
 	 */
 	public static function activate_kinds() {
 		if ( function_exists( 'iwt_plugin_notice' ) ) {
-			deactivate_plugins( plugin_basename( __FILE__ ) );
-			wp_die( 'You have Indieweb Taxonomy activated. Post Kinds replaces this plugin. Please disable Taxonomy before activating' );
+			deactivate_plugins( plugin_basename( dirname( __DIR__ ) . '/indieweb-post-kinds.php' ) );
+			wp_die( esc_html__( 'Post Kinds replaces the IndieWeb Taxonomy plugin. Deactivate IndieWeb Taxonomy, then activate Post Kinds.', 'indieweb-post-kinds' ) );
 		}
 		self::load_kinds();
 		self::register();
