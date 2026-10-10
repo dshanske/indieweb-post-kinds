@@ -18,8 +18,21 @@ defined( 'ABSPATH' ) || exit;
  */
 class Kind_Post {
 
+	/**
+	 * Post ID.
+	 *
+	 * @since 3.4.0
+	 * @var int
+	 */
 	public $id;
 
+	/**
+	 * Sets up the post to read and write.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @param int|WP_Post|string $post Post ID, post object, or the URL of a post or attachment.
+	 */
 	public function __construct( $post ) {
 		if ( is_numeric( $post ) ) {
 			$this->id = (int) $post;
@@ -40,32 +53,37 @@ class Kind_Post {
 		$post = get_post( $post );
 	}
 
-	/*
-	 * Check is post is attachment.
+	/**
+	 * Checks whether a post is an attachment.
 	 *
-	 * @param WP_Post $post Post Object.
-	 * @return boolean True if attachment.
+	 * @since 3.4.10
+	 *
+	 * @param int|WP_Post $post Post ID or post object.
+	 * @return bool True if the post is an attachment.
 	 */
 	private function is_attachment( $post ) {
 		return ( 'attachment' === get_post_type( $post ) );
 	}
 
 
-	/*
-	 * Returns WP_Post Object
+	/**
+	 * Returns the post object.
 	 *
-	 * @return WP_Post Post Object.
+	 * @since 3.4.0
 	 *
+	 * @return WP_Post|null The post, or null if it does not exist.
 	 */
 	public function get_post() {
 		return get_post( $this->id );
 	}
 
-	/*
-	 * Returns the Post Kind. For Attachments will return the media type.
+	/**
+	 * Returns the post kind. For an attachment, returns its media type instead.
 	 *
-	 * @return string Post Kind.
+	 * @since 3.4.0
 	 *
+	 * @return string|false|null The kind slug ('photo', 'video' or 'audio' for an attachment),
+	 *                           false if a post has no kind, or null for an attachment of another type.
 	 */
 	public function get_kind() {
 		if ( $this->is_attachment( $this->id ) ) {
@@ -83,10 +101,15 @@ class Kind_Post {
 		return get_post_kind_slug( $this->id );
 	}
 
-	/*
-	 * Get Name.
+	/**
+	 * Returns the post's name (title).
 	 *
-	 * @return string Return name.
+	 * A title that is just the post ID, or an attachment title that is just its
+	 * file name, does not count as a name.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @return string|false The name, or false if there is none.
 	 */
 	public function get_name() {
 		$post   = get_post( $this->id );
@@ -112,10 +135,14 @@ class Kind_Post {
 		return $return;
 	}
 
-	/*
-	 * Get Content.
+	/**
+	 * Returns the post's content or summary (excerpt).
 	 *
-	 * @return array with HTML and Plaintext Version of Content or Summary
+	 * @since 3.4.0
+	 *
+	 * @param string $property Either 'content' or 'summary'.
+	 * @return array|false Array with the HTML ('html') and plain text ('value') versions,
+	 *                     or false if the property is empty or not supported.
 	 */
 	public function get_html( $property ) {
 		if ( ! in_array( $property, array( 'summary', 'content' ), true ) ) {
@@ -134,10 +161,12 @@ class Kind_Post {
 		return false;
 	}
 
-	/*
-	 * Get Permalink URL
+	/**
+	 * Returns the post's permalink, or the file URL for an attachment.
 	 *
-	 * @return string $url
+	 * @since 3.4.0
+	 *
+	 * @return string|false The URL, or false if there is none.
 	 */
 	public function get_url() {
 		if ( 'attachment' === get_post_type( $this->id ) ) {
@@ -147,10 +176,12 @@ class Kind_Post {
 		}
 	}
 
-	/*
-	 * Get Featured Image Permalink
+	/**
+	 * Returns the URL of the post's featured image.
 	 *
-	 * @return string $url
+	 * @since 3.4.0
+	 *
+	 * @return string|false The URL, or false if the post has no featured image.
 	 */
 	public function get_featured() {
 		if ( has_post_thumbnail( $this->id ) ) {
@@ -160,12 +191,16 @@ class Kind_Post {
 	}
 
 
-	/*
-	 * Return datetime property as a DateTime Object.
+	/**
+	 * Returns a date property as a date object.
 	 *
-	 * @param string $property Property You Wish to Return.
+	 * For posts other than attachments, 'published' and 'updated' come from the
+	 * post's own dates. Everything else comes from post meta.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @param string $property Property to return, such as 'published' or 'start'.
 	 * @return DateTimeImmutable|false The date, or false if it is missing or not a valid date.
-	 *
 	 */
 	public function get_datetime_property( $property ) {
 		// In an attachment the post date properties reflect when the item was uploaded not when the piece was created.
@@ -188,11 +223,14 @@ class Kind_Post {
 		return kind_safe_datetime( $datetime );
 	}
 
-	/*
-	 * Returns Publication.
+	/**
+	 * Returns the publication the post appeared in.
 	 *
-	 * @return string
+	 * For posts other than attachments, this is the site title.
 	 *
+	 * @since 3.4.0
+	 *
+	 * @return string|null The publication, or null if an attachment has none.
 	 */
 	public function get_publication() {
 		if ( 'attachment' !== get_post_type( $this->id ) ) {
@@ -205,6 +243,13 @@ class Kind_Post {
 		}
 	}
 
+	/**
+	 * Returns the post's stored duration.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @return DateInterval|false The duration, or false if it is missing or not valid.
+	 */
 	public function get_duration() {
 		$duration = get_post_meta( $this->id, 'mf2_duration', true );
 		if ( is_array( $duration ) ) {
@@ -213,21 +258,24 @@ class Kind_Post {
 		return kind_safe_interval( $duration );
 	}
 
-	/*
-	 * Return Categories which are a combination of Tags and Categories.
+	/**
+	 * Returns the names of the post's categories and tags, combined.
 	 *
-	 * @return array Array of the names of Categories and Tag names.
+	 * 'Uncategorized' is left out.
 	 *
+	 * @since 3.4.0
+	 *
+	 * @return string[] Category and tag names.
 	 */
 	public function get_categories() {
 		$category = array();
-		// Get a list of categories and extract their names
+		// Get a list of categories and extract their names.
 		$post_categories = get_the_terms( $this->id, 'category' );
 		if ( ! empty( $post_categories ) && ! is_wp_error( $post_categories ) ) {
 			$category = wp_list_pluck( $post_categories, 'name' );
 		}
 
-		// Get a list of tags and extract their names
+		// Get a list of tags and extract their names.
 		$post_tags = get_the_terms( $this->id, 'post_tag' );
 		if ( ! empty( $post_tags ) && ! is_wp_error( $post_tags ) ) {
 			$category = array_merge( $category, wp_list_pluck( $post_tags, 'name' ) );
@@ -239,22 +287,25 @@ class Kind_Post {
 	}
 
 	/**
-	 * Is prefix in string.
+	 * Checks whether a string starts with a prefix.
 	 *
-	 * @param  string $source The source string.
-	 * @param  string $prefix The prefix you wish to check for in source.
-	 * @return boolean The result.
+	 * @since 3.4.0
+	 *
+	 * @param string $source The source string.
+	 * @param string $prefix The prefix to look for.
+	 * @return bool True if the source starts with the prefix.
 	 */
 	protected static function str_prefix( $source, $prefix ) {
 		return strncmp( $source, $prefix, strlen( $prefix ) ) === 0;
 	}
 
 	/**
-	 * Returns True if Array is Multidimensional.
+	 * Checks whether an array is multidimensional.
 	 *
-	 * @param array $arr array.
+	 * @since 3.4.0
 	 *
-	 * @return boolean result
+	 * @param array $arr The array to check.
+	 * @return bool True if any element is an array.
 	 */
 	protected static function is_multi_array( $arr ) {
 		if ( count( $arr ) === count( $arr, COUNT_RECURSIVE ) ) {
@@ -264,6 +315,16 @@ class Kind_Post {
 		}
 	}
 
+	/**
+	 * Unwraps single-item arrays, recursively.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @param mixed $value   The value to unwrap.
+	 * @param bool  $discard Optional. Whether to keep only the first item of a list
+	 *                       with more than one item. Default false.
+	 * @return mixed The value, with single-item arrays replaced by their item.
+	 */
 	protected function single_array( $value, $discard = false ) {
 		if ( ! is_array( $value ) ) {
 			return $value;
@@ -281,9 +342,14 @@ class Kind_Post {
 	}
 
 	/**
-	 * Retrieve author
+	 * Returns the post's author as an h-card.
 	 *
-	 * @return boolean|array The result or false if does not exist.
+	 * For an attachment, or a post with no WordPress author, this is the author
+	 * stored in post meta.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @return array|string|false The author as mf2, the stored value, or false if there is none.
 	 */
 	public function get_author() {
 		$post = $this->get_post();
@@ -291,7 +357,7 @@ class Kind_Post {
 			$author = get_post_meta( $post->ID, 'mf2_author', true );
 			return ( $author ?? false );
 		}
-		// Attachments may have been uploaded by a user but may have metadata for original author
+		// Attachments may have been uploaded by a user but may have metadata for original author.
 		if ( 'attachment' === get_post_type( $this->id ) ) {
 			$author = get_post_meta( $post->ID, 'mf2_author', true );
 			return ( $author ?? false );
@@ -306,12 +372,13 @@ class Kind_Post {
 		);
 	}
 
-	/*
-	 * Return Attached Media IDs.
+	/**
+	 * Returns the IDs of media attached to the post.
 	 *
-	 * @param string $type audio, video, or photo.
-	 * @return array Array of Media IDs.
+	 * @since 3.4.0
 	 *
+	 * @param string $type 'audio', 'video' or 'photo'.
+	 * @return int[]|false Attachment IDs, or false if the type is not supported.
 	 */
 	public function get_attached_media( $type ) {
 		$type = strtolower( $type );
@@ -325,14 +392,17 @@ class Kind_Post {
 		return wp_list_pluck( $posts, 'ID' );
 	}
 
-	/*
-	 * Return Attached Photos.
+	/**
+	 * Returns the post's photos.
 	 *
-	 * Looks in both attached media and the photo property.
+	 * Looks in attached media, the photo property and images in the content.
+	 * Returns an empty array if the post has a featured image.
 	 *
-	 * @param boolean $content If true then return empty if there are any images in content.
-	 * @return array Array of Media IDs.
+	 * @since 3.4.0
 	 *
+	 * @param bool $content Optional. Whether to return an empty array if the content
+	 *                      has any images. Default true.
+	 * @return int[]|false Attachment IDs, or false if there are none.
 	 */
 	public function get_photo( $content = true ) {
 		if ( ! $this->get_post() ) {
@@ -379,14 +449,17 @@ class Kind_Post {
 		return false;
 	}
 
-	/*
-	 * Return Attached Audio.
+	/**
+	 * Returns the post's audio.
 	 *
-	 * Looks in both attached media and the audio property.
+	 * Looks in attached media, the audio property and audio in the content.
 	 *
-	 * @param boolean $content If true then return empty if there are any audio files in content.
-	 * @return array Array of Media IDs or URLs.
+	 * @since 3.4.0
 	 *
+	 * @param bool $content Optional. Whether to return an empty array if the content
+	 *                      has any audio. Default true.
+	 * @return array|false Attachment IDs, external URLs if no attachments were found,
+	 *                     or false if there is no audio.
 	 */
 	public function get_audio( $content = true ) {
 		// Check if the post itself if an audio attachment.
@@ -410,7 +483,7 @@ class Kind_Post {
 		$audios    = get_post_meta( $this->id, 'mf2_audio', true );
 		$audio_ids = is_array( $audios ) ? $this->get_attachments_from_urls( $audios ) : array();
 
-		// If there are ids found return them
+		// If there are ids found return them.
 		if ( ! empty( $audio_ids ) || ! empty( $att_ids ) || ! empty( $content_ids ) ) {
 			return array_unique( array_merge( $att_ids, $audio_ids, $content_ids ) );
 		}
@@ -423,14 +496,16 @@ class Kind_Post {
 		return false;
 	}
 
-	/*
-	 * Return Attached Video.
+	/**
+	 * Returns the post's videos.
 	 *
-	 * Looks in both attached media and the audio property.
+	 * Looks in attached media, the video property and videos in the content.
 	 *
-	 * @param boolean $content If true then return empty if there are any video files in content.
-	 * @return array Array of Media IDs.
+	 * @since 3.4.0
 	 *
+	 * @param bool $content Optional. Whether to return an empty array if the content
+	 *                      has any videos. Default true.
+	 * @return int[]|false Attachment IDs, or false if there are none.
 	 */
 	public function get_video( $content = true ) {
 		// Check if the post itself if an audio attachment.
@@ -486,6 +561,14 @@ class Kind_Post {
 		return (int) $id;
 	}
 
+	/**
+	 * Looks up the attachment IDs for media URLs.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @param string|array $urls A URL, or a list of URLs, attachment IDs or arrays with a 'url' key.
+	 * @return int[] Attachment IDs found. URLs with no attachment are left out.
+	 */
 	public function get_attachments_from_urls( $urls ) {
 		if ( is_string( $urls ) ) {
 			$attachment = self::get_attachment_id( $urls );
@@ -513,11 +596,13 @@ class Kind_Post {
 	}
 
 	/**
-	 * Retrieve value
+	 * Returns a property of the post.
 	 *
-	 * @param  string $key The key to retrieve.
-	 * @param  boolean $single Whether to return a a single value or array if there is only one value.
-	 * @return mixed The result or false if does not exist.
+	 * @since 3.4.0
+	 *
+	 * @param string $key    The property to return.
+	 * @param bool   $single Optional. Whether to unwrap a single value from its array. Default true.
+	 * @return mixed The value, or false if the key is empty.
 	 */
 	public function get( $key, $single = true ) {
 		if ( empty( $key ) ) {
@@ -557,6 +642,17 @@ class Kind_Post {
 		}
 	}
 
+	/**
+	 * Returns the post's citation, or one property of it.
+	 *
+	 * For an attachment, the citation is built from the attachment itself.
+	 * Citations stored as jf2 are returned as mf2.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @param string|null $key Optional. Citation property to return. Default null, for the whole citation.
+	 * @return mixed The citation as mf2 or a string, the property, or false if there is none.
+	 */
 	public function get_cite( $key = null ) {
 		if ( 'attachment' === get_post_type( $this->id ) ) {
 			$published = $this->get_datetime_property( 'published' );
@@ -672,11 +768,19 @@ class Kind_Post {
 		return 'cite';
 	}
 
-	/* Returns a normalized cite with all possible parameters present to reduce isset checks and to ensure everything is formatted correctly
-	 * For Display and Metabox purposes only.
+	/**
+	 * Returns a citation as jf2 with every key present and formatted for display.
+	 *
+	 * Missing keys are set to empty strings, which saves isset checks. For
+	 * display and the metabox only.
+	 *
+	 * @since 3.4.9
+	 *
+	 * @param array|string|false $cite The citation, as mf2, jf2 or a URL or name.
+	 * @return array The normalized citation.
 	 */
 	public function normalize_cite( $cite ) {
-		// Ensures that an empty string is always present in the cite
+		// Ensures that an empty string is always present in the cite.
 		$author_defaults = array(
 			'type'  => 'card',
 			'url'   => '',
@@ -756,6 +860,19 @@ class Kind_Post {
 		return $cite;
 	}
 
+	/**
+	 * Stores a date property.
+	 *
+	 * For posts other than attachments, 'published' and 'updated' set the
+	 * post's own dates. Everything else is stored in post meta.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @param string $key   Property to set, such as 'published' or 'start'.
+	 * @param mixed  $value A date, in any form kind_safe_datetime() accepts.
+	 * @return int|bool|WP_Error The result of updating the post or its meta,
+	 *                           or false if the value is not a valid date.
+	 */
 	public function set_datetime_property( $key, $value ) {
 		// In an attachment the post date properties reflect when the item was uploaded not when the piece was created.
 		// A mutable copy, as the timezone is changed below.
@@ -777,6 +894,14 @@ class Kind_Post {
 		return update_post_meta( $this->id, 'mf2_' . $key, $value->format( DATE_W3C ) );
 	}
 
+	/**
+	 * Stores the post's duration as an ISO 8601 duration.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @param mixed $value A duration, in any form kind_safe_interval() accepts.
+	 * @return int|bool The result of updating the meta, or false if the value is not a valid duration.
+	 */
 	public function set_duration( $value ) {
 		$value = kind_safe_interval( $value );
 		if ( ! $value ) {
@@ -789,18 +914,32 @@ class Kind_Post {
 	}
 
 	/**
-	 * Set author
+	 * Stores the author of an attachment.
 	 *
-	 * @param array $value Author microformat.
-	 * @return boolean|WP_Error
+	 * Other posts use their WordPress author, so nothing is stored for them.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @param array $value Author, as mf2.
+	 * @return int|bool|null The result of updating the meta, or null if the post is not an attachment.
 	 */
 	public function set_author( $value ) {
-		// Attachments may have been uploaded by a user but may have metadata for original author
+		// Attachments may have been uploaded by a user but may have metadata for original author.
 		if ( 'attachment' === get_post_type( $this->id ) ) {
 			return update_post_meta( $this->id, 'mf2_author', $value );
 		}
 	}
 
+	/**
+	 * Stores a property, or several.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @param string|array $key   Property to set, or an array of property => value pairs.
+	 * @param mixed        $value Optional. The value. Default null.
+	 * @return mixed The result of storing the value. True when setting an array,
+	 *               and null if the key or value is empty.
+	 */
 	public function set( $key, $value = null ) {
 		if ( is_array( $key ) ) {
 			foreach ( $key as $k => $v ) {
@@ -852,11 +991,9 @@ class Kind_Post {
 				$args[ $k ] = $value;
 				return wp_update_post( $args, true );
 			case 'audio':
-				/* All media is handled identically.
-				*/
+				// All media is handled identically.
 			case 'video':
-				/* All Media is handled identically.
-				*/
+				// All media is handled identically.
 			case 'photo':
 				if ( \ParseThis\MF2_Utils::is_microformat( $value ) ) {
 					$url = \ParseThis\MF2_Utils::get_plaintext( $value, 'url' );
@@ -872,13 +1009,20 @@ class Kind_Post {
 
 					return update_post_meta( $this->id, 'mf2_' . $key, array( $url ) );
 				}
-				/* If it is not a microformat handle as default.
-				*/
+				// If it is not a microformat handle as default.
 			default:
 				return update_post_meta( $this->id, 'mf2_' . $key, $value );
 		}
 	}
 
+	/**
+	 * Deletes a property stored in post meta.
+	 *
+	 * @since 3.4.0
+	 *
+	 * @param string $key Property to delete.
+	 * @return bool True on success, false on failure.
+	 */
 	public function delete( $key ) {
 		return delete_post_meta( $this->id, 'mf2_' . $key );
 	}
