@@ -5,8 +5,9 @@
  */
 class RestKindFieldTest extends WP_UnitTestCase {
 	public function test_schema_describes_the_field() {
-		$data  = rest_get_server()->dispatch( new WP_REST_Request( 'OPTIONS', '/wp/v2/posts' ) )->get_data();
-		$field = $data['schema']['properties']['kind'];
+		rest_get_server(); // Fires rest_api_init, which registers the field.
+		$schema = ( new WP_REST_Posts_Controller( 'post' ) )->get_item_schema();
+		$field  = $schema['properties']['kind'];
 		$this->assertNotEmpty( $field['description'] );
 		$this->assertSame( Kind_Taxonomy::get_kind_list(), $field['enum'] );
 		$this->assertSame( array( 'view', 'edit' ), $field['context'] );
