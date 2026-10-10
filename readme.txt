@@ -310,6 +310,7 @@ The template functions, hooks and view variables are listed in the [developer no
 * Escape response data in views, the editor, widgets and settings; summaries are displayed as plain text
 * Sanitize input from the editor, the media modal's artist fields, settings and widgets; citation summaries are saved as plain text
 * An RSVP can now be cleared in the editor
+* Fix the Response Properties box disappearing for every kind after another box was collapsed while editing a note or article; it can no longer be hidden through Screen Options, since the editor shows it only for kinds that use it
 * Several authors are saved as one h-card each, pairing the semicolon-separated names, URLs and photos by position, and every author is displayed. Lists of authors from Micropub or link previews are shown and filled in too. Authors saved by earlier versions are read the same way. An author with a URL but no photo is linked, and clearing the author fields removes the authors
 * Fix durations calculated from the start and end times never being shown; `calculate_duration()` now also accepts date objects
 * Require the edit_posts capability for the post-kinds/1.0/fields REST route; an unknown kind returns a 404
