@@ -27,25 +27,24 @@ defined( 'ABSPATH' ) || exit;
 <section class="response h-event">
 <header>
 <?php
-echo Kind_Taxonomy::get_before_kind( 'event' );
-echo get_the_title();
+echo Kind_Taxonomy::get_before_kind( 'event' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_before_kind() escapes the kind name; the icon is the plugin's own SVG.
+the_title();
 ?>
 </header>
 <?php
 $start = $kind_post->get( 'start' );
-$end = $kind_post->get( 'end' );
-$timestring = '<p>%1$s: <time class="%2$s" datetime="%3$s">%4$s</time></p>';
+$end   = $kind_post->get( 'end' );
 
 if ( $start ) {
-	printf( $timestring, esc_html__( 'Start', 'indieweb-post-kinds' ), 'dt-start', esc_attr( $start->format( DATE_W3C ) ), esc_html( Kind_Time::display_formatted_datetime( $start ) ) );
-} 
+	printf( '<p>%1$s: <time class="dt-start" datetime="%2$s">%3$s</time></p>', esc_html__( 'Start', 'indieweb-post-kinds' ), esc_attr( $start->format( DATE_W3C ) ), esc_html( Kind_Time::display_formatted_datetime( $start ) ) );
+}
 if ( $end ) {
-	printf( $timestring, esc_html__( 'End', 'indieweb-post-kinds' ), 'dt-end', esc_attr( $end->format( DATE_W3C ) ), esc_html( Kind_Time::display_formatted_datetime( $end ) ) );
-}	
+	printf( '<p>%1$s: <time class="dt-end" datetime="%2$s">%3$s</time></p>', esc_html__( 'End', 'indieweb-post-kinds' ), esc_attr( $end->format( DATE_W3C ) ), esc_html( Kind_Time::display_formatted_datetime( $end ) ) );
+}
 if ( $photos && ! has_post_thumbnail( get_the_ID() ) ) {
 	$view = new Kind_Media_View( $photos, 'photo' );
-	echo $view->get();
+	echo $view->get(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Kind_Media_View::get() returns core gallery, audio or video shortcode markup.
 }
-// Close Response
+// Close Response.
 ?>
 </section>

@@ -58,10 +58,10 @@ $cite = $kind_post->normalize_cite( $cite );
 	</label>
 </p>
 <p class="field-row hide-if-js" id="rsvp-option">
-	<?php echo Kind_Metabox::rsvp_select( $kind_post->get( 'rsvp' ) ); ?>
+	<?php echo Kind_Metabox::rsvp_select( $kind_post->get( 'rsvp' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Kind_Metabox::rsvp_select() escapes its output. ?>
 </p>
 <p class="field-row hide-if-js" id="rating-option">
-	<?php echo Kind_Metabox::rating_select( $kind_post->get( 'rating' ) ); ?>
+	<?php echo Kind_Metabox::rating_select( $kind_post->get( 'rating' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Kind_Metabox::rating_select() escapes its output. ?>
 </p>
 <p id="kind-media hide-if-no-js">
 <?php $show_media = ( isset( $cite['url'] ) && in_array( $kind, array( 'photo', 'audio', 'video' ) ) ); ?>
@@ -72,10 +72,10 @@ if ( $attachment ) {
 		echo wp_get_attachment_image( $attachment );
 	} elseif ( wp_attachment_is( 'audio', $attachment ) ) {
 		$view = new Kind_Media_View( $attachment, 'audio' );
-		echo $view->get();
+		echo $view->get(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Kind_Media_View::get() returns core gallery, audio or video shortcode markup.
 	} elseif ( wp_attachment_is( 'video', $attachment ) ) {
 		$view = new Kind_Media_View( $attachment, 'video' );
-		echo $view->get();
+		echo $view->get(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Kind_Media_View::get() returns core gallery, audio or video shortcode markup.
 	}
 }
 ?>
