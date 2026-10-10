@@ -108,4 +108,70 @@ class TimeTest extends WP_UnitTestCase {
 		$this->assertSame( Kind_Time::divide_interval( 'PT3M' ), divide_interval( 'PT3M' ) );
 		$this->assertSame( 'PT3M', build_interval( array( 'I' => 3 ) ) );
 	}
+
+	public function test_calculate_duration() {
+		$interval = calculate_duration( '2026-10-06T10:30:00+02:00', '2026-10-06T11:33:30+02:00' );
+		$this->assertSame( 'PT1H3M30S', date_interval_to_iso8601( $interval ) );
+
+		$start = new DateTimeImmutable( '2026-10-06T10:30:00+02:00' );
+		$end   = new DateTime( '2026-10-06T10:33:30+02:00' );
+		$this->assertSame( 'PT3M30S', date_interval_to_iso8601( calculate_duration( $start, $end ) ) );
+		$this->assertSame( 'PT3M30S', date_interval_to_iso8601( calculate_duration( $start, '2026-10-06T10:33:30+02:00' ) ) );
+		// The same moment in two offsets.
+		$this->assertSame( 'PT1H', date_interval_to_iso8601( calculate_duration( '2026-10-06T10:00:00+02:00', '2026-10-06T10:00:00+01:00' ) ) );
+
+		$this->assertFalse( calculate_duration( '2026-10-06T10:30:00+02:00', '2026-10-06T10:30:00+02:00' ) );
+		$this->assertFalse( calculate_duration( $start, '2026-10-06T09:30:00+01:00' ) );
+		$this->assertFalse( calculate_duration( 'not a date', '2026-10-06T10:30:00+02:00' ) );
+		$this->assertFalse( calculate_duration( $start, false ) );
+		$this->assertFalse( calculate_duration( '', '' ) );
+		$this->assertFalse( calculate_duration( 'x', 'y' ) );
+		$this->assertFalse( calculate_duration( '2026-10-06 10:30', '2026-10-06 10:40' ) );
+		$this->assertFalse( calculate_duration( array(), $start ) );
+	}
+
+	public function test_display_duration_markup() {
+		$this->assertSame( '<time class="dt-duration" datetime="PT3M30S">3 minutes 30 seconds</time>', Kind_View::display_duration( 'PT3M30S' ) );
+		$this->assertSame( '<time class="dt-duration" datetime="PT1H">1 hour</time>', Kind_View::display_duration( new DateInterval( 'PT1H' ) ) );
+	}
+
+	public static function duration_kinds() {
+		return array(
+			'listen' => array( 'listen' ),
+			'watch'  => array( 'watch' ),
+			'jam'    => array( 'jam' ),
+			'play'   => array( 'play' ),
+		);
+	}
+
+	/**
+	 * A post with start and end times but no stored duration shows the
+	 * duration between them, and a stored duration is shown as markup.
+	 *
+	 * @dataProvider duration_kinds
+	 */
+	public function test_views_show_duration( $kind ) {
+		Kind_Taxonomy::kind_defaultterms();
+		$id = self::factory()->post->create( array( 'post_content' => 'c' ) );
+		set_post_kind( $id, $kind );
+		$kind_post = new Kind_Post( $id );
+		$kind_post->set(
+			Kind_Taxonomy::get_kind_info( $kind, 'property' ),
+			array(
+				'type' => 'cite',
+				'name' => 'Something',
+				'url'  => 'https://example.com/a',
+			)
+		);
+		$kind_post->set_datetime_property( 'start', '2026-10-06T10:30:00+02:00' );
+		$kind_post->set_datetime_property( 'end', '2026-10-06T10:33:30+02:00' );
+
+		$html = Kind_View::get_view_part( 'kind', $kind, array( 'post_id' => $id ) );
+		$this->assertStringContainsString( '<time class="dt-duration" datetime="PT3M30S">3 minutes 30 seconds</time>', $html );
+
+		$kind_post->set_duration( 'PT1H' );
+		$html = Kind_View::get_view_part( 'kind', $kind, array( 'post_id' => $id ) );
+		$this->assertStringContainsString( '<time class="dt-duration" datetime="PT1H">1 hour</time>', $html );
+		$this->assertStringNotContainsString( '&lt;time', $html );
+	}
 }

@@ -798,11 +798,12 @@ class Kind_View {
 	 * Return a string for a requested duration.
 	 *
 	 * @since 2.6.1
+	 * @since 4.0.0 Returns escaped markup.
 	 *
 	 * @access public
 	 *
-	 * @param string|Dateinterval $interval Duration to display.
-	 * @return string The duration markup, or an empty string if it is not a valid duration.
+	 * @param string|DateInterval $interval Duration to display.
+	 * @return string The duration as an escaped dt-duration time element, or an empty string if it is not a valid duration.
 	 */
 	public static function display_duration( $interval ) {
 		$interval = kind_safe_interval( $interval );
@@ -843,6 +844,6 @@ class Kind_View {
 			$duration[] = sprintf( _n( '%d second', '%d seconds', $bits['second'], 'indieweb-post-kinds' ), $bits['second'] );
 		}
 
-		return sprintf( '<time class="dt-duration" datetime="%1$s">%2$s</time>', date_interval_to_iso8601( $interval ), implode( ' ', $duration ) );
+		return sprintf( '<time class="dt-duration" datetime="%1$s">%2$s</time>', esc_attr( date_interval_to_iso8601( $interval ) ), esc_html( implode( ' ', $duration ) ) );
 	}
 }  // End Class

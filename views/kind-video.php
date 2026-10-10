@@ -63,7 +63,7 @@ if ( $author ) {
 	echo ' ' . esc_html__( 'by', 'indieweb-post-kinds' ) . ' ' . $author;
 }
 if ( $duration ) {
-	printf( '(%1$s)', esc_html( $duration ) );
+	printf( '(%1$s)', $duration );
 }
 
 ?>

@@ -57,7 +57,7 @@ if ( ! $embed ) {
 	}
 	if ( in_array( $kind, array( 'jam', 'listen', 'play', 'read', 'watch', 'audio', 'video' ) ) ) {
 		if ( $duration ) {
-			echo ' ' . esc_html( Kind_View::display_duration( $duration ) );
+			echo ' ' . Kind_View::display_duration( $duration );
 		}
 	}
 }

@@ -314,6 +314,7 @@ The template functions, hooks and view variables are listed in the [developer no
 * Escape response data in views, the editor, widgets and settings; summaries are displayed as plain text
 * Sanitize input from the editor, the media modal's artist fields, settings and widgets; citation summaries are saved as plain text
 * An RSVP can now be cleared in the editor
+* Fix durations calculated from the start and end times never being shown; `calculate_duration()` now also accepts date objects
 * Require the edit_posts capability for the post-kinds/1.0/fields REST route; an unknown kind returns a 404
 * Add a background upgrade that moves and repairs stored citations and records the media in each post; `wp post-kinds upgrade` runs it on demand (`--dry-run`, `--post=<id>`)
 * Fix citations losing their type when viewed (a checkin lost its h-card, for example) and nesting inside themselves when saved again; the upgrade repairs existing posts
@@ -326,7 +327,7 @@ The template functions, hooks and view variables are listed in the [developer no
 * Deprecated: The global functions `display_formatted_datetime()`, `divide_datetime()`, `build_datetime()`, `get_datetime_offset()`, `divide_interval()` and `build_interval()`. Use the `Kind_Time` methods of the same names. The global names still work but report a deprecation notice when debugging is on, and they will be removed in the next major release (5.0.0). Custom views copied into a theme may call them, so update those to the `Kind_Time` methods.
 * Display change: Custom views copied into a theme's `kind_views` folder keep their old code. Copy them again from the plugin's `views` folder, or escape their output.
 * Display change: Citation summaries are plain text, marked up as `p-summary` instead of `e-summary`. `Kind_View::get_summary()` returns the summary markup.
-* Display change: `Kind_View::get_hcard()`, `get_cite_title()`, `get_site_name()`, `get_embed()` and `get_url_link()` return escaped markup; HTML passed as a name is shown as text.
+* Display change: `Kind_View::get_hcard()`, `get_cite_title()`, `get_site_name()`, `get_embed()`, `get_url_link()` and `display_duration()` return escaped markup; HTML passed as a name is shown as text.
 * Display change: `kind_get_the_title()` escapes the content before the `kind_get_the_title_content` filter.
 * Display change: `Kind_View::rsvp_text()` takes optional URL and name arguments and returns the full sentence. Called with only a type, it still returns a printf-ready string. The RSVP strings have changed, so translations need updating.
 * Display change: `Kind_View::rating_text()` ignores non-numeric ratings and shows at most 10 stars.
