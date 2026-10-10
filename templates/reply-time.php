@@ -46,7 +46,7 @@ $duration = Kind_Time::divide_interval( $kind_post->get_duration() ); ?>
 	</p>
 	<h4> <?php esc_html_e( 'Start Time and End Time will be Used to Calculate Duration if Duration Not Set.', 'indieweb-post-kinds' ); ?> </h4>
 	<p class="field-row">
-                <?php echo Kind_Metabox::kind_the_time( 'mf2_start', __( 'Start Time', 'indieweb-post-kinds' ), $kind_post->get_datetime_property( 'start' ), 'start' ); ?>
-                <?php echo Kind_Metabox::kind_the_time( 'mf2_end', __( 'End Time', 'indieweb-post-kinds' ), $kind_post->get_datetime_property( 'end' ), 'end' ); ?>
-        </p>
+				<?php echo Kind_Metabox::kind_the_time( 'mf2_start', __( 'Start Time', 'indieweb-post-kinds' ), $kind_post->get_datetime_property( 'start' ), 'start' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Kind_Metabox::kind_the_time() escapes its output. ?>
+				<?php echo Kind_Metabox::kind_the_time( 'mf2_end', __( 'End Time', 'indieweb-post-kinds' ), $kind_post->get_datetime_property( 'end' ), 'end' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Kind_Metabox::kind_the_time() escapes its output. ?>
+		</p>
 </div>

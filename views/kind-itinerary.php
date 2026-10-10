@@ -40,18 +40,18 @@ foreach ( $itineraries as $key => $value ) {
 <section class="response">
 <header>
 <?php
-echo Kind_Taxonomy::get_before_kind( 'itinerary' );
-echo get_the_title();
+echo Kind_Taxonomy::get_before_kind( 'itinerary' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- get_before_kind() escapes the kind name; the icon is the plugin's own SVG.
+the_title();
 ?>
 </header>
 <?php
-foreach( $itineraries as $itinerary ) {
-?>
-   <div class="h-leg p-itinerary">
+foreach ( $itineraries as $itinerary ) {
+	?>
+	<div class="h-leg p-itinerary">
 		<h3><span class="p-operator"><?php echo esc_html( $itinerary['operator'] ); ?></span>
 		<span class="p-number"><?php echo esc_html( $itinerary['number'] ); ?></span></h3>
 		<data class="p-transit-type" value="<?php echo esc_attr( $itinerary['transit-type'] ); ?>"></data>
-   <ul>
+	<ul>
 	<li> 
 		<?php esc_html_e( 'Departs: ', 'indieweb-post-kinds' ); ?>
 		<span class="p-origin"><?php echo esc_html( $itinerary['origin'] ); ?></span>
@@ -62,13 +62,13 @@ foreach( $itineraries as $itinerary ) {
 		<span class="p-destination"><?php echo esc_html( $itinerary['destination'] ); ?></span>
 		<time class="dt-arrival" datetime="<?php echo esc_attr( $itinerary['arrival'] ); ?>"><?php echo esc_html( Kind_Time::display_formatted_datetime( $itinerary['arrival'] ) ); ?></time>
 	</li>
-   </ul>
-   </div>
-<?php
+	</ul>
+	</div>
+	<?php
 }
 
 
-// Close Response
+// Close Response.
 ?>
 </section>
 

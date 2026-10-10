@@ -428,7 +428,7 @@ class Kind_View {
 			'crowdsignal.com',
 			'dailymotion.com',
 			'flickr.com',
-			'imgur.com',
+			'imgur.com', // phpcs:ignore PluginCheck.CodeAnalysis.Offloading.OffloadedContent -- A domain whose links are embedded with oEmbed, not a remote asset.
 			'issuu.com',
 			'kickstarter.com',
 			'meetup.com',

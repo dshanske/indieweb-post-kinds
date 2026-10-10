@@ -5,6 +5,8 @@
 	<file>./indieweb-post-kinds.php</file>
 	<file>./includes/</file>
 	<file>./uninstall.php</file>
+	<file>./views/</file>
+	<file>./templates/</file>
 	<exclude-pattern>*/includes/*\.(inc|css|js|svg)</exclude-pattern>
 	<exclude-pattern>*/includes/parse-this/*</exclude-pattern>
 	<exclude-pattern>*/includes/parse-this/includes/*</exclude-pattern>
@@ -34,6 +36,19 @@
 		</properties>
 	</rule>
 	<rule ref="VariableAnalysis"/>
+	<!-- Views and templates are included inside a method: their variables are local, not globals, and are set by the code that includes them. -->
+	<rule ref="WordPress.WP.GlobalVariablesOverride">
+		<exclude-pattern>*/views/*</exclude-pattern>
+		<exclude-pattern>*/templates/*</exclude-pattern>
+	</rule>
+	<rule ref="VariableAnalysis.CodeAnalysis.VariableAnalysis.UndefinedVariable">
+		<exclude-pattern>*/views/*</exclude-pattern>
+		<exclude-pattern>*/templates/*</exclude-pattern>
+	</rule>
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound">
+		<exclude-pattern>*/views/*</exclude-pattern>
+		<exclude-pattern>*/templates/*</exclude-pattern>
+	</rule>
 	<rule ref="WordPress.WP.DeprecatedFunctions" />
 	<rule ref="WordPress.WP.DeprecatedParameters" />
 	<rule ref="WordPress.WP.AlternativeFunctions" />

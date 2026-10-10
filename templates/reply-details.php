@@ -14,7 +14,7 @@
 defined( 'ABSPATH' ) || exit;
 ?>
 <div id="kind-details" class="hide-if-js">
-        <h4><?php esc_html_e( 'Information on what you are responding to', 'indieweb-post-kinds' ); ?></h4>
+		<h4><?php esc_html_e( 'Information on what you are responding to', 'indieweb-post-kinds' ); ?></h4>
 	<label for="cite_summary">
 		<?php esc_html_e( 'Summary/Quote/Caption', 'indieweb-post-kinds' ); ?>
 	<textarea name="cite_summary" id="cite_summary" data-role="none" class="widefat"><?php echo esc_textarea( html_entity_decode( wp_strip_all_tags( (string) $cite['summary'] ), ENT_QUOTES, get_bloginfo( 'charset' ) ) ); ?></textarea>
@@ -26,8 +26,8 @@ defined( 'ABSPATH' ) || exit;
 	</label>
 	</p>
 	<p class="field-row">
-			<?php echo Kind_Metabox::kind_the_time( 'cite_published', __( 'Published/Released', 'indieweb-post-kinds' ), $cite['published'], 'published' ); ?>
-		<?php echo Kind_Metabox::kind_the_time( 'cite_updated', __( 'Updated', 'indieweb-post-kinds' ), $cite['updated'], 'updated' ); ?>
+			<?php echo Kind_Metabox::kind_the_time( 'cite_published', __( 'Published/Released', 'indieweb-post-kinds' ), $cite['published'], 'published' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Kind_Metabox::kind_the_time() escapes its output. ?>
+		<?php echo Kind_Metabox::kind_the_time( 'cite_updated', __( 'Updated', 'indieweb-post-kinds' ), $cite['updated'], 'updated' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Kind_Metabox::kind_the_time() escapes its output. ?>
 	</p>
 	<label for="cite_tags">
 		<?php esc_html_e( 'Tags (semicolon separated)', 'indieweb-post-kinds' ); ?>
