@@ -312,6 +312,7 @@ The template functions, hooks and view variables are listed in the [developer no
 * Escape response data in views, the editor, widgets and settings; summaries are displayed as plain text
 * Sanitize input from the editor, the media modal's artist fields, settings and widgets; citation summaries are saved as plain text
 * An RSVP can now be cleared in the editor
+* Fix the Response Properties box disappearing for every kind after another box was collapsed while editing a note or article; it can no longer be hidden through Screen Options, since the editor shows it only for kinds that use it
 * Add a Kind base setting to Settings > Permalinks, to change the `kind` in kind archive URLs such as /kind/like/, and the `kind_base_slug` filter
 * Fix durations calculated from the start and end times never being shown; `calculate_duration()` now also accepts date objects
 * Require the edit_posts capability for the post-kinds/1.0/fields REST route; an unknown kind returns a 404
