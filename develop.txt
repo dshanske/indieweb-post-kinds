@@ -87,6 +87,7 @@ Display:
 Kinds and archives:
 
 `kind_include` - The kinds offered in the editor and listed by the Kind Menu widget. Default the kinds selected in Settings, plus note, reply and article.
+`kind_base_slug` - Since 4.0.0. The start of kind archive URLs, as in `/kind/like/`. Default the Kind base on Settings > Permalinks, or `kind`.
 `kind_rewrite_taxonomies` - The taxonomies that get `/kind/{kind}/{taxonomy}/{term}/` archives. Default post_tag, category and series.
 `kind_exclude_slug` - The slug for archives that exclude kinds, as in `/exclude/kind/note,like/`. Default `exclude`.
 `kind_photos_slug` - The slug for the archive of posts with photos. Default `photos`.

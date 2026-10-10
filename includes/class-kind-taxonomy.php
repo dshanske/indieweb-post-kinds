@@ -656,6 +656,31 @@ final class Kind_Taxonomy {
 	}
 
 	/**
+	 * Returns the start of kind archive URLs, as in /kind/like/.
+	 *
+	 * Set as the Kind base on Settings > Permalinks.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @return string The base. Default 'kind'.
+	 */
+	public static function get_kind_base() {
+		$base = get_option( 'kind_base', '' );
+		$base = is_string( $base ) && '' !== $base ? $base : 'kind';
+		/**
+		 * Filters the start of kind archive URLs, as in /kind/like/.
+		 *
+		 * The Kind base on Settings > Permalinks sets it. Flush rewrite rules after
+		 * changing this.
+		 *
+		 * @since 4.0.0
+		 *
+		 * @param string $base The base. Default the Kind base setting, or 'kind'.
+		 */
+		return (string) apply_filters( 'kind_base_slug', $base );
+	}
+
+	/**
 	 * Register the custom taxonomy for kinds.
 	 *
 	 * @since 2.0.2
@@ -698,7 +723,7 @@ final class Kind_Taxonomy {
 			'show_in_quick_edit' => false,
 			'show_admin_column'  => true,
 			'meta_box_cb'        => array( self::class, 'select_metabox' ),
-			'rewrite'            => true,
+			'rewrite'            => array( 'slug' => self::get_kind_base() ),
 			'query_var'          => true,
 			'default_term'       => array(
 				'name' => __( 'Article', 'indieweb-post-kinds' ),
@@ -707,12 +732,12 @@ final class Kind_Taxonomy {
 
 		);
 		register_taxonomy( 'kind', array( 'post' ), $args );
-		add_permastruct( 'kind_date', 'kind/%kind%/%year%/%monthnum%/' );
+		add_permastruct( 'kind_date', self::get_kind_base() . '/%kind%/%year%/%monthnum%/' );
 
 		/**
 		 * Filters the taxonomies that get kind archive rewrite rules.
 		 *
-		 * Each taxonomy gets rules for /kind/{kind}/{taxonomy}/{term}/. Rewrite rules
+		 * Each taxonomy gets rules for /kind/{kind}/{taxonomy}/{term}/, where kind is the Kind base. Rewrite rules
 		 * are flushed when the plugin is activated or updated; flush them yourself
 		 * (Settings > Permalinks > Save) after changing this.
 		 *
@@ -724,7 +749,7 @@ final class Kind_Taxonomy {
 
 		// For each kind, support filtering by other taxonomies.
 		foreach ( $kind_rewrite_taxonomies as $taxonomy ) {
-			add_permastruct( 'kind_' . $taxonomy, 'kind/%kind%/' . $taxonomy . '/%' . $taxonomy . '%' );
+			add_permastruct( 'kind_' . $taxonomy, self::get_kind_base() . '/%kind%/' . $taxonomy . '/%' . $taxonomy . '%' );
 		}
 
 		/**

@@ -27,6 +27,7 @@ class Kind_Config {
 		add_action( 'admin_menu', array( static::class, 'admin_menu' ), 11 );
 		// Add post help tab.
 		add_action( 'load-post.php', array( static::class, 'add_post_help_tab' ), 20 );
+		add_action( 'load-options-permalink.php', array( static::class, 'save_kind_base' ) );
 
 		$args = array(
 			'type'              => 'array',
@@ -93,6 +94,61 @@ class Kind_Config {
 			'sanitize_callback' => array( static::class, 'sanitize_checkbox' ),
 		);
 		register_setting( 'iwt_options', 'kind_title', $args );
+		$args = array(
+			'type'              => 'string',
+			'description'       => 'Kind Base',
+			'show_in_rest'      => false,
+			'default'           => '',
+			'sanitize_callback' => array( static::class, 'sanitize_kind_base' ),
+		);
+		register_setting( 'permalink', 'kind_base', $args );
+	}
+
+	/**
+	 * Sanitizes the kind_base setting.
+	 *
+	 * @since 4.0.0
+	 *
+	 * @param mixed $value Submitted value.
+	 * @return string The base, such as 'type' or 'blog/type', or an empty string for the default.
+	 */
+	public static function sanitize_kind_base( $value ) {
+		if ( ! is_string( $value ) ) {
+			return '';
+		}
+		$segments = array_filter( array_map( 'sanitize_title', explode( '/', $value ) ) );
+		$base     = implode( '/', $segments );
+		return 'kind' === $base ? '' : $base;
+	}
+
+	/**
+	 * Saves the Kind base field on Settings > Permalinks.
+	 *
+	 * Core's permalink page doesn't save fields that plugins add, so this runs
+	 * before it, with its nonce. Core flushes the rewrite rules when the page
+	 * reloads.
+	 *
+	 * @since 4.0.0
+	 */
+	public static function save_kind_base() {
+		if ( ! isset( $_POST['kind_base'] ) || ! is_string( $_POST['kind_base'] ) || ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+		check_admin_referer( 'update-permalink' );
+		// Sanitized by sanitize_kind_base(), the setting's sanitize callback.
+		update_option( 'kind_base', wp_unslash( $_POST['kind_base'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	}
+
+	/**
+	 * Outputs the Kind base field on Settings > Permalinks.
+	 *
+	 * @since 4.0.0
+	 */
+	public static function kind_base_callback() {
+		printf(
+			'<input name="kind_base" id="kind_base" type="text" value="%1$s" class="regular-text code" placeholder="kind" />',
+			esc_attr( get_option( 'kind_base', '' ) )
+		);
 	}
 
 	/**
@@ -200,6 +256,14 @@ class Kind_Config {
 	public static function admin_init() {
 		add_action( 'admin_bar_menu', array( static::class, 'dashbar_links' ), 20 );
 		add_action( 'admin_bar_menu', array( static::class, 'remove_dashbar_post' ), 200 );
+		add_settings_field(
+			'kind_base',
+			__( 'Kind base', 'indieweb-post-kinds' ),
+			array( static::class, 'kind_base_callback' ),
+			'permalink',
+			'optional',
+			array( 'label_for' => 'kind_base' )
+		);
 		add_settings_section(
 			'iwt-content',
 			__(

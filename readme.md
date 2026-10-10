@@ -252,6 +252,8 @@ Call it from a function hooked to `init` and it will add the Kind to the system.
 Post Kinds automatically handles the display of archives of individual types. So to view all the posts marked as "note", for example, one could visit the URL http://www.YOURSITE.COM/kind/note/.
 Simply replace YOURSITE.COM with your particular site name and the particular post kind name to access the others.
 
+To use another word than "kind" in these URLs, for example in your own language, set the Kind base on Settings > Permalinks. Links to the old URLs then stop working, as when the category base changes.
+
 You can also add the date /kind/note/2018/12/24 to see date-based archives.
 
 To leave specific kinds out of an archive, use `?exclude=kind&exclude_terms=note` or /exclude/kind/note,checkin, which accepts several kinds.
@@ -318,6 +320,7 @@ The template functions, hooks and view variables are listed in the [developer no
 * Kind icons can be resized from a theme with any rule, such as `.svg-icon { width: 1rem; height: 1rem; }`. The inline style is gone, the plugin's styles have no specificity, and icons have a default size where the stylesheet doesn't load, such as feed readers
 * Deleting the plugin removes its settings and scheduled events, on every site of a multisite network. Posts, their kinds and their response data are kept
 * Several authors are saved as one h-card each, pairing the semicolon-separated names, URLs and photos by position, and every author is displayed. Lists of authors from Micropub or link previews are shown and filled in too. Authors saved by earlier versions are read the same way. An author with a URL but no photo is linked, and clearing the author fields removes the authors
+* Add a Kind base setting to Settings > Permalinks, to change the `kind` in kind archive URLs such as /kind/like/, and the `kind_base_slug` filter
 * Fix durations calculated from the start and end times never being shown; `calculate_duration()` now also accepts date objects
 * Require the edit_posts capability for the post-kinds/1.0/fields REST route; an unknown kind returns a 404
 * Add a background upgrade that moves and repairs stored citations and records the media in each post; `wp post-kinds upgrade` runs it on demand (`--dry-run`, `--post=<id>`)
