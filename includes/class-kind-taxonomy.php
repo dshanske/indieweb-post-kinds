@@ -1744,6 +1744,8 @@ final class Kind_Taxonomy {
 		if ( ! isset( $svgs[ $kind ] ) ) {
 			$svg           = sprintf( '%1$ssvgs/%2$s.svg', plugin_dir_path( __DIR__ ), $kind );
 			$svgs[ $kind ] = file_exists( $svg ) ? (string) file_get_contents( $svg ) : '';
+			// A default size for places without the plugin's stylesheet, such as feed readers. CSS overrides it.
+			$svgs[ $kind ] = preg_replace( '/^<svg\b/', '<svg width="1em" height="1em"', $svgs[ $kind ] );
 		}
 		if ( '' === $svgs[ $kind ] ) {
 			return '';
@@ -1755,11 +1757,13 @@ final class Kind_Taxonomy {
 		 * The string is output as-is, so it must be safe, escaped markup.
 		 *
 		 * @since 3.5.8
+		 * @since 4.0.0 The default is empty; the stylesheet sizes the icon.
 		 *
-		 * @param string $attributes HTML attributes. Default an inline style that sizes the icon.
+		 * @param string $attributes HTML attributes. Default empty.
 		 */
-		$attributes = apply_filters( 'post_kinds_icon_attributes', 'style="display: inline-block; max-height: 1rem; margin-right: 0.5rem"' );
-		$return     = sprintf( '<span class="svg-icon svg-%1$s" aria-label="%2$s" title="%2$s" %3$s><span aria-hidden="true">%4$s</span></span>', esc_attr( $kind ), esc_attr( $name ), $attributes, $svgs[ $kind ] );
+		$attributes = (string) apply_filters( 'post_kinds_icon_attributes', '' );
+		$attributes = '' === $attributes ? '' : ' ' . $attributes;
+		$return     = sprintf( '<span class="svg-icon svg-%1$s" aria-label="%2$s" title="%2$s"%3$s><span aria-hidden="true">%4$s</span></span>', esc_attr( $kind ), esc_attr( $name ), $attributes, $svgs[ $kind ] );
 		if ( $echo ) {
 			echo $return; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- The plugin's own SVG icon; the kind and name are escaped, and the attributes come from the post_kinds_icon_attributes filter.
 		}
