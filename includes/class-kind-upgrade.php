@@ -420,6 +420,8 @@ class Kind_Upgrade {
 	/**
 	 * Returns a post's recorded media IDs, for comparison.
 	 *
+	 * @since 4.0.0
+	 *
 	 * @param int $post_id Post ID.
 	 * @return array Media IDs keyed by meta key.
 	 */

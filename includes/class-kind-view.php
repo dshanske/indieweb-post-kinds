@@ -14,6 +14,11 @@ defined( 'ABSPATH' ) || exit;
  * @since 2.0.2
  */
 class Kind_View {
+	/**
+	 * Adds the hooks that display kind markup.
+	 *
+	 * @since 2.0.2
+	 */
 	public static function init() {
 
 		/**
@@ -38,6 +43,8 @@ class Kind_View {
 
 	/**
 	 * Filters the attachment image attributes for image post kinds.
+	 *
+	 * @since 2.6.1
 	 *
 	 * @access public
 	 *
@@ -71,12 +78,15 @@ class Kind_View {
 		return $attr;
 	}
 
-	/*
-	 * Function will locate the correct template and return it.
+	/**
+	 * Finds the view file for a kind, in the theme or the plugin.
 	 *
-	 * @param string $slug Post Kind Slug.
-	 * @param string $name Post Kind Term Name.
-	 * @return string|null File if located or null if unable to find.
+	 * @since 3.4.0
+	 *
+	 * @param string $slug View slug, such as 'kind'.
+	 * @param string $name Kind slug, such as 'like'.
+	 * @return string|null Path of the view file, an empty string if no kind is given,
+	 *                     or null if no view file exists.
 	 */
 	public static function locate_view( $slug, $name ) {
 		$name = (string) $name;
@@ -116,11 +126,13 @@ class Kind_View {
 	 *
 	 * Function will return the output.
 	 *
+	 * @since 2.4.0
+	 *
 	 * @access public
 	 *
 	 * @param string $slug Post kind slug.
 	 * @param string $name Post kind term name.
-	 * @param array $args Optional Arguments
+	 * @param array  $args Optional. Arguments for the view. 'post_id' is the post's ID.
 	 * @return string
 	 */
 	public static function get_view_part( $slug, $name, $args = null ) {
@@ -162,6 +174,8 @@ class Kind_View {
 	/**
 	 * Return the post kind display.
 	 *
+	 * @since 2.1.1
+	 *
 	 * @access public
 	 *
 	 * @param int|null $post_id Post ID.
@@ -189,6 +203,8 @@ class Kind_View {
 	/**
 	 * Echo the output of get_display.
 	 *
+	 * @since 2.1.1
+	 *
 	 * @access public
 	 * @param int|null $post_id Post ID.
 	 */
@@ -198,6 +214,8 @@ class Kind_View {
 
 	/**
 	 * Output the post kind content to the post content.
+	 *
+	 * @since 2.0.2
 	 *
 	 * @access public
 	 *
@@ -213,7 +231,7 @@ class Kind_View {
 			return $content;
 		}
 		global $wp_current_filter;
-		// Don't allow to be added to the_content more than once (prevent infinite loops)
+		// Don't allow to be added to the_content more than once (prevent infinite loops).
 		$done = false;
 		foreach ( $wp_current_filter as $filter ) {
 			if ( 'the_content' === $filter ) {
@@ -233,6 +251,8 @@ class Kind_View {
 	/**
 	 * Output the post kind content to the feed item content.
 	 *
+	 * @since 3.0.5
+	 *
 	 * @access public
 	 *
 	 * @param string $content   Post content.
@@ -248,6 +268,8 @@ class Kind_View {
 
 	/**
 	 * Output the post kind content to the content if the `jsonfeed` plugin is active.
+	 *
+	 * @since 3.0.5
 	 *
 	 * @access public
 	 *
@@ -276,6 +298,8 @@ class Kind_View {
 	/**
 	 * Append the post kind display to excerpts.
 	 *
+	 * @since 2.3.3
+	 *
 	 * @access public
 	 *
 	 * @param string $content Excerpt content.
@@ -298,6 +322,8 @@ class Kind_View {
 	 *
 	 * This function will remove the www.prefix if it is part of the URL.
 	 *
+	 * @since 2.3.7
+	 *
 	 * @access public
 	 *
 	 * @param string $url URL to pars and extract domain for.
@@ -310,6 +336,8 @@ class Kind_View {
 
 	/**
 	 * Converts an array of attributes and output them as a string.
+	 *
+	 * @since 2.1.1
 	 *
 	 * @access public
 	 *
@@ -329,6 +357,8 @@ class Kind_View {
 
 	/**
 	 * Converts a URL into a complete `<a>` link with link text.
+	 *
+	 * @since 2.1.1
 	 *
 	 * @access public
 	 *
@@ -351,9 +381,11 @@ class Kind_View {
 	/**
 	 * Create formatted HTML output for a field.
 	 *
+	 * @since 2.2.0
+	 *
 	 * @access public
 	 *
-	 * @param string $field Content to put in the markup
+	 * @param string $field Content to put in the markup.
 	 * @param string $attr  Attributes to add to the tag markup.
 	 * @param string $type  HTML tag type to create. Default span.
 	 *
@@ -370,6 +402,8 @@ class Kind_View {
 
 	/**
 	 * Return post kind-wrapped oEmbed content for a provided URL.
+	 *
+	 * @since 2.1.1
 	 *
 	 * @access public
 	 *
@@ -441,6 +475,8 @@ class Kind_View {
 	/**
 	 * Returns an array of domains with the post type terminologies
 	 *
+	 * @since 2.1.1
+	 *
 	 * @access public
 	 *
 	 * @param string $url URL to use with translation.
@@ -478,6 +514,8 @@ class Kind_View {
 
 	/**
 	 * Retrieve/Generate the h-card.
+	 *
+	 * @since 2.1.1
 	 *
 	 * @param mixed $author The author to generate Accepts an array or optionally other info.
 	 * @param array $args       {
@@ -536,7 +574,7 @@ class Kind_View {
 		if ( ! empty( $card ) ) {
 			return $card;
 		}
-		// Temporarily drop multi-data on display
+		// Temporarily drop multi-data on display.
 		foreach ( array( 'name', 'url', 'photo' ) as $key ) {
 			$value          = isset( $author[ $key ] ) ? $author[ $key ] : '';
 			$author[ $key ] = is_array( $value ) ? (string) reset( $value ) : (string) $value;
@@ -586,6 +624,8 @@ class Kind_View {
 	/**
 	 * Retrieve a title for a given citation.
 	 *
+	 * @since 2.3.0
+	 *
 	 * @access public
 	 *
 	 * @param array $cite Array of citation data.
@@ -595,7 +635,7 @@ class Kind_View {
 		if ( ! $cite ) {
 			return false;
 		}
-		// FIXME: Temporary Fix for array functionality
+		// FIXME: Temporary Fix for array functionality.
 		$url  = isset( $cite['url'] ) ? $cite['url'] : '';
 		$url  = esc_url( is_array( $url ) ? (string) reset( $url ) : (string) $url );
 		$name = isset( $cite['name'] ) ? $cite['name'] : null;
@@ -614,6 +654,8 @@ class Kind_View {
 
 	/**
 	 * Retrieve site name for given citation.
+	 *
+	 * @since 2.3.0
 	 *
 	 * @access public
 	 *
@@ -636,6 +678,8 @@ class Kind_View {
 	 *
 	 * Summaries are plain text: tags are stripped, and the text is marked up as
 	 * p-summary. Line breaks are kept.
+	 *
+	 * @since 4.0.0
 	 *
 	 * @access public
 	 *
@@ -666,6 +710,8 @@ class Kind_View {
 	/**
 	 * Returns a rating as a row of stars.
 	 *
+	 * @since 3.7.0
+	 *
 	 * @access public
 	 *
 	 * @param int|string $rating Rating value. Values above 10 show 10 stars.
@@ -686,6 +732,8 @@ class Kind_View {
 	 * %1$s and %2$s are the event URL and name, as before 4.0.0; the caller
 	 * must escape both. With a URL or name, it returns the escaped sentence
 	 * with the event linked.
+	 *
+	 * @since 2.6.1
 	 *
 	 * @access public
 	 *
@@ -727,6 +775,8 @@ class Kind_View {
 	/**
 	 * Returns a requested read status option item.
 	 *
+	 * @since 3.0.7
+	 *
 	 * @access public
 	 *
 	 * @param string $type Read status to return.
@@ -746,6 +796,8 @@ class Kind_View {
 
 	/**
 	 * Return a string for a requested duration.
+	 *
+	 * @since 2.6.1
 	 *
 	 * @access public
 	 *

@@ -14,13 +14,42 @@ defined( 'ABSPATH' ) || exit;
  * @since 3.3.0
  */
 class Kind_Media_View {
+	/**
+	 * Attachment IDs or media URLs.
+	 *
+	 * @since 3.3.0
+	 * @var int[]|string[]|int|string
+	 */
 	private $ids;
+
+	/**
+	 * Media type: 'photo', 'audio' or 'video'.
+	 *
+	 * @since 3.3.0
+	 * @var string
+	 */
 	private $type;
+
+	/**
+	 * Sets up the media to display.
+	 *
+	 * @since 3.3.0
+	 *
+	 * @param int[]|string[]|int|string $ids  Attachment IDs or media URLs.
+	 * @param string                    $type Media type: 'photo', 'audio' or 'video'.
+	 */
 	public function __construct( $ids, $type ) {
 		$this->ids  = $ids;
 		$this->type = $type;
 	}
 
+	/**
+	 * Returns the markup for the media.
+	 *
+	 * @since 3.3.0
+	 *
+	 * @return string The markup, or an empty string if the type is not supported.
+	 */
 	public function get() {
 		switch ( $this->type ) {
 			case 'photo':
@@ -33,6 +62,14 @@ class Kind_Media_View {
 		return '';
 	}
 
+	/**
+	 * Returns a one-column gallery of photos.
+	 *
+	 * @since 3.3.0
+	 *
+	 * @param int[] $photos Attachment IDs.
+	 * @return string The gallery markup.
+	 */
 	private function photo( $photos ) {
 		return gallery_shortcode(
 			array(
@@ -47,9 +84,12 @@ class Kind_Media_View {
 	/**
 	 * Return a media view for the audio post kind.
 	 *
+	 * @since 3.3.0
+	 *
 	 * @access private
-	 * @param int|string   $id   Audio attachment ID or audio URL
-	 * @param mixed $args Arguments for the audio media view.
+	 *
+	 * @param int|string|array $id   Audio attachment ID or audio URL, or a list of them.
+	 * @param array|null       $args Arguments for the audio media view.
 	 *
 	 * @return array|string|void
 	 */
@@ -87,9 +127,12 @@ class Kind_Media_View {
 	/**
 	 * Return a media view for the video post kind.
 	 *
+	 * @since 3.3.0
+	 *
 	 * @access private
-	 * @param int|string   $id   Video attachment ID or URL.
-	 * @param mixed $args Arguments for the video media view.
+	 *
+	 * @param int|string|array $id   Video attachment ID or URL, or a list of them.
+	 * @param array|null       $args Arguments for the video media view.
 	 *
 	 * @return array|string|void
 	 */
