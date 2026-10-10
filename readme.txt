@@ -312,6 +312,7 @@ The template functions, hooks and view variables are listed in the [developer no
 * An RSVP can now be cleared in the editor
 * Fix the Response Properties box disappearing for every kind after another box was collapsed while editing a note or article; it can no longer be hidden through Screen Options, since the editor shows it only for kinds that use it
 * Kind icons can be resized from a theme with any rule, such as `.svg-icon { width: 1rem; height: 1rem; }`. The inline style is gone, the plugin's styles have no specificity, and icons have a default size where the stylesheet doesn't load, such as feed readers
+* Deleting the plugin removes its settings and scheduled events, on every site of a multisite network. Posts, their kinds and their response data are kept
 * Fix durations calculated from the start and end times never being shown; `calculate_duration()` now also accepts date objects
 * Require the edit_posts capability for the post-kinds/1.0/fields REST route; an unknown kind returns a 404
 * Add a background upgrade that moves and repairs stored citations and records the media in each post; `wp post-kinds upgrade` runs it on demand (`--dry-run`, `--post=<id>`)
