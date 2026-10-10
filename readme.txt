@@ -248,6 +248,8 @@ Call it from a function hooked to `init` and it will add the Kind to the system.
 Post Kinds automatically handles the display of archives of individual types. So to view all the posts marked as "note", for example, one could visit the URL http://www.YOURSITE.COM/kind/note/.
 Simply replace YOURSITE.COM with your particular site name and the particular post kind name to access the others.
 
+To use another word than "kind" in these URLs, for example in your own language, set the Kind base on Settings > Permalinks. Links to the old URLs then stop working, as when the category base changes.
+
 You can also add the date /kind/note/2018/12/24 to see date-based archives.
 
 To leave specific kinds out of an archive, use `?exclude=kind&exclude_terms=note` or /exclude/kind/note,checkin, which accepts several kinds.
@@ -310,6 +312,7 @@ The template functions, hooks and view variables are listed in the [developer no
 * Escape response data in views, the editor, widgets and settings; summaries are displayed as plain text
 * Sanitize input from the editor, the media modal's artist fields, settings and widgets; citation summaries are saved as plain text
 * An RSVP can now be cleared in the editor
+* Add a Kind base setting to Settings > Permalinks, to change the `kind` in kind archive URLs such as /kind/like/, and the `kind_base_slug` filter
 * Fix durations calculated from the start and end times never being shown; `calculate_duration()` now also accepts date objects
 * Require the edit_posts capability for the post-kinds/1.0/fields REST route; an unknown kind returns a 404
 * Add a background upgrade that moves and repairs stored citations and records the media in each post; `wp post-kinds upgrade` runs it on demand (`--dry-run`, `--post=<id>`)
