@@ -314,6 +314,7 @@ The template functions, hooks and view variables are listed in the [developer no
 * Escape response data in views, the editor, widgets and settings; summaries are displayed as plain text
 * Sanitize input from the editor, the media modal's artist fields, settings and widgets; citation summaries are saved as plain text
 * An RSVP can now be cleared in the editor
+* Kind icons can be resized from a theme with any rule, such as `.svg-icon { width: 1rem; height: 1rem; }`. The inline style is gone, the plugin's styles have no specificity, and icons have a default size where the stylesheet doesn't load, such as feed readers
 * Fix durations calculated from the start and end times never being shown; `calculate_duration()` now also accepts date objects
 * Require the edit_posts capability for the post-kinds/1.0/fields REST route; an unknown kind returns a 404
 * Add a background upgrade that moves and repairs stored citations and records the media in each post; `wp post-kinds upgrade` runs it on demand (`--dry-run`, `--post=<id>`)
