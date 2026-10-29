@@ -76,7 +76,7 @@ Display:
 `kind_response_display` - The response markup for a post. Receives the markup and the post ID.
 `kind_view_paths` - The folders searched for views before the plugin's `views` folder. Default the theme's `kind_views` folder.
 `kind_icon_display` - Whether to show the kind's icon or name before the response. Return false to hide it and remove the option from Settings.
-`kind_display_icons` - Since 4.1.0. Whether the kind's icon can be shown before the response. Where it can't, the kind's name is shown instead. Receives the kind's slug. Default true, except in feeds.
+`kind_display_icons` - Since 4.1.1. Whether the kind's icon can be shown before the response. Where it can't, the kind's name is shown instead. Receives the kind's slug. Default true, except in feeds.
 `post_kinds_icon_attributes` - The HTML attributes on the span that wraps a kind icon. Output as-is, so it must be escaped. Default empty since 4.0.0; before that, an inline style.
 `kind_get_the_title_content` - The text of a generated title. Receives escaped text and the post.
 `kind_get_the_title_before` - The markup before a generated title, the kind's icon or name by default. Output as-is, so it must be escaped.

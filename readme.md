@@ -309,7 +309,7 @@ The template functions, hooks and view variables are listed in the [developer no
 
 ## Changelog ##
 
-### 4.1.0 ( unreleased ) ###
+### 4.1.1 ( unreleased ) ###
 * Fix the kind label disappearing from feeds when Kind Display is set to icon; feeds show the kind's name instead. Add the `kind_display_icons` filter, so other output that can't show icons, such as email, gets the name too
 
 ### 4.0.0 ( 2026-10-10 ) ###
