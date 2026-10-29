@@ -155,6 +155,20 @@ if ( ! function_exists( 'get_kind_view_part' ) ) {
 	}
 }
 
+if ( ! function_exists( 'get_post_kind_response' ) ) {
+	/**
+	 * Returns the data a post's response is displayed from, without markup.
+	 *
+	 * @since 4.0.1
+	 *
+	 * @param WP_Post|int|null $post Optional. The post. Default the current post.
+	 * @return array|null The response data, or null if the post has no response. See Kind_View::get_response_data().
+	 */
+	function get_post_kind_response( $post = null ) {
+		return Kind_View::get_response_data( $post );
+	}
+}
+
 if ( ! function_exists( 'kind_display' ) ) {
 	/**
 	 * Outputs the kind markup for a post.
