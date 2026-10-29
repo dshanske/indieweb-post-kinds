@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post Kinds 4.0.0\n"
+"Project-Id-Version: Post Kinds 4.0.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/indieweb-post-kinds\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-10T20:26:16+00:00\n"
+"POT-Creation-Date: 2026-10-29T01:48:12+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: indieweb-post-kinds\n"
@@ -1493,79 +1493,79 @@ msgstr ""
 msgid "Sorry, you are not allowed to set the kind of this post."
 msgstr ""
 
-#: includes/class-kind-view.php:495
+#: includes/class-kind-view.php:657
 msgctxt "singular Twitter"
 msgid "a tweet"
 msgstr ""
 
-#: includes/class-kind-view.php:496
+#: includes/class-kind-view.php:658
 msgctxt "singular Vimeo"
 msgid "a video"
 msgstr ""
 
-#: includes/class-kind-view.php:497
+#: includes/class-kind-view.php:659
 msgctxt "singular Youtube"
 msgid "a video"
 msgstr ""
 
-#: includes/class-kind-view.php:498
+#: includes/class-kind-view.php:660
 msgctxt "singular Intagram"
 msgid "an image"
 msgstr ""
 
-#: includes/class-kind-view.php:513
+#: includes/class-kind-view.php:675
 msgctxt "singular post"
 msgid "a post"
 msgstr ""
 
-#: includes/class-kind-view.php:589
+#: includes/class-kind-view.php:751
 msgid "an author"
 msgstr ""
 
 #. translators: %s: Link to the event
-#: includes/class-kind-view.php:752
+#: includes/class-kind-view.php:926
 #, php-format
 msgid "Attending %s"
 msgstr ""
 
 #. translators: %s: Link to the event
-#: includes/class-kind-view.php:754
+#: includes/class-kind-view.php:928
 #, php-format
 msgid "Might be attending %s"
 msgstr ""
 
 #. translators: %s: Link to the event
-#: includes/class-kind-view.php:756
+#: includes/class-kind-view.php:930
 #, php-format
 msgid "Unable to Attend %s"
 msgstr ""
 
 #. translators: %s: Link to the event
-#: includes/class-kind-view.php:758
+#: includes/class-kind-view.php:932
 #, php-format
 msgid "Interested in Attending %s"
 msgstr ""
 
 #. translators: %s: Link to the event
-#: includes/class-kind-view.php:760
+#: includes/class-kind-view.php:934
 #, php-format
 msgid "Attending %s remotely"
 msgstr ""
 
-#: includes/class-kind-view.php:794
+#: includes/class-kind-view.php:968
 msgid "Want to Read: "
 msgstr ""
 
-#: includes/class-kind-view.php:795
+#: includes/class-kind-view.php:969
 msgid "Reading: "
 msgstr ""
 
-#: includes/class-kind-view.php:796
+#: includes/class-kind-view.php:970
 msgid "Finished Reading: "
 msgstr ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:828
+#: includes/class-kind-view.php:1002
 #, php-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -1573,7 +1573,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:832
+#: includes/class-kind-view.php:1006
 #, php-format
 msgid "%d month"
 msgid_plural "%d months"
@@ -1581,7 +1581,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:836
+#: includes/class-kind-view.php:1010
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
@@ -1589,7 +1589,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:840
+#: includes/class-kind-view.php:1014
 #, php-format
 msgid "%d hour"
 msgid_plural "%d hours"
@@ -1597,7 +1597,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:844
+#: includes/class-kind-view.php:1018
 #, php-format
 msgid "%d minute"
 msgid_plural "%d minutes"
@@ -1605,7 +1605,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: singular and plural
-#: includes/class-kind-view.php:848
+#: includes/class-kind-view.php:1022
 #, php-format
 msgid "%d second"
 msgid_plural "%d seconds"
