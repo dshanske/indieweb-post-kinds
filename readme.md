@@ -311,6 +311,7 @@ The template functions, hooks and view variables are listed in the [developer no
 
 ### 4.0.1 ( unreleased ) ###
 * Fix the kind label disappearing from feeds when Kind Display is set to icon; feeds show the kind's name instead. Add the `kind_display_icons` filter, so other output that can't show icons, such as email, gets the name too
+* Add the `kind_content_response` filter, to stop the response being added to a post's content where it's shown another way, such as an email
 
 ### 4.0.0 ( 2026-10-10 ) ###
 * Raise the minimum requirements to PHP 7.4 and WordPress 6.2, and declare ClassicPress 2.7.3 support

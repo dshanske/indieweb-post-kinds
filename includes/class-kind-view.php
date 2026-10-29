@@ -232,6 +232,21 @@ class Kind_View {
 		if ( is_feed() ) {
 			return $content;
 		}
+
+		/**
+		 * Filters whether to add the response to this post's content.
+		 *
+		 * Return false where the response is shown another way, such as in an email
+		 * that renders it itself.
+		 *
+		 * @since 4.0.1
+		 *
+		 * @param bool         $add  Whether to add the response. Default true.
+		 * @param WP_Post|null $post The current post.
+		 */
+		if ( ! apply_filters( 'kind_content_response', true, get_post() ) ) {
+			return $content;
+		}
 		global $wp_current_filter;
 		// Don't allow to be added to the_content more than once (prevent infinite loops).
 		$done = false;
