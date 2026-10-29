@@ -1741,7 +1741,7 @@ final class Kind_Taxonomy {
 		 * Where it can't, the icon is left out and the "icon" display shows the kind's name instead.
 		 * Return false for output that can't show SVG, such as email.
 		 *
-		 * @since 4.1.1
+		 * @since 4.0.1
 		 *
 		 * @param bool   $show_icon Whether the icon can be shown. Default true, except in feeds.
 		 * @param string $kind      The slug for the kind.
