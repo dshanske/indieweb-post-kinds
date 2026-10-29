@@ -74,6 +74,7 @@ Display:
 
 `kind_content_display` - Whether to add response markup to post content, excerpts and feeds automatically. Return false to place it with kind_display() instead. Default true.
 `kind_response_display` - The response markup for a post. Receives the markup and the post ID.
+`kind_content_response` - Since 4.0.1. Whether to add the response to this post's content. Receives the post. Return false where the response is shown another way, such as an email. Default true.
 `kind_view_paths` - The folders searched for views before the plugin's `views` folder. Default the theme's `kind_views` folder.
 `kind_icon_display` - Whether to show the kind's icon or name before the response. Return false to hide it and remove the option from Settings.
 `kind_display_icons` - Since 4.0.1. Whether the kind's icon can be shown before the response. Where it can't, the kind's name is shown instead. Receives the kind's slug. Default true, except in feeds.
