@@ -7,7 +7,7 @@
  * Plugin Name: Post Kinds
  * Plugin URI: https://wordpress.org/plugins/indieweb-post-kinds/
  * Description: Ever want to reply to someone else's post with a post on your own site? Or to "like" someone else's post, but with your own site?
- * Version: 4.0.0
+ * Version: 4.0.1
  * Requires at least: 6.2
  * Requires PHP: 7.4
  * License: GPLv2 or later

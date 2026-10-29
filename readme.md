@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** [dshanske](https://profiles.wordpress.org/dshanske)  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 4.0.0  
+**Stable tag:** 4.0.1  
 **Requires at least:** 6.2  
 **Requires PHP:** 7.4  
 **Tested up to:** 7.1  
@@ -309,7 +309,7 @@ The template functions, hooks and view variables are listed in the [developer no
 
 ## Changelog ##
 
-### 4.0.1 ( unreleased ) ###
+### 4.0.1 ( 2026-10-28 ) ###
 * Fix the kind label disappearing from feeds when Kind Display is set to icon; feeds show the kind's name instead. Add the `kind_display_icons` filter, so other output that can't show icons, such as email, gets the name too
 * Add the `kind_content_response` filter, to stop the response being added to a post's content where it's shown another way, such as an email
 * Add `get_post_kind_response()`, which returns a post's response data without markup, for output such as email, and the `kind_response_data` filter

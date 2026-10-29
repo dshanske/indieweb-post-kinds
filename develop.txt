@@ -1,4 +1,4 @@
-Developer notes for Post Kinds 4.0.0. Every function, method and hook listed here has a docblock in the code with its full parameters and return values.
+Developer notes for Post Kinds 4.0.1. Every function, method and hook listed here has a docblock in the code with its full parameters and return values.
 
 == Template functions ==
 
