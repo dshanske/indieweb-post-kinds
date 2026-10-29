@@ -203,6 +203,153 @@ class Kind_View {
 	}
 
 	/**
+	 * Returns the data a post's response is displayed from, without markup.
+	 *
+	 * For output that shows the response outside the theme, such as an email or
+	 * JSON. Every value is unescaped, so escape it for its context. The cited
+	 * summary and the *_text values are plain text.
+	 *
+	 * @since 4.0.1
+	 *
+	 * @access public
+	 *
+	 * @param WP_Post|int|null $post Optional. The post. Default the current post.
+	 * @return array|null {
+	 *     The response data, or null if the post has no kind or its kind has no response, such as a note.
+	 *
+	 *     @type int    $post_id       The post's ID.
+	 *     @type string $kind          The kind's slug, such as 'like'.
+	 *     @type string $verb          The kind's verb, such as 'Liked'.
+	 *     @type string $property      The kind's microformats property, such as 'like-of'.
+	 *     @type array  $cite          The citation, normalized by Kind_Post::normalize_cite(). For audio,
+	 *                                 video and photo posts, the citation of the post's first media file.
+	 *     @type array  $authors       The cited authors, each with 'name', 'url' and 'photo'.
+	 *     @type string $rsvp          The RSVP: yes, no, maybe, interested or remote. Empty if none.
+	 *     @type string $rsvp_text     The RSVP as a sentence, such as "Attending My Event".
+	 *     @type int    $rating        The rating, or 0 if none.
+	 *     @type string $rating_text   The rating as a row of stars.
+	 *     @type string $duration      The duration as an ISO 8601 duration, such as PT3M30S. Empty if none.
+	 *     @type string $duration_text The duration in words, such as "3 minutes 30 seconds".
+	 *     @type string $read          The read status: to-read, reading or finished. Empty if none.
+	 *     @type string $read_text     The read status in words, such as "Reading:".
+	 *     @type int[]  $photos        Attachment IDs of the post's photos.
+	 *     @type int[]  $video         Attachment IDs of the post's videos.
+	 *     @type int[]  $audio         Attachment IDs of the post's audio.
+	 *     @type array  $itinerary     The itinerary's legs, each with 'operator', 'number', 'transit-type',
+	 *                                 'origin', 'destination', 'departure' and 'arrival'.
+	 * }
+	 */
+	public static function get_response_data( $post = null ) {
+		$post = get_post( $post );
+		if ( ! $post ) {
+			return null;
+		}
+		$kind_post = new Kind_Post( $post );
+		$kind      = $kind_post->get_kind();
+		$property  = $kind ? Kind_Taxonomy::get_kind_info( $kind, 'property' ) : '';
+		if ( empty( $property ) ) {
+			return null;
+		}
+
+		$media = array(
+			'photo' => self::id_list( $kind_post->get_photo() ),
+			'video' => self::id_list( $kind_post->get_video() ),
+			'audio' => self::id_list( $kind_post->get_audio() ),
+		);
+
+		// Media posts cite their first file, as their views do.
+		$cite = $kind_post->get_cite();
+		if ( isset( $media[ $kind ] ) && ! empty( $media[ $kind ] ) ) {
+			$attachment = new Kind_Post( $media[ $kind ][0] );
+			$cite       = $attachment->get_cite();
+		}
+		$cite = $kind_post->normalize_cite( $cite );
+
+		$cite['summary'] = self::summary_text( $cite );
+
+		$duration = isset( $cite['duration'] ) ? $cite['duration'] : $kind_post->get( 'duration', true );
+		if ( ! $duration ) {
+			$duration = calculate_duration( $kind_post->get( 'start' ), $kind_post->get( 'end' ) );
+		}
+		$duration = kind_safe_interval( is_array( $duration ) ? reset( $duration ) : $duration );
+
+		$rsvp = $kind_post->get( 'rsvp', true );
+		$rsvp = is_string( $rsvp ) ? $rsvp : '';
+		$read = $kind_post->get( 'read-status', true );
+		$read = is_string( $read ) ? $read : '';
+
+		$rating = $kind_post->get( 'rating', true );
+		$rating = is_numeric( $rating ) ? max( 0, (int) $rating ) : 0;
+
+		$itinerary = $kind_post->get( 'itinerary', false );
+		$itinerary = is_array( $itinerary ) ? array_values( array_filter( $itinerary, 'is_array' ) ) : array();
+		foreach ( $itinerary as $key => $value ) {
+			$leg  = \ParseThis\mf2_to_jf2( $value );
+			$leg  = is_array( $leg ) ? $leg : array();
+			$data = array();
+			foreach ( array( 'operator', 'number', 'transit-type', 'origin', 'destination', 'departure', 'arrival' ) as $field ) {
+				$data[ $field ] = ( isset( $leg[ $field ] ) && is_scalar( $leg[ $field ] ) ) ? (string) $leg[ $field ] : '';
+			}
+			$itinerary[ $key ] = $data;
+		}
+
+		$data = array(
+			'post_id'       => $post->ID,
+			'kind'          => $kind,
+			'verb'          => Kind_Taxonomy::get_kind_info( $kind, 'verb' ),
+			'property'      => $property,
+			'cite'          => $cite,
+			'authors'       => $cite['authors'],
+			'rsvp'          => $rsvp,
+			'rsvp_text'     => self::plain_text( self::rsvp_text( $rsvp, $cite['url'], $cite['name'] ) ),
+			'rating'        => $rating,
+			'rating_text'   => self::rating_text( $rating ),
+			'duration'      => $duration ? date_interval_to_iso8601( $duration ) : '',
+			'duration_text' => $duration ? self::plain_text( self::display_duration( $duration ) ) : '',
+			'read'          => $read,
+			'read_text'     => trim( self::read_text( $read ) ),
+			'photos'        => $media['photo'],
+			'video'         => $media['video'],
+			'audio'         => $media['audio'],
+			'itinerary'     => $itinerary,
+		);
+
+		/**
+		 * Filters the data a post's response is displayed from.
+		 *
+		 * @since 4.0.1
+		 *
+		 * @param array   $data The response data. See Kind_View::get_response_data().
+		 * @param WP_Post $post The post.
+		 */
+		return apply_filters( 'kind_response_data', $data, $post );
+	}
+
+	/**
+	 * Returns a list of attachment IDs, or an empty array.
+	 *
+	 * @since 4.0.1
+	 *
+	 * @param mixed $ids The IDs from Kind_Post::get_photo(), get_video() or get_audio().
+	 * @return int[]
+	 */
+	private static function id_list( $ids ) {
+		return is_array( $ids ) ? array_values( array_filter( array_map( 'absint', $ids ) ) ) : array();
+	}
+
+	/**
+	 * Turns escaped markup back into plain text.
+	 *
+	 * @since 4.0.1
+	 *
+	 * @param string $markup Escaped markup.
+	 * @return string The text, unescaped.
+	 */
+	private static function plain_text( $markup ) {
+		return trim( html_entity_decode( wp_strip_all_tags( (string) $markup ), ENT_QUOTES, get_bloginfo( 'charset' ) ) );
+	}
+
+	/**
 	 * Echo the output of get_display.
 	 *
 	 * @since 2.1.1
@@ -706,6 +853,22 @@ class Kind_View {
 	 * @return string The summary markup, or an empty string if there is none.
 	 */
 	public static function get_summary( $cite ) {
+		$summary = self::summary_text( $cite );
+		if ( '' === $summary ) {
+			return '';
+		}
+		return sprintf( '<blockquote class="p-summary">%1$s</blockquote>', nl2br( esc_html( $summary ) ) );
+	}
+
+	/**
+	 * Returns the citation's summary as unescaped plain text.
+	 *
+	 * @since 4.0.1
+	 *
+	 * @param array $cite Normalized citation (see Kind_Post::normalize_cite()).
+	 * @return string The summary with tags stripped, or an empty string if there is none.
+	 */
+	private static function summary_text( $cite ) {
 		if ( ! is_array( $cite ) || empty( $cite['summary'] ) ) {
 			return '';
 		}
@@ -719,11 +882,7 @@ class Kind_View {
 			}
 			$summary = is_array( $summary ) ? (string) reset( $summary ) : $summary;
 		}
-		$summary = trim( wp_strip_all_tags( (string) $summary ) );
-		if ( '' === $summary ) {
-			return '';
-		}
-		return sprintf( '<blockquote class="p-summary">%1$s</blockquote>', nl2br( esc_html( $summary ) ) );
+		return trim( wp_strip_all_tags( (string) $summary ) );
 	}
 
 	/**

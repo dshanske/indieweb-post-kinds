@@ -12,6 +12,7 @@ These global functions are loaded on `plugins_loaded`, from `includes/kind-funct
 `get_post_kind_string( $slug )` - Returns the translated name of a kind, or an empty string if it is not registered.
 `get_post_kind_link( $kind )` - Returns the URL of a kind's archive.
 `kind_display( $post_id = null )` - Prints the response markup for a post. Use it with the `kind_content_display` filter to place the markup in the theme.
+`get_post_kind_response( $post = null )` - Since 4.0.1. Returns the data a post's response is displayed from, without markup, for output such as email or JSON: the kind and its verb, the normalized citation and its authors, the RSVP, rating, duration and read status (each as a value and as plain text), media attachment IDs and itinerary legs. Values are unescaped. Returns null for a post without a response, such as a note.
 `get_kind_view_part( $slug, $name = null, $args = null )` - Returns a rendered view. See Kind_View::get_view_part().
 `kind_get_the_title( $post = null, $args = array() )` - Returns a post's title, or a generated one (the kind's icon or name and a cited name or excerpt) for a post without one.
 `kind_get_the_link( $post = null, $cls = null, $date_cls = null )` - Returns a link to a post, using kind_get_the_title(), followed by its date.
@@ -75,6 +76,7 @@ Display:
 `kind_content_display` - Whether to add response markup to post content, excerpts and feeds automatically. Return false to place it with kind_display() instead. Default true.
 `kind_response_display` - The response markup for a post. Receives the markup and the post ID.
 `kind_content_response` - Since 4.0.1. Whether to add the response to this post's content. Receives the post. Return false where the response is shown another way, such as an email. Default true.
+`kind_response_data` - Since 4.0.1. The data returned by get_post_kind_response(). Receives the data and the post.
 `kind_view_paths` - The folders searched for views before the plugin's `views` folder. Default the theme's `kind_views` folder.
 `kind_icon_display` - Whether to show the kind's icon or name before the response. Return false to hide it and remove the option from Settings.
 `kind_display_icons` - Since 4.0.1. Whether the kind's icon can be shown before the response. Where it can't, the kind's name is shown instead. Receives the kind's slug. Default true, except in feeds.
