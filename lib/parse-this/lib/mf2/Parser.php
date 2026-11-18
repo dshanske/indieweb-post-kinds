@@ -63,18 +63,39 @@ function parse($input, $url = null, $convertClassic = true) {
  * @return array|null canonical microformats2 array structure on success, null on failure
  */
 function fetch($url, $convertClassic = true, &$curlInfo=null) {
+	$version = '0';
+	if (is_array($curl = curl_version())) {
+		$version = $curl['version'];
+	}
+
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $url);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($ch, CURLOPT_HEADER, 0);
 	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
 	curl_setopt($ch, CURLOPT_MAXREDIRS, 5);
+
+	if (version_compare($version, '7.21.6', '>=')) {
+		// see https://curl.se/libcurl/c/CURLOPT_ACCEPT_ENCODING.html
+		curl_setopt($ch, CURLOPT_ACCEPT_ENCODING, '');
+	} elseif (version_compare($version, '7.10.5', '>=')) {
+		// see https://curl.se/ch/7.10.5.html
+		curl_setopt($ch, CURLOPT_ENCODING, '');
+	}
+
 	curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 		'Accept: text/html'
 	));
 	$html = curl_exec($ch);
+
+	if ($html === false) {
+		return null;
+	}
+
 	$info = $curlInfo = curl_getinfo($ch);
-	curl_close($ch);
+	if (PHP_VERSION_ID < 80000) {
+		curl_close($ch);
+	}
 
 	if (strpos(strtolower($info['content_type']), 'html') === false) {
 		// The content was not delivered as HTML, do not attempt to parse it.
@@ -93,7 +114,12 @@ function fetch($url, $convertClassic = true, &$curlInfo=null) {
  * @return string
  */
 function unicodeToHtmlEntities($input) {
-	return mb_convert_encoding($input, 'HTML-ENTITIES', mb_detect_encoding($input));
+	// Convert all non-ASCII characters to HTML numeric entities.
+	$convmap = [
+		0x80, 0x1FFFFF, 0, 0x10FFFF,
+	];
+
+	return mb_encode_numericentity($input, $convmap, mb_detect_encoding($input), true);
 }
 
 /**
@@ -111,10 +137,7 @@ function collapseWhitespace($str) {
 }
 
 function unicodeTrim($str) {
-	// this is cheating. TODO: find a better way if this causes any problems
-	$str = str_replace(mb_convert_encoding('&nbsp;', 'UTF-8', 'HTML-ENTITIES'), ' ', $str);
-	$str = preg_replace('/^\s+/', '', $str);
-	return preg_replace('/\s+$/', '', $str);
+	return preg_replace('/^\s+|\s+$/u', '', $str);
 }
 
 /**
@@ -145,6 +168,15 @@ function mfNamesFromClass($class, $prefix='h-') {
 }
 
 /**
+ * Registered with the XPath object and used within XPaths for finding root elements.
+ * @param string $class
+ * @return bool
+ */
+function classHasMf2RootClassname($class) {
+	return count(mfNamesFromClass($class, 'h-')) > 0;
+}
+
+/**
  * Get Nested µf Property Name From Class
  *
  * Returns all the p-, u-, dt- or e- prefixed classnames it finds in a
@@ -157,14 +189,10 @@ function nestedMfPropertyNamesFromClass($class) {
 	$prefixes = array('p-', 'u-', 'dt-', 'e-');
 	$propertyNames = array();
 
-	$class = str_replace(array(' ', '	', "\n"), ' ', $class);
-	foreach (explode(' ', $class) as $classname) {
-		foreach ($prefixes as $prefix) {
-			// Check if $classname is a valid property classname for $prefix.
-			if (mb_substr($classname, 0, mb_strlen($prefix)) == $prefix && $classname != $prefix) {
-				$propertyName = mb_substr($classname, mb_strlen($prefix));
-				$propertyNames[$propertyName][] = $prefix;
-			}
+	foreach ($prefixes as $prefix) {
+		$classes = mfNamesFromClass($class, $prefix);
+		foreach ($classes as $property) {
+			$propertyNames[$property][] = $prefix;
 		}
 	}
 
@@ -355,8 +383,13 @@ class Parser {
 	 * @param boolean $jsonMode Whether or not to use a stdClass instance for an empty `rels` dictionary. This breaks PHP looping over rels, but allows the output to be correctly serialized as JSON.
 	 */
 	public function __construct($input, $url = null, $jsonMode = false) {
+		$emptyDocDefault = '<html><body></body></html>';
 		libxml_use_internal_errors(true);
 		if (is_string($input)) {
+			if (empty($input)) {
+					$input = $emptyDocDefault;
+			}
+				
 			if (class_exists('Masterminds\\HTML5')) {
 					$doc = new \Masterminds\HTML5(array('disable_html_ns' => true));
 					$doc = $doc->loadHTML($input);
@@ -368,10 +401,13 @@ class Parser {
 			$doc = clone $input;
 		} else {
 			$doc = new DOMDocument();
-			@$doc->loadHTML('');
+			@$doc->loadHTML($emptyDocDefault);
 		}
 
+		// Create an XPath object and allow some PHP functions to be used within XPath queries.
 		$this->xpath = new DOMXPath($doc);
+		$this->xpath->registerNamespace('php', 'http://php.net/xpath');
+		$this->xpath->registerPhpFunctions('\\Mf2\\classHasMf2RootClassname');
 
 		$baseurl = $url;
 		foreach ($this->xpath->query('//base[@href]') as $base) {
@@ -404,8 +440,8 @@ class Parser {
 	}
 
 	private function elementPrefixParsed(\DOMElement $e, $prefix) {
-		if (!$this->parsed->contains($e))
-			$this->parsed->attach($e, array());
+		if (!$this->parsed->offsetExists($e))
+			$this->parsed->offsetSet($e, array());
 
 		$prefixes = $this->parsed[$e];
 		$prefixes[] = $prefix;
@@ -419,7 +455,7 @@ class Parser {
 	 * @return bool
 	 */
 	private function isElementParsed(\DOMElement $e, $prefix) {
-		if (!$this->parsed->contains($e)) {
+		if (!$this->parsed->offsetExists($e)) {
 			return false;
 		}
 
@@ -439,7 +475,7 @@ class Parser {
 	 * @return bool
 	 */
 	private function isElementUpgraded(\DOMElement $el, $property) {
-		if ( $this->upgraded->contains($el) ) {
+		if ( $this->upgraded->offsetExists($el) ) {
 			if ( in_array($property, $this->upgraded[$el]) ) {
 				return true;
 			}
@@ -585,7 +621,7 @@ class Parser {
 	 * @return string|null the parsed value or null if value-class or -title aren’t in use
 	 */
 	public function parseValueClassTitle(\DOMElement $e, $separator = '') {
-		$valueClassElements = $this->xpath->query('./*[contains(concat(" ", @class, " "), " value ")]', $e);
+		$valueClassElements = $this->xpath->query('./*[contains(concat(" ", normalize-space(@class), " "), " value ")]', $e);
 
 		if ($valueClassElements->length !== 0) {
 			// Process value-class stuff
@@ -597,7 +633,7 @@ class Parser {
 			return unicodeTrim($val);
 		}
 
-		$valueTitleElements = $this->xpath->query('./*[contains(concat(" ", @class, " "), " value-title ")]', $e);
+		$valueTitleElements = $this->xpath->query('./*[contains(concat(" ", normalize-space(@class), " "), " value-title ")]', $e);
 
 		if ($valueTitleElements->length !== 0) {
 			// Process value-title stuff
@@ -685,7 +721,7 @@ class Parser {
 	 */
 	public function parseDT(\DOMElement $dt, &$dates = array(), &$impliedTimezone = null) {
 		// Check for value-class pattern
-		$valueClassChildren = $this->xpath->query('./*[contains(concat(" ", @class, " "), " value ") or contains(concat(" ", @class, " "), " value-title ")]', $dt);
+		$valueClassChildren = $this->xpath->query('./*[contains(concat(" ", normalize-space(@class), " "), " value ") or contains(concat(" ", normalize-space(@class), " "), " value-title ")]', $dt);
 		$dtValue = false;
 
 		if ($valueClassChildren->length > 0) {
@@ -937,7 +973,7 @@ class Parser {
 	 */
 	public function parseH(\DOMElement $e, $is_backcompat = false, $has_nested_mf = false) {
 		// If it’s already been parsed (e.g. is a child mf), skip
-		if ($this->parsed->contains($e)) {
+		if ($this->parsed->offsetExists($e)) {
 			return null;
 		}
 
@@ -961,7 +997,7 @@ class Parser {
 		}
 
 		// Handle p-*
-		foreach ($this->xpath->query('.//*[contains(concat(" ", @class) ," p-")]', $e) as $p) {
+		foreach ($this->xpath->query('.//*[contains(concat(" ", normalize-space(@class)) ," p-")]', $e) as $p) {
 			// element is already parsed
 			if ($this->isElementParsed($p, 'p')) {
 				continue;
@@ -986,7 +1022,7 @@ class Parser {
 		}
 
 		// Handle u-*
-		foreach ($this->xpath->query('.//*[contains(concat(" ",  @class)," u-")]', $e) as $u) {
+		foreach ($this->xpath->query('.//*[contains(concat(" ", normalize-space(@class))," u-")]', $e) as $u) {
 			// element is already parsed
 			if ($this->isElementParsed($u, 'u')) {
 				continue;
@@ -1011,7 +1047,7 @@ class Parser {
 		$temp_dates = array();
 
 		// Handle dt-*
-		foreach ($this->xpath->query('.//*[contains(concat(" ", @class), " dt-")]', $e) as $dt) {
+		foreach ($this->xpath->query('.//*[contains(concat(" ", normalize-space(@class)), " dt-")]', $e) as $dt) {
 			// element is already parsed
 			if ($this->isElementParsed($dt, 'dt')) {
 				continue;
@@ -1046,7 +1082,7 @@ class Parser {
 		}
 
 		// Handle e-*
-		foreach ($this->xpath->query('.//*[contains(concat(" ", @class)," e-")]', $e) as $em) {
+		foreach ($this->xpath->query('.//*[contains(concat(" ", normalize-space(@class))," e-")]', $e) as $em) {
 			// element is already parsed
 			if ($this->isElementParsed($em, 'e')) {
 				continue;
@@ -1164,7 +1200,7 @@ class Parser {
 			'type' => $mfTypes,
 			'properties' => $return
 		);
-		
+
 		if(trim($e->getAttribute('id')) !== '') {
 			$parsed['id'] = trim($e->getAttribute("id"));
 		}
@@ -1506,7 +1542,7 @@ class Parser {
 	public function getRootMF(DOMElement $context = null) {
 		// start with mf2 root class name xpath
 		$xpaths = array(
-			'contains(concat(" ",normalize-space(@class)), " h-")'
+			'(php:function("\\Mf2\\classHasMf2RootClassname", normalize-space(@class)))'
 		);
 
 		// add mf1 root class names
@@ -1561,6 +1597,38 @@ class Parser {
 					}
 				break;
 
+				case 'hfeed':
+					$this->upgradeRelTagToCategory($el);
+				break;
+
+				case 'hproduct':
+					$review_and_hreview_aggregate = $this->xpath->query('.//*[contains(concat(" ", normalize-space(@class), " "), " review ") and contains(concat(" ", normalize-space(@class), " "), " hreview-aggregate ")]', $el);
+
+					if ( $review_and_hreview_aggregate->length ) {
+						foreach ( $review_and_hreview_aggregate as $tempEl ) {
+							if ( !$this->hasRootMf2($tempEl) ) {
+								$this->backcompat($tempEl, 'hreview-aggregate');
+								$this->addMfClasses($tempEl, 'p-review h-review-aggregate');
+								$this->addUpgraded($tempEl, array('review hreview-aggregate'));
+							}
+						}
+					}
+
+					$review_and_hreview = $this->xpath->query('.//*[contains(concat(" ", normalize-space(@class), " "), " review ") and contains(concat(" ", normalize-space(@class), " "), " hreview ")]', $el);
+
+					if ( $review_and_hreview->length ) {
+						foreach ( $review_and_hreview as $tempEl ) {
+							if ( !$this->hasRootMf2($tempEl) ) {
+								$this->backcompat($tempEl, 'hreview');
+								$this->addMfClasses($tempEl, 'p-review h-review');
+								$this->addUpgraded($tempEl, array('review hreview'));
+							}
+						}
+					}
+
+				break;
+
+				case 'hreview-aggregate':
 				case 'hreview':
 					$item_and_vcard = $this->xpath->query('.//*[contains(concat(" ", normalize-space(@class), " "), " item ") and contains(concat(" ", normalize-space(@class), " "), " vcard ")]', $el);
 
@@ -1592,8 +1660,27 @@ class Parser {
 						foreach ( $item_and_hproduct as $tempEl ) {
 							if ( !$this->hasRootMf2($tempEl) ) {
 								$this->addMfClasses($tempEl, 'p-item h-product');
-								$this->backcompat($tempEl, 'vevent');
+								$this->backcompat($tempEl, 'hproduct');
 								$this->addUpgraded($tempEl, array('item', 'hproduct'));
+							}
+						}
+					}
+
+					$rel_self_bookmark = $this->xpath->query('.//*[contains(concat(" ", normalize-space(@rel), " "), " self ") and contains(concat(" ", normalize-space(@rel), " "), " bookmark ")]', $el);
+
+					if ( $rel_self_bookmark->length ) {
+						foreach ( $rel_self_bookmark as $tempEl ) {
+							$this->addMfClasses($tempEl, 'u-url');
+							$this->addUpgraded($tempEl, array('self', 'bookmark'));
+						}
+					}
+
+					$reviewer_nodes = $this->xpath->query('.//*[contains(concat(" ", normalize-space(@class), " "), " reviewer ")]', $el);
+
+					if ( $reviewer_nodes->length ) {
+						foreach ( $reviewer_nodes as $tempEl ) {
+							if ( !$this->hasRootMf2($tempEl) ) {
+								$this->addMfClasses($tempEl, 'p-author h-card');
 							}
 						}
 					}
@@ -1602,13 +1689,14 @@ class Parser {
 				break;
 
 				case 'vevent':
-					$location = $this->xpath->query('.//*[contains(concat(" ", normalize-space(@class), " "), " location ")]', $el);
+					$location_and_vcard = $this->xpath->query('.//*[contains(concat(" ", normalize-space(@class), " "), " location ") and contains(concat(" ", normalize-space(@class), " "), " vcard ")]', $el);
 
-					if ( $location->length ) {
-						foreach ( $location as $tempEl ) {
+					if ( $location_and_vcard->length ) {
+						foreach ( $location_and_vcard as $tempEl ) {
 							if ( !$this->hasRootMf2($tempEl) ) {
-								$this->addMfClasses($tempEl, 'h-card');
+								$this->addMfClasses($tempEl, 'p-location h-card');
 								$this->backcompat($tempEl, 'vcard');
+								$this->addUpgraded($tempEl, array('location', 'vcard'));
 							}
 						}
 					}
@@ -1657,8 +1745,8 @@ class Parser {
 		}
 
 		// add element to list of upgraded elements
-		if ( !$this->upgraded->contains($el) ) {
-			$this->upgraded->attach($el, $property);
+		if ( !$this->upgraded->offsetExists($el) ) {
+			$this->upgraded->offsetSet($el, $property);
 		} else {
 			$this->upgraded[$el] = array_merge($this->upgraded[$el], $property);
 		}
@@ -1687,15 +1775,9 @@ class Parser {
 	 */
 	public function hasRootMf2(\DOMElement $el) {
 		$class = str_replace(array("\t", "\n"), ' ', $el->getAttribute('class'));
-		$classes = array_filter(explode(' ', $class));
 
-		foreach ( $classes as $classname ) {
-			if ( strpos($classname, 'h-') === 0 ) {
-				return true;
-			}
-		}
-
-		return false;
+		// Check for valid mf2 root classnames, not just any classname with a h- prefix.
+		return count(mfNamesFromClass($class, 'h-')) > 0;
 	}
 
 	/**
@@ -1712,7 +1794,7 @@ class Parser {
 
 		// replace all roots
 		foreach ($this->classicRootMap as $old => $new) {
-			foreach ($xp->query('//*[contains(concat(" ", @class, " "), " ' . $old . ' ") and not(contains(concat(" ", @class, " "), " ' . $new . ' "))]') as $el) {
+			foreach ($xp->query('//*[contains(concat(" ", normalize-space(@class), " "), " ' . $old . ' ") and not(contains(concat(" ", normalize-space(@class), " "), " ' . $new . ' "))]') as $el) {
 				$el->setAttribute('class', $el->getAttribute('class') . ' ' . $new);
 			}
 		}
@@ -1720,7 +1802,7 @@ class Parser {
 		foreach ($this->classicPropertyMap as $oldRoot => $properties) {
 			$newRoot = $this->classicRootMap[$oldRoot];
 			foreach ($properties as $old => $data) {
-				foreach ($xp->query('//*[contains(concat(" ", @class, " "), " ' . $oldRoot . ' ")]//*[contains(concat(" ", @class, " "), " ' . $old . ' ") and not(contains(concat(" ", @class, " "), " ' . $data['replace'] . ' "))]') as $el) {
+				foreach ($xp->query('//*[contains(concat(" ", normalize-space(@class), " "), " ' . $oldRoot . ' ")]//*[contains(concat(" ", normalize-space(@class), " "), " ' . $old . ' ") and not(contains(concat(" ", normalize-space(@class), " "), " ' . $data['replace'] . ' "))]') as $el) {
 					$el->setAttribute('class', $el->getAttribute('class') . ' ' . $data['replace']);
 				}
 			}
@@ -1755,8 +1837,10 @@ class Parser {
 		'hresume' => 'h-resume',
 		'vevent' => 'h-event',
 		'hreview' => 'h-review',
+		'hreview-aggregate' => 'h-review-aggregate',
 		'hproduct' => 'h-product',
 		'adr' => 'h-adr',
+		'geo' => 'h-geo'
 	);
 
 	/**
@@ -1873,7 +1957,19 @@ class Parser {
 			),
 		),
 		'hfeed' => array(
-			# nothing currently
+			'author' => array(
+				'replace' => 'p-author h-card',
+				'context' => 'vcard'
+			),
+			'url' => array(
+				'replace' => 'u-url'
+			),
+			'photo' => array(
+				'replace' => 'u-photo'
+			),
+			'category' => array(
+				'replace' => 'p-category'
+			),
 		),
 		'hentry' => array(
 			'entry-title' => array(
@@ -1983,12 +2079,15 @@ class Parser {
 				'replace' => 'p-category'
 			),
 			'location' => array(
-				'replace' => 'h-card',
-				'context' => 'vcard'
+				'replace' => 'p-location',
 			),
 			'geo' => array(
 				'replace' => 'p-location h-geo'
 			),
+			'attendee' => array(
+				'replace' => 'p-attendee h-card',
+				'context' => 'vcard'
+			)
 		),
 		'hreview' => array(
 			'summary' => array(
@@ -2001,10 +2100,7 @@ class Parser {
 				'replace' => 'p-item h-item',
 				'context' => 'item'
 			),
-			'reviewer' => array(
-				'replace' => 'p-author h-card',
-				'context' => 'vcard',
-			),
+			# reviewer: see backcompat()
 			'dtreviewed' => array(
 				'replace' => 'dt-published'
 			),
@@ -2022,6 +2118,36 @@ class Parser {
 			),
 			'category' => array(
 				'replace' => 'p-category'
+			),
+		),
+		'hreview-aggregate' => array(
+			'summary' => array(
+				'replace' => 'p-name'
+			),
+			# fn: see item.fn below
+			# photo: see item.photo below
+			# url: see item.url below
+			'item' => array(
+				'replace' => 'p-item h-item',
+				'context' => 'item'
+			),
+			'rating' => array(
+				'replace' => 'p-rating'
+			),
+			'best' => array(
+				'replace' => 'p-best'
+			),
+			'worst' => array(
+				'replace' => 'p-worst'
+			),
+			'average' => array(
+				'replace' => 'p-average'
+			),
+			'count' => array(
+				'replace' => 'p-count'
+			),
+			'votes' => array(
+				'replace' => 'p-votes'
 			),
 		),
 		'hproduct' => array(
@@ -2046,9 +2172,7 @@ class Parser {
 			'url' => array(
 				'replace' => 'u-url',
 			),
-			'review' => array(
-				'replace' => 'p-review h-review',
-			),
+			// review is handled in the special processing section to allow for 'review hreview-aggregate'
 			'price' => array(
 				'replace' => 'p-price'
 			),

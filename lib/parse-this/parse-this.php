@@ -3,7 +3,7 @@
  * Plugin Name: Parse This
  * Plugin URI: https://github.com/dshanske/parse-this
  * Description: Turns URLs into structured jf2 data from microformats2, JSON-LD, meta tags and RSS, Atom and JSON feeds.
- * Version: 2.0.0
+ * Version: 2.0.1
  * Author: David Shanske
  * Author URI: https://david.shanske.com
  * Requires at least: 6.2
@@ -44,7 +44,7 @@ if ( ! function_exists( 'parse_this_loader' ) ) {
 			 * @since 2.0.0
 			 * @var string
 			 */
-			define( 'PARSE_THIS_VERSION', '2.0.0' );
+			define( 'PARSE_THIS_VERSION', '2.0.1' );
 		}
 		require_once plugin_dir_path( __FILE__ ) . 'includes/autoload.php';
 		require_once plugin_dir_path( __FILE__ ) . 'includes/functions.php';

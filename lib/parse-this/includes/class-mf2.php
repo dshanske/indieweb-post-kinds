@@ -198,6 +198,7 @@ class MF2 extends MF2_Utils {
 	 *
 	 * @since 1.0.0
 	 * @since 2.0.0 Implements steps 7.2 to 7.4 of the algorithm. Added $args.
+	 * @since 2.0.1 Recognizes author URLs by their syntax, without a DNS lookup.
 	 *
 	 * @param array      $item   Microformat to find the author of.
 	 * @param array|bool $mf2    Parsed mf2 document the item came from.
@@ -218,7 +219,7 @@ class MF2 extends MF2_Utils {
 					// 5.1 "if it has an h-card, use it, exit."
 					return $a;
 				} elseif ( is_string( $a ) ) {
-					if ( wp_http_validate_url( $a ) ) {
+					if ( pt_is_http_url( $a ) ) {
 						// 5.2 "otherwise if author property is an http(s) URL, let the author-page have that URL"
 						$authorpage = $a;
 					} else {
@@ -488,13 +489,16 @@ class MF2 extends MF2_Utils {
 	 * Combines a document's top-level items into a single h-feed.
 	 *
 	 * The first h-card is removed from the items and used as the feed's author.
-	 * If only one item remains, the document is returned with that h-card as the
-	 * item's author instead.
+	 * If only one item remains, the document is returned with just that item,
+	 * and the h-card becomes its author if it has none of its own.
 	 *
 	 * @since 1.0.0
+	 * @since 2.0.1 The remaining item keeps its own author, and is no longer
+	 *              lost when the h-card came first.
 	 *
 	 * @param array $input Parsed mf2 document.
-	 * @return array Parsed mf2 document with one h-feed item.
+	 * @return array Parsed mf2 document with one item: an h-feed, or the only
+	 *               item that isn't the h-card.
 	 */
 	public static function normalize_feed( $input ) {
 		$hcard = array();
@@ -505,8 +509,10 @@ class MF2 extends MF2_Utils {
 				break;
 			}
 		}
+		$input['items'] = array_values( $input['items'] );
+		$author         = $hcard ? array( 'author' => array( $hcard ) ) : array();
 		if ( 1 === count( $input['items'] ) ) {
-			if ( self::has_prop( $input['items'][0], 'author' ) ) {
+			if ( $hcard && ! self::has_prop( $input['items'][0], 'author' ) ) {
 				$input['items'][0]['properties']['author'] = array( $hcard );
 			}
 			return $input;
@@ -515,9 +521,7 @@ class MF2 extends MF2_Utils {
 			'items' => array(
 				array(
 					'type'       => array( 'h-feed' ),
-					'properties' => array(
-						'author' => array( $hcard ),
-					),
+					'properties' => $author,
 					'children'   => $input['items'],
 				),
 			),
@@ -1042,24 +1046,35 @@ class MF2 extends MF2_Utils {
 	 * Converts a microformat of an unrecognized type into jf2.
 	 *
 	 * Microformats2 parsing is vocabulary-agnostic, so any h-* root gets the
-	 * generic properties from parse_h() and its type without the h- prefix,
-	 * as jf2 does for known types (h-org becomes org).
+	 * generic properties from parse_h(), every other property it has (as
+	 * get_prop_array() converts them), and its type without the h- prefix, as
+	 * jf2 does for known types (h-org becomes org, h-review-aggregate becomes
+	 * review-aggregate).
 	 *
 	 * @since 1.0.0
+	 * @since 2.0.1 Passes through all properties parse_h() doesn't read, even
+	 *              ones known from other types (category, photo, rating), and
+	 *              keeps items that have none of the generic properties.
 	 *
 	 * @param array $unknown Microformat.
 	 * @param array $mf      Parsed mf2 document.
 	 * @param array $args    Parse arguments (see Parser::parse()).
-	 * @return array jf2 with the generic properties and the type, or an empty
-	 *               array if the type isn't h-* or no properties were found.
+	 * @return array jf2 with the properties and the type, or an empty array if
+	 *               the type isn't h-* or no properties were found.
 	 */
 	public static function parse_hunknown( $unknown, $mf, $args ) {
 		$type = $unknown['type'][0];
 		if ( ! is_string( $type ) || 0 !== strpos( $type, 'h-' ) || 'h-' === $type ) {
 			return array();
 		}
-		// Parse unknown h property.
 		$data = self::parse_h( $unknown, $mf, $args );
+		// parse_h() reads these, and may drop one on purpose (a name that repeats
+		// the content), so only the rest are passed through.
+		$generic = array( 'name', 'published', 'updated', 'url', 'author', 'content', 'summary' );
+		$rest    = array_diff( array_keys( (array) ( $unknown['properties'] ?? array() ) ), $generic, array_keys( $data ) );
+		if ( $rest ) {
+			$data = array_merge( $data, self::filter_empty( self::get_prop_array( $unknown, array_values( $rest ), $args ) ) );
+		}
 		if ( empty( $data ) ) {
 			return array();
 		}
@@ -1073,11 +1088,14 @@ class MF2 extends MF2_Utils {
 	 *
 	 * Reads name, published, updated, url, author, content and summary, drops
 	 * the name when it only repeats the start of the content (see
-	 * name_is_content_prefix()), and adds the document's rel=syndication links.
+	 * name_is_content_prefix()), and adds the document's rel=syndication links
+	 * to the item's own syndication.
 	 *
 	 * @since 1.0.0
 	 * @since 2.0.0 Drops a name that is a prefix of the content, including a
 	 *              truncated one, not only one that contains all of it.
+	 * @since 2.0.1 rel=syndication links are merged with the item's own
+	 *              syndication instead of replacing it.
 	 *
 	 * @param array $entry Microformat.
 	 * @param array $mf    Parsed mf2 document.
@@ -1107,15 +1125,11 @@ class MF2 extends MF2_Utils {
 			}
 		}
 
+		// The page's rel=syndication links add to the item's own u-syndication;
+		// callers merge this result over their own properties.
 		if ( isset( $mf['rels']['syndication'] ) ) {
-			if ( isset( $data['syndication'] ) ) {
-				if ( is_string( $data['syndication'] ) ) {
-					$data['syndication'] = array( $data['syndication'] );
-				}
-				$data['syndication'] = array_unique( array_merge( $data['syndication'], $mf['rels']['syndication'] ) );
-			} else {
-				$data['syndication'] = $mf['rels']['syndication'];
-			}
+			$own                 = array_filter( (array) ( self::get_prop_array( $entry, array( 'syndication' ), $args )['syndication'] ?? array() ), 'is_string' );
+			$data['syndication'] = array_values( array_unique( array_merge( $own, $mf['rels']['syndication'] ) ) );
 		}
 		return self::filter_empty( $data );
 	}
@@ -1469,13 +1483,6 @@ class MF2 extends MF2_Utils {
 		);
 		$properties = array( 'category', 'item' );
 		$data       = array_merge( $data, self::get_prop_array( $entry, $properties, $args ) );
-		$properties = array();
-		foreach ( $properties as $p ) {
-			$v = self::get_plaintext( $entry, $p );
-			if ( null !== $v ) {
-				$data[ $p ] = $v;
-			}
-		}
 		$data = array_merge( $data, self::parse_h( $entry, $mf, $args ) );
 		return self::filter_empty( $data );
 	}
@@ -1503,13 +1510,6 @@ class MF2 extends MF2_Utils {
 		);
 		$properties = array( 'category', 'item' );
 		$data       = array_merge( $data, self::get_prop_array( $entry, $properties, $args ) );
-		$properties = array();
-		foreach ( $properties as $p ) {
-			$v = self::get_plaintext( $entry, $p );
-			if ( null !== $v ) {
-				$data[ $p ] = $v;
-			}
-		}
 		$data = array_merge( $data, self::parse_h( $entry, $mf, $args ) );
 		return self::filter_empty( $data );
 	}
@@ -1578,13 +1578,6 @@ class MF2 extends MF2_Utils {
 		);
 		$properties = array( 'category', 'item' );
 		$data       = array_merge( $data, self::get_prop_array( $item, $properties, $args ) );
-		$properties = array();
-		foreach ( $properties as $p ) {
-			$v = self::get_plaintext( $item, $p );
-			if ( null !== $v ) {
-				$data[ $p ] = $v;
-			}
-		}
 		$data = array_merge( $data, self::parse_h( $item, $mf, $args ) );
 		return self::filter_empty( $data );
 	}

@@ -31,19 +31,19 @@ class RESTAPI {
 	 * Returns the rendered form of a REST API field such as title or content.
 	 *
 	 * @since 1.0.0
+	 * @since 2.0.1 Returns null, rather than failing, when the field is not an
+	 *              object with a rendered value.
 	 *
 	 * @param string $key  Field name.
 	 * @param array  $item REST API object.
-	 * @return string|null The field's 'rendered' value, or null if absent.
+	 * @return string|null The field's 'rendered' value, or null if absent or
+	 *                     the field is not an object.
 	 */
 	public static function get_rendered( $key, $item ) {
-		if ( ! array_key_exists( $key, $item ) ) {
+		if ( ! isset( $item[ $key ] ) || ! is_array( $item[ $key ] ) ) {
 			return null;
 		}
-		if ( array_key_exists( 'rendered', $item[ $key ] ) ) {
-			return $item[ $key ]['rendered'];
-		}
-		return null;
+		return $item[ $key ]['rendered'] ?? null;
 	}
 
 	/**
@@ -278,7 +278,7 @@ class RESTAPI {
 				$return['note'] = $content['description'];
 				return $return;
 			} else {
-				$content = self::fetch( $rest_url, '/wp/v2/posts?_embed=1' );
+				$content = self::fetch( $rest_url, '/wp/v2/posts' );
 				if ( is_wp_error( $content ) || ! is_array( $content ) ) {
 					return $content;
 				}

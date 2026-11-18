@@ -1,7 +1,7 @@
 === Parse This ===
 Contributors: dshanske
 Tags: indieweb, microformats, jf2, json-ld, feeds
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 Requires at least: 6.2
 Requires PHP: 7.4
 Tested up to: 7.1
@@ -87,7 +87,6 @@ The endpoint requires the `edit_posts` capability (Contributors and above); the 
 = Filters =
 
 * `pt_rewrite_secure`: the list of domains whose `http://` URLs are upgraded to `https://` before fetching.
-* `parse_this_img_filters`: an image URL found in a page, after the built-in exclusions (ads, spinners, tracking pixels and so on). Return an empty string to drop it.
 * `parse_this_url_shorteners`: the hosts treated as link shorteners. Links to them in a summary are expanded to where they redirect; other links are left as they are, without a request.
 * `parse_this_native_html_parser`: whether to parse HTML with PHP's own HTML5 parser on PHP 8.4 and later. Default true. Return false to use the bundled masterminds/html5 parser instead; the two only differ on invalid markup, where PHP's parser does what browsers do.
 * `parse_this_max_requests`: how many further requests one parse may make for followed author pages and short-link expansion. Default 10. Receives the URL.
@@ -162,6 +161,20 @@ Yes. It is tested with ClassicPress 2.7 on PHP 7.4 to 8.3.
 
 == Changelog ==
 
+= 2.0.1 ( 2026-11-18 ) =
+
+Bug fixes and maintenance. Plugins that bundle Parse This need no changes.
+
+* Relative `<audio>` and `<video>` URLs found by the HTML parser are now made absolute.
+* The bundled php-mf2 is updated to 0.5.1, and masterminds/html5 (the HTML parser used before PHP 8.4) to 2.12.0. php-mf2 no longer raises PHP 8.2 and 8.5 deprecation notices while parsing (three remain on PHP 8.4+ when the file loads, fixed upstream but not yet released). It also parses classic hReview markup better: the reviewer becomes the author, and hreview-aggregate and geo are recognized.
+* Unused and unreachable code is removed, including the `limit_array()`, `limit_url()`, `limit_img()` and `limit_embed()` helpers, a commented-out block in the HTML parser that would have scraped every image, embed and link on a page, and the `parse_this_img_filters` filter, which could no longer run.
+* Code coverage is measured in CI, and the test suite now covers about 95% of the plugin's code. PHP 8.5 is fully supported.
+* WordPress REST API: a feed of a site with plain permalinks no longer requests a route that doesn't exist, and a field that isn't a `{rendered}` object no longer causes a fatal error.
+* Microformats: types Parse This has no handler for (h-review-aggregate, h-x-*) keep all their properties, including category, photo and rating; old-style hreview-aggregate markup is no longer lost. A feed request for a page with an h-card and one other item now returns that item, with the h-card as its author only if it has none. A page's `rel=syndication` links are added to an entry's own syndication instead of replacing it. Author URLs are recognized by their syntax, without a DNS lookup, so an author whose site is unreachable is no longer given its URL as a name.
+* JSON-LD: `creator` no longer replaces `author`; plain-text addresses are kept as the card's label; an ImageObject without `url` uses `contentUrl` or `@id`; a person can organize an event; music release artists are plain cards, and a single artist is accepted; audio and video transcripts use `content.text`.
+* Meta tags: Parse.ly tags are trimmed, `article:modified_time` becomes `updated`, and Dublin Core tags are read whatever their case (`DC.title`, `dc.title`, `DCTERMS.*`).
+* RSS: an author whose name is a single link is no longer dropped.
+
 = 2.0.0 ( 2026-10-03 ) =
 
 A major update. Please read "Upgrading from 1.x" if another plugin of yours uses Parse This.
@@ -220,6 +233,9 @@ Developers:
 * First Official Release. Prior to this point it was in a point release.
 
 == Upgrade Notice ==
+
+= 2.0.1 =
+Bug fixes for the JSON-LD, microformats, meta tag, RSS and WordPress REST API parsers, and updated bundled libraries. Plugins that use Parse This need no changes.
 
 = 2.0.0 =
 A major update: classes and functions move to the ParseThis namespace (the old names Post Kinds and Yarns use still work), the output format changes in places, and the REST endpoint now requires the edit_posts capability. Requires PHP 7.4 and WordPress 6.2.

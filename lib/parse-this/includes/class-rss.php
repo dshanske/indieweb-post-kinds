@@ -101,6 +101,7 @@ class RSS extends Base {
 	 * the link text as name and the href as url.
 	 *
 	 * @since 1.0.0
+	 * @since 2.0.1 An author whose name is a single link is no longer dropped.
 	 *
 	 * @param SimplePie_Author|SimplePie_Author[]|null $author One author or a list.
 	 * @return array A single card, a list of cards, or an empty array.
@@ -128,8 +129,9 @@ class RSS extends Base {
 			}
 			if ( ! empty( $names ) ) {
 				if ( 1 === count( $names ) ) {
-					reset( $names );
-					$r['name'] = key( $names );
+					$r['name'] = (string) key( $names );
+					$r['url']  = reset( $names ) ? reset( $names ) : $r['url'];
+					$return[]  = array_filter( $r );
 				} else {
 					foreach ( $names as $name => $url ) {
 						$return[] = array(
