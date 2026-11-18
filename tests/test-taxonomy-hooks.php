@@ -79,11 +79,20 @@ class TaxonomyHooksTest extends WP_UnitTestCase {
 		$this->kind_post( 'like' );
 		$this->go_to( add_query_arg( 'kind', 'reply,like', home_url( '/' ) ) );
 
-		$this->assertSame( 'Kinds: <span>Replies, Likes</span>', get_the_archive_title() );
+		// The order of the queried terms differs between WordPress versions.
+		$slugs = wp_list_pluck( Kind_Taxonomy::get_terms_from_query(), 'slug' );
+		$this->assertEqualSets( array( 'reply', 'like' ), $slugs );
+		$names        = array();
+		$descriptions = array();
+		foreach ( $slugs as $slug ) {
+			$names[]        = Kind_Taxonomy::get_kind_info( $slug, 'name' );
+			$descriptions[] = Kind_Taxonomy::get_kind_info( $slug, 'description' );
+		}
+
+		$this->assertSame( 'Kinds: <span>' . implode( ', ', $names ) . '</span>', get_the_archive_title() );
 		$this->assertSame( 'Kinds:', Kind_Taxonomy::kind_archive_prefix( 'Kind:' ) );
-		$this->assertSame( 'Replies, Likes', Kind_Taxonomy::document_title_parts( array( 'title' => 'x' ) )['title'] );
-		$description = Kind_Taxonomy::kind_archive_description( '' );
-		$this->assertSame( Kind_Taxonomy::get_kind_info( 'reply', 'description' ) . '<br />' . Kind_Taxonomy::get_kind_info( 'like', 'description' ), $description );
+		$this->assertSame( implode( ', ', $names ), Kind_Taxonomy::document_title_parts( array( 'title' => 'x' ) )['title'] );
+		$this->assertSame( implode( '<br />', $descriptions ), Kind_Taxonomy::kind_archive_description( '' ) );
 	}
 
 	public function test_dated_kind_archive_titles() {
@@ -104,16 +113,15 @@ class TaxonomyHooksTest extends WP_UnitTestCase {
 	}
 
 	public function test_category_archive_keeps_the_category_name() {
-		$this->set_permalink_structure( '/%postname%/' );
 		$category = self::factory()->category->create( array( 'name' => 'Travel' ) );
 		self::factory()->post->create( array( 'post_category' => array( $category ) ) );
-		$this->go_to( get_category_link( $category ) );
+		// By slug; archives requested by ID are #525.
+		$this->go_to( add_query_arg( 'category_name', 'travel', home_url( '/' ) ) );
 
 		$this->assertSame( 'Category: <span>Travel</span>', get_the_archive_title() );
 		$this->assertSame( 'Travel', Kind_Taxonomy::document_title_parts( array( 'title' => 'x' ) )['title'] );
 		// Only kind archives get the kind's description.
 		$this->assertSame( 'original', Kind_Taxonomy::kind_archive_description( 'original' ) );
-		$this->set_permalink_structure( '' );
 	}
 
 	public function test_category_archive_requested_by_id() {
@@ -235,6 +243,7 @@ class TaxonomyHooksTest extends WP_UnitTestCase {
 				'post_status'  => 'draft',
 				'post_title'   => '',
 				'post_content' => 'Hello world from an untitled note',
+				'post_excerpt' => '',
 			)
 		);
 		$permalink = array( home_url( '/%postname%/' ), (string) $post );
@@ -248,16 +257,16 @@ class TaxonomyHooksTest extends WP_UnitTestCase {
 
 	public function test_untitled_post_in_the_admin_gets_a_generated_title() {
 		set_current_screen( 'edit-post' );
-		$post = $this->kind_post( 'note', array( 'post_title' => '', 'post_content' => 'A short note' ) );
+		$post = $this->kind_post( 'note', array( 'post_title' => '', 'post_content' => 'A short note', 'post_excerpt' => '' ) );
 		$this->assertSame( 'A short note', Kind_Taxonomy::the_title( '', $post ) );
 
 		// With no content either, a placeholder keeps the row clickable.
-		$empty = $this->kind_post( 'note', array( 'post_title' => '', 'post_content' => '' ) );
+		$empty = $this->kind_post( 'note', array( 'post_title' => '', 'post_content' => '', 'post_excerpt' => '' ) );
 		$this->assertSame( '&diams;', Kind_Taxonomy::the_title( '', $empty ) );
 	}
 
 	public function test_single_post_title() {
-		$post = $this->kind_post( 'note', array( 'post_title' => '', 'post_content' => 'Generated from content' ) );
+		$post = $this->kind_post( 'note', array( 'post_title' => '', 'post_content' => 'Generated from content', 'post_excerpt' => '' ) );
 
 		$this->go_to( home_url( '/' ) );
 		$this->assertSame( 'Title', Kind_Taxonomy::single_post_title( 'Title', get_post( $post ) ) );
