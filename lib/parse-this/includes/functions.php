@@ -1172,3 +1172,27 @@ if ( ! function_exists( __NAMESPACE__ . '\\pt_make_absolute_url' ) ) {
 		return $absolute_path . '/' . ltrim( $path, '/' );
 	}
 }
+
+if ( ! function_exists( __NAMESPACE__ . '\\pt_is_http_url' ) ) {
+	/**
+	 * Checks whether a string is an absolute http(s) URL with a host.
+	 *
+	 * This is a syntax check only. Unlike wp_http_validate_url(), it does not
+	 * resolve the host, so it is cheap and gives the same answer whether or not
+	 * the site is reachable. Use it to decide what a value is (a URL or a
+	 * name); fetching still goes through pt_remote_get(), which rejects unsafe
+	 * hosts.
+	 *
+	 * @since 2.0.1
+	 *
+	 * @param mixed $url Value to check.
+	 * @return bool True if $url is an http or https URL with a host.
+	 */
+	function pt_is_http_url( $url ) {
+		if ( ! is_string( $url ) || preg_match( '/\s/', $url ) ) {
+			return false;
+		}
+		$parts = wp_parse_url( $url );
+		return is_array( $parts ) && ! empty( $parts['host'] ) && in_array( strtolower( $parts['scheme'] ?? '' ), array( 'http', 'https' ), true );
+	}
+}

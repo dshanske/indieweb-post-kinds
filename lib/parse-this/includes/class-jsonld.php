@@ -210,9 +210,6 @@ class JSONLD extends Base {
 		if ( ! array_key_exists( 'author', $return ) && array_key_exists( 'person', $jf2 ) ) {
 			$return['author'] = $jf2['person'];
 		}
-		if ( ! array_key_exists( 'publication', $return ) && array_key_exists( 'publisher', $jf2 ) ) {
-			$return['publication'] = $jf2['publisher'];
-		}
 		return array_filter( $return, array( __CLASS__, 'is_set' ) );
 	}
 
@@ -537,7 +534,12 @@ class JSONLD extends Base {
 	/**
 	 * Converts a MusicRelease node into a jf2 cite.
 	 *
+	 * The artists (releaseOf.byArtist, one or a list) become a list of cards
+	 * in author.
+	 *
 	 * @since 1.0.0
+	 * @since 2.0.1 Artists are cards rather than one-item lists, and a single
+	 *              byArtist object is accepted.
 	 *
 	 * @param array $music MusicRelease node.
 	 * @return array|false jf2 cite including its artists and tracks, or false if the node
@@ -558,19 +560,29 @@ class JSONLD extends Base {
 			'published' => normalize_iso8601( $music['datePublished'] ?? null ),
 			'featured'  => self::image_to_photo( $music['image'] ?? null ),
 		);
-		if ( isset( $music['releaseOf'] ) ) {
-			if ( isset( $music['releaseOf']['byArtist'] ) ) {
-				$return['author'] = array();
-				foreach ( $music['releaseOf']['byArtist'] as $artist ) {
-					$return['author'][] = array(
-						array_filter(
-							array(
-								'type' => 'card',
-								'name' => $artist['name'] ?? null,
-								'url'  => $artist['@id'] ?? null,
-							)
-						),
-					);
+		if ( isset( $music['releaseOf']['byArtist'] ) ) {
+			// One artist or a list of them; each becomes a card.
+			$artists = $music['releaseOf']['byArtist'];
+			if ( ! is_array( $artists ) || ! wp_is_numeric_array( $artists ) ) {
+				$artists = array( $artists );
+			}
+			$return['author'] = array();
+			foreach ( $artists as $artist ) {
+				if ( is_string( $artist ) ) {
+					$artist = array( 'name' => $artist );
+				}
+				if ( ! is_array( $artist ) ) {
+					continue;
+				}
+				$card = array_filter(
+					array(
+						'name' => $artist['name'] ?? null,
+						'url'  => $artist['url'] ?? ( $artist['@id'] ?? null ),
+					),
+					'is_string'
+				);
+				if ( $card ) {
+					$return['author'][] = array( 'type' => 'card' ) + $card;
 				}
 			}
 		}
@@ -629,7 +641,10 @@ class JSONLD extends Base {
 	/**
 	 * Converts an Event node into a jf2 event.
 	 *
+	 * The organizer may be an Organization or a Person.
+	 *
 	 * @since 1.0.0
+	 * @since 2.0.1 Accepts a Person as organizer.
 	 *
 	 * @param array $event Event or BusinessEvent node.
 	 * @return array|false jf2 event, or false if the node is not an event.
@@ -643,7 +658,7 @@ class JSONLD extends Base {
 			'name'      => $event['name'] ?? null,
 			'url'       => $event['url'] ?? null,
 			'summary'   => $event['description'] ?? null,
-			'organizer' => self::organization_to_hcard( $event['organizer'] ?? null ),
+			'organizer' => self::person_to_hcard( $event['organizer'] ?? null ),
 			'location'  => self::place_to_hcard( $event['location'] ?? null ),
 			'start'     => normalize_iso8601( $event['startDate'] ?? null ),
 			'end'       => normalize_iso8601( $event['endDate'] ?? null ),
@@ -657,12 +672,15 @@ class JSONLD extends Base {
 	/**
 	 * Returns the URL of an ImageObject.
 	 *
-	 * For a list, the last image is used.
+	 * For a list, the last image is used. The URL is taken from url, then
+	 * contentUrl, then @id.
 	 *
 	 * @since 1.0.0
+	 * @since 2.0.1 Falls back to contentUrl and @id when there is no url.
 	 *
 	 * @param array|string|mixed $image ImageObject node, list of nodes, or URL.
-	 * @return string|false The image URL, or false if $image is not an image.
+	 * @return string|false The image URL, or false if $image is not an image or
+	 *                      has no URL.
 	 */
 	public static function image_to_photo( $image ) {
 		if ( wp_is_numeric_array( $image ) ) {
@@ -685,13 +703,19 @@ class JSONLD extends Base {
 		 *     );
 		 * }
 		 */
-		return $image['url'];
+		foreach ( array( 'url', 'contentUrl', '@id' ) as $key ) {
+			if ( isset( $image[ $key ] ) && is_string( $image[ $key ] ) && '' !== trim( $image[ $key ] ) ) {
+				return trim( $image[ $key ] );
+			}
+		}
+		return false;
 	}
 
 	/**
 	 * Converts an AudioObject node into jf2 properties.
 	 *
 	 * @since 1.0.0
+	 * @since 2.0.1 The transcript's plain text is content.text, not content.value.
 	 *
 	 * @param array|string $audio AudioObject node, or a URL.
 	 * @return array|string|false jf2 properties (name, summary, featured, audio,
@@ -716,8 +740,8 @@ class JSONLD extends Base {
 		);
 		if ( isset( $audio['transcript'] ) ) {
 			$return['content'] = array(
-				'html'  => Parser::clean_content( $audio['transcript'] ),
-				'value' => wp_strip_all_tags( $audio['transcript'] ),
+				'html' => Parser::clean_content( $audio['transcript'] ),
+				'text' => trim( wp_strip_all_tags( $audio['transcript'] ) ),
 			);
 		}
 		if ( isset( $audio['publisher'] ) ) {
@@ -730,6 +754,7 @@ class JSONLD extends Base {
 	 * Converts a VideoObject node into jf2 properties.
 	 *
 	 * @since 1.0.0
+	 * @since 2.0.1 The transcript's plain text is content.text, not content.value.
 	 *
 	 * @param array|string $video VideoObject node, or a URL.
 	 * @return array|string|false jf2 properties (name, summary, featured, video,
@@ -754,8 +779,8 @@ class JSONLD extends Base {
 
 		if ( isset( $video['transcript'] ) ) {
 			$return['content'] = array(
-				'html'  => Parser::clean_content( $video['transcript'] ),
-				'value' => wp_strip_all_tags( $video['transcript'] ),
+				'html' => Parser::clean_content( $video['transcript'] ),
+				'text' => trim( wp_strip_all_tags( $video['transcript'] ) ),
 			);
 		}
 		if ( isset( $video['publisher'] ) ) {
@@ -812,9 +837,30 @@ class JSONLD extends Base {
 	}
 
 	/**
+	 * Returns the card properties for a schema.org address.
+	 *
+	 * A PostalAddress gives its parts; plain text, which schema.org also allows,
+	 * becomes the card's label.
+	 *
+	 * @since 2.0.1
+	 *
+	 * @param array|string|mixed $address PostalAddress node or text.
+	 * @return array Address properties, possibly empty.
+	 */
+	private static function address_properties( $address ) {
+		if ( is_string( $address ) ) {
+			$address = trim( $address );
+			return '' === $address ? array() : array( 'label' => $address );
+		}
+		$parts = self::postaladdress_to_address( $address );
+		return is_array( $parts ) ? $parts : array();
+	}
+
+	/**
 	 * Converts a Place node into a jf2 card.
 	 *
 	 * @since 1.0.0
+	 * @since 2.0.1 A plain-text address is kept as the card's label.
 	 *
 	 * @param array|mixed $place Place node.
 	 * @return array|false Card with '_type' => 'place', its address merged in, or false.
@@ -838,10 +884,7 @@ class JSONLD extends Base {
 		);
 
 		if ( isset( $place['address'] ) ) {
-			$address = self::postaladdress_to_address( $place['address'] );
-			if ( is_array( $address ) ) {
-				$hcard = array_merge( $hcard, $address );
-			}
+			$hcard = array_merge( $hcard, self::address_properties( $place['address'] ) );
 		}
 		return array_filter( $hcard );
 	}
@@ -926,6 +969,7 @@ class JSONLD extends Base {
 	 * Converts an Organization node into a jf2 card.
 	 *
 	 * @since 1.0.0
+	 * @since 2.0.1 A plain-text address is kept as the card's label.
 	 *
 	 * @param array|mixed $organization Organization, NewsMediaOrganization, NGO or
 	 *                                   MusicGroup node.
@@ -962,12 +1006,7 @@ class JSONLD extends Base {
 			$publication['member'] = array_filter( $publication['member'] );
 		}
 		if ( isset( $organization['address'] ) ) {
-			$address = self::postaladdress_to_address( $organization['address'] );
-			if ( is_array( $address ) ) {
-				$publication = array_merge( $publication, $address );
-			} else {
-				$publication['_address'] = $address;
-			}
+			$publication = array_merge( $publication, self::address_properties( $organization['address'] ) );
 		}
 		return array_filter( $publication );
 	}
@@ -1070,9 +1109,12 @@ class JSONLD extends Base {
 	/**
 	 * Converts an article or web page node into a jf2 entry.
 	 *
-	 * Accepts WebPage, Article, NewsArticle and BlogPosting.
+	 * Accepts WebPage, Article, NewsArticle and BlogPosting. The author comes
+	 * from author, or from creator when there is no usable author.
 	 *
 	 * @since 1.0.0
+	 * @since 2.0.1 A creator no longer replaces the author, and is a single card
+	 *              when there is only one.
 	 *
 	 * @param array|mixed $newsarticle Article node.
 	 * @return array|false jf2 entry, or false if the node is not an article.
@@ -1109,8 +1151,6 @@ class JSONLD extends Base {
 		if ( isset( $newsarticle['keywords'] ) ) {
 			if ( ! is_array( $newsarticle['keywords'] ) ) {
 				$newsarticle['keywords'] = explode( ',', $newsarticle['keywords'] );
-			} elseif ( is_string( $newsarticle['keywords'] ) ) {
-				$newsarticle['keywords'] = array( $newsarticle['keywords'] );
 			}
 			$jf2['category'] = array_map( 'trim', $newsarticle['keywords'] );
 		}
@@ -1121,28 +1161,20 @@ class JSONLD extends Base {
 				'text' => trim( wp_strip_all_tags( $newsarticle['articleBody'] ) ),
 			);
 		}
-		if ( isset( $newsarticle['author'] ) ) {
-			if ( ! wp_is_numeric_array( $newsarticle['author'] ) ) {
-				$newsarticle['author'] = array( $newsarticle['author'] );
+		// The author, or failing that the creator: one card, or a list of them.
+		foreach ( array( 'author', 'creator' ) as $property ) {
+			if ( isset( $jf2['author'] ) || ! isset( $newsarticle[ $property ] ) ) {
+				continue;
 			}
-			$jf2['author'] = array();
-			foreach ( $newsarticle['author'] as $author ) {
-				$jf2['author'][] = self::person_to_hcard( $author );
+			$agents = $newsarticle[ $property ];
+			if ( ! wp_is_numeric_array( $agents ) ) {
+				$agents = array( $agents );
 			}
-			$jf2['author'] = array_filter( $jf2['author'] );
-			if ( 0 === count( $jf2['author'] ) ) {
-				unset( $jf2['author'] );
-			} elseif ( 1 === count( $jf2['author'] ) ) {
-				$jf2['author'] = array_pop( $jf2['author'] );
-			}
-		}
-		if ( isset( $newsarticle['creator'] ) ) {
-			if ( ! wp_is_numeric_array( $newsarticle['creator'] ) ) {
-				$newsarticle['creator'] = array( $newsarticle['creator'] );
-			}
-			$jf2['author'] = array();
-			foreach ( $newsarticle['creator'] as $creator ) {
-				$jf2['author'][] = self::person_to_hcard( $creator );
+			$cards = array_values( array_filter( array_map( array( __CLASS__, 'person_to_hcard' ), $agents ) ) );
+			if ( 1 === count( $cards ) ) {
+				$jf2['author'] = $cards[0];
+			} elseif ( $cards ) {
+				$jf2['author'] = $cards;
 			}
 		}
 

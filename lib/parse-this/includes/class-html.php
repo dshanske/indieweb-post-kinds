@@ -96,7 +96,7 @@ class HTML extends Base {
 			foreach ( $xpath->query( '//video' ) as $video ) {
 				$src = $video->getAttribute( 'src' );
 				if ( ! empty( $src ) ) {
-					$videos[] = $src;
+					$videos[] = pt_make_absolute_url( $src, $url );
 				}
 			}
 			$jf2['video'] = array_unique( $videos );
@@ -109,82 +109,18 @@ class HTML extends Base {
 			foreach ( $xpath->query( '//audio' ) as $audio ) {
 				$src = $audio->getAttribute( 'src' );
 				if ( ! empty( $src ) ) {
-					$audios[] = $src;
+					$audios[] = pt_make_absolute_url( $src, $url );
 				}
 			}
 
 			foreach ( $xpath->query( '//figure' ) as $audio ) {
 				$src = $audio->getAttribute( 'data-audio-url' );
 				if ( ! empty( $src ) ) {
-					$audios[] = $src;
+					$audios[] = pt_make_absolute_url( $src, $url );
 				}
 			}
 			$jf2['audio'] = array_unique( $audios );
 		}
-
-		/*
-		 For now do not search every link embed etc
-		// Fetch and gather <iframe> data.
-		$embeds = array();
-
-		foreach ( $xpath->query( '//iframe[@src]' ) as $embed ) {
-			$src = self::limit_embed( $embed->getAttribute( 'src' ), $url );
-			if ( ! empty( $src ) ) {
-				$embeds[] = $src;
-			}
-		}
-
-		// Fetch and gather <img> data.
-		$images = array();
-		foreach ( $xpath->query( '//img[@src]' ) as $image ) {
-			$src = self::limit_img( $image->getAttribute( 'src' ), $url );
-			if ( ! empty( $src ) ) {
-				$images[] = $src;
-			}
-		}
-		$images = array_unique( $images );
-
-		// Fetch and gather <link> data.
-		$links = array();
-
-		foreach ( $xpath->query( '//link[@rel and @href]' ) as $link ) {
-			$rel = $link->getAttribute( 'rel' );
-			$url = self::limit_url( $link->getAttribute( 'href' ), $url );
-			if ( ! empty( $url ) ) {
-				$links[ $rel ] = $url;
-			}
-		}
-
-		$video_extensions = array(
-			'mp4',
-			'mkv',
-			'webm',
-			'ogv',
-			'avi',
-			'm4v',
-			'mpg',
-		);
-		$audio_extensions = array(
-			'mp3',
-			'ogg',
-			'm4a',
-			'm4b',
-			'flac',
-			'aac',
-		);
-		$urls             = array();
-		foreach ( $xpath->query( '//a' ) as $link ) {
-			$u         = pt_make_absolute_url( $link->getAttribute( 'href' ), $url );
-			$urls[]    = wp_http_validate_url( $u );
-			$extension = pathinfo( wp_parse_url( $url, PHP_URL_PATH ), PATHINFO_EXTENSION );
-			if ( in_array( $extension, $audio_extensions, true ) ) {
-				$audios[] = $url;
-			}
-			if ( in_array( $extension, $video_extensions, true ) ) {
-				$videos[] = $url;
-			}
-		}
-		*/
 
 		if ( ! empty( $args['debug'] ) ) {
 			$jf2['_meta'] = $meta;
@@ -200,6 +136,9 @@ class HTML extends Base {
 	 * an entry, profile a card, and book, music.song and video types a cite.
 	 *
 	 * @since 1.0.0
+	 * @since 2.0.1 Parse.ly tags are trimmed, article:modified_time becomes
+	 *              updated rather than modified, and Dublin Core names (DC.,
+	 *              dc. and DCTERMS.) are matched in any case.
 	 *
 	 * @param array $meta Meta values as grouped by parse_meta(), keyed by prefix
 	 *                    (og, article, dc, music, video, ...) or by plain name.
@@ -268,7 +207,7 @@ class HTML extends Base {
 					}
 					$modified = $meta['article']['modified_time'] ?? $meta['article']['modified'] ?? null;
 					if ( $modified ) {
-						$jf2['modified'] = normalize_iso8601( $modified );
+						$jf2['updated'] = normalize_iso8601( $modified );
 					}
 					$jf2['category'] = $meta['article']['tag'] ?? null;
 				}
@@ -313,17 +252,25 @@ class HTML extends Base {
 				}
 			}
 		}
-		if ( isset( $meta['dc'] ) ) {
-			$dc = $meta['dc'];
-			if ( isset( $dc['Title'] ) ) {
-				$jf2['name'] = $dc['Title'];
+		// Dublin Core: DC.title, dc.title, DCTERMS.title and so on, in any case.
+		$dc = array();
+		foreach ( $meta as $prefix => $values ) {
+			if ( is_array( $values ) && in_array( strtolower( (string) $prefix ), array( 'dc', 'dcterms' ), true ) ) {
+				foreach ( $values as $key => $value ) {
+					$dc += array( strtolower( (string) $key ) => $value );
+				}
 			}
-			if ( isset( $dc['Creator'] ) ) {
-				if ( is_string( $dc['Creator'] ) ) {
-					$jf2['author'] = $dc['Creator'];
+		}
+		if ( $dc ) {
+			if ( isset( $dc['title'] ) ) {
+				$jf2['name'] = $dc['title'];
+			}
+			if ( isset( $dc['creator'] ) ) {
+				if ( is_string( $dc['creator'] ) ) {
+					$jf2['author'] = $dc['creator'];
 				} else {
 					$jf2['author'] = array();
-					foreach ( $dc['Creator'] as $creator ) {
+					foreach ( $dc['creator'] as $creator ) {
 						$jf2['author'][] = array(
 							'type' => 'card',
 							'name' => $creator,
@@ -331,11 +278,12 @@ class HTML extends Base {
 					}
 				}
 			}
-			if ( isset( $dc['Description'] ) ) {
-				$jf2['summary'] = $dc['Description'];
+			if ( isset( $dc['description'] ) ) {
+				$jf2['summary'] = $dc['description'];
 			}
-			if ( isset( $dc['Date'] ) && ! isset( $jf2['published'] ) ) {
-				$jf2['published'] = normalize_iso8601( $dc['Date'] );
+			$date = $dc['date'] ?? ( $dc['issued'] ?? ( $dc['created'] ?? null ) );
+			if ( $date && ! isset( $jf2['published'] ) ) {
+				$jf2['published'] = normalize_iso8601( $date );
 			}
 		}
 
@@ -364,11 +312,8 @@ class HTML extends Base {
 		}
 
 		if ( empty( $jf2['category'] ) && isset( $meta['parsely-tags'] ) ) {
-			if ( is_array( $meta['parsely-tags'] ) ) {
-				$jf2['category'] = $meta['parsely-tags'];
-			} else {
-				$jf2['category'] = explode( ',', $meta['parsely-tags'] );
-			}
+			$tags            = is_array( $meta['parsely-tags'] ) ? $meta['parsely-tags'] : explode( ',', $meta['parsely-tags'] );
+			$jf2['category'] = array_values( array_filter( array_map( 'trim', array_filter( $tags, 'is_string' ) ), 'strlen' ) );
 		}
 
 		if ( ! isset( $jf2['latitude'] ) && isset( $meta['playfoursquare'] ) ) {

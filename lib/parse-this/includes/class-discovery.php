@@ -294,7 +294,7 @@ class Discovery {
 									$author = array(
 										'type' => 'card',
 									);
-									if ( wp_http_validate_url( $jf2['author'] ) ) {
+									if ( pt_is_http_url( $jf2['author'] ) ) {
 										$author['url'] = $jf2['author'];
 									} else {
 										$author['name'] = $jf2['author'];
