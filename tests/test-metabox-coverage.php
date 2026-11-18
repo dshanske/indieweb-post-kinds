@@ -82,8 +82,11 @@ class MetaboxCoverageTest extends WP_UnitTestCase {
 		$html = ob_get_clean();
 		unset( $GLOBALS['post'] );
 
-		$this->assertStringContainsString( 'id="replybox-meta"', $html );
-		$this->assertStringContainsString( 'name="cite_url"', $html );
+		// How core renders the box differs between versions; check the registration and its container.
+		$box = $GLOBALS['wp_meta_boxes']['post']['kind_after_title']['default']['replybox-meta'];
+		$this->assertSame( array( 'Kind_Metabox', 'reply_metabox' ), $box['callback'] );
+		$this->assertFalse( $box['args']['__block_editor_compatible_meta_box'] );
+		$this->assertStringContainsString( 'id="kind_after_title-sortables"', $html );
 	}
 
 	public function test_editor_scripts_only_on_the_post_screen() {
