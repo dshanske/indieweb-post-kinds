@@ -173,7 +173,8 @@ class ConfigTest extends WP_UnitTestCase {
 		$html = ob_get_clean();
 		// The hidden input saves 0 when the box is unchecked.
 		$this->assertStringContainsString( '<input name="kind_bottom" type="hidden" value="0" />', $html );
-		$this->assertStringContainsString( "checked='checked'", $html );
+		// WordPress prints checked='checked'; ClassicPress prints a bare checked.
+		$this->assertMatchesRegularExpression( '/type="checkbox" value="1"\s+checked/', $html );
 
 		delete_option( 'kind_bottom' );
 		ob_start();
