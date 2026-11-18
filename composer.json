@@ -53,7 +53,7 @@
 	"phpunit": "./vendor/bin/phpunit",
 	"coverage": "@php -d pcov.enabled=1 -d pcov.directory=. ./vendor/bin/phpunit --coverage-clover=build/coverage/clover.xml --coverage-text=build/coverage/coverage.txt",
 	"coverage:html": "@php -d pcov.enabled=1 -d pcov.directory=. ./vendor/bin/phpunit --coverage-html=build/coverage/html",
-	"coverage:check": "@php bin/coverage-check.php build/coverage/clover.xml 66",
+	"coverage:check": "@php bin/coverage-check.php build/coverage/clover.xml 72",
 	"build": [
 		"@build:css",
 		"@build:readme"
