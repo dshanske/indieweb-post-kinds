@@ -51,6 +51,9 @@
 			"./vendor/bin/phpcs -n -q --standard=phpcs-templates.xml"
 		],
 	"phpunit": "./vendor/bin/phpunit",
+	"coverage": "@php -d pcov.enabled=1 -d pcov.directory=. ./vendor/bin/phpunit --coverage-clover=build/coverage/clover.xml --coverage-text=build/coverage/coverage.txt",
+	"coverage:html": "@php -d pcov.enabled=1 -d pcov.directory=. ./vendor/bin/phpunit --coverage-html=build/coverage/html",
+	"coverage:check": "@php bin/coverage-check.php build/coverage/clover.xml 0",
 	"build": [
 		"@build:css",
 		"@build:readme"

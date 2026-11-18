@@ -4,6 +4,7 @@
 /vendor export-ignore
 /tests export-ignore
 /bin export-ignore
+/build export-ignore
 /node_modules export-ignore
 /sass export-ignore
 
