@@ -97,6 +97,10 @@ class PluginBootstrapTest extends WP_UnitTestCase {
 		Post_Kinds_Plugin::classic_editor_error();
 		$this->assertStringContainsString( 'Classic Editor or Disable Gutenberg Plugin is not active', ob_get_clean() );
 
+		// ClassicPress has no block editor, and the notice is never hooked there.
+		if ( Post_Kinds_Plugin::is_classicpress() ) {
+			return;
+		}
 		set_current_screen( 'post' );
 		get_current_screen()->is_block_editor( false );
 		$this->assertFalse( Post_Kinds_Plugin::post_uses_gutenberg() );
