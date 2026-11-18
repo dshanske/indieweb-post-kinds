@@ -11,4 +11,14 @@
 			<directory prefix="test-" suffix=".php">./tests/</directory>
 		</testsuite>
 	</testsuites>
+	<!-- Line coverage of the plugin's own code; lib/ (vendored Parse This), vendor/ and tests are excluded. Run with composer coverage. -->
+	<coverage processUncoveredFiles="true">
+		<include>
+			<file>./indieweb-post-kinds.php</file>
+			<file>./uninstall.php</file>
+			<directory suffix=".php">./includes</directory>
+			<directory suffix=".php">./templates</directory>
+			<directory suffix=".php">./views</directory>
+		</include>
+	</coverage>
 </phpunit>
