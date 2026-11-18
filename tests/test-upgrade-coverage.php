@@ -1,40 +1,10 @@
 <?php
 
-if ( ! class_exists( 'WP_CLI' ) ) {
-	/**
-	 * Records what Kind_Upgrade::cli() reports. WP-CLI isn't loaded in tests, and
-	 * the plugin only registers its command when the WP_CLI constant is set.
-	 */
-	class WP_CLI {
-		/**
-		 * Messages logged, in order.
-		 *
-		 * @var string[]
-		 */
-		public static $messages = array();
-
-		/**
-		 * Records a log message.
-		 *
-		 * @param string $message Message.
-		 */
-		public static function log( $message ) {
-			self::$messages[] = $message;
-		}
-
-		/**
-		 * Records a success message.
-		 *
-		 * @param string $message Message.
-		 */
-		public static function success( $message ) {
-			self::$messages[] = 'Success: ' . $message;
-		}
-	}
-}
-
 /**
  * Kind_Upgrade: the WP-CLI command and the less common upgrade paths (#521).
+ *
+ * WP-CLI's classes come with the wp-cli/i18n-command dev dependency; its
+ * Execution logger records what the command reports.
  */
 class UpgradeCoverageTest extends WP_UnitTestCase {
 	public function set_up() {
@@ -45,12 +15,34 @@ class UpgradeCoverageTest extends WP_UnitTestCase {
 		delete_option( Kind_Upgrade::ARTICLE_OPTION );
 		delete_option( 'kind_firehose' );
 		wp_clear_scheduled_hook( Kind_Upgrade::CRON_HOOK );
-		WP_CLI::$messages = array();
 	}
 
 	public function tear_down() {
 		wp_clear_scheduled_hook( Kind_Upgrade::CRON_HOOK );
+		if ( class_exists( 'WP_CLI' ) ) {
+			$logger = new ReflectionProperty( 'WP_CLI', 'logger' );
+			if ( PHP_VERSION_ID < 80100 ) {
+				$logger->setAccessible( true );
+			}
+			$logger->setValue( null, null );
+		}
 		parent::tear_down();
+	}
+
+	/**
+	 * Runs the WP-CLI command and returns the lines it printed.
+	 *
+	 * @param array $assoc_args Command options.
+	 * @return string[]
+	 */
+	private function cli( $assoc_args ) {
+		if ( ! class_exists( 'WP_CLI\\Loggers\\Execution' ) ) {
+			$this->markTestSkipped( 'WP-CLI is not installed.' );
+		}
+		$logger = new WP_CLI\Loggers\Execution();
+		WP_CLI::set_logger( $logger );
+		Kind_Upgrade::cli( array(), $assoc_args );
+		return explode( "\n", trim( $logger->stdout ) );
 	}
 
 	/**
@@ -114,15 +106,14 @@ class UpgradeCoverageTest extends WP_UnitTestCase {
 	public function test_cli_upgrades_one_post() {
 		$id = $this->unclassified( array( 'mf2_like-of' => array( 'https://example.com/liked' ) ) );
 
-		Kind_Upgrade::cli( array(), array( 'post' => $id, 'dry-run' => true ) );
+		$lines = $this->cli( array( 'post' => $id, 'dry-run' => true ) );
 		$this->assertEmpty( get_post_kind_slug( $id ) );
-		$this->assertSame( 'Success: 1 of 1 posts would change.', end( WP_CLI::$messages ) );
-		$this->assertStringStartsWith( "Post {$id}: ", WP_CLI::$messages[0] );
+		$this->assertSame( 'Success: 1 of 1 posts would change.', end( $lines ) );
+		$this->assertStringStartsWith( "Post {$id}: ", $lines[0] );
 
-		WP_CLI::$messages = array();
-		Kind_Upgrade::cli( array(), array( 'post' => (string) $id ) );
+		$lines = $this->cli( array( 'post' => (string) $id ) );
 		$this->assertSame( 'like', get_post_kind_slug( $id ) );
-		$this->assertSame( 'Success: 1 of 1 posts changed.', end( WP_CLI::$messages ) );
+		$this->assertSame( 'Success: 1 of 1 posts changed.', end( $lines ) );
 	}
 
 	public function test_cli_upgrades_every_post_in_batches() {
@@ -139,7 +130,7 @@ class UpgradeCoverageTest extends WP_UnitTestCase {
 			$ids[] = $this->unclassified();
 		}
 
-		Kind_Upgrade::cli( array(), array() );
+		$lines = $this->cli( array() );
 		remove_all_filters( 'kind_upgrade_batch_size' );
 
 		foreach ( $ids as $id ) {
@@ -147,7 +138,7 @@ class UpgradeCoverageTest extends WP_UnitTestCase {
 		}
 		$this->assertFalse( Kind_Upgrade::is_pending() );
 		$this->assertSame( array( 'reply', 'article' ), get_option( 'kind_firehose' ) );
-		$this->assertContains( 'Added Article to the kinds shown on the home page, so posts that had no kind stay there.', WP_CLI::$messages );
-		$this->assertMatchesRegularExpression( '/^Success: \d+ of \d+ posts changed\.$/', end( WP_CLI::$messages ) );
+		$this->assertContains( 'Added Article to the kinds shown on the home page, so posts that had no kind stay there.', $lines );
+		$this->assertMatchesRegularExpression( '/^Success: \d+ of \d+ posts changed\.$/', end( $lines ) );
 	}
 }
