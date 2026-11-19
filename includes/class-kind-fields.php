@@ -788,42 +788,304 @@ class Kind_Fields {
 	/**
 	 * Extracts microformats properties from submitted form data.
 	 *
-	 * Properties are prefixed by mf2_. After that, an underscore marks the
-	 * pieces of a property that need to be put back together.
+	 * Reads the fields named mf2_{property}. Nested values arrive as arrays
+	 * (mf2_in-reply-to[name]); the older {property}_{part} form
+	 * (mf2_start_date) is read too. Date parts (date, time, offset) become an
+	 * ISO 8601 date, and duration parts (Y, M, D, H, I, S) an ISO 8601
+	 * duration. Empty values are dropped.
+	 *
+	 * With a schema, the values are also sanitized by field type and only the
+	 * schema's properties are kept; see sanitize(). Without one, values are
+	 * only reassembled, not sanitized.
 	 *
 	 * @since 3.3.4
+	 * @since 4.0.2 Rewritten; added the $schema parameter.
 	 *
-	 * @param array $data Form data, such as $_POST.
-	 * @return array The properties.
+	 * @param array      $data   Form data, unslashed, such as wp_unslash( $_POST ).
+	 * @param array|null $schema Optional. Field definitions, keyed by property. Default null.
+	 * @return array The properties as jf2-style values, keyed by property.
 	 */
-	public static function rebuild_data( $data ) {
+	public static function rebuild_data( $data, $schema = null ) {
 		$raw = array();
-		foreach ( $data as $key => $value ) {
-			if ( self::str_prefix( $key, 'mf2_' ) ) {
-				$key         = str_replace( 'mf2_', '', $key );
-				$raw[ $key ] = $value;
+		foreach ( (array) $data as $key => $value ) {
+			if ( ! is_string( $key ) || ! self::str_prefix( $key, 'mf2_' ) ) {
+				continue;
 			}
-		}
-		foreach ( $raw as $key => $value ) {
-			$pieces = explode( '_', $key );
-			if ( 2 === count( $pieces ) ) {
-				if ( ! array_key_exists( $pieces[0], $raw ) ) {
+			$key = substr( $key, 4 );
+			// Property names use hyphens, so an underscore marks a part: start_date.
+			$pieces = explode( '_', $key, 2 );
+			if ( 2 === count( $pieces ) && '' !== $pieces[0] && '' !== $pieces[1] ) {
+				if ( ! isset( $raw[ $pieces[0] ] ) || ! is_array( $raw[ $pieces[0] ] ) ) {
 					$raw[ $pieces[0] ] = array();
 				}
-				$raw[ $pieces[0] ] = $pieces[1];
-				unset( $raw[ $key ] );
-				// If this has the elements of a duration.
-				if ( ! empty( array_intersect( array( 'Y', 'M', 'D', 'H', 'I', 'S' ), $raw[ $pieces[0] ] ) ) ) {
-					$interval          = Kind_Time::build_interval( $raw[ $pieces[0] ] );
-					$raw[ $pieces[0] ] = date_interval_to_iso8601( $interval );
+				$raw[ $pieces[0] ][ $pieces[1] ] = $value;
+				continue;
+			}
+			if ( isset( $raw[ $key ] ) && is_array( $raw[ $key ] ) && is_array( $value ) ) {
+				$value = array_merge( $raw[ $key ], $value );
+			}
+			$raw[ $key ] = $value;
+		}
+		if ( is_array( $schema ) ) {
+			return self::sanitize( $schema, $raw );
+		}
+		return self::assemble( $raw );
+	}
+
+	/**
+	 * Reassembles date and duration parts in nested values and drops empty values.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @param array $values Values.
+	 * @return array
+	 */
+	private static function assemble( $values ) {
+		foreach ( $values as $key => $value ) {
+			if ( is_array( $value ) ) {
+				if ( self::is_datetime_parts( $value ) ) {
+					$value = self::datetime_from_parts( $value );
+				} elseif ( self::is_duration_parts( $value ) ) {
+					$value = self::duration_from_parts( $value );
+				} else {
+					$value = self::assemble( $value );
 				}
-				// If this has the elements of a datetime.
-				if ( ! empty( array_intersect( array( 'date', 'time', 'offset' ), $raw[ $pieces[0] ] ) ) ) {
-					$datetime          = Kind_Time::build_datetime( $raw[ $pieces[0] ] );
-					$raw[ $pieces[0] ] = $datetime->format( DATE_W3C );
-				}
+			} elseif ( is_string( $value ) ) {
+				$value = trim( $value );
+			}
+			if ( self::is_empty( $value ) ) {
+				unset( $values[ $key ] );
+			} else {
+				$values[ $key ] = $value;
 			}
 		}
-		return array_filter( $raw );
+		return $values;
+	}
+
+	/**
+	 * Sanitizes values by the type of their field definitions.
+	 *
+	 * This is the shared validation for every editor: form data rebuilt by
+	 * rebuild_data(), or values sent by a block editor or another client.
+	 * Only properties in the schema are kept, and empty or invalid values are
+	 * dropped. By type:
+	 * - text, textarea: sanitize_text_field() and sanitize_textarea_field().
+	 * - url: sanitize_url(); unsafe URLs are dropped.
+	 * - number: a number; anything else is dropped.
+	 * - select: one of the option values.
+	 * - list: a list of text, from an array or a semicolon-separated string.
+	 * - datetime: an ISO 8601 date, from a date string or date, time and offset parts.
+	 * - duration: an ISO 8601 duration, from a duration string or Y, M, D, H, I and S parts.
+	 * - author: name, url and photo.
+	 * - cite, venue: their nested properties. A string is read as the URL (or name).
+	 * Values that are lists of the type are sanitized item by item.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @param array $schema Field definitions, keyed by property.
+	 * @param array $values Values, keyed by property.
+	 * @return array The sanitized values, keyed by property.
+	 */
+	public static function sanitize( $schema, $values ) {
+		$return = array();
+		if ( ! is_array( $schema ) || ! is_array( $values ) ) {
+			return $return;
+		}
+		foreach ( $schema as $key => $args ) {
+			if ( ! is_array( $args ) || ! array_key_exists( $key, $values ) ) {
+				continue;
+			}
+			$args['name'] = $key;
+			if ( ! self::get( 'label', $args ) ) {
+				$args['label'] = $key;
+			}
+			$args = self::validate( $args );
+			if ( ! $args ) {
+				continue;
+			}
+			$value = self::sanitize_field( $args, $values[ $key ] );
+			if ( ! self::is_empty( $value ) ) {
+				$return[ $key ] = $value;
+			}
+		}
+		return $return;
+	}
+
+	/**
+	 * Sanitizes one value by its field definition.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @param array $args  Field definition, as returned by validate().
+	 * @param mixed $value Value.
+	 * @return mixed The sanitized value, or null if it is empty or invalid.
+	 */
+	private static function sanitize_field( $args, $value ) {
+		$type = $args['type'];
+		// A list of values of this type, such as several URLs. Lists, dates and durations have their own shapes.
+		if ( is_array( $value ) && wp_is_numeric_array( $value ) && ! in_array( $type, array( 'list', 'datetime', 'duration' ), true ) ) {
+			$items = array();
+			foreach ( $value as $item ) {
+				$item = self::sanitize_field( $args, $item );
+				if ( ! self::is_empty( $item ) ) {
+					$items[] = $item;
+				}
+			}
+			if ( empty( $items ) ) {
+				return null;
+			}
+			return 1 === count( $items ) ? $items[0] : $items;
+		}
+		switch ( $type ) {
+			case 'cite':
+			case 'venue':
+			case 'author':
+				$properties = 'author' === $type ? self::author_properties() : $args['properties'];
+				if ( is_string( $value ) ) {
+					$value = trim( $value );
+					$url   = '' !== $value && wp_http_validate_url( $value ) ? sanitize_url( $value ) : '';
+					if ( $url ) {
+						return array_key_exists( 'url', $properties ) ? array( 'url' => $url ) : null;
+					}
+					return array_key_exists( 'name', $properties ) ? self::sanitize( $properties, array( 'name' => $value ) ) : null;
+				}
+				if ( is_array( $value ) && isset( $value['properties'] ) && function_exists( '\\ParseThis\\mf2_to_jf2' ) ) {
+					$value = \ParseThis\mf2_to_jf2( $value );
+				}
+				return is_array( $value ) ? self::sanitize( $properties, $value ) : null;
+			case 'datetime':
+				if ( is_array( $value ) && self::is_datetime_parts( $value ) ) {
+					return self::datetime_from_parts( self::text_parts( $value ) );
+				}
+				$datetime = is_string( $value ) ? kind_safe_datetime( trim( $value ) ) : kind_safe_datetime( $value );
+				return $datetime ? $datetime->format( DATE_W3C ) : null;
+			case 'duration':
+				if ( is_array( $value ) && self::is_duration_parts( $value ) ) {
+					return self::duration_from_parts( $value );
+				}
+				$interval = kind_safe_interval( is_string( $value ) ? trim( $value ) : $value );
+				$interval = $interval ? date_interval_to_iso8601( $interval ) : '';
+				return 'P' === $interval ? null : $interval;
+			case 'list':
+				if ( is_string( $value ) ) {
+					$value = explode( ';', $value );
+				}
+				if ( ! is_array( $value ) ) {
+					return null;
+				}
+				$items = array_values( array_filter( array_map( 'sanitize_text_field', array_filter( $value, 'is_scalar' ) ), 'strlen' ) );
+				return $items ? $items : null;
+			case 'number':
+				return is_numeric( $value ) ? $value + 0 : null;
+			case 'select':
+				$value = is_scalar( $value ) ? (string) $value : '';
+				return '' !== $value && array_key_exists( $value, $args['options'] ) ? $value : null;
+			case 'url':
+				$value = is_string( $value ) ? sanitize_url( trim( $value ) ) : '';
+				return '' === $value ? null : $value;
+			case 'textarea':
+				if ( is_array( $value ) && isset( $value['value'] ) ) {
+					$value = $value['value'];
+				}
+				$value = is_scalar( $value ) ? sanitize_textarea_field( (string) $value ) : '';
+				return '' === trim( $value ) ? null : $value;
+			default:
+				$value = is_scalar( $value ) ? sanitize_text_field( (string) $value ) : '';
+				return '' === $value ? null : $value;
+		}
+	}
+
+	/**
+	 * Whether an array holds date parts: only date, time and offset keys.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @param array $value Value.
+	 * @return bool
+	 */
+	private static function is_datetime_parts( $value ) {
+		return ! empty( $value ) && ! array_diff( array_keys( $value ), array( 'date', 'time', 'offset' ) ) && ( isset( $value['date'] ) || isset( $value['time'] ) );
+	}
+
+	/**
+	 * Whether an array holds duration parts: only Y, M, D, H, I and S keys.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @param array $value Value.
+	 * @return bool
+	 */
+	private static function is_duration_parts( $value ) {
+		return ! empty( $value ) && ! array_diff( array_keys( $value ), array( 'Y', 'M', 'D', 'H', 'I', 'S' ) );
+	}
+
+	/**
+	 * Sanitizes date parts as text.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @param array $parts Date parts.
+	 * @return array
+	 */
+	private static function text_parts( $parts ) {
+		return array_map(
+			function ( $part ) {
+				return is_scalar( $part ) ? sanitize_text_field( (string) $part ) : '';
+			},
+			$parts
+		);
+	}
+
+	/**
+	 * Builds an ISO 8601 date from date, time and offset parts.
+	 *
+	 * A date without a time is midnight; a time without a date is not a date.
+	 * Without an offset, the site's time zone is used.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @param array $parts Date parts.
+	 * @return string|null The date, or null if there is none.
+	 */
+	private static function datetime_from_parts( $parts ) {
+		$date = isset( $parts['date'] ) && is_string( $parts['date'] ) ? trim( $parts['date'] ) : '';
+		$time = isset( $parts['time'] ) && is_string( $parts['time'] ) ? trim( $parts['time'] ) : '';
+		if ( '' === $date ) {
+			return null;
+		}
+		$offset   = isset( $parts['offset'] ) && is_string( $parts['offset'] ) ? trim( $parts['offset'] ) : null;
+		$datetime = Kind_Time::build_datetime( $date, '' === $time ? '00:00:00' : $time, $offset );
+		return $datetime ? $datetime->format( DATE_W3C ) : null;
+	}
+
+	/**
+	 * Builds an ISO 8601 duration from Y, M, D, H, I (minutes) and S parts.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @param array $parts Duration parts.
+	 * @return string|null The duration, or null if every part is empty or zero.
+	 */
+	private static function duration_from_parts( $parts ) {
+		$parts = array_map(
+			function ( $part ) {
+				return is_numeric( $part ) ? absint( $part ) : 0;
+			},
+			$parts
+		);
+		$spec  = Kind_Time::build_interval( $parts );
+		return '' === $spec ? null : $spec;
+	}
+
+	/**
+	 * Whether a value is empty: null, an empty or blank string, or an empty array.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @param mixed $value Value.
+	 * @return bool
+	 */
+	private static function is_empty( $value ) {
+		return null === $value || ( is_string( $value ) && '' === trim( $value ) ) || ( is_array( $value ) && empty( $value ) );
 	}
 }
