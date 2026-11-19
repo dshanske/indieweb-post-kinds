@@ -125,12 +125,25 @@ class TaxonomyHooksTest extends WP_UnitTestCase {
 	}
 
 	public function test_category_archive_requested_by_id() {
-		$this->markTestSkipped( 'Category and tag archives requested by ID get an empty title and PHP warnings (#525).' );
-
+		// #525: archives requested by ID got an empty title and PHP warnings.
 		$category = self::factory()->category->create( array( 'name' => 'Travel' ) );
 		self::factory()->post->create( array( 'post_category' => array( $category ) ) );
 		$this->go_to( add_query_arg( 'cat', $category, home_url( '/' ) ) );
 		$this->assertSame( 'Category: <span>Travel</span>', get_the_archive_title() );
+		$this->assertSame( 'Travel', Kind_Taxonomy::document_title_parts( array( 'title' => 'x' ) )['title'] );
+	}
+
+	public function test_tag_archive_requested_by_id() {
+		$tag = self::factory()->tag->create( array( 'name' => 'Beach' ) );
+		self::factory()->post->create( array( 'tags_input' => array( 'Beach' ) ) );
+		$this->go_to( add_query_arg( 'tag_id', $tag, home_url( '/' ) ) );
+		$this->assertSame( 'Tag: <span>Beach</span>', get_the_archive_title() );
+	}
+
+	public function test_terms_from_query_leaves_out_missing_terms() {
+		$this->kind_post( 'reply' );
+		$this->go_to( add_query_arg( 'kind', 'reply,no-such-kind', home_url( '/' ) ) );
+		$this->assertSame( array( 'reply' ), wp_list_pluck( Kind_Taxonomy::get_terms_from_query(), 'slug' ) );
 	}
 
 	public function test_titles_outside_taxonomy_archives() {
