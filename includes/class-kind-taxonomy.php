@@ -1033,22 +1033,32 @@ final class Kind_Taxonomy {
 	}
 
 	/**
-	 * Fetch the current post kind terms from the current query.
+	 * Returns the terms the main query is for, such as the kinds of a kind archive.
+	 *
+	 * Terms are looked up by the field the query used: archives linked by ID
+	 * (?cat=5, ?tag_id=5) record term IDs, others slugs. Terms that don't
+	 * exist are left out.
 	 *
 	 * @since 3.0.3
+	 * @since 4.0.2 Uses the query's field, and returns only terms that exist.
 	 *
-	 * @access public
-	 *
-	 * @return array
+	 * @return WP_Term[] The terms.
 	 */
 	public static function get_terms_from_query() {
 		global $wp_query;
 		$terms = array();
-		if ( ! empty( $wp_query->tax_query->queried_terms ) ) {
-			$queried = wp_list_pluck( $wp_query->tax_query->queried_terms, 'terms' );
-			foreach ( $queried as $tax => $slugs ) {
-				foreach ( $slugs as $slug ) {
-					$terms[] = get_term_by( 'slug', $slug, $tax );
+		if ( empty( $wp_query->tax_query->queried_terms ) ) {
+			return $terms;
+		}
+		foreach ( $wp_query->tax_query->queried_terms as $tax => $queried ) {
+			if ( empty( $queried['terms'] ) || ! is_array( $queried['terms'] ) ) {
+				continue;
+			}
+			$field = isset( $queried['field'] ) && in_array( $queried['field'], array( 'slug', 'name', 'term_id', 'term_taxonomy_id' ), true ) ? $queried['field'] : 'slug';
+			foreach ( $queried['terms'] as $value ) {
+				$term = get_term_by( $field, $value, $tax );
+				if ( $term instanceof WP_Term ) {
+					$terms[] = $term;
 				}
 			}
 		}
@@ -1068,10 +1078,12 @@ final class Kind_Taxonomy {
 	 */
 	public static function kind_archive_prefix( $prefix ) {
 		if ( is_tax() || is_category() || is_tag() ) {
-			$terms  = self::get_terms_from_query();
-			$tax    = get_taxonomy( reset( $terms )->taxonomy );
-			$plural = ( count( $terms ) === 1 );
-			return ( $plural ? $tax->labels->singular_name : $tax->labels->name ) . ':';
+			$terms = self::get_terms_from_query();
+			$tax   = $terms ? get_taxonomy( $terms[0]->taxonomy ) : false;
+			if ( ! $tax ) {
+				return $prefix;
+			}
+			return ( 1 === count( $terms ) ? $tax->labels->singular_name : $tax->labels->name ) . ':';
 		}
 		return $prefix;
 	}
