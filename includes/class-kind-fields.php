@@ -36,12 +36,15 @@ class Kind_Fields {
 	/**
 	 * Returns a list of time zones with translated labels.
 	 *
+	 * Only time zones the host's time zone database knows are listed.
+	 *
 	 * @since 3.3.4
+	 * @since 4.0.2 Uses current identifiers, and leaves out unknown ones.
 	 *
 	 * @return string[] Labels, keyed by time zone identifier.
 	 */
 	public static function timezone_list() {
-		return array(
+		$zones = array(
 			'Pacific/Niue'                   => __( '(GMT-11:00) Niue', 'indieweb-post-kinds' ),
 			'Pacific/Pago_Pago'              => __( '(GMT-11:00) Pago Pago', 'indieweb-post-kinds' ),
 			'Pacific/Honolulu'               => __( '(GMT-10:00) Hawaii Time', 'indieweb-post-kinds' ),
@@ -114,7 +117,7 @@ class Kind_Fields {
 			'America/Belem'                  => __( '(GMT-03:00) Belem', 'indieweb-post-kinds' ),
 			'America/Cayenne'                => __( '(GMT-03:00) Cayenne', 'indieweb-post-kinds' ),
 			'America/Fortaleza'              => __( '(GMT-03:00) Fortaleza', 'indieweb-post-kinds' ),
-			'America/Godthab'                => __( '(GMT-03:00) Godthab', 'indieweb-post-kinds' ),
+			'America/Nuuk'                   => __( '(GMT-02:00) Nuuk', 'indieweb-post-kinds' ),
 			'America/Maceio'                 => __( '(GMT-03:00) Maceio', 'indieweb-post-kinds' ),
 			'America/Miquelon'               => __( '(GMT-03:00) Miquelon', 'indieweb-post-kinds' ),
 			'America/Montevideo'             => __( '(GMT-03:00) Montevideo', 'indieweb-post-kinds' ),
@@ -187,7 +190,7 @@ class Kind_Fields {
 			'Europe/Helsinki'                => __( '(GMT+02:00) Helsinki', 'indieweb-post-kinds' ),
 			'Europe/Istanbul'                => __( '(GMT+02:00) Istanbul', 'indieweb-post-kinds' ),
 			'Europe/Kaliningrad'             => __( '(GMT+02:00) Moscow-01 - Kaliningrad', 'indieweb-post-kinds' ),
-			'Europe/Kiev'                    => __( '(GMT+02:00) Kiev', 'indieweb-post-kinds' ),
+			'Europe/Kyiv'                    => __( '(GMT+02:00) Kyiv', 'indieweb-post-kinds' ),
 			'Europe/Riga'                    => __( '(GMT+02:00) Riga', 'indieweb-post-kinds' ),
 			'Europe/Sofia'                   => __( '(GMT+02:00) Sofia', 'indieweb-post-kinds' ),
 			'Europe/Tallinn'                 => __( '(GMT+02:00) Tallinn', 'indieweb-post-kinds' ),
@@ -220,9 +223,9 @@ class Kind_Fields {
 			'Asia/Yekaterinburg'             => __( '(GMT+05:00) Moscow+02 - Yekaterinburg', 'indieweb-post-kinds' ),
 			'Indian/Kerguelen'               => __( '(GMT+05:00) Kerguelen', 'indieweb-post-kinds' ),
 			'Indian/Maldives'                => __( '(GMT+05:00) Maldives', 'indieweb-post-kinds' ),
-			'Asia/Calcutta'                  => __( '(GMT+05:30) India Standard Time', 'indieweb-post-kinds' ),
+			'Asia/Kolkata'                   => __( '(GMT+05:30) India Standard Time', 'indieweb-post-kinds' ),
 			'Asia/Colombo'                   => __( '(GMT+05:30) Colombo', 'indieweb-post-kinds' ),
-			'Asia/Katmandu'                  => __( '(GMT+05:45) Katmandu', 'indieweb-post-kinds' ),
+			'Asia/Kathmandu'                 => __( '(GMT+05:45) Kathmandu', 'indieweb-post-kinds' ),
 			'Antarctica/Vostok'              => __( '(GMT+06:00) Vostok', 'indieweb-post-kinds' ),
 			'Asia/Almaty'                    => __( '(GMT+06:00) Almaty', 'indieweb-post-kinds' ),
 			'Asia/Bishkek'                   => __( '(GMT+06:00) Bishkek', 'indieweb-post-kinds' ),
@@ -230,19 +233,17 @@ class Kind_Fields {
 			'Asia/Omsk'                      => __( '(GMT+06:00) Moscow+03 - Omsk, Novosibirsk', 'indieweb-post-kinds' ),
 			'Asia/Thimphu'                   => __( '(GMT+06:00) Thimphu', 'indieweb-post-kinds' ),
 			'Indian/Chagos'                  => __( '(GMT+06:00) Chagos', 'indieweb-post-kinds' ),
-			'Asia/Rangoon'                   => __( '(GMT+06:30) Rangoon', 'indieweb-post-kinds' ),
+			'Asia/Yangon'                    => __( '(GMT+06:30) Yangon', 'indieweb-post-kinds' ),
 			'Indian/Cocos'                   => __( '(GMT+06:30) Cocos', 'indieweb-post-kinds' ),
 			'Antarctica/Davis'               => __( '(GMT+07:00) Davis', 'indieweb-post-kinds' ),
 			'Asia/Bangkok'                   => __( '(GMT+07:00) Bangkok', 'indieweb-post-kinds' ),
 			'Asia/Hovd'                      => __( '(GMT+07:00) Hovd', 'indieweb-post-kinds' ),
 			'Asia/Jakarta'                   => __( '(GMT+07:00) Jakarta', 'indieweb-post-kinds' ),
 			'Asia/Krasnoyarsk'               => __( '(GMT+07:00) Moscow+04 - Krasnoyarsk', 'indieweb-post-kinds' ),
-			'Asia/Saigon'                    => __( '(GMT+07:00) Hanoi', 'indieweb-post-kinds' ),
 			'Asia/Ho_Chi_Minh'               => __( '(GMT+07:00) Ho Chi Minh', 'indieweb-post-kinds' ),
 			'Indian/Christmas'               => __( '(GMT+07:00) Christmas', 'indieweb-post-kinds' ),
 			'Antarctica/Casey'               => __( '(GMT+08:00) Casey', 'indieweb-post-kinds' ),
 			'Asia/Brunei'                    => __( '(GMT+08:00) Brunei', 'indieweb-post-kinds' ),
-			'Asia/Choibalsan'                => __( '(GMT+08:00) Choibalsan', 'indieweb-post-kinds' ),
 			'Asia/Hong_Kong'                 => __( '(GMT+08:00) Hong Kong', 'indieweb-post-kinds' ),
 			'Asia/Irkutsk'                   => __( '(GMT+08:00) Moscow+05 - Irkutsk', 'indieweb-post-kinds' ),
 			'Asia/Kuala_Lumpur'              => __( '(GMT+08:00) Kuala Lumpur', 'indieweb-post-kinds' ),
@@ -289,11 +290,23 @@ class Kind_Fields {
 			'Pacific/Wake'                   => __( '(GMT+12:00) Wake', 'indieweb-post-kinds' ),
 			'Pacific/Wallis'                 => __( '(GMT+12:00) Wallis', 'indieweb-post-kinds' ),
 			'Pacific/Apia'                   => __( '(GMT+14:00) Apia', 'indieweb-post-kinds' ),
-			'Pacific/Enderbury'              => __( '(GMT+13:00) Enderbury', 'indieweb-post-kinds' ),
+			'Pacific/Kanton'                 => __( '(GMT+13:00) Kanton', 'indieweb-post-kinds' ),
 			'Pacific/Fakaofo'                => __( '(GMT+13:00) Fakaofo', 'indieweb-post-kinds' ),
 			'Pacific/Tongatapu'              => __( '(GMT+13:00) Tongatapu', 'indieweb-post-kinds' ),
 			'Pacific/Kiritimati'             => __( '(GMT+14:00) Kiritimati', 'indieweb-post-kinds' ),
 		);
+
+		// Identifiers the host's time zone database doesn't know, such as names added after it was built, are left out.
+		$known = array();
+		foreach ( array_keys( $zones ) as $zone ) {
+			try {
+				new DateTimeZone( $zone );
+				$known[ $zone ] = true;
+			} catch ( Exception $e ) {
+				continue;
+			}
+		}
+		return array_intersect_key( $zones, $known );
 	}
 
 	/**
