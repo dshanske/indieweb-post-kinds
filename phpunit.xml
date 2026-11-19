@@ -20,9 +20,5 @@
 			<directory suffix=".php">./templates</directory>
 			<directory suffix=".php">./views</directory>
 		</include>
-		<exclude>
-			<!-- Unfinished and never called (#521); measure it again when that work resumes. -->
-			<file>./includes/class-kind-fields.php</file>
-		</exclude>
 	</coverage>
 </phpunit>
