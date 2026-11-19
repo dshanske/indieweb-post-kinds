@@ -371,24 +371,36 @@ final class Kind_Taxonomy {
 	}
 
 	/**
-	 * Filter template hierarchy to include our template files.
+	 * Adds the post's kind to the embed template hierarchy.
+	 *
+	 * A post embedded on another site (WordPress post embeds) uses
+	 * embed-{post_type}-{kind}.php from the theme if there is one, such as
+	 * embed-post-like.php, before core's embed templates.
 	 *
 	 * @since 3.1.2
+	 * @since 4.0.2 Uses the kind's slug. The template named after the kind's
+	 *              translated name (embed-post-Like.php), used before, is still
+	 *              found, after it.
 	 *
-	 * @access public
-	 *
-	 * @param array $templates Array of template file names.
-	 * @return mixed
+	 * @param string[] $templates Template file names.
+	 * @return string[]
 	 */
 	public static function embed_template_hierarchy( $templates ) {
 		$object = get_queried_object();
-		if ( ! empty( $object->post_type ) ) {
-			$post_kind = get_post_kind( $object );
-			if ( $post_kind ) {
-				array_unshift( $templates, "embed-{$object->post_type}-{$post_kind}.php" );
-			}
+		if ( empty( $object->post_type ) ) {
+			return $templates;
 		}
-		return $templates;
+		$slug = get_post_kind_slug( $object );
+		if ( ! $slug ) {
+			return $templates;
+		}
+		$kind_templates = array( "embed-{$object->post_type}-{$slug}.php" );
+		// Before 4.0.2 the template was named after the kind's translated singular name.
+		$name = get_post_kind( $object );
+		if ( $name && $name !== $slug ) {
+			$kind_templates[] = "embed-{$object->post_type}-{$name}.php";
+		}
+		return array_merge( $kind_templates, $templates );
 	}
 
 	/**
