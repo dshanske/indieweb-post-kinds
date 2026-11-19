@@ -11,17 +11,23 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Generates form fields for the posting UI from a kind's property schema.
  *
- * Supported field types and their options:
+ * The schemas are editor-agnostic: the same field definitions (exposed by
+ * the post-kinds/1.0/fields REST route) can drive the Classic Editor, a block
+ * editor UI or another editor. The field_*() methods render them as HTML for
+ * the Classic Editor.
+ *
+ * A field definition has a 'type' and a 'label'; other keys depend on the type.
+ * Supported types, one for each field_*() method:
+ * - text, textarea, url
+ * - number: `step` (default 1).
+ * - select: `options`, an associative array of value => label.
+ * - list: values separated by semicolons.
  * - datetime
- * - duration
- * - author: a name, URL and photo by default.
- * - select: `options` is an associative array of value => label.
- * - url
- * - text
- * - list
- * - textarea
- * - number
- * - cite: an h-cite object.
+ * - duration: `pieces`, which of Y, M, D, H, I (minutes) and S to show. Default H, I and S.
+ * - author: a name, URL and photo.
+ * - cite, venue: nested fields in `properties`.
+ *
+ * Any other type is treated as text.
  *
  * @since 3.3.4
  */
@@ -294,103 +300,121 @@ class Kind_Fields {
 	 * Returns the UTC offsets in use by any time zone, sorted.
 	 *
 	 * @since 3.3.4
+	 * @since 4.0.2 Uses get_gmt_offsets().
 	 *
 	 * @return string[] Offsets such as '-05:00'.
 	 */
 	public static function get_offset_list() {
-		$o = wp_cache_get( 'kind_offset_list' );
-		if ( false !== $o ) {
-			return $o;
-		}
-		$o       = array();
-		$t_zones = timezone_identifiers_list();
-		foreach ( $t_zones as $a ) {
-			$datetime = new DateTime( 'now', new DateTimeZone( $a ) );
-			$o[]      = Kind_Time::get_datetime_offset( $datetime );
-		}
-		$o = array_unique( $o );
-		asort( $o );
-		wp_cache_set( 'kind_offset_list', $o, '', DAY_IN_SECONDS );
-		return $o;
+		return get_gmt_offsets();
+	}
+
+	/**
+	 * Returns an id attribute for a field name, such as mf2_in-reply-to-name for mf2_in-reply-to[name].
+	 *
+	 * @since 4.0.2
+	 *
+	 * @param string $name Field name.
+	 * @return string
+	 */
+	private static function field_id( $name ) {
+		return trim( preg_replace( '/[^A-Za-z0-9_-]+/', '-', $name ), '-' );
+	}
+
+	/**
+	 * Returns the opening label for a field.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @param array  $args Field arguments, as returned by validate().
+	 * @param string $for  Optional. The id the label is for. Default the field's id.
+	 * @return string
+	 */
+	private static function label( $args, $for = null ) {
+		return sprintf(
+			'<label for="%1$s" class="%2$s">%3$s',
+			esc_attr( $for ?? $args['id'] ),
+			esc_attr( $args['class'] ),
+			esc_html( $args['label'] )
+		);
 	}
 
 	/**
 	 * Renders date, time and offset inputs.
 	 *
-	 * @since 3.3.4
+	 * The parts are named {name}[date], {name}[time] and {name}[offset].
 	 *
-	 * @param array                 $args     Field arguments, as returned by validate(): 'name', 'label' and 'class'.
-	 * @param DateTime|string|false $datetime Date, or a date string. Default now.
+	 * @since 3.3.4
+	 * @since 4.0.2 The inputs are empty when there is no date, instead of showing now.
+	 *
+	 * @param array                          $args     Field arguments, as returned by validate().
+	 * @param DateTimeInterface|string|false $datetime Date, or a date string.
 	 * @return string The inputs.
 	 */
 	public static function field_datetime( $args, $datetime ) {
-		if ( is_string( $datetime ) ) {
-			$datetime = new DateTime( $datetime, wp_timezone() );
-		}
-		if ( ! $datetime ) {
-			$datetime = new DateTime( 'now', wp_timezone() );
+		$time = Kind_Time::divide_datetime( $datetime );
+		if ( ! $time ) {
+			$time = array( 'offset' => Kind_Time::get_datetime_offset() );
 		}
 		$return   = array();
-		$time     = Kind_Time::divide_datetime( $datetime );
-		$return[] = sprintf( '<label for="mf2_%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
-		$return[] = sprintf( '<input type="date" name="mf2_%1$s_date" id="mf2_%1$s_date" value="%2$s"/>', $args['name'], ( $time['date'] ?? '' ) );
-		$return[] = sprintf( '<input type="time" name="mf2_%1$s_time" id="mf2_%1$s_time" step="1" value="%2$s"/>', $args['name'], ( $time['time'] ?? '' ) );
-		$return[] = sprintf( '<select name="%1s_offset" id="%1$s_offset">', $args['name'] );
+		$return[] = self::label( $args, $args['id'] . '-date' );
+		$return[] = sprintf( '<input type="date" name="%1$s[date]" id="%2$s-date" value="%3$s" />', esc_attr( $args['name'] ), esc_attr( $args['id'] ), esc_attr( $time['date'] ?? '' ) );
+		$return[] = sprintf( '<input type="time" name="%1$s[time]" id="%2$s-time" step="1" value="%3$s" />', esc_attr( $args['name'] ), esc_attr( $args['id'] ), esc_attr( $time['time'] ?? '' ) );
+		$return[] = sprintf( '<select name="%1$s[offset]" id="%2$s-offset">', esc_attr( $args['name'] ), esc_attr( $args['id'] ) );
 		foreach ( self::get_offset_list() as $offset ) {
-			$return[] = sprintf( '<option value="%1$s"%2$s>%3$s</option>', $offset, selected( $offset, $time['offset'], false ), sprintf( 'GMT%1$s', $offset ) );
+			$return[] = sprintf( '<option value="%1$s"%2$s>%3$s</option>', esc_attr( $offset ), selected( $offset, $time['offset'] ?? '', false ), esc_html( 'GMT' . $offset ) );
 		}
 		$return[] = '</select></label>';
 		return implode( PHP_EOL, $return );
 	}
 
 	/**
-	 * Renders duration inputs.
+	 * Renders duration inputs, one for each of $args['pieces'].
+	 *
+	 * The parts are named {name}[Y], {name}[M], {name}[D], {name}[H], {name}[I] and {name}[S].
 	 *
 	 * @since 3.3.4
 	 *
-	 * @param array               $args     Field arguments, as returned by validate(), including 'pieces'.
-	 * @param DateInterval|string $interval Duration, or an ISO 8601 duration. Default 0.
+	 * @param array                     $args     Field arguments, as returned by validate(), including 'pieces'.
+	 * @param DateInterval|string|false $interval Duration, or an ISO 8601 duration.
 	 * @return string The inputs.
 	 */
 	public static function field_duration( $args, $interval ) {
-		if ( is_string( $interval ) ) {
-			$interval = new DateInterval( $interval );
-		}
-		if ( ! $interval ) {
-			$interval = new DateInterval( 'PT0S' );
-		}
-		$return   = array();
-		$duration = Kind_Time::divide_interval( $interval );
-		$max      = array(
-			'Y' => 1000,
-			'M' => 11,
-			'D' => 31,
-			'H' => 23,
-			'I' => 59,
-			'S' => 60,
+		$duration = Kind_Time::divide_interval( kind_safe_interval( $interval ) );
+		$pieces   = array(
+			'Y' => array( 1000, __( 'Years', 'indieweb-post-kinds' ) ),
+			'M' => array( 11, __( 'Months', 'indieweb-post-kinds' ) ),
+			'D' => array( 31, __( 'Days', 'indieweb-post-kinds' ) ),
+			'H' => array( 23, __( 'Hours', 'indieweb-post-kinds' ) ),
+			'I' => array( 59, __( 'Minutes', 'indieweb-post-kinds' ) ),
+			'S' => array( 59, __( 'Seconds', 'indieweb-post-kinds' ) ),
 		);
-		$return[] = sprintf( '<label for="mf2_%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
+		$first    = reset( $args['pieces'] );
+		$return   = array();
+		$return[] = self::label( $args, $args['id'] . '-' . $first );
 		foreach ( $args['pieces'] as $piece ) {
-			$return[] = sprintf( '<input type="number" name="mf2_%2$s_%1$s" id="mf2_%3$s_%1$s" value="%4$s" step="1" max="%5$s" />', $piece, $args['name'], $args['id'], ( $duration['year'] ?? '' ), $max[ $piece ] );
+			$return[] = sprintf(
+				'<input type="number" name="%1$s[%2$s]" id="%3$s-%2$s" value="%4$s" min="0" max="%5$d" step="1" aria-label="%6$s" />',
+				esc_attr( $args['name'] ),
+				esc_attr( $piece ),
+				esc_attr( $args['id'] ),
+				esc_attr( $duration[ $piece ] ? (string) $duration[ $piece ] : '' ),
+				$pieces[ $piece ][0],
+				esc_attr( $pieces[ $piece ][1] )
+			);
 		}
 		$return[] = '</label>';
 		return implode( PHP_EOL, $return );
 	}
 
 	/**
-	 * Renders author name, URL and photo inputs.
+	 * Returns the default fields of an author: name, URL and photo.
 	 *
-	 * @since 3.3.4
+	 * @since 4.0.2
 	 *
-	 * @param array       $args   Field arguments, as returned by validate().
-	 * @param array|false $author Values, with 'name', 'url' and 'photo' keys.
-	 * @return string The inputs.
+	 * @return array Field definitions, keyed by property.
 	 */
-	public static function field_author( $args, $author ) {
-		if ( ! $author ) {
-			$author = array();
-		}
-		$props = array(
+	public static function author_properties() {
+		return array(
 			'name'  => array(
 				'type'  => 'text',
 				'label' => __( 'Author Name', 'indieweb-post-kinds' ),
@@ -404,18 +428,25 @@ class Kind_Fields {
 				'label' => __( 'Author Photo', 'indieweb-post-kinds' ),
 			),
 		);
-		// Ensure all props are set for values.
-		foreach ( array_keys( $props ) as $prop ) {
-			if ( ! array_key_exists( $prop, $author ) ) {
-				$author[ $prop ] = '';
-			}
-		}
-		return self::render( $props, $author );
 	}
 
+	/**
+	 * Renders author name, URL and photo inputs, named {name}[name], {name}[url] and {name}[photo].
+	 *
+	 * @since 3.3.4
+	 *
+	 * @param array              $args   Field arguments, as returned by validate().
+	 * @param array|string|false $author An author as jf2 or mf2, or a name or URL. For a list, the first.
+	 * @return string The inputs.
+	 */
+	public static function field_author( $args, $author ) {
+		$authors = Kind_Post::normalize_authors( $author ? $author : array() );
+		$author  = $authors ? $authors[0] : array();
+		return self::fieldset( $args, self::author_properties(), $author );
+	}
 
 	/**
-	 * Renders a select. The options are in $args['options'].
+	 * Renders a select. The options are in $args['options'], value => label.
 	 *
 	 * @since 3.3.4
 	 *
@@ -424,15 +455,37 @@ class Kind_Fields {
 	 * @return string The input.
 	 */
 	public static function field_select( $args, $selected ) {
-		$return = array();
-
-		$return[] = sprintf( '<label for="mf2_%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
-		$return[] = sprintf( '<select name="mf2_%1s" id="mf2_%1$s">', $args['name'] );
+		$return   = array();
+		$return[] = self::label( $args );
+		$return[] = sprintf( '<select name="%1$s" id="%2$s">', esc_attr( $args['name'] ), esc_attr( $args['id'] ) );
+		$return[] = '<option value=""></option>';
 		foreach ( $args['options'] as $key => $value ) {
-			$return[] = sprintf( '<option value="%1$s"%2$s>%3$s</option>', $key, selected( $key, $selected, false ), $value );
+			$return[] = sprintf( '<option value="%1$s"%2$s>%3$s</option>', esc_attr( $key ), selected( (string) $key, (string) self::scalar( $selected ), false ), esc_html( $value ) );
 		}
 		$return[] = '</select></label>';
 		return implode( PHP_EOL, $return );
+	}
+
+	/**
+	 * Renders an input.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @param array  $args  Field arguments, as returned by validate().
+	 * @param string $type  Input type.
+	 * @param mixed  $value Value.
+	 * @param string $extra Optional. Extra attributes, already escaped. Default empty.
+	 * @return string The input.
+	 */
+	private static function input( $args, $type, $value, $extra = '' ) {
+		return implode(
+			PHP_EOL,
+			array(
+				self::label( $args ),
+				sprintf( '<input name="%1$s" id="%2$s" type="%3$s" value="%4$s"%5$s />', esc_attr( $args['name'] ), esc_attr( $args['id'] ), esc_attr( $type ), esc_attr( self::scalar( $value ) ), $extra ),
+				'</label>',
+			)
+		);
 	}
 
 	/**
@@ -445,11 +498,7 @@ class Kind_Fields {
 	 * @return string The input.
 	 */
 	public static function field_url( $args, $url ) {
-		$return   = array();
-		$return[] = sprintf( '<label for="mf2_%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
-		$return[] = sprintf( '<input name="mf2_%1s" id="mf2_%1$s" type="url" value="%2$s">', $args['name'], $url );
-		$return[] = '</label>';
-		return implode( PHP_EOL, $return );
+		return self::input( $args, 'url', $url );
 	}
 
 	/**
@@ -457,16 +506,12 @@ class Kind_Fields {
 	 *
 	 * @since 3.3.4
 	 *
-	 * @param array  $args  Field arguments, as returned by validate().
-	 * @param string $value Value.
+	 * @param array      $args  Field arguments, as returned by validate().
+	 * @param int|string $value Value.
 	 * @return string The input.
 	 */
 	public static function field_number( $args, $value ) {
-		$return   = array();
-		$return[] = sprintf( '<label for="mf2_%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
-		$return[] = sprintf( '<input name="mf2_%1s" id="mf2_%1$s" type="number" step="%2$s" value="%3$s">', $args['name'], $args['step'], $value );
-		$return[] = '</label>';
-		return implode( PHP_EOL, $return );
+		return self::input( $args, 'number', $value, sprintf( ' step="%s"', esc_attr( $args['step'] ) ) );
 	}
 
 	/**
@@ -479,11 +524,7 @@ class Kind_Fields {
 	 * @return string The input.
 	 */
 	public static function field_text( $args, $value ) {
-		$return   = array();
-		$return[] = sprintf( '<label for="mf2_%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
-		$return[] = sprintf( '<input name="mf2_%1s" id="mf2_%1$s" type="text" value="%2$s">', $args['name'], $value );
-		$return[] = '</label>';
-		return implode( PHP_EOL, $return );
+		return self::input( $args, 'text', $value );
 	}
 
 	/**
@@ -491,16 +532,22 @@ class Kind_Fields {
 	 *
 	 * @since 3.3.4
 	 *
-	 * @param array  $args  Field arguments, as returned by validate().
-	 * @param string $value Value.
+	 * @param array        $args  Field arguments, as returned by validate().
+	 * @param string|array $value Value. For jf2 HTML values, the text ('value') is used.
 	 * @return string The input.
 	 */
 	public static function field_textarea( $args, $value ) {
-		$return   = array();
-		$return[] = sprintf( '<label for="mf2_%1$s" class="%2$s">%3$s', $args['name'], $args['class'], $args['label'] );
-		$return[] = sprintf( '<textarea name="mf2_%1s" id="mf2_%1$s">%2$s</textarea>', $args['name'], $value );
-		$return[] = '</label>';
-		return implode( PHP_EOL, $return );
+		if ( is_array( $value ) && isset( $value['value'] ) ) {
+			$value = $value['value'];
+		}
+		return implode(
+			PHP_EOL,
+			array(
+				self::label( $args ),
+				sprintf( '<textarea name="%1$s" id="%2$s">%3$s</textarea>', esc_attr( $args['name'] ), esc_attr( $args['id'] ), esc_textarea( self::scalar( $value ) ) ),
+				'</label>',
+			)
+		);
 	}
 
 	/**
@@ -514,35 +561,79 @@ class Kind_Fields {
 	 */
 	public static function field_list( $args, $value ) {
 		if ( is_array( $value ) ) {
-			$value = implode( ';', $value );
+			$value = implode( ';', array_filter( $value, 'is_scalar' ) );
 		}
 		return self::field_textarea( $args, $value );
 	}
 
 	/**
-	 * Renders the inputs for a venue's properties.
+	 * Renders the inputs for a venue's properties, in $args['properties'].
 	 *
 	 * @since 3.3.4
 	 *
-	 * @param array $args  Field arguments, as returned by validate(), including 'properties'.
-	 * @param array $value Values, keyed by property.
+	 * @param array        $args  Field arguments, as returned by validate(), including 'properties'.
+	 * @param array|string $value Values as jf2 or mf2, keyed by property.
 	 * @return string The inputs.
 	 */
 	public static function field_venue( $args, $value ) {
-		return self::render( $args['properties'], $value );
+		return self::fieldset( $args, $args['properties'], $value );
 	}
 
 	/**
-	 * Renders the inputs for a citation's properties.
+	 * Renders the inputs for a citation's properties, in $args['properties'].
 	 *
 	 * @since 3.3.4
 	 *
-	 * @param array $args  Field arguments, as returned by validate(), including 'properties'.
-	 * @param array $value Values, keyed by property.
+	 * @param array        $args  Field arguments, as returned by validate(), including 'properties'.
+	 * @param array|string $value Values as jf2 or mf2, keyed by property. A URL is read as the citation's URL.
 	 * @return string The inputs.
 	 */
 	public static function field_cite( $args, $value ) {
-		return self::render( $args['properties'], $value );
+		return self::fieldset( $args, $args['properties'], $value );
+	}
+
+	/**
+	 * Renders nested fields in a fieldset, with the field's label as its legend.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @param array        $args       Field arguments, as returned by validate().
+	 * @param array        $properties Field definitions of the nested fields.
+	 * @param array|string $value      Values as jf2 or mf2, keyed by property.
+	 * @return string The fieldset.
+	 */
+	private static function fieldset( $args, $properties, $value ) {
+		if ( is_string( $value ) ) {
+			$value = wp_http_validate_url( $value ) ? array( 'url' => $value ) : array( 'name' => $value );
+		}
+		if ( is_array( $value ) && wp_is_numeric_array( $value ) ) {
+			$value = reset( $value );
+		}
+		if ( is_array( $value ) && isset( $value['properties'] ) && function_exists( '\\ParseThis\\mf2_to_jf2' ) ) {
+			$value = \ParseThis\mf2_to_jf2( $value );
+		}
+		return sprintf(
+			'<fieldset id="%1$s" class="%2$s"><legend>%3$s</legend>%4$s</fieldset>',
+			esc_attr( $args['id'] ),
+			esc_attr( trim( 'kind-field-' . $args['type'] . ' ' . $args['class'] ) ),
+			esc_html( $args['label'] ),
+			self::render( $properties, is_array( $value ) ? $value : array(), $args['name'] )
+		);
+	}
+
+	/**
+	 * Returns a value as a string for a single input. Lists use their first value.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @param mixed $value Value.
+	 * @return string
+	 */
+	private static function scalar( $value ) {
+		while ( is_array( $value ) && ! empty( $value ) && wp_is_numeric_array( $value ) ) {
+			$value = reset( $value );
+		}
+		return is_scalar( $value ) ? (string) $value : '';
 	}
 
 	/**
@@ -580,65 +671,62 @@ class Kind_Fields {
 	/**
 	 * Checks a field definition and fills in defaults.
 	 *
+	 * A field needs a type, and a name or a label; each defaults to the other.
+	 * A type with no renderer is treated as text. Cite and venue fields need
+	 * 'properties', and select fields 'options'.
+	 *
 	 * @since 3.3.4
+	 * @since 4.0.2 A label is no longer required, and unsupported types become text.
 	 *
 	 * @param array $element Field definition.
 	 * @return array|false The field definition, or false if it is not valid.
 	 */
 	private static function validate( $element ) {
-		// Everything must have a type.
-		if ( ! self::get( 'type', $element ) ) {
+		if ( ! is_array( $element ) || ! self::get( 'type', $element ) ) {
 			return false;
 		}
-		// Everything must have a label.
-		if ( ! self::get( 'label', $element ) ) {
-			return false;
-		}
-		// If no name property then the label property copies over.
 		if ( ! self::get( 'name', $element ) ) {
+			if ( ! self::get( 'label', $element ) ) {
+				return false;
+			}
 			$element['name'] = sanitize_title( $element['label'] );
 		}
-		// If no label property then the name property copies over.
 		if ( ! self::get( 'label', $element ) ) {
 			$element['label'] = $element['name'];
 		}
-		// If no class property then the class property is set to empty.
+		if ( ! self::get( 'id', $element ) ) {
+			$element['id'] = self::field_id( $element['name'] );
+		}
 		if ( ! self::get( 'class', $element ) ) {
 			$element['class'] = '';
 		}
-		// Class can be an array.
 		if ( is_array( $element['class'] ) ) {
 			$element['class'] = implode( ' ', $element['class'] );
 		}
-		$type = self::get( 'type', $element );
-		// Any non supported type should be considered to be text.
-		if ( ! self::supported_type( $type ) ) {
-			$type = 'text';
+		if ( ! self::supported_type( $element['type'] ) ) {
+			$element['type'] = 'text';
 		}
-		// Type Specific Conditions.
-		switch ( $type ) {
+		switch ( $element['type'] ) {
 			case 'cite':
 			case 'venue':
-				if ( ! array_key_exists( 'properties', $element ) ) {
+				if ( ! is_array( self::get( 'properties', $element ) ) ) {
 					return false;
 				}
 				break;
 			case 'number':
 				if ( ! array_key_exists( 'step', $element ) ) {
-					$element['step'] = 1; // Defaults to Even Numbers.
+					$element['step'] = 1;
 				}
 				break;
 			case 'select':
-				if ( ! array_key_exists( 'options', $element ) ) {
+				if ( ! is_array( self::get( 'options', $element ) ) ) {
 					return false;
 				}
 				break;
 			case 'duration':
-				if ( array_key_exists( 'pieces', $element ) ) {
-					// Ensure only valid options.
-					$element['pieces'] = array_intersect( array( 'Y', 'M', 'D', 'H', 'I', 'S' ), $element['pieces'] );
-				} else {
-					// By default only show hours, minutes, seconds.
+				$pieces            = is_array( self::get( 'pieces', $element ) ) ? $element['pieces'] : array( 'H', 'I', 'S' );
+				$element['pieces'] = array_values( array_intersect( array( 'Y', 'M', 'D', 'H', 'I', 'S' ), $pieces ) );
+				if ( empty( $element['pieces'] ) ) {
 					$element['pieces'] = array( 'H', 'I', 'S' );
 				}
 				break;
@@ -647,82 +735,52 @@ class Kind_Fields {
 	}
 
 	/**
-	 * Whether a field type is supported.
+	 * Whether a field type is supported: whether there is a field_{type}() renderer for it.
 	 *
 	 * @since 3.3.4
+	 * @since 4.0.2 Derived from the field_*() methods.
 	 *
 	 * @param string $type Field type.
 	 * @return bool
 	 */
 	public static function supported_type( $type ) {
-		return in_array( $type, array( 'cite', 'venue', 'coordinate', 'author', 'datetime', 'duration', 'text', 'url', 'textarea', 'list', 'section' ), true );
-	}
-
-
-	/**
-	 * Returns the properties stored in mf2_ prefixed post meta, without the prefix.
-	 *
-	 * Reads the current post; the $post argument is not used.
-	 *
-	 * @since 3.3.4
-	 *
-	 * @param int|WP_Post $post Not used.
-	 * @return array|false The properties, or false if there is no current post.
-	 */
-	private function get_mf2meta( $post ) {
-		$post = get_post();
-		if ( ! $post ) {
-			return false;
-		}
-		$meta = get_post_meta( $post->ID );
-		if ( ! $meta ) {
-			return array();
-		}
-		foreach ( $meta as $key => $value ) {
-			if ( ! self::str_prefix( $key, 'mf2_' ) ) {
-				unset( $meta[ $key ] );
-			} else {
-				unset( $meta[ $key ] );
-				$key = str_replace( 'mf2_', '', $key );
-				// Do not save microput prefixed instructions.
-				if ( self::str_prefix( $key, 'mp-' ) ) {
-					continue;
-				}
-				$value = array_map( 'maybe_unserialize', $value );
-				if ( 1 === count( $value ) ) {
-					$value = array_shift( $value );
-				}
-				if ( is_string( $value ) ) {
-					$meta[ $key ] = array( $value );
-				} else {
-					$meta[ $key ] = $value;
-				}
-			}
-		}
-		return array_filter( $meta );
+		return is_string( $type ) && 1 === preg_match( '/^[a-z]+$/', $type ) && method_exists( static::class, 'field_' . $type );
 	}
 
 	/**
-	 * Renders a form from a field schema.
+	 * Renders form fields from a field schema.
+	 *
+	 * Fields are named mf2_{property}. Nested fields (an author, citation or
+	 * venue) and the parts of a date or duration are named with sub-keys, such
+	 * as mf2_in-reply-to[author][name], so form data arrives structured.
+	 * Invalid field definitions are skipped.
 	 *
 	 * @since 3.3.4
+	 * @since 4.0.2 Added the $parent parameter; fields are named with sub-keys and escaped.
 	 *
-	 * @param array $schema Field definitions, keyed by property.
-	 * @param array $values Optional. Values, keyed by property. Default empty array.
-	 * @return string The form.
+	 * @param array  $schema Field definitions, keyed by property.
+	 * @param array  $values Optional. Values as jf2, keyed by property. Default empty array.
+	 * @param string $parent Optional. Name of the field these are nested in. Default empty, for top-level fields.
+	 * @return string The fields.
 	 */
-	public static function render( $schema, $values = array() ) {
+	public static function render( $schema, $values = array(), $parent = '' ) {
 		$return = array();
-		foreach ( $schema as $key => $args ) {
-			$args['name'] = sanitize_title( $key );
-			$args         = self::validate( $args );
+		foreach ( (array) $schema as $key => $args ) {
+			if ( ! is_array( $args ) ) {
+				continue;
+			}
+			$key          = sanitize_key( $key );
+			$args['name'] = '' === $parent ? 'mf2_' . $key : $parent . '[' . $key . ']';
+			unset( $args['id'] );
+			// A field without a label is labelled with its property, not its field name.
+			if ( ! self::get( 'label', $args ) ) {
+				$args['label'] = $key;
+			}
+			$args = self::validate( $args );
 			if ( ! $args ) {
-				break;
+				continue;
 			}
-			$type = self::get( 'type', $args );
-			if ( $type ) {
-				$return[] = call_user_func( array( get_called_class(), 'field_' . $type ), $args, self::get( $key, $values ) );
-			}
+			$return[] = call_user_func( array( static::class, 'field_' . $args['type'] ), $args, self::get( $key, $values ) );
 		}
 		return implode( '<br />', $return );
 	}
