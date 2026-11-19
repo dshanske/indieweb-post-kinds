@@ -131,10 +131,14 @@ class GlobalFunctionsTest extends WP_UnitTestCase {
 	}
 
 	public function test_tz_timezone_to_seconds() {
-		$this->markTestSkipped( 'tz_timezone_to_seconds() always fails: DateTimeZone::getOffset() needs a date (#531).' );
-
+		// #531: it used to fail on every call.
 		$this->assertSame( 0, tz_timezone_to_seconds( 'UTC' ) );
 		$this->assertSame( -18000, tz_timezone_to_seconds( '-05:00' ) );
+		$this->assertSame( 19800, tz_timezone_to_seconds( 'Asia/Kolkata' ) );
+		$this->assertContains( tz_timezone_to_seconds( 'America/New_York' ), array( -18000, -14400 ) );
+		$this->assertFalse( tz_timezone_to_seconds( 'Not/AZone' ) );
+		$this->assertFalse( tz_timezone_to_seconds( '' ) );
+		$this->assertFalse( tz_timezone_to_seconds( null ) );
 	}
 
 	public function test_build_iso8601_time_without_a_date_or_time() {
