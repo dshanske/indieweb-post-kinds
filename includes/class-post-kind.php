@@ -87,9 +87,11 @@ final class Post_Kind implements JsonSerializable {
 	public $description_url;
 
 	/**
-	 * Whether the kind should have an explicit title.
+	 * Whether the kind has a title: whether its properties include a name field.
 	 *
 	 * @since 3.1.0
+	 * @deprecated 4.0.2 A kind has a title when its properties include 'name'.
+	 *             Read for compatibility; it reflects the properties.
 	 * @var bool
 	 */
 	public $title;
@@ -169,6 +171,20 @@ final class Post_Kind implements JsonSerializable {
 			'property'      => '',
 		);
 		$args     = wp_parse_args( $args, $defaults );
+		if ( ! is_array( $args['properties'] ?? null ) ) {
+			$args['properties'] = array();
+		}
+		if ( array_key_exists( 'title', $args ) ) {
+			_deprecated_argument(
+				'register_post_kind',
+				'4.0.2',
+				esc_html__( 'The title argument is deprecated. A kind has a title when its properties include a name field, such as Kind_Fields::title_field().', 'indieweb-post-kinds' )
+			);
+			if ( $args['title'] && ! isset( $args['properties']['name'] ) ) {
+				$args['properties'] = array_merge( array( 'name' => Kind_Fields::title_field() ), $args['properties'] );
+			}
+			unset( $args['title'] );
+		}
 		foreach ( $args as $property_name => $property_value ) {
 			if ( 'extra' !== $property_name && property_exists( $this, $property_name ) ) {
 				$this->$property_name = $property_value;
@@ -176,6 +192,7 @@ final class Post_Kind implements JsonSerializable {
 				$this->extra[ $property_name ] = $property_value;
 			}
 		}
+		$this->title = isset( $this->properties['name'] );
 	}
 
 	/**
