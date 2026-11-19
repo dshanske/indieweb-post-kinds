@@ -122,19 +122,27 @@ if ( ! function_exists( 'tz_seconds_to_timezone' ) ) {
 
 if ( ! function_exists( 'tz_timezone_to_seconds' ) ) {
 	/**
-	 * Returns a time zone's UTC offset in seconds.
+	 * Returns a time zone's current UTC offset in seconds.
+	 *
+	 * The offset of a named time zone depends on the date, because of daylight
+	 * saving time, so it is the offset now.
 	 *
 	 * @since 3.2.2
+	 * @since 4.0.2 Works: it used to fail on every call.
 	 *
-	 * @param string $timezone Time zone name or offset string.
+	 * @param string $timezone Time zone name or offset string, such as 'America/New_York' or '-05:00'.
 	 * @return int|false Offset in seconds, or false if the time zone is not valid.
 	 */
 	function tz_timezone_to_seconds( $timezone ) {
-		$tz = timezone_open( $timezone );
-		if ( $tz ) {
-			return $tz->getOffset();
+		if ( ! is_string( $timezone ) || '' === trim( $timezone ) ) {
+			return false;
 		}
-		return false;
+		try {
+			$tz = new DateTimeZone( trim( $timezone ) );
+		} catch ( Exception $e ) {
+			return false;
+		}
+		return $tz->getOffset( new DateTime( 'now', $tz ) );
 	}
 }
 
