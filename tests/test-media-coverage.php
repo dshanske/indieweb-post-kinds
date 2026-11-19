@@ -63,30 +63,45 @@ class MediaCoverageTest extends WP_UnitTestCase {
 				'title'      => "Caf\xc3\xa9",
 				'album'      => 'Plain ASCII',
 				'length'     => 3,
-				'image_meta' => array( 'credit' => 'Ann' ),
+				'image_meta' => array( 'credit' => "Jos\xc3\xa9" ),
 			),
 			Kind_Media_Metadata::wp_sanitize_media_metadata(
 				array(
 					'title'      => "Caf\xe9",
 					'album'      => 'Plain ASCII',
 					'length'     => 3,
-					'image_meta' => array( 'credit' => 'Ann' ),
+					'image_meta' => array( 'credit' => "Jos\xe9" ),
 				)
 			)
 		);
 	}
 
 	public function test_sanitize_media_metadata_keeps_utf8() {
-		$this->markTestSkipped( 'Attachment metadata: UTF-8 text is double-encoded on save (#532).' );
-
+		// #532: valid UTF-8 used to be read as ISO-8859-1 and double-encoded.
 		$metadata = array(
-			'title'  => 'Café',
-			'artist' => '東京',
+			'title'      => 'Café',
+			'artist'     => '東京',
+			'file'       => '2024/01/crème-brûlée.jpg',
+			'image_meta' => array( 'caption' => 'Ünïcödé' ),
 		);
 		$this->assertSame( $metadata, Kind_Media_Metadata::wp_sanitize_media_metadata( $metadata ) );
 	}
 
-	public function test_generated_metadata_credit_becomes_the_artist() {
+	public function test_saved_attachment_metadata_keeps_utf8() {
+		$audio = $this->attachment( 'pk-utf8.mp3', 'audio/mpeg' );
+		wp_update_attachment_metadata(
+			$audio,
+			array(
+				'title'  => 'Café',
+				'artist' => '東京',
+			)
+		);
+		$saved = wp_get_attachment_metadata( $audio );
+		$this->assertSame( 'Café', $saved['title'] );
+		$this->assertSame( '東京', $saved['artist'] );
+	}
+
+		public function test_generated_metadata_credit_becomes_the_artist() {
 		$image = $this->attachment( 'pk-credit.jpg', 'image/jpeg' );
 		$this->assertSame( 'not an array', Kind_Media_Metadata::wp_generate_attachment_metadata( 'not an array', $image ) );
 

@@ -339,32 +339,37 @@ class Kind_Media_Metadata {
 	}
 
 	/**
-	 * Sanitizes metadata extracted from media files.
-	 * https://core.trac.wordpress.org/ticket/46800
-	 * Currently only binary strings are sanitized with focus on preventing propagation of
-	 * bad character encodings from causing database calls and API endpoints to fail.
+	 * Converts text in metadata extracted from media files to UTF-8.
+	 *
+	 * Text that isn't valid UTF-8, such as ISO-8859-1 from older ID3 tags, is
+	 * converted so it doesn't break database writes or the REST API
+	 * (https://core.trac.wordpress.org/ticket/46800). Valid UTF-8 is left
+	 * alone. Nested arrays, such as image_meta, are converted too.
 	 *
 	 * @since 3.3.0
+	 * @since 4.0.2 Valid UTF-8 is no longer converted again, and nested arrays are handled.
 	 *
-	 * @param array $metadata An existing array with data.
-	 *
-	 * @return array Returns array of sanitized metadata.
+	 * @param array $metadata Attachment metadata.
+	 * @return array The metadata.
 	 */
 	public static function wp_sanitize_media_metadata( $metadata ) {
 		if ( ! is_array( $metadata ) ) {
-				return $metadata;
+			return $metadata;
 		}
 		foreach ( $metadata as $name => $value ) {
-			if ( ! is_string( $value ) ) {
-				continue;
-			}
 			if ( is_array( $value ) ) {
-				$value = wp_sanitize_media_metadata( $value );
-			} elseif ( is_string( $value ) && preg_match( '~[^\x20-\x7E\t\r\n]~', $value ) > 0 ) {
-				$encoding = mb_detect_encoding( $value, 'ISO-8859-1, UCS-2' );
-				$value    = $encoding ? mb_convert_encoding( $value, 'UTF-8', $encoding ) : $value;
+				$metadata[ $name ] = self::wp_sanitize_media_metadata( $value );
+			} elseif ( is_string( $value ) && '' !== $value && '' === wp_check_invalid_utf8( $value ) ) {
+				// Not valid UTF-8: read it as ISO-8859-1, the encoding of ID3v1 tags.
+				if ( function_exists( 'mb_convert_encoding' ) ) {
+					$metadata[ $name ] = mb_convert_encoding( $value, 'UTF-8', 'ISO-8859-1' );
+				} elseif ( function_exists( 'iconv' ) ) {
+					$converted         = iconv( 'ISO-8859-1', 'UTF-8', $value );
+					$metadata[ $name ] = false === $converted ? wp_check_invalid_utf8( $value, true ) : $converted;
+				} else {
+					$metadata[ $name ] = wp_check_invalid_utf8( $value, true );
+				}
 			}
-			$metadata[ $name ] = $value;
 		}
 		return $metadata;
 	}
