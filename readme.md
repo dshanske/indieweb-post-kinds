@@ -1,7 +1,7 @@
 # Post Kinds #
 **Contributors:** [dshanske](https://profiles.wordpress.org/dshanske)  
 **Tags:** indieweb, interaction, posts, webmention, share, like, scrobble  
-**Stable tag:** 4.0.1  
+**Stable tag:** 4.0.2  
 **Requires at least:** 6.2  
 **Requires PHP:** 7.4  
 **Tested up to:** 7.1  
@@ -309,7 +309,7 @@ The template functions, hooks and view variables are listed in the [developer no
 
 ## Changelog ##
 
-### 4.0.2 ( unreleased ) ###
+### 4.0.2 ( 2026-11-18 ) ###
 * Update the bundled Parse This to 2.0.1, with fixes to how citations are read from microformats, JSON-LD, meta tags, RSS and the WordPress REST API, and updated php-mf2 and HTML5 parsers
 * Fix accented and non-Latin text in media metadata, such as an audio file's title or artist, being garbled when it was saved ("Café" became "CafÃ©"). Metadata already saved this way isn't repaired
 * Fix category and tag archives linked by ID (`?cat=5`, the default on sites with plain permalinks) having an empty title and causing PHP warnings
@@ -317,6 +317,8 @@ The template functions, hooks and view variables are listed in the [developer no
 * Fix the `tz_timezone_to_seconds()` helper, which failed on every call (a fatal error on PHP 8)
 * Every kind shown in the editor except photo, video and audio now has a field schema (returned by the `post-kinds/1.0/fields` REST route), built from shared field sets; citations are marked required, and ratings, times and read status are optional fields. The checkin schema is a place reference (name and URL); its unused address and coordinate fields are removed. This is groundwork for editors driven by the schema
 * Deprecate the `title` argument of `register_post_kind()`: a kind has a title when its properties include a `name` field. Passing `'title' => true` still works and adds one
+* `Kind_Fields`, which builds editor fields from a kind's schema, now works: fields render escaped, with structured names (`mf2_in-reply-to[name]`); `rebuild_data()` reassembles submitted fields; the new `sanitize()` validates values by field type for any editor or REST client; and fields can be marked required, with `missing()` listing the empty ones. Its time zone list uses current names
+* Code coverage is measured in CI, and the test suite now covers about 92% of the plugin's code
 
 ### 4.0.1 ( 2026-10-28 ) ###
 * Fix the kind label disappearing from feeds when Kind Display is set to icon; feeds show the kind's name instead. Add the `kind_display_icons` filter, so other output that can't show icons, such as email, gets the name too
