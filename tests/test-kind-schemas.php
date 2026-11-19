@@ -5,6 +5,22 @@
  */
 class KindSchemasTest extends WP_UnitTestCase {
 	/**
+	 * The built-in kinds: other tests register kinds of their own, prefixed pk-.
+	 *
+	 * @return string[]
+	 */
+	private function built_in_kinds() {
+		return array_values(
+			array_filter(
+				Kind_Taxonomy::get_kind_list(),
+				function ( $kind ) {
+					return 0 !== strpos( $kind, 'pk-' );
+				}
+			)
+		);
+	}
+
+	/**
 	 * Collects the problems in a schema: fields without a label, or with a type
 	 * Kind_Fields has no renderer for.
 	 *
@@ -31,7 +47,7 @@ class KindSchemasTest extends WP_UnitTestCase {
 
 	public function test_every_field_has_a_label_and_a_supported_type() {
 		$problems = array();
-		foreach ( Kind_Taxonomy::get_kind_list() as $kind ) {
+		foreach ( $this->built_in_kinds() as $kind ) {
 			$schema = Kind_Taxonomy::get_kind_info( $kind, 'properties' );
 			if ( is_array( $schema ) ) {
 				$problems = array_merge( $problems, $this->problems( $schema, $kind ) );
@@ -43,7 +59,7 @@ class KindSchemasTest extends WP_UnitTestCase {
 	public function test_shown_kinds_have_a_schema() {
 		// Photo, video, audio and checkin wait for their own design (#542); a note has no fields.
 		$waiting = array( 'photo', 'video', 'audio', 'checkin', 'note' );
-		foreach ( Kind_Taxonomy::get_kind_list() as $kind ) {
+		foreach ( $this->built_in_kinds() as $kind ) {
 			$info = Kind_Taxonomy::get_post_kind_info( $kind );
 			if ( ! $info->show || in_array( $kind, $waiting, true ) ) {
 				continue;
@@ -53,7 +69,7 @@ class KindSchemasTest extends WP_UnitTestCase {
 	}
 
 	public function test_citations_are_required_and_other_fields_optional() {
-		foreach ( Kind_Taxonomy::get_kind_list() as $kind ) {
+		foreach ( $this->built_in_kinds() as $kind ) {
 			$info = Kind_Taxonomy::get_post_kind_info( $kind );
 			foreach ( $info->properties as $key => $field ) {
 				if ( 'cite' === $field['type'] ) {
@@ -89,7 +105,7 @@ class KindSchemasTest extends WP_UnitTestCase {
 	}
 
 	public function test_title_comes_from_a_name_field() {
-		foreach ( Kind_Taxonomy::get_kind_list() as $kind ) {
+		foreach ( $this->built_in_kinds() as $kind ) {
 			$info = Kind_Taxonomy::get_post_kind_info( $kind );
 			$this->assertSame( isset( $info->properties['name'] ), $info->title, $kind );
 		}
