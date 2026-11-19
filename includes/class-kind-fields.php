@@ -27,7 +27,8 @@ defined( 'ABSPATH' ) || exit;
  * - author: a name, URL and photo.
  * - cite, venue: nested fields in `properties`.
  *
- * Any other type is treated as text.
+ * Any other type is treated as text. Any field can have `required` set to
+ * true; fields are optional otherwise. See missing().
  *
  * @since 3.3.4
  */
@@ -346,9 +347,38 @@ class Kind_Fields {
 		return sprintf(
 			'<label for="%1$s" class="%2$s">%3$s',
 			esc_attr( $for ?? $args['id'] ),
-			esc_attr( $args['class'] ),
+			esc_attr( self::classes( $args ) ),
 			esc_html( $args['label'] )
 		);
+	}
+
+	/**
+	 * Returns a field's classes, with kind-field-required added for a required field.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @param array  $args  Field arguments, as returned by validate().
+	 * @param string $extra Optional. Classes to add first. Default empty.
+	 * @return string
+	 */
+	private static function classes( $args, $extra = '' ) {
+		$classes = array( $extra, $args['class'], empty( $args['required'] ) ? '' : 'kind-field-required' );
+		return implode( ' ', array_filter( array_map( 'trim', $classes ), 'strlen' ) );
+	}
+
+	/**
+	 * Returns the aria-required attribute for a required field, or an empty string.
+	 *
+	 * The HTML required attribute isn't used: it would stop a draft from being
+	 * saved while the field is empty.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @param array $args Field arguments, as returned by validate().
+	 * @return string
+	 */
+	private static function aria_required( $args ) {
+		return empty( $args['required'] ) ? '' : ' aria-required="true"';
 	}
 
 	/**
@@ -370,7 +400,7 @@ class Kind_Fields {
 		}
 		$return   = array();
 		$return[] = self::label( $args, $args['id'] . '-date' );
-		$return[] = sprintf( '<input type="date" name="%1$s[date]" id="%2$s-date" value="%3$s" />', esc_attr( $args['name'] ), esc_attr( $args['id'] ), esc_attr( $time['date'] ?? '' ) );
+		$return[] = sprintf( '<input type="date" name="%1$s[date]" id="%2$s-date" value="%3$s"%4$s />', esc_attr( $args['name'] ), esc_attr( $args['id'] ), esc_attr( $time['date'] ?? '' ), self::aria_required( $args ) );
 		$return[] = sprintf( '<input type="time" name="%1$s[time]" id="%2$s-time" step="1" value="%3$s" />', esc_attr( $args['name'] ), esc_attr( $args['id'] ), esc_attr( $time['time'] ?? '' ) );
 		$return[] = sprintf( '<select name="%1$s[offset]" id="%2$s-offset">', esc_attr( $args['name'] ), esc_attr( $args['id'] ) );
 		foreach ( self::get_offset_list() as $offset ) {
@@ -470,7 +500,7 @@ class Kind_Fields {
 	public static function field_select( $args, $selected ) {
 		$return   = array();
 		$return[] = self::label( $args );
-		$return[] = sprintf( '<select name="%1$s" id="%2$s">', esc_attr( $args['name'] ), esc_attr( $args['id'] ) );
+		$return[] = sprintf( '<select name="%1$s" id="%2$s"%3$s>', esc_attr( $args['name'] ), esc_attr( $args['id'] ), self::aria_required( $args ) );
 		$return[] = '<option value=""></option>';
 		foreach ( $args['options'] as $key => $value ) {
 			$return[] = sprintf( '<option value="%1$s"%2$s>%3$s</option>', esc_attr( $key ), selected( (string) $key, (string) self::scalar( $selected ), false ), esc_html( $value ) );
@@ -495,7 +525,7 @@ class Kind_Fields {
 			PHP_EOL,
 			array(
 				self::label( $args ),
-				sprintf( '<input name="%1$s" id="%2$s" type="%3$s" value="%4$s"%5$s />', esc_attr( $args['name'] ), esc_attr( $args['id'] ), esc_attr( $type ), esc_attr( self::scalar( $value ) ), $extra ),
+				sprintf( '<input name="%1$s" id="%2$s" type="%3$s" value="%4$s"%5$s%6$s />', esc_attr( $args['name'] ), esc_attr( $args['id'] ), esc_attr( $type ), esc_attr( self::scalar( $value ) ), $extra, self::aria_required( $args ) ),
 				'</label>',
 			)
 		);
@@ -557,7 +587,7 @@ class Kind_Fields {
 			PHP_EOL,
 			array(
 				self::label( $args ),
-				sprintf( '<textarea name="%1$s" id="%2$s">%3$s</textarea>', esc_attr( $args['name'] ), esc_attr( $args['id'] ), esc_textarea( self::scalar( $value ) ) ),
+				sprintf( '<textarea name="%1$s" id="%2$s"%3$s>%4$s</textarea>', esc_attr( $args['name'] ), esc_attr( $args['id'] ), self::aria_required( $args ), esc_textarea( self::scalar( $value ) ) ),
 				'</label>',
 			)
 		);
@@ -628,7 +658,7 @@ class Kind_Fields {
 		return sprintf(
 			'<fieldset id="%1$s" class="%2$s"><legend>%3$s</legend>%4$s</fieldset>',
 			esc_attr( $args['id'] ),
-			esc_attr( trim( 'kind-field-' . $args['type'] . ' ' . $args['class'] ) ),
+			esc_attr( self::classes( $args, 'kind-field-' . $args['type'] ) ),
 			esc_html( $args['label'] ),
 			self::render( $properties, is_array( $value ) ? $value : array(), $args['name'] )
 		);
@@ -716,6 +746,7 @@ class Kind_Fields {
 		if ( is_array( $element['class'] ) ) {
 			$element['class'] = implode( ' ', $element['class'] );
 		}
+		$element['required'] = ! empty( $element['required'] );
 		if ( ! self::supported_type( $element['type'] ) ) {
 			$element['type'] = 'text';
 		}
@@ -1088,6 +1119,57 @@ class Kind_Fields {
 		);
 		$spec  = Kind_Time::build_interval( $parts );
 		return '' === $spec ? null : $spec;
+	}
+
+	/**
+	 * Returns the required fields that have no value.
+	 *
+	 * Pass values as returned by sanitize(), so invalid values count as
+	 * missing. A required cite, venue or author is filled in when it has at
+	 * least one property, such as a URL or a name. Required fields nested in
+	 * a cite or venue are checked only when it has a value.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @param array  $schema Field definitions, keyed by property.
+	 * @param array  $values Values, keyed by property.
+	 * @param string $parent Optional. Path of the field these are nested in. Default empty.
+	 * @return string[] Paths of the missing fields, such as 'in-reply-to' or 'in-reply-to.url'.
+	 */
+	public static function missing( $schema, $values, $parent = '' ) {
+		$missing = array();
+		if ( ! is_array( $schema ) ) {
+			return $missing;
+		}
+		$values = is_array( $values ) ? $values : array();
+		foreach ( $schema as $key => $args ) {
+			if ( ! is_array( $args ) ) {
+				continue;
+			}
+			$args['name'] = $key;
+			if ( ! self::get( 'label', $args ) ) {
+				$args['label'] = $key;
+			}
+			$args = self::validate( $args );
+			if ( ! $args ) {
+				continue;
+			}
+			$path  = '' === $parent ? (string) $key : $parent . '.' . $key;
+			$value = array_key_exists( $key, $values ) ? $values[ $key ] : null;
+			if ( self::is_empty( $value ) ) {
+				if ( $args['required'] ) {
+					$missing[] = $path;
+				}
+				continue;
+			}
+			if ( in_array( $args['type'], array( 'cite', 'venue' ), true ) && is_array( $value ) ) {
+				$items = wp_is_numeric_array( $value ) ? $value : array( $value );
+				foreach ( $items as $item ) {
+					$missing = array_merge( $missing, self::missing( $args['properties'], $item, $path ) );
+				}
+			}
+		}
+		return array_values( array_unique( $missing ) );
 	}
 
 	/**
