@@ -298,56 +298,13 @@ register_post_kind(
 		'name'            => __( 'Checkins', 'indieweb-post-kinds' ),
 		'verb'            => __( 'Checked into', 'indieweb-post-kinds' ),
 		'property'        => 'checkin',
+		// A place reference, like a citation. Location details are left to Simple Location when it's active (#553).
 		'properties'      => array(
 			'checkin' => array(
 				'type'       => 'venue',
 				'label'      => __( 'Checked In', 'indieweb-post-kinds' ),
-				'properties' => array(
-					'name'           => array(
-						'type'  => 'text',
-						'label' => __( 'Name', 'indieweb-post-kinds' ),
-					),
-					'url'            => array(
-						'type'  => 'url',
-						'label' => __( 'URL', 'indieweb-post-kinds' ),
-					),
-					'latitude'       => array(
-						'type'  => 'number',
-						'label' => __(
-							'Latitude',
-							'indieweb-post-kinds'
-						),
-						'step'  => 0.0000001,
-					),
-					'longitude'      => array(
-						'type'  => 'number',
-						'label' => __(
-							'Longitude',
-							'indieweb-post-kinds'
-						),
-						'step'  => 0.0000001,
-					),
-					'street-address' => array(
-						'type'  => 'text',
-						'label' => __( 'Street Address', 'indieweb-post-kinds' ),
-					),
-					'locality'       => array(
-						'type'  => 'text',
-						'label' => __( 'Locality', 'indieweb-post-kinds' ),
-					),
-					'region'         => array(
-						'type'  => 'text',
-						'label' => __( 'Region', 'indieweb-post-kinds' ),
-					),
-					'country-name'   => array(
-						'type'  => 'text',
-						'label' => __( 'Country Name', 'indieweb-post-kinds' ),
-					),
-					'postal-code'    => array(
-						'type'  => 'text',
-						'label' => __( 'Postal Code', 'indieweb-post-kinds' ),
-					),
-				),
+				'required'   => true,
+				'properties' => wp_array_slice_assoc( Kind_Fields::cite_properties(), array( 'name', 'url' ) ),
 			),
 		),
 		'format'          => 'status',

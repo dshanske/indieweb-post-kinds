@@ -57,8 +57,8 @@ class KindSchemasTest extends WP_UnitTestCase {
 	}
 
 	public function test_shown_kinds_have_a_schema() {
-		// Photo, video, audio and checkin wait for their own design (#542); a note has no fields.
-		$waiting = array( 'photo', 'video', 'audio', 'checkin', 'note' );
+		// Photo, video and audio wait for their own design (#542); a note has no fields.
+		$waiting = array( 'photo', 'video', 'audio', 'note' );
 		foreach ( $this->built_in_kinds() as $kind ) {
 			$info = Kind_Taxonomy::get_post_kind_info( $kind );
 			if ( ! $info->show || in_array( $kind, $waiting, true ) ) {
@@ -72,7 +72,7 @@ class KindSchemasTest extends WP_UnitTestCase {
 		foreach ( $this->built_in_kinds() as $kind ) {
 			$info = Kind_Taxonomy::get_post_kind_info( $kind );
 			foreach ( $info->properties as $key => $field ) {
-				if ( 'cite' === $field['type'] ) {
+				if ( in_array( $field['type'], array( 'cite', 'venue' ), true ) ) {
 					$this->assertTrue( $field['required'], "$kind.$key" );
 				} elseif ( 'rsvp' !== $key ) {
 					$this->assertEmpty( $field['required'] ?? false, "$kind.$key" );
@@ -153,5 +153,37 @@ class KindSchemasTest extends WP_UnitTestCase {
 		$field = Kind_Fields::cite_field( 'Optional', array(), false );
 		$this->assertSame( 'cite', $field['type'] );
 		$this->assertFalse( $field['required'] );
+	}
+
+	public function test_checkin_is_a_place_reference() {
+		$schema = Kind_Taxonomy::get_kind_info( 'checkin', 'properties' );
+		$this->assertSame( array( 'checkin' ), array_keys( $schema ) );
+		$this->assertSame( 'venue', $schema['checkin']['type'] );
+		$this->assertTrue( $schema['checkin']['required'] );
+		$this->assertSame( array( 'name', 'url' ), array_keys( $schema['checkin']['properties'] ) );
+
+		$this->assertSame( array( 'checkin' ), Kind_Fields::missing( $schema, Kind_Fields::sanitize( $schema, array() ) ) );
+		$this->assertSame(
+			array(
+				'checkin' => array(
+					'name' => 'City Hall',
+					'url'  => 'https://example.com/venue/city-hall',
+				),
+			),
+			Kind_Fields::sanitize(
+				$schema,
+				array(
+					'checkin' => array(
+						'type'       => array( 'h-card' ),
+						'properties' => array(
+							'name'      => array( 'City Hall' ),
+							'url'       => array( 'https://example.com/venue/city-hall' ),
+							'latitude'  => array( '40.7' ),
+							'longitude' => array( '-74.0' ),
+						),
+					),
+				)
+			)
+		);
 	}
 }
