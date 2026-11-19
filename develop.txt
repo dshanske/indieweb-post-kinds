@@ -24,6 +24,8 @@ These global functions are loaded on `plugins_loaded`, from `includes/kind-funct
 `register_post_kind( $slug, $args )` - Registers a kind. Call it on `init`. `includes/register-kinds.php` registers the built-in kinds the same way, and Kind_Taxonomy::register_post_kind() documents every argument.
 `set_post_kind_visibility( $slug, $show = true )` - Shows or hides a kind in Settings, including the kinds reserved for future use.
 
+A kind's `properties` argument is its field schema: the microformats properties an editor offers for it, keyed by property, as Kind_Fields documents. Fields are optional unless they set `'required' => true`; a kind that responds to something should make its citation required. A `name` field means the kind has a title. Kind_Fields provides the shared field sets the built-in kinds use: `cite_field()` (with overrides to relabel, remove or add citation fields), `title_field()`, `rating_field()`, `rsvp_field()`, `read_status_field()` and `time_fields()`. `Kind_Fields::sanitize()` and `Kind_Fields::missing()` sanitize submitted values and list the required fields that are empty.
+
 == Time functions ==
 
 Also global, from `includes/time-functions.php`.
@@ -121,6 +123,7 @@ These still work, but report a deprecation notice when WP_DEBUG is on.
 
 * Since 4.0.0, the global functions `display_formatted_datetime()`, `divide_datetime()`, `build_datetime()`, `get_datetime_offset()`, `divide_interval()` and `build_interval()`. Use the Kind_Time methods of the same names. They will be removed in 5.0.0.
 * Since 4.0.0, the `MF2_Post` class. Use Kind_Post. It will be removed in a future major version.
+* Since 4.0.2, the `title` argument of `register_post_kind()`. Add a `name` field to the kind's properties instead, such as `Kind_Fields::title_field()`. `'title' => true` still adds one, and `Post_Kind::$title` reflects whether the properties have a name field.
 
 == Styling icons ==
 

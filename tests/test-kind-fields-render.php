@@ -188,7 +188,7 @@ class KindFieldsRenderTest extends WP_UnitTestCase {
 				),
 			)
 		);
-		$this->assertStringContainsString( '<fieldset id="mf2_in-reply-to" class="kind-field-cite"><legend>In Reply To</legend>', $html );
+		$this->assertStringContainsString( '<fieldset id="mf2_in-reply-to" class="kind-field-cite kind-field-required"><legend>In Reply To</legend>', $html );
 		$this->assertStringContainsString( 'name="mf2_in-reply-to[name]" id="mf2_in-reply-to-name" type="text" value="A Post"', $html );
 		$this->assertStringContainsString( 'name="mf2_in-reply-to[author][name]" id="mf2_in-reply-to-author-name" type="text" value="Ann"', $html );
 		$this->assertStringContainsString( 'name="mf2_in-reply-to[published][date]"', $html );

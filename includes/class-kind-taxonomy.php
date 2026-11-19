@@ -1310,13 +1310,15 @@ final class Kind_Taxonomy {
 	 *     @type string $name            General name for the kind, plural. Default the slug.
 	 *     @type string $verb            The verb or action, such as 'Liked'. Default the slug.
 	 *     @type string $property        Microformats 2 property, such as 'like-of'. Default empty.
-	 *     @type array  $properties      The fields for the kind. See Kind_Fields.
+	 *     @type array  $properties      The fields for the kind, keyed by property. See Kind_Fields. A
+	 *                                   'name' field means the kind has a title.
 	 *     @type string $format          Post format that maps to this kind. Default 'standard'.
 	 *     @type string $icon            Icon name. Default the slug.
 	 *     @type string $description     Description of the kind.
 	 *     @type string $description_url Link to more information.
 	 *     @type string $shortlink       Shortlink code for the kind.
-	 *     @type bool   $title           Whether the kind should have an explicit title.
+	 *     @type bool   $title           Deprecated since 4.0.2: add a name field to the properties
+	 *                                   instead (Kind_Fields::title_field()). True adds one.
 	 *     @type bool   $show            Whether to show the kind in Settings. Default false.
 	 * }
 	 * @return bool True if the kind was registered, false if it already exists.

@@ -315,6 +315,8 @@ The template functions, hooks and view variables are listed in the [developer no
 * Fix category and tag archives linked by ID (`?cat=5`, the default on sites with plain permalinks) having an empty title and causing PHP warnings
 * The embed template for a kind is now named after its slug (`embed-post-like.php`), so it no longer depends on the site's language. The old name (`embed-post-Like.php`) still works
 * Fix the `tz_timezone_to_seconds()` helper, which failed on every call (a fatal error on PHP 8)
+* Every kind shown in the editor except photo, video, audio and checkin now has a field schema (returned by the `post-kinds/1.0/fields` REST route), built from shared field sets; citations are marked required, and ratings, times and read status are optional fields. This is groundwork for editors driven by the schema
+* Deprecate the `title` argument of `register_post_kind()`: a kind has a title when its properties include a `name` field. Passing `'title' => true` still works and adds one
 
 ### 4.0.1 ( 2026-10-28 ) ###
 * Fix the kind label disappearing from feeds when Kind Display is set to icon; feeds show the kind's name instead. Add the `kind_display_icons` filter, so other output that can't show icons, such as email, gets the name too

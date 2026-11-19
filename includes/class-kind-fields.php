@@ -474,6 +474,189 @@ class Kind_Fields {
 	}
 
 	/**
+	 * Returns the fields of a citation, for a kind's schema.
+	 *
+	 * The fields are name, url, author, summary, publication, published,
+	 * updated, category (tags) and featured. Overrides change them by key:
+	 * false removes a field, an array is merged into its definition (to
+	 * relabel it, for example), and a new key adds a field.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @param array $overrides Optional. Changes to the fields, keyed by property. Default empty array.
+	 * @return array Field definitions, keyed by property.
+	 */
+	public static function cite_properties( $overrides = array() ) {
+		$properties = array(
+			'name'        => array(
+				'type'  => 'text',
+				'label' => __( 'Name', 'indieweb-post-kinds' ),
+			),
+			'url'         => array(
+				'type'  => 'url',
+				'label' => __( 'URL', 'indieweb-post-kinds' ),
+			),
+			'author'      => array(
+				'type'  => 'author',
+				'label' => __( 'Author', 'indieweb-post-kinds' ),
+			),
+			'summary'     => array(
+				'type'  => 'textarea',
+				'label' => __( 'Summary', 'indieweb-post-kinds' ),
+			),
+			'publication' => array(
+				'type'  => 'text',
+				'label' => __( 'Publication/Website', 'indieweb-post-kinds' ),
+			),
+			'published'   => array(
+				'type'  => 'datetime',
+				'label' => __( 'Publish Date', 'indieweb-post-kinds' ),
+			),
+			'updated'     => array(
+				'type'  => 'datetime',
+				'label' => __( 'Updated Time', 'indieweb-post-kinds' ),
+			),
+			'category'    => array(
+				'type'  => 'list',
+				'label' => __( 'Tags', 'indieweb-post-kinds' ),
+			),
+			'featured'    => array(
+				'type'  => 'url',
+				'label' => __( 'Featured Media', 'indieweb-post-kinds' ),
+			),
+		);
+		foreach ( (array) $overrides as $key => $override ) {
+			if ( false === $override ) {
+				unset( $properties[ $key ] );
+			} elseif ( is_array( $override ) ) {
+				$properties[ $key ] = isset( $properties[ $key ] ) ? array_merge( $properties[ $key ], $override ) : $override;
+			}
+		}
+		return $properties;
+	}
+
+	/**
+	 * Returns a citation field, for a kind's schema.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @param string $label     Label, such as 'In Reply To'.
+	 * @param array  $overrides Optional. Changes to the citation's fields; see cite_properties(). Default empty array.
+	 * @param bool   $required  Optional. Whether the citation is required. Default true: a response needs something to respond to.
+	 * @return array Field definition.
+	 */
+	public static function cite_field( $label, $overrides = array(), $required = true ) {
+		return array(
+			'type'       => 'cite',
+			'label'      => $label,
+			'required'   => (bool) $required,
+			'properties' => self::cite_properties( $overrides ),
+		);
+	}
+
+	/**
+	 * Returns the title field, for kinds that show a title.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @return array Field definition.
+	 */
+	public static function title_field() {
+		return array(
+			'type'  => 'text',
+			'label' => __( 'Title', 'indieweb-post-kinds' ),
+		);
+	}
+
+	/**
+	 * Returns the optional rating field: a satisfaction rating from 1 to 5.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @return array Field definition.
+	 */
+	public static function rating_field() {
+		return array(
+			'type'    => 'select',
+			'label'   => __( 'Rating', 'indieweb-post-kinds' ),
+			'options' => array(
+				1 => __( 'Very Dissatisfied', 'indieweb-post-kinds' ),
+				2 => __( 'Dissatisfied', 'indieweb-post-kinds' ),
+				3 => __( 'Neutral', 'indieweb-post-kinds' ),
+				4 => __( 'Satisfied', 'indieweb-post-kinds' ),
+				5 => __( 'Very Satisfied', 'indieweb-post-kinds' ),
+			),
+		);
+	}
+
+	/**
+	 * Returns the RSVP field.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @param bool $required Optional. Whether it is required. Default true.
+	 * @return array Field definition.
+	 */
+	public static function rsvp_field( $required = true ) {
+		return array(
+			'type'     => 'select',
+			'label'    => __( 'RSVP', 'indieweb-post-kinds' ),
+			'required' => (bool) $required,
+			'options'  => array(
+				'yes'        => __( 'Yes', 'indieweb-post-kinds' ),
+				'no'         => __( 'No', 'indieweb-post-kinds' ),
+				'maybe'      => __( 'Maybe', 'indieweb-post-kinds' ),
+				'interested' => __( 'Interested', 'indieweb-post-kinds' ),
+				'remote'     => __( 'Remote', 'indieweb-post-kinds' ),
+			),
+		);
+	}
+
+	/**
+	 * Returns the optional read status field: to-read, reading or finished.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @return array Field definition.
+	 */
+	public static function read_status_field() {
+		return array(
+			'type'    => 'select',
+			'label'   => __( 'Read Status', 'indieweb-post-kinds' ),
+			'options' => array(
+				'to-read'  => __( 'Want to Read', 'indieweb-post-kinds' ),
+				'reading'  => __( 'Reading', 'indieweb-post-kinds' ),
+				'finished' => __( 'Finished Reading', 'indieweb-post-kinds' ),
+			),
+		);
+	}
+
+	/**
+	 * Returns the optional time fields: start, end and duration.
+	 *
+	 * @since 4.0.2
+	 *
+	 * @return array Field definitions, keyed by property.
+	 */
+	public static function time_fields() {
+		return array(
+			'start'    => array(
+				'type'  => 'datetime',
+				'label' => __( 'Start Date', 'indieweb-post-kinds' ),
+			),
+			'end'      => array(
+				'type'  => 'datetime',
+				'label' => __( 'End Date', 'indieweb-post-kinds' ),
+			),
+			'duration' => array(
+				'type'   => 'duration',
+				'label'  => __( 'Duration', 'indieweb-post-kinds' ),
+				'pieces' => array( 'H', 'I', 'S' ),
+			),
+		);
+	}
+
+	/**
 	 * Renders author name, URL and photo inputs, named {name}[name], {name}[url] and {name}[photo].
 	 *
 	 * @since 3.3.4
