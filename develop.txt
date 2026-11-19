@@ -132,6 +132,8 @@ The markup added to each post comes from a view file in the plugin's `views` fol
 
 To change a view, copy it into a `kind_views` folder in your theme and edit the copy. If a child theme has a `kind_views` folder, it is used instead of the parent theme's; the two aren't combined. For each post, the plugin looks for `kind-{slug}.php` in your theme and then in the plugin, and only then for `kind.php` in the same order. So a theme `kind.php` replaces only the kinds that have no view of their own. The `kind_view_paths` filter changes which folders are searched before the plugin's.
 
+When a post is embedded on another site (WordPress post embeds), a theme can style each kind with an `embed-{post_type}-{slug}.php` template, such as `embed-post-like.php`. Before 4.0.2 the template was named after the kind's translated name (`embed-post-Like.php`); that name still works, after the slug.
+
 Copies don't receive updates. After upgrading, compare them with the plugin's views. Since 4.0.0, views escape everything they print, and the `Kind_View` helpers return escaped markup.
 
 Each view is rendered by `Kind_View::get_view_part()` with these variables in scope:

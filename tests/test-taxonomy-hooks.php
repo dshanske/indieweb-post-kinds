@@ -234,20 +234,18 @@ class TaxonomyHooksTest extends WP_UnitTestCase {
 	public function test_embed_template_hierarchy() {
 		$post = $this->kind_post( 'reply' );
 		$this->go_to( get_permalink( $post ) );
-		$templates = Kind_Taxonomy::embed_template_hierarchy( array( 'embed.php' ) );
-		$this->assertCount( 2, $templates );
-		$this->assertSame( 'embed.php', $templates[1] );
+		// #526: the slug's template comes first; the translated name's, used before 4.0.2, is still found.
+		$this->assertSame( array( 'embed-post-reply.php', 'embed-post-Reply.php', 'embed.php' ), Kind_Taxonomy::embed_template_hierarchy( array( 'embed.php' ) ) );
 
 		$this->go_to( home_url( '/' ) );
 		$this->assertSame( array( 'embed.php' ), Kind_Taxonomy::embed_template_hierarchy( array( 'embed.php' ) ) );
 	}
 
-	public function test_embed_template_uses_the_kind_slug() {
-		$this->markTestSkipped( 'The embed template hierarchy uses the kind\'s translated name instead of its slug (#526).' );
-
-		$post = $this->kind_post( 'reply' );
+	public function test_embed_template_hierarchy_of_a_post_without_a_kind() {
+		$post = self::factory()->post->create();
+		wp_set_object_terms( $post, array(), 'kind' );
 		$this->go_to( get_permalink( $post ) );
-		$this->assertSame( array( 'embed-post-reply.php', 'embed.php' ), Kind_Taxonomy::embed_template_hierarchy( array( 'embed.php' ) ) );
+		$this->assertSame( array( 'embed.php' ), Kind_Taxonomy::embed_template_hierarchy( array( 'embed.php' ) ) );
 	}
 
 	public function test_sample_permalink_of_an_untitled_draft_uses_the_content() {
