@@ -308,6 +308,9 @@ The template functions, hooks and view variables are listed in the [developer no
 = 4.0.2 ( unreleased ) =
 * Update the bundled Parse This to 2.0.1, with fixes to how citations are read from microformats, JSON-LD, meta tags, RSS and the WordPress REST API, and updated php-mf2 and HTML5 parsers
 * Fix accented and non-Latin text in media metadata, such as an audio file's title or artist, being garbled when it was saved ("Café" became "CafÃ©"). Metadata already saved this way isn't repaired
+* Fix category and tag archives linked by ID (`?cat=5`, the default on sites with plain permalinks) having an empty title and causing PHP warnings
+* The embed template for a kind is now named after its slug (`embed-post-like.php`), so it no longer depends on the site's language. The old name (`embed-post-Like.php`) still works
+* Fix the `tz_timezone_to_seconds()` helper, which failed on every call (a fatal error on PHP 8)
 
 = 4.0.1 ( 2026-10-28 ) =
 * Fix the kind label disappearing from feeds when Kind Display is set to icon; feeds show the kind's name instead. Add the `kind_display_icons` filter, so other output that can't show icons, such as email, gets the name too
