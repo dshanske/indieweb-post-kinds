@@ -307,6 +307,7 @@ The template functions, hooks and view variables are listed in the [developer no
 
 = 4.0.2 ( unreleased ) =
 * Update the bundled Parse This to 2.0.1, with fixes to how citations are read from microformats, JSON-LD, meta tags, RSS and the WordPress REST API, and updated php-mf2 and HTML5 parsers
+* Fix accented and non-Latin text in media metadata, such as an audio file's title or artist, being garbled when it was saved ("Café" became "CafÃ©"). Metadata already saved this way isn't repaired
 
 = 4.0.1 ( 2026-10-28 ) =
 * Fix the kind label disappearing from feeds when Kind Display is set to icon; feeds show the kind's name instead. Add the `kind_display_icons` filter, so other output that can't show icons, such as email, gets the name too
