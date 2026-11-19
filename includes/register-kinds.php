@@ -464,6 +464,7 @@ register_post_kind(
 		'properties'      => array(
 			'rsvp'        => array(
 				'type'    => 'select',
+				'label'   => __( 'RSVP', 'indieweb-post-kinds' ),
 				'options' => array(
 					'yes'        => __( 'Yes', 'indieweb-post-kinds' ),
 					'no'         => __( 'No', 'indieweb-post-kinds' ),
@@ -669,7 +670,7 @@ register_post_kind(
 				'label'      => __( 'Checked In', 'indieweb-post-kinds' ),
 				'properties' => array(
 					'name'           => array(
-						'type'  => 'name',
+						'type'  => 'text',
 						'label' => __( 'Name', 'indieweb-post-kinds' ),
 					),
 					'url'            => array(
